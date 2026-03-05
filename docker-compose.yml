@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  sportex:
+    image: sportex:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.sportex.rule=Host(`sportex.codexa.uy`)"
+        - "traefik.http.routers.sportex.entrypoints=websecure"
+        - "traefik.http.routers.sportex.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.sportex.loadbalancer.server.port=3000"
+        - "traefik.docker.network=codexanet"
+        # Redirect HTTP to HTTPS
+        - "traefik.http.routers.sportex-http.rule=Host(`sportex.codexa.uy`)"
+        - "traefik.http.routers.sportex-http.entrypoints=web"
+        - "traefik.http.routers.sportex-http.middlewares=redirect-to-https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+    networks:
+      - codexanet
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_SUPABASE_URL=https://supabasecodexa.codexa.uy
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzE1MDUwODAwLAogICJleHAiOiAxODcyODE3MjAwCn0._7l1lovT1XijXtfVT2hrehUwSATfKL4XNJFbhgmaINM
+
+networks:
+  codexanet:
+    external: true

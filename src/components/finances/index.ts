@@ -1,0 +1,1 @@
+export { TransaccionModal } from './TransaccionModal'
