@@ -15,9 +15,6 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.sportex.rule=Host(`sportex.codexa.uy`)"
-        - "traefik.http.routers.sportex.entrypoints=websecure"
-        - "traefik.http.routers.sportex.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.sportex.loadbalancer.server.port=3000"
         - "traefik.docker.network=oraclelabsnet"
         # Redirect HTTP to HTTPS
         - "traefik.http.routers.sportex-http.rule=Host(`sportex.codexa.uy`)"
@@ -26,7 +23,7 @@ services:
         - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
         - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
     networks:
-      - oraclelabsnet
+      - codexanet
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -34,5 +31,5 @@ services:
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzE1MDUwODAwLAogICJleHAiOiAxODcyODE3MjAwCn0._7l1lovT1XijXtfVT2hrehUwSATfKL4XNJFbhgmaINM
 
 networks:
-  oraclelabsnet:
+  codexanet:
     external: true
