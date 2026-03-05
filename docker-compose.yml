@@ -15,6 +15,9 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.sportex.rule=Host(`sportex.codexa.uy`)"
+        - "traefik.http.routers.sportex.entrypoints=websecure"
+        - "traefik.http.routers.sportex.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.sportex.loadbalancer.server.port=3000"
         - "traefik.docker.network=oraclelabsnet"
         # Redirect HTTP to HTTPS
         - "traefik.http.routers.sportex-http.rule=Host(`sportex.codexa.uy`)"
