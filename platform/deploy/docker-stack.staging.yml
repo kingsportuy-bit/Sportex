@@ -18,18 +18,16 @@ services:
     secrets:
       - source: database_url
         target: database_url
-        mode: 0400
+        mode: 0444
       - source: auth_anon_key
         target: auth_anon_key
-        mode: 0400
+        mode: 0444
     networks:
       - sportex_private
       - supabase_staging
     read_only: true
     tmpfs:
       - /tmp:size=16m,mode=1777
-    security_opt:
-      - no-new-privileges:true
     cap_drop:
       - ALL
     deploy:
