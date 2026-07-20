@@ -22,7 +22,6 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY --from=production-dependencies --chown=node:node /app/node_modules ./node_modules
-COPY --from=production-dependencies --chown=node:node /app/core/node_modules ./core/node_modules
 COPY --from=build --chown=node:node /app/core/dist ./core/dist
 COPY --chown=node:node core/package.json ./core/package.json
 COPY --chown=node:node frontend ./frontend
