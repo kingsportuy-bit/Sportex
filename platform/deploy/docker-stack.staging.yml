@@ -1,0 +1,82 @@
+services:
+  core:
+    image: ${SPORTEX_IMAGE:?SPORTEX_IMAGE is required}
+    environment:
+      SPORTEX_ENV: staging
+      SPORTEX_STORE: postgres
+      SPORTEX_DEV_AUTH: "false"
+      SPORTEX_TABLE_PREFIX: sportex_staging_
+      SPORTEX_DATABASE_ROLE: sportex_staging_app
+      DATABASE_URL_FILE: /run/secrets/database_url
+      SPORTEX_AUTH_INTERNAL_URL: http://auth:9999
+      SPORTEX_AUTH_PUBLIC_URL: https://supabase-staging.codexa.uy/auth/v1
+      SPORTEX_AUTH_ANON_KEY_FILE: /run/secrets/auth_anon_key
+      SPORTEX_FRONTEND_DIR: /app/frontend
+      SPORTEX_RELEASE: ${SPORTEX_RELEASE:?SPORTEX_RELEASE is required}
+      HOST: 0.0.0.0
+      PORT: "8080"
+    secrets:
+      - source: database_url
+        target: database_url
+        mode: 0400
+      - source: auth_anon_key
+        target: auth_anon_key
+        mode: 0400
+    networks:
+      - sportex_private
+      - supabase_staging
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        parallelism: 1
+        failure_action: rollback
+        monitor: 30s
+      rollback_config:
+        order: stop-first
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: "0.35"
+          memory: 256M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=barberox_staging_net
+        - traefik.http.routers.sportex-staging.rule=Host(`sportex-staging.codexa.uy`)
+        - traefik.http.routers.sportex-staging.entrypoints=websecure
+        - traefik.http.routers.sportex-staging.tls=true
+        - traefik.http.routers.sportex-staging.tls.certresolver=letsencryptresolver
+        - traefik.http.services.sportex-staging.loadbalancer.server.port=8080
+        - traefik.http.services.sportex-staging.loadbalancer.healthcheck.path=/health
+        - traefik.http.services.sportex-staging.loadbalancer.healthcheck.interval=20s
+
+networks:
+  sportex_private:
+    external: true
+    name: sportex_staging_net
+  supabase_staging:
+    external: true
+    name: barberox_staging_net
+
+secrets:
+  database_url:
+    external: true
+    name: ${SPORTEX_DATABASE_SECRET:?SPORTEX_DATABASE_SECRET is required}
+  auth_anon_key:
+    external: true
+    name: ${SPORTEX_AUTH_ANON_SECRET:?SPORTEX_AUTH_ANON_SECRET is required}

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111311" />
+    <title>SPORTEX — Delta Sport</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <main id="login-view" class="login-shell">
+      <section class="login-brand" aria-label="SPORTEX para Delta Sport">
+        <div class="brand-lockup brand-lockup--light">
+          <span class="delta-logo-frame"><img class="delta-logo" src="/assets/delta-logo.png" alt="Delta Sport" /></span>
+          <span><strong>SPORTEX</strong><small>OPERACIONES</small></span>
+        </div>
+        <div class="login-thesis">
+          <span class="eyebrow">DEL MENSAJE AL TALLER</span>
+          <h1>Cada pedido,<br />en su lugar.</h1>
+          <p>El tablero operativo de Delta Sport. Ventas confirmadas, clientes y producción bajo una misma trazabilidad.</p>
+        </div>
+        <ol class="route-line" aria-label="Proceso Delta Sport">
+          <li class="is-active">Venta</li>
+          <li>Diseño</li>
+          <li>USER</li>
+          <li>Taller</li>
+          <li>Envío</li>
+        </ol>
+      </section>
+
+      <section class="login-panel">
+        <form id="login-form" class="login-form">
+          <div>
+            <span class="section-code">ACCESO / 01</span>
+            <h2>Entrar a Delta</h2>
+            <p>Usá tu cuenta de SPORTEX para continuar.</p>
+          </div>
+          <label>
+            Correo
+            <input id="login-email" name="email" type="email" autocomplete="username" required />
+          </label>
+          <label>
+            Contraseña
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <p id="login-error" class="form-error" role="alert"></p>
+          <button class="button button--primary button--full" type="submit">Entrar a SPORTEX</button>
+          <small class="environment-note">Entorno de validación · los datos productivos todavía no están conectados.</small>
+        </form>
+      </section>
+    </main>
+
+    <div id="app-view" class="app-shell" hidden>
+      <aside class="sidebar">
+        <div class="brand-lockup brand-lockup--light">
+          <span class="delta-logo-frame"><img class="delta-logo" src="/assets/delta-logo.png" alt="Delta Sport" /></span>
+          <span><strong>SPORTEX</strong><small>DELTA SPORT</small></span>
+        </div>
+        <nav class="side-nav" aria-label="Navegación principal">
+          <button class="nav-item is-active" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
+          <button class="nav-item" data-view="clients"><span>Clientes</span><b id="clients-count-nav">0</b></button>
+        </nav>
+        <div class="sidebar-foot">
+          <span id="release-label">STAGING</span>
+          <button id="logout-button" class="text-button" type="button">Cerrar sesión</button>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div>
+            <span class="section-code">EMPRESA ACTIVA</span>
+            <strong id="tenant-name">Delta Sport</strong>
+          </div>
+          <div class="topbar-actions">
+            <button id="account-button" class="account-button" type="button" aria-label="Cambiar contraseña">
+              <span id="account-initials">FS</span>
+              <small id="account-email">Cuenta</small>
+            </button>
+            <button id="new-order-button" class="button button--signal" type="button">+ Nueva venta confirmada</button>
+          </div>
+        </header>
+
+        <div class="production-track" aria-label="Etapas de producción">
+          <span class="is-active"><b>01</b> Venta</span>
+          <span><b>02</b> Diseño</span>
+          <span><b>03</b> Impresión y compras</span>
+          <span><b>04</b> Taller</span>
+          <span><b>05</b> Envío</span>
+        </div>
+
+        <main class="content">
+          <section id="orders-view" class="view-section">
+            <header class="view-header">
+              <div>
+                <span class="section-code">MESA DE PEDIDOS / HOY</span>
+                <h1>Pedidos de Delta</h1>
+              </div>
+              <p>Ingresan acá cuando la seña fue certificada. El Core mantiene precio, saldo y trazabilidad.</p>
+            </header>
+
+            <div class="metrics-strip">
+              <article><span>Pedidos abiertos</span><strong id="metric-orders">0</strong></article>
+              <article><span>Valor cotizado</span><strong id="metric-quoted">$ 0</strong></article>
+              <article><span>Señas certificadas</span><strong id="metric-deposits">$ 0</strong></article>
+              <article><span>Saldo pendiente</span><strong id="metric-balance">$ 0</strong></article>
+            </div>
+
+            <div class="ledger">
+              <div class="ledger-head">
+                <span>Pedido</span><span>Equipo / cliente</span><span>Precio</span><span>Seña</span><span>Saldo</span><span>Estado</span><span>Fecha</span>
+              </div>
+              <div id="orders-list" class="ledger-body"></div>
+              <div id="orders-empty" class="empty-state">
+                <span class="empty-number">00</span>
+                <div><strong>Todavía no hay pedidos</strong><p>Registrá la primera venta cuando la seña esté confirmada.</p></div>
+                <button class="button button--outline" data-open-order type="button">Registrar venta</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="clients-view" class="view-section" hidden>
+            <header class="view-header">
+              <div>
+                <span class="section-code">CARTERA COMERCIAL</span>
+                <h1>Clientes y equipos</h1>
+              </div>
+              <p>Una identidad comercial por empresa, vinculada a sus pedidos y comprobantes.</p>
+            </header>
+            <div class="ledger ledger--clients">
+              <div class="ledger-head"><span>Cliente</span><span>Equipo</span><span>WhatsApp</span><span>Alta</span></div>
+              <div id="clients-list" class="ledger-body"></div>
+              <div id="clients-empty" class="empty-state">
+                <span class="empty-number">00</span>
+                <div><strong>Todavía no hay clientes</strong><p>Podés crear uno desde una nueva venta confirmada.</p></div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="order-dialog" class="sheet-dialog">
+      <form id="order-form" method="dialog">
+        <header class="sheet-head">
+          <div><span class="section-code">NUEVO PEDIDO / SEÑA CERTIFICADA</span><h2>Registrar venta</h2></div>
+          <button class="icon-button" value="cancel" aria-label="Cerrar" type="submit">×</button>
+        </header>
+
+        <div class="form-grid">
+          <fieldset class="form-block form-block--wide">
+            <legend><b>01</b> Cliente</legend>
+            <div class="segmented">
+              <label><input type="radio" name="clientMode" value="existing" checked /><span>Cliente existente</span></label>
+              <label><input type="radio" name="clientMode" value="new" /><span>Cliente nuevo</span></label>
+            </div>
+            <div id="existing-client-fields">
+              <label>Elegir cliente<select id="order-client" name="clientId"></select></label>
+            </div>
+            <div id="new-client-fields" class="three-fields" hidden>
+              <label>Nombre<input id="new-client-name" name="clientName" maxlength="120" /></label>
+              <label>Equipo<input id="new-client-team" name="clientTeam" maxlength="120" /></label>
+              <label>WhatsApp<input id="new-client-phone" name="clientPhone" placeholder="+598..." /></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-block">
+            <legend><b>02</b> Seña</legend>
+            <label>Referencia del comprobante<input id="deposit-reference" name="depositReference" maxlength="160" required /></label>
+            <label>Importe en pesos<input id="deposit-amount" name="depositAmount" type="number" min="1" step="1" required /></label>
+            <p>Al guardar, la seña quedará certificada a nombre del usuario actual.</p>
+          </fieldset>
+
+          <fieldset class="form-block">
+            <legend><b>03</b> Pedido</legend>
+            <label>Nombre del equipo<input id="order-team" name="teamName" maxlength="120" required /></label>
+            <label>Precio total en pesos<input id="order-total" name="quotedTotal" type="number" min="1" step="1" required /></label>
+            <p>Los productos y la ficha de producción se incorporarán en la siguiente etapa del Core.</p>
+          </fieldset>
+        </div>
+
+        <p id="order-error" class="form-error" role="alert"></p>
+        <footer class="sheet-actions">
+          <button class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button id="save-order-button" class="button button--primary" type="button">Certificar seña y crear pedido</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="password-dialog" class="password-dialog">
+      <form id="password-form" method="dialog">
+        <span class="section-code">SEGURIDAD</span>
+        <h2>Cambiar contraseña</h2>
+        <p id="password-message">Elegí una contraseña nueva de al menos 10 caracteres.</p>
+        <label>Nueva contraseña<input id="new-password" type="password" minlength="10" autocomplete="new-password" required /></label>
+        <label>Repetir contraseña<input id="repeat-password" type="password" minlength="10" autocomplete="new-password" required /></label>
+        <p id="password-error" class="form-error" role="alert"></p>
+        <div class="sheet-actions">
+          <button id="password-cancel" class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button id="password-save" class="button button--primary" type="button">Guardar contraseña</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

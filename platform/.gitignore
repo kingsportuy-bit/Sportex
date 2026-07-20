@@ -1,0 +1,9 @@
+node_modules/
+core/dist/
+core/dist-test/
+.npm-cache/
+.env
+.env.*
+!.env.example
+tmp-*.patch
+deploy/private/

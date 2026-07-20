@@ -1,0 +1,18 @@
+{
+  "name": "sportex",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core"
+  ],
+  "scripts": {
+    "validate-docs": "node scripts/validate-docs.mjs",
+    "check": "npm --workspace @sportex/core run check",
+    "test": "npm --workspace @sportex/core test",
+    "build": "npm --workspace @sportex/core run build",
+    "validate-sql": "npm --workspace @sportex/core run validate-sql",
+    "validate": "npm run validate-docs && npm run check && npm test && npm run validate-sql && npm run build",
+    "test:e2e:staging": "node scripts/e2e-staging.mjs"
+  }
+}
