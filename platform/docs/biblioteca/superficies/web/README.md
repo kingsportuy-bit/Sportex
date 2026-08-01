@@ -15,4 +15,6 @@ Mostrar información del Core y permitir ejecutar acciones autorizadas.
 
 ## Estado
 
-IMPLEMENTADO_NO_VALIDADO. Frontend nuevo sin acceso a base, con login Supabase y comandos del Core; smoke visual escritorio/móvil local PASS. Despliegue y E2E STAGING pendientes.
+IMPLEMENTADO_NO_VALIDADO. Frontend nuevo sin acceso a base, con login Supabase
+y comandos del Core; smoke visual local historico en PASS. Despliegue y E2E de
+`PILOTO_DELTA` pendientes de replanificacion.

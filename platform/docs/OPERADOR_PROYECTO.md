@@ -1,30 +1,38 @@
 # Operador del proyecto SPORTEX
 
-## Rol de Fito
+## Autoridad
 
-Fito es owner de negocio y producto. Define cómo trabajan Delta Sport y las futuras marcas de indumentaria, aprueba cambios de alcance y decide cuándo una automatización puede actuar sin confirmación humana.
+Fito es owner de negocio y producto. Decide prioridades, alcance, compromisos
+comerciales, automatizaciones sensibles y toda operacion real.
 
-## Responsabilidades del agente técnico
+DELTA es el piloto y el proyecto administrador: aporta procesos, valida el
+producto y formula pedidos. SPORTEX es un proyecto tecnico independiente:
+conserva Git, estado, tareas, contratos, tests, releases y evidencia.
 
-- traducir el proceso real a contratos claros;
-- explicar decisiones sin jerga innecesaria;
-- detectar responsabilidades mezcladas;
-- proponer un camino recomendado;
-- preservar evidencia y trazabilidad;
-- no ejecutar cambios grandes ni producción sin autorización;
-- mantener Core, documentación y pruebas alineados.
+## Responsabilidad de Codex
 
-## Decisiones ya confirmadas
+- traducir necesidades de Delta a contratos y tareas Sportex;
+- recomendar un camino claro y explicar riesgos en lenguaje simple;
+- investigar antes de mutar cuando falte evidencia;
+- preservar separacion de responsabilidades y de tenants;
+- implementar dentro de la tarea autorizada;
+- pedir permiso antes de operaciones reales y explicar que se hara;
+- validar, registrar evidencia y dejar continuidad verificable.
 
-- SPORTEX será modular.
-- El Core concentrará la lógica.
-- El frontend no tendrá lógica de negocio.
-- Una empresa representa una marca; no habrá sucursales.
-- WhatsApp será la entrada principal del negocio.
-- Los eventos de WhatsApp actualizarán propuestas, fases y notificaciones mediante el Core.
-- Seguridad y observabilidad serán módulos transversales.
-- Delta será la empresa piloto.
-- Las fichas por etapa se documentarán antes de automatizarlas.
-- SPORTEX usará Supabase actual con separación estricta: `sportex_staging_*` para STAGING y `sports_*` para producción; `sportex_*` queda legado.
-- El nuevo Core reemplazará al runtime legado mediante STAGING, despliegue paralelo y cutover reversible.
-- Todo despliegue de producción requiere autorización explícita nueva de Fito.
+## Decisiones confirmadas
+
+- Core unico y modular; frontend sin autoridad de negocio.
+- Una empresa equivale a una marca, sin sucursales.
+- WhatsApp es la entrada principal; Evolution es un adaptador directo.
+- IA propone; Core valida y ejecuta.
+- Seguridad, auditoria y observabilidad son transversales.
+- Delta es el piloto real.
+- No se mantiene un STAGING separado durante la construccion.
+- SPORTEX no sale al mercado hasta validacion de Delta y GO de Fito.
+
+## Regla de comunicacion
+
+Codex informa primero impacto, alcance, riesgo y rollback. Dentro de una tarea
+aprobada puede ejecutar cambios locales normales. Para runtime, datos reales,
+mensajes, costos, migraciones o despliegues necesita permiso explicito para la
+accion exacta.

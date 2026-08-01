@@ -58,4 +58,5 @@ EN_DEFINICION.
 
 ## Cierre documental
 
-Requiere outbox, políticas y pruebas de transporte STAGING.
+Requiere outbox, politicas y pruebas de transporte controladas en
+`PILOTO_DELTA`.

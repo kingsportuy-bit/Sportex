@@ -1,34 +1,29 @@
-# Plantilla de tarea SPORTEX
+# <Titulo>
 
-id: TASK-YYYYMMDD-001
+id: TASK-YYYYMMDD-###
 owner: Codex
 requester: Fito
 estado: draft
+lifecycle: queued
+work_type: <fix|feature|operacion|documentacion>
+campaign: none
+context_focus: <documentation|architecture|product|runtime|deploy|quality|library>
+development_guide_impact: <required|none>
 
 ## objetivo
 
-Resultado concreto esperado.
-
 ## alcance_permitido
-
-- Rutas, módulos y acciones autorizadas.
 
 ## alcance_prohibido
 
-- Rutas, entornos y acciones prohibidas.
-
 ## entradas
-
-- Contratos, datos y decisiones necesarias.
 
 ## salidas
 
-- Entregables exactos.
-
 ## validacion
-
-- Comandos, tests y revisiones requeridos.
 
 ## evidencia
 
-- Archivos y resultados que prueban el cierre.
+## rollback
+
+## deuda_restante

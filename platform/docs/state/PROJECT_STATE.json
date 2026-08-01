@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "project": "SPORTEX",
+  "updatedAt": "2026-08-01",
+  "environment": "DOCUMENTACION",
+  "operatingTarget": "PILOTO_DELTA",
+  "mode": "idle",
+  "objective": "Sistema de desarrollo instalado; seleccionar y aprobar la siguiente tarea SPORTEX.",
+  "currentTask": null,
+  "activeCampaign": null,
+  "decisions": [
+    "DELTA dirige producto y valida el piloto; SPORTEX conserva la verdad tecnica.",
+    "SPORTEX usa un worktree Git independiente en C:/Users/Fito/Documents/CODEX/SPORTEX.",
+    "No existe STAGING permanente separado: el entorno real previo al mercado es PILOTO_DELTA.",
+    "PILOTO_DELTA usa controles de produccion y cada mutacion remota requiere permiso explicito.",
+    "PRODUCCION_COMERCIAL queda bloqueado hasta validacion de Delta y GO especifico de Fito.",
+    "El Core decide negocio; frontend, WhatsApp y Evolution son superficies o adaptadores.",
+    "Solo puede existir una tarea activa y las vistas de estado son generadas."
+  ],
+  "blockers": [
+    "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
+    "El estado runtime de julio de 2026 es historico y requiere revalidacion.",
+    "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
+  ],
+  "nextActions": [
+    "Decidir si TASK-20260801-002 de seguridad se ejecuta primero.",
+    "Replantear TASK-20260719-007 al modelo PILOTO_DELTA antes de operar.",
+    "Elegir la primera vertical funcional priorizada por Delta."
+  ],
+  "runtimeTruth": {
+    "status": "PENDIENTE_REVALIDACION",
+    "lastEvidenceDate": "2026-07-19",
+    "note": "Los documentos heredados son snapshots y no autorizan operaciones actuales."
+  }
+}

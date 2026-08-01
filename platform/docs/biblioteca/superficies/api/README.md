@@ -19,4 +19,5 @@ Payload inválido, permiso insuficiente, tenant incorrecto, caso feliz, idempote
 
 ## Estado
 
-IMPLEMENTADO_NO_VALIDADO. API v1 inicial probada localmente; autenticación real y certificación STAGING pendientes.
+IMPLEMENTADO_NO_VALIDADO. API v1 inicial probada localmente; autenticacion real
+y certificacion en `PILOTO_DELTA` pendientes de replanificacion.

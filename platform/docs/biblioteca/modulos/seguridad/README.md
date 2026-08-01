@@ -46,7 +46,9 @@ Escalada de privilegios, cross-tenant, sesión revocada, secreto ausente, acció
 
 ## Evidencia
 
-Capacidades, denegación por defecto, guardas de entorno, rol STAGING y RLS forzado implementados en `TASK-20260719-006`. Supabase Auth pendiente.
+Capacidades, denegacion por defecto, guardas de entorno y RLS fueron
+implementados localmente en `TASK-20260719-006`. La configuracion heredada usa
+nombres STAGING; Supabase Auth y su aplicacion a `PILOTO_DELTA` estan pendientes.
 
 ## Rollback
 

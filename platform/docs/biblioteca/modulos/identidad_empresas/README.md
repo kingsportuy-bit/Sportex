@@ -58,4 +58,5 @@ EN_PROGRESO.
 
 ## Cierre documental
 
-Requiere modelo de datos, matriz de permisos, tests cross-tenant y evidencia STAGING.
+Requiere modelo de datos, matriz de permisos, tests cross-tenant y evidencia de
+`PILOTO_DELTA`.

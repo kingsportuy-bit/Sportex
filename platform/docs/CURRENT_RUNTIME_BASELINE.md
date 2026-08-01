@@ -1,5 +1,8 @@
 # Baseline del runtime SPORTEX existente
 
+> SNAPSHOT HISTORICO. No describe necesariamente el runtime actual y no
+> autoriza operaciones. Revalidar antes de usarlo para una decision.
+
 Verificado: 2026-07-19.
 
 Modo: inspección `read-only` como `root` sobre el VPS.
@@ -69,7 +72,9 @@ Se observaron 13 tablas `public.sportex_*` en Supabase de producción.
 
 La base existente es material de migración; no constituye todavía el modelo multitenant certificado.
 
-El reemplazo migrará los datos autorizados desde las tablas legado `sportex_*` hacia las nuevas tablas `sports_*` dentro de la misma instancia Supabase. El nuevo Core no escribirá las tablas legado.
+Una futura tarea decidira si migra datos autorizados desde `sportex_*`, cual es
+el namespace de `PILOTO_DELTA` y como evita escrituras del nuevo Core sobre el
+legado.
 
 ## Hallazgos de seguridad prioritarios
 

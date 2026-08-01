@@ -1,44 +1,38 @@
 # Tareas SPORTEX
 
-## Regla
+## Ciclo de vida
 
-Cada cambio ejecutable requiere un archivo `TASK-YYYYMMDD-###-nombre.md` con contrato. Solo puede existir una tarea en estado `approved`, `in_progress` o `review`.
+- `active/`: exactamente una tarea `approved` o `in_progress`, o ninguna.
+- `queued/`: tareas `draft`, `blocked` o `review`.
+- `closed/<anio>/`: tareas `done` con evidencia y deuda explicita.
+
+`INDEX.md` es una vista generada. No se edita manualmente.
 
 ## Campos obligatorios
 
-- `id`;
-- `owner`;
-- `requester`;
-- `estado`;
-- objetivo;
-- alcance permitido;
-- alcance prohibido;
-- entradas;
-- salidas;
-- validación;
-- evidencia.
+- `id`, `owner`, `requester`, `estado`, `lifecycle`;
+- `work_type`: `fix`, `feature`, `operacion` o `documentacion`;
+- `campaign`: `none` o ID;
+- `context_focus`;
+- `development_guide_impact`: `required` o `none`;
+- objetivo, alcance permitido/prohibido, entradas, salidas, validacion,
+  evidencia, rollback y deuda restante.
 
-## Estados
+## Reglas
 
-- `draft`;
-- `approved`;
-- `in_progress`;
-- `blocked`;
-- `review`;
-- `done`;
-- `superseded`;
-- `cancelled`.
+- Sin tarea activa no se ejecuta un cambio material.
+- Solo existe una tarea activa global.
+- `guidance` no crea ni modifica tareas.
+- Una tarea incompatible no se reemplaza sin explicar el conflicto.
+- `done` exige evidencia verificable; no significa necesariamente deploy.
+- Una tarea bloqueada vuelve a la cola con causa y siguiente decision.
+- Cambiar el sistema de desarrollo exige
+  `development_guide_impact: required` y actualizar la guia maestra.
+- La tarea no autoriza runtime; las operaciones reales requieren un GO aparte.
 
-## Estado actual
+## Git y worktrees
 
-- `TASK-20260719-007`: `in_progress` — autenticación, frontend y despliegue STAGING utilizable para Delta.
-- `TASK-20260719-001`: `done` — fundación documental y modular de SPORTEX validada.
-- `TASK-20260719-002`: `done` — entorno VPS, Git, Supabase y Evolution sin n8n, verificado read-only y documentado.
-- `TASK-20260719-003`: `done` — baseline read-only del runtime legado existente en `/opt/sportex`.
-- `TASK-20260719-004`: `superseded` — propuesta de Supabase dedicado reemplazada por decisión posterior.
-- `TASK-20260719-005`: `done` — Supabase compartido con prefijos separados por entorno.
-- `TASK-20260719-006`: `done` — primera vertical local del Core SPORTEX implementada y validada.
-
-## Plantilla
-
-Ver `TEMPLATE.md`.
+- El repositorio Git es la fuente; una copia manual no crea otra verdad.
+- Ejecutar `npm run task:doctor` antes de abrir trabajo nuevo.
+- Obtener el siguiente ID con `npm run task:next-id`.
+- Cada release usa commit remoto y scope explicito.

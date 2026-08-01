@@ -24,7 +24,8 @@ Un módulo publica un evento. El módulo notificaciones evalúa reglas configura
 - La notificación no cambia el estado del pedido.
 - Cada envío tiene tenant, audiencia, motivo, correlación e idempotencia.
 - Los mensajes al cliente requieren política y canal autorizado.
-- Staging usa destinos allowlisted.
+- Desarrollo usa transportes falsos. En `PILOTO_DELTA`, todo destino y envio
+  real requiere alcance y permiso explicitos.
 - Los fallos se reintentan con límite y terminan visibles.
 - Un recordatorio relee el estado antes de enviarse.
 

@@ -14,7 +14,7 @@ Ejecutar efectos autorizados: notificaciones, documentos, proveedores, archivos,
 ## Prohibido
 
 - declarar éxito sin respuesta verificable;
-- enviar desde staging fuera de allowlist;
+- enviar desde `PILOTO_DELTA` sin alcance y permiso explicitos;
 - ejecutar job de otro tenant;
 - cambiar dominio por inferencia del proveedor.
 

@@ -19,9 +19,10 @@ Permiten un adaptador de headers solamente si `SPORTEX_DEV_AUTH=true`:
 - `x-sportex-actor-id`;
 - `x-sportex-capabilities`.
 
-El proceso se niega a iniciar con este adaptador en STAGING o producción.
+El proceso se niega a iniciar con este adaptador en `PILOTO_DELTA` o
+`PRODUCCION_COMERCIAL`.
 
-### STAGING y producción
+### PILOTO_DELTA y PRODUCCION_COMERCIAL
 
 - El navegador obtiene un access token desde Supabase Auth.
 - Envía `Authorization: Bearer <token>` al Core.

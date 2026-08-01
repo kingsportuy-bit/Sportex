@@ -3,7 +3,13 @@
 id: TASK-20260719-004
 owner: Codex
 requester: Fito
-estado: superseded
+estado: done
+lifecycle: closed
+work_type: documentacion
+campaign: none
+context_focus: architecture
+development_guide_impact: none
+completion_kind: superseded
 
 ## objetivo
 
@@ -54,4 +60,12 @@ Definir Supabase exclusivo para SPORTEX por entorno y un protocolo formal para d
 
 ## superseded
 
+## rollback
+
+No se ejecuto la propuesta reemplazada; se conserva como decision historica.
+
+## deuda_restante
+
+Ninguna dentro de esta alternativa; la arquitectura vigente vive en sus
+contratos actuales.
 Reemplazada por `TASK-20260719-005`: Fito decidió reutilizar la instancia Supabase actual con separación por prefijos y controles de acceso.

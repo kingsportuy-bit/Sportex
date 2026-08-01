@@ -1,103 +1,50 @@
 # Contrato de infraestructura SPORTEX
 
-## Decisión
+## Objetivo
 
-SPORTEX utilizará el mismo VPS físico que BARBEROX, con servicios, redes, secretos, datos y despliegues aislados.
+Mantener SPORTEX aislado, observable, recuperable y atribuible a una version.
 
-El VPS verificado el 2026-07-19 es:
+## Fronteras
 
-- host: `31.97.28.4`;
-- hostname: `codexa`;
-- orquestación: Docker Swarm activo;
-- Docker Server: `29.3.0`;
-- proxy público existente: Traefik.
+- `DESARROLLO_LOCAL` no usa servicios reales.
+- `PILOTO_DELTA` tiene recursos, secretos y datos explicitamente inventariados.
+- `PRODUCCION_COMERCIAL` no comparte identidad operativa con el piloto sin una
+  decision de cutover.
+- Tenant y entorno son dimensiones distintas.
+- SPORTEX no depende de n8n.
 
-Esta información es una fotografía operativa y debe verificarse antes de cualquier despliegue.
+## Componentes objetivo
 
-## Arquitectura objetivo
+- Core API y workers con responsabilidades separadas;
+- frontend delgado;
+- PostgreSQL/Supabase con aislamiento multitenant;
+- almacenamiento versionado para documentos;
+- Evolution como adaptador de WhatsApp;
+- observabilidad, backups y registro de deployments.
 
-Servicios iniciales de STAGING:
+## Estado heredado
 
-- `sportex_core_api_staging`;
-- `sportex_core_worker_staging`;
-- `sportex_frontend_staging`;
-- scheduler o worker especializado solamente si aparece una responsabilidad real.
+Los stacks, redes y dominios con sufijo `staging` creados en julio de 2026 son
+artefactos transitorios. No se consideran destino del piloto hasta que una
+tarea revalide capacidad, seguridad, ownership y conveniencia de migrarlos.
 
-Datos de STAGING:
+El VPS y servicios compartidos se inspeccionan de forma acotada. Reiniciar o
+modificar un componente compartido requiere permiso explicito y analisis de
+impacto sobre los otros proyectos.
 
-- tablas `sportex_staging_*` en la instancia Supabase actual;
-- rol, RLS, migraciones y buckets propios;
-- red `sportex_staging_net`;
-- backups y restauración identificables.
+## Reglas bloqueantes
 
-Producción tendrá `sportex_prod`, tablas `sports_*`, `sportex_prod_net`, rol, RLS, buckets y secretos de aplicación separados cuando exista autorización de promoción.
+- secretos fuera de imagen, Git, logs y documentos;
+- healthchecks no reemplazan pruebas de negocio;
+- procesos sin privilegios innecesarios;
+- redes y credenciales de minimo acceso;
+- backups con restauracion verificable;
+- artefactos ligados a commit/digest;
+- limites de CPU, memoria, disco y concurrencia;
+- logs con correlacion, tenant y version sin datos sensibles;
+- cambios de DNS, Traefik, DB o Evolution solo dentro de una operacion aprobada.
 
-## Baseline legado existente
+## Evidencia
 
-El VPS ya contiene `/opt/sportex` y el stack `sportex`. Su único servicio, `sportex_sportex`, ejecuta una aplicación Next.js monolítica en producción mediante `sportex:latest` y Traefik.
-
-Este despliegue es una entrada de migración, no la implementación del Core objetivo. Debe preservarse hasta disponer de una sustitución certificada y rollback.
-
-## Dependencias compartidas
-
-- Supabase autoalojado actual como plataforma, con separación lógica certificada.
-- Evolution API como proveedor de WhatsApp.
-- Traefik como entrada HTTP/HTTPS.
-- Docker Swarm como control de servicios.
-
-Compartir Supabase, VPS, Evolution o Traefik no autoriza compartir tablas, permisos, datos, instancias de negocio, colas o redes internas con BARBEROX.
-
-## Gate de capacidad
-
-No se instalarán stacks Supabase adicionales. Aun así, antes de desplegar Core, workers y frontend se debe certificar CPU, carga, memoria, swap, disco y margen de rollback. La fotografía del 2026-07-19 mostró presión elevada y deberá repetirse en la ventana de despliegue.
-
-## Redes
-
-- SPORTEX debe tener redes propias por entorno.
-- Solamente los servicios que necesitan exposición pública se conectan a la red de ingress correspondiente.
-- Core, workers y dependencias internas no publican puertos directamente.
-- STAGING y producción no comparten red privada de aplicación.
-
-Los nombres y conexiones exactos se definirán en la tarea de despliegue inicial después de auditar las redes existentes.
-
-## Secretos
-
-Los secretos se administran fuera de Git y Markdown mediante Docker secrets, variables protegidas o un gestor futuro.
-
-Se separan por entorno y servicio:
-
-- acceso de base;
-- JWT/Auth de Supabase;
-- service role solamente del lado servidor;
-- credenciales Evolution;
-- firmas de webhook;
-- claves de cifrado;
-- tokens de soporte y observabilidad.
-
-## Persistencia y backups
-
-- Supabase conserva los datos canónicos.
-- Archivos usan Storage privado por tenant.
-- Backups de base y archivos se prueban en STAGING antes de producción.
-- Los volúmenes persistentes no se comparten entre entornos.
-- Todo cambio de esquema requiere migración versionada y rollback o restauración demostrable.
-
-## Operación
-
-Cada servicio debe declarar:
-
-- imagen inmutable y digest;
-- commit;
-- task y scope;
-- variables requeridas sin valores sensibles;
-- redes y volúmenes;
-- health/readiness;
-- límites de recursos;
-- logs y métricas;
-- procedimiento de rollback.
-
-Todo despliegue sigue `DEPLOYMENT_PROTOCOL.md`.
-
-## Límite actual
-
-No se creó, desplegó ni modificó ningún servicio como parte de esta documentación. Sí existe un runtime legado previo, registrado en `CURRENT_RUNTIME_BASELINE.md`. El nuevo Core modular todavía no fue desplegado.
+La infraestructura actual se afirma solo desde observacion fechada. Los
+snapshots se vuelven historicos y deben revalidarse antes de decidir o actuar.

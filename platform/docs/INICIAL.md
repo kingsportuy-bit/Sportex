@@ -1,37 +1,49 @@
 # Entrada operativa SPORTEX
 
-## Propósito
+## Proposito
 
-Este documento es la puerta de entrada al proyecto SPORTEX.
+Esta es la puerta unica de entrada al proyecto. El estado actual no se deduce
+del chat ni de documentos manuales: vive en `state/PROJECT_STATE.json` y se
+proyecta en `SESSION_STATE.md` y `generated/CURRENT_CONTEXT.md`.
 
-## Estado actual
+## Arranque obligatorio
 
-- Modo: `STAGING`.
-- Runtime legado: operativo en `https://sportex.codexa.uy`, no certificado para la arquitectura objetivo.
-- Nuevo Core modular: autenticación, membresías y primera vertical implementadas localmente, no certificadas en STAGING.
-- Nuevo frontend sin lógica: implementado localmente, no desplegado.
-- Base reutilizable: SPORTEX anterior con baseline inicial y auditoría formal pendiente; migración nueva todavía no ejecutada.
-- Empresa piloto: Delta Sport.
+Desde `platform/`:
 
-## Orden obligatorio de lectura
+```powershell
+npm run scan:text
+npm run context -- guidance
+```
 
-1. `DOCUMENTATION_ARCHITECTURE.md`.
-2. `ENVIRONMENTS_CONTRACT.md`.
-3. `SESSION_STATE.md`.
-4. `TASKS/README.md`.
-5. tarea activa, si existe.
-6. `BIBLIA_SPORTEX.md` y `BUSINESS.md`.
-7. contratos transversales afectados.
-8. `biblioteca/README.md` y ficha del módulo, capa o superficie.
+Para trabajo material, reemplazar `guidance` por la intencion correcta y leer
+la tarea activa que indique la vista generada.
 
-Para infraestructura leer además `CURRENT_RUNTIME_BASELINE.md`, `INFRASTRUCTURE_CONTRACT.md`, `CONNECTIONS.md`, `SUPABASE_CONTRACT.md`, `EVOLUTION_CONTRACT.md`, `GIT_RELEASE_CONTRACT.md`, `DEPLOYMENT_PROTOCOL.md` y `DEPLOYMENT_MANIFEST_TEMPLATE.md`.
+## Router de intenciones
 
-## Modos
+| Intencion | Uso | Mutacion |
+| --- | --- | --- |
+| `guidance` | entender el sistema o decidir por donde entrar | no |
+| `documentation` | cambiar reglas, contratos o gobernanza | solo archivos |
+| `architecture` | definir owners, capas y fronteras | con tarea |
+| `feature` | agregar capacidad | con tarea |
+| `fix` | corregir un fallo reproducible | con tarea |
+| `operation` | migracion, deploy, secretos o runtime | con tarea y permiso |
+| `incident` | responder a una falla del piloto/comercial | diagnostico primero |
+| `product` | reglas y decisiones de negocio | con tarea si cambia fuente |
+| `quality` | tests, evidencia y certificacion | segun tarea |
+| `library` | localizar modulo, capa o superficie | normalmente no |
 
-- `DOCUMENTACION`: definición de producto, contratos y tareas; no crea runtime.
-- `DESARROLLO`: implementación local sin datos ni servicios reales.
-- `STAGING`: integración y certificación aislada antes de producción.
-- `PRODUCCION`: operación real, únicamente con autorización explícita de Fito.
+La resolucion completa vive en `MODOS_DE_TRABAJO.md`.
+
+## Fuentes obligatorias
+
+1. `OPERADOR_PROYECTO.md` para autoridad y comunicacion.
+2. `state/PROJECT_STATE.json` para trabajo vivo.
+3. `TASKS/INDEX.md` y la tarea activa para alcance.
+4. `DOCUMENTATION_ARCHITECTURE.md` para jerarquia.
+5. `ENVIRONMENTS_CONTRACT.md` para limites de entorno.
+6. `BIBLIA_SPORTEX.md`, `BUSINESS.md` y `ARCHITECTURE.md` para producto.
+7. `biblioteca/README.md` para ubicar owners y contratos focales.
 
 ## Reglas madre
 
@@ -39,39 +51,23 @@ Para infraestructura leer además `CURRENT_RUNTIME_BASELINE.md`, `INFRASTRUCTURE
 EL CORE DECIDE. EL FRONTEND PRESENTA.
 WHATSAPP INFORMA. EL CORE VALIDA.
 TODO DATO OPERATIVO PERTENECE A UNA EMPRESA.
-NO MEZCLAR RESPONSABILIDADES ENTRE MÓDULOS.
+NO MEZCLAR RESPONSABILIDADES ENTRE MODULOS.
+SIN TAREA, EVIDENCIA Y ROLLBACK NO HAY CAMBIO MATERIAL.
 ```
 
-## Fronteras
+## Limite actual
 
-- Una empresa equivale a una marca; no existen sucursales.
-- Ningún módulo puede leer o modificar información de otra empresa.
-- Evolution API es un adaptador de WhatsApp, no una autoridad del negocio.
-- SPORTEX no utiliza n8n; Evolution API se conecta directamente con el Core.
-- Los cambios de fase se realizan mediante comandos validados por el Core.
-- Pagos, aprobaciones, compras, producción y envíos conservan evidencia y auditoría.
-- Toda transferencia de responsabilidad puede generar un documento versionado.
+El proyecto usa `PILOTO_DELTA` en lugar de un STAGING separado. Esto no reduce
+los controles: mientras Delta valida, el sistema puede manejar datos reales y
+se trata como produccion restringida. Ninguna accion remota queda autorizada
+por leer este documento.
+
+Los nombres tecnicos heredados que contienen `staging` son artefactos de la
+implementacion de julio de 2026. No definen el entorno objetivo y solo pueden
+renombrarse o reutilizarse dentro de una tarea de migracion aprobada.
 
 ## Estado honesto
 
-Estados documentales permitidos:
-
-- `NO_INICIADO`;
-- `EN_DEFINICION`;
-- `EN_PROGRESO`;
-- `IMPLEMENTADO_NO_VALIDADO`;
-- `PENDIENTE_EVIDENCIA`;
-- `PENDIENTE_DOCUMENTACION`;
-- `BLOQUEADO`;
-- `CERTIFICADO_STAGING`;
-- `OPERATIVO_PRODUCCION`.
-
-## Validación
-
-Desde la raíz `sportex/`:
-
-```powershell
-npm run validate-docs
-```
-
-El validador debe pasar antes de cerrar una tarea documental.
+`IMPLEMENTADO_NO_VALIDADO`, `PENDIENTE_EVIDENCIA`, `BLOQUEADO`,
+`CERTIFICADO_PILOTO` y `OPERATIVO_COMERCIAL` no son equivalentes. El runtime se
+observa; no se declara manualmente desde la documentacion.

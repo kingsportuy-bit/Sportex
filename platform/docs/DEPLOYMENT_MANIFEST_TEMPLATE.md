@@ -1,103 +1,63 @@
-# Plantilla de manifiesto de despliegue SPORTEX
+# Plantilla de manifiesto de deployment SPORTEX
 
 ## Identidad
 
-- `release_id`:
-- `task_id`:
-- `entorno`: `STAGING | PRODUCCION`;
-- `estado`: `planned`;
-- `solicitado_por`:
-- `aprobado_por`:
-- `ventana`:
+- task_id:
+- entorno: `PILOTO_DELTA | PRODUCCION_COMERCIAL`
+- source_commit:
+- branch:
+- scope_paths:
+- artifact_reference:
+- artifact_sha256_o_digest:
+- approval_exacta:
+- operador:
+- inicio_utc:
+- fin_utc:
 
-## Fuente
+## Runtime previo
 
-- repositorio:
-- rama:
-- commit remoto:
-- árbol limpio verificado:
-- alcance/paths:
+- version observada:
+- servicios y replicas:
+- dependencias:
+- dominio/rutas:
+- estado de datos:
 
-## Artefactos
+## Preflight
 
-- servicio:
-- imagen:
-- digest:
-- fecha de build:
-- dependencias o SBOM:
+- tests:
+- capacidad:
+- secretos sin exponer:
+- backup/checkpoint:
+- rollback ensayado:
+- criterio de detencion:
 
-## Base y archivos
+## Cambios
 
-- instancia Supabase:
-- prefijo/catálogo permitido:
-- rol de base:
-- versión de esquema inicial:
+- componentes:
 - migraciones:
-- checksums:
-- backup/snapshot previo:
-- restauración probada:
-- buckets afectados:
+- variables/configuracion:
+- webhooks/mensajeria:
+- datos reales afectados:
 
-## Infraestructura
+## Observacion posterior
 
-- servicios y réplicas:
-- redes:
-- volúmenes:
-- dominios y routers:
-- nombres de secretos requeridos, sin valores:
-- límites CPU/RAM:
-
-## Gates previos
-
-- [ ] capacidad del host aprobada;
-- [ ] tarea y entorno autorizados;
-- [ ] commit remoto y digest verificados;
-- [ ] migraciones ensayadas;
-- [ ] backup y rollback disponibles;
-- [ ] seguridad y aislamiento verificados;
-- [ ] observabilidad activa;
-- [ ] Evolution correcto para el entorno;
-
-## Ejecución
-
-Registrar hora, actor, acción, resultado y evidencia por cada paso, sin secretos.
-
-## Validación
-
-- health:
-- readiness:
-- migraciones:
-- aislamiento multitenant:
-- autenticación y permisos:
-- Core y workers:
-- outbox:
-- WhatsApp/Evolution:
-- frontend escritorio/móvil:
-- logs, métricas y alertas:
-
-## Producción
-
-- autorización explícita de Fito:
-- digest idéntico al certificado en STAGING:
-- freeze legado:
-- delta y reconciliación:
-- cambio Traefik:
-- ventana de observación:
+- version observada:
+- servicios y replicas:
+- logs:
+- smoke tecnico:
+- recorrido de negocio:
+- drift:
 
 ## Rollback
 
-- disparadores:
-- imagen/servicio anterior:
-- router anterior:
-- snapshot a restaurar:
-- tratamiento del delta:
-- resultado del ensayo o ejecución:
+- version objetivo:
+- procedimiento:
+- datos:
+- resultado si se ejecuto:
 
 ## Cierre
 
-- versión observada en runtime:
-- resultado final:
-- alertas pendientes:
+- estado: `PENDIENTE_EVIDENCIA | CERTIFICADO_PILOTO | OPERATIVO_COMERCIAL | ROLLED_BACK | BLOQUEADO`
 - evidencia:
-- documentación actualizada:
-- aprobado por:
+- deuda restante:
+- siguiente accion:

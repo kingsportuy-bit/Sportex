@@ -59,7 +59,7 @@ Requieren permiso, evidencia, confirmación y auditoría:
 - deduplicar eventos;
 - cuarentena para origen desconocido;
 - outbound mediante outbox;
-- allowlist en staging;
+- destinos y outbound explicitamente autorizados en `PILOTO_DELTA`;
 - sanitizar contenido antes de logs;
 - impedir que texto del cliente ejecute instrucciones del sistema.
 
@@ -91,9 +91,9 @@ No registrar sus valores. La remediación exige una tarea de incidente controlad
 - catálogos, roles, grants, RLS, migraciones y buckets separados por entorno dentro de Supabase compartido;
 - service role global prohibida en frontend y operaciones normales;
 - secretos fuera de imagen, Git y manifiestos;
-- producción requiere autorización explícita;
-- migraciones verifican RLS y aislamiento antes del cutover;
-- no conectar Evolution producción hasta que el Core y rollback estén listos;
+- `PILOTO_DELTA` requiere autorizacion explicita para cada operacion real;
+- migraciones verifican RLS y aislamiento antes de tocar datos reales;
+- no conectar Evolution real hasta que el Core y rollback esten listos;
 - no retirar el legado hasta cerrar observación y restauración.
 
 ## Auditoría

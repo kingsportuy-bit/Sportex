@@ -1,26 +1,17 @@
 # Registro de errores y fricciones SPORTEX
 
-Registrar problemas que obliguen a cambiar el método de trabajo.
+Un error se registra cuando obliga a cambiar metodo, herramienta, sintaxis,
+arquitectura o guardia. El objetivo es no pagar dos veces el mismo aprendizaje.
 
-## Plantilla
+## Flujo
 
-```text
-ID:
-Fecha:
-Síntoma:
-Causa:
-Solución:
-Prevención:
-Archivos o módulos afectados:
-```
+1. Antes de una accion riesgosa, ejecutar un preflight focal:
+   `powershell -File scripts/codex-preflight-errors.ps1 <palabras>`.
+2. Si un problema nuevo cambia el metodo, registrarlo con
+   `scripts/codex-register-error.ps1`.
+3. Agregar causa confirmada o claramente marcada como pendiente.
+4. Registrar solucion y prevencion/guardia verificable.
+5. Regenerar y validar la documentacion.
 
-## Entradas
-
-### SPX-ERR-20260719-001 — gate de capacidad VPS
-
-- Fecha: 2026-07-19.
-- Síntoma: carga aproximada 8 sobre 4 vCPU, Docker sobre 160 % de CPU y swap 2/2 GiB.
-- Causa observada: `supabase_vector` y `supabase_staging_vector` alternan continuamente entre dejar y volver a observar logs con registros dañados; Docker también registra errores de decodificación con NUL.
-- Solución propuesta: reiniciar solamente ambos collectors, medir nuevamente y escalar a una corrección de configuración si el bucle regresa.
-- Prevención: gate de capacidad obligatorio antes de cada despliegue y alertas sobre CPU de Docker/Vector.
-- Alcance: infraestructura compartida; reinicio pendiente de autorización explícita porque excede SPORTEX.
+Las entradas viven en `docs/errors/entries/`; `docs/errors/index.json` es
+generado y no se edita.

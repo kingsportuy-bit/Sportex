@@ -1,5 +1,9 @@
 # Análisis de la estructura documental de BARBEROX para SPORTEX
 
+> HISTORICO. Este analisis inicial fue superado por TASK-20260801-001. No usar
+> sus estados ni recomendaciones como verdad vigente; consultar
+> `docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md`.
+
 Fecha del análisis: 2026-07-19.
 
 Origen analizado: `C:\Users\Fito\Documents\CODEX\BARBEROX`.

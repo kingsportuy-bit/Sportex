@@ -4,6 +4,11 @@ id: TASK-20260719-005
 owner: Codex
 requester: Fito
 estado: done
+lifecycle: closed
+work_type: documentacion
+campaign: none
+context_focus: architecture
+development_guide_impact: none
 
 ## objetivo
 
@@ -49,5 +54,14 @@ Reemplazar la decisión de stacks Supabase dedicados por el uso controlado de la
 
 ## evidencia
 
+## rollback
+
+Las decisiones se conservan en Git; cambios fisicos requieren una tarea de
+migracion con backup y rollback propios.
+
+## deuda_restante
+
+Los namespaces heredados deben reconciliarse con `PILOTO_DELTA` antes de una
+nueva migracion.
 - `docs/evidencias/TASK-20260719-005_SUPABASE_COMPARTIDO_PREFIJOS.md`;
 - `npm run validate-docs`: PASS.

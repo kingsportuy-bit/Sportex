@@ -2,81 +2,70 @@
 
 ## Objetivo
 
-La documentación es parte del sistema. Define responsabilidades y permite que una IA o equipo retome el proyecto sin reconstruir decisiones desde conversaciones sueltas.
+La documentacion es parte ejecutable del sistema de desarrollo. Debe permitir
+retomar SPORTEX sin reconstruir decisiones desde conversaciones sueltas.
 
-## Jerarquía
+## Fuente canonica y vistas
 
-Ante contradicciones se aplica este orden:
+- `docs/state/PROJECT_STATE.json`: estado de trabajo canonico.
+- `docs/state/DOCUMENT_REGISTRY.json`: clasificacion, autoridad y router.
+- `docs/TASKS/{active,queued,closed}`: contratos de trabajo.
+- `docs/SESSION_STATE.md`, `docs/TASKS/INDEX.md` y
+  `docs/generated/CURRENT_CONTEXT.md`: vistas generadas; no se editan.
+- Git: codigo, contratos y evidencia versionada.
+- Observacion runtime: unica fuente para afirmar que un servicio esta activo.
 
-1. `INICIAL.md`;
-2. `ENVIRONMENTS_CONTRACT.md`;
-3. `BIBLIA_SPORTEX.md`;
-4. `BUSINESS.md`;
-5. `ARCHITECTURE.md`;
-6. contratos transversales del Core, multitenancy, seguridad, WhatsApp y observabilidad;
-7. ficha del módulo, capa o superficie;
-8. tarea activa;
-9. evidencia;
-10. histórico.
+## Jerarquia
 
-Una tarea no puede contradecir un contrato rector. Un documento histórico nunca modifica el comportamiento vigente.
+Ante contradicciones:
 
-## Clases de documentos
+1. autorizacion puntual de Fito para la operacion exacta;
+2. `INICIAL.md` y `ENVIRONMENTS_CONTRACT.md`;
+3. `BIBLIA_SPORTEX.md`, `BUSINESS.md` y `ARCHITECTURE.md`;
+4. contratos transversales;
+5. contrato y ficha del modulo, capa o superficie;
+6. tarea activa;
+7. evidencia ligada a version y entorno;
+8. historico.
 
-### Rectores
+Una tarea no puede contradecir un contrato rector. Una evidencia vieja no
+describe el runtime actual. El historico nunca gobierna trabajo nuevo.
 
-Definen producto, negocio, arquitectura, seguridad, entornos y contratos permanentes.
+## Clases
 
-### Biblioteca
+- **Rectores**: producto, negocio, arquitectura, seguridad y entornos.
+- **Contratos**: entradas, salidas, permisos, datos, efectos y rollback.
+- **Biblioteca**: indice de owners por modulo, capa y superficie.
+- **Tareas**: objetivo temporal, alcance, validacion y evidencia.
+- **Estado**: JSON canonico y vistas generadas.
+- **Evidencia**: resultados reproducibles ligados a commit y entorno.
+- **Historico**: decisiones reemplazadas o trabajo cerrado.
 
-Indexa capas, módulos y superficies. Cada ficha declara responsabilidad, owner, entradas, salidas, persistencia, auditoría, efectos, tests, evidencia y rollback.
-
-### Tareas
-
-Definen un resultado concreto con alcance permitido y prohibido. Solamente puede existir una tarea ejecutable.
-
-### Evidencias
-
-Prueban decisiones, validaciones y resultados. No reemplazan contratos.
-
-### Generados
-
-Artefactos producidos automáticamente. No se editan manualmente.
-
-### Históricos
-
-Documentos reemplazados o cerrados. Deben conservar índice, motivo y reemplazo vigente.
-
-## Flujo de trabajo
+## Flujo
 
 ```text
-INICIAL
-  -> SESSION_STATE
-  -> tarea activa
-  -> biblioteca
-  -> contratos afectados
-  -> implementación
-  -> validación
-  -> evidencia
-  -> actualización documental
-  -> cierre de tarea
+pedido de DELTA -> decision de producto -> task SPORTEX -> evidencia -> rama
+-> implementacion -> tests -> autorizacion remota -> release inmutable
+-> observacion -> cierre -> siguiente task
 ```
 
-## Regla para SESSION_STATE
-
-`SESSION_STATE.md` es una fotografía corta del estado actual, no una bitácora acumulativa. Debe contener modo, objetivo, tarea, decisiones, archivos relevantes, evidencia, bloqueos y siguiente paso.
-
-Los cambios cerrados van a `CHANGELOG.md`; el detalle de alcance va a la tarea; la evidencia va a `evidencias/`.
+DELTA administra prioridades y acepta resultados. No mantiene una copia de la
+verdad tecnica de SPORTEX.
 
 ## Salud documental
 
-La documentación está sana cuando:
+La documentacion esta sana cuando:
 
-- existe una entrada única;
-- hay como máximo una tarea ejecutable;
-- cada módulo está indexado;
-- cada responsabilidad tiene owner;
-- contratos, tarea y estado coinciden;
-- no hay NUL, BOM, mojibake ni referencias rotas;
-- el estado declarado tiene evidencia correspondiente;
-- el histórico no se usa como fuente operativa.
+- existe una entrada unica y una tarea activa como maximo;
+- estado, tarea y vistas generadas coinciden;
+- cada documento tiene owner, autoridad e intenciones de lectura;
+- cada modulo tiene contrato comun, tests, evidencia y rollback;
+- no hay NUL, BOM, mojibake ni referencias locales rotas;
+- la guia maestra cambia junto con el sistema de desarrollo;
+- los estados declarados no exceden la evidencia disponible.
+
+## Presupuesto de contexto
+
+El router carga solo documentos relevantes. Los presupuestos viven en
+`state/DOCUMENT_REGISTRY.json`; ampliarlos requiere una tarea documental y una
+justificacion. Historia y tareas cerradas se consultan de forma focal.

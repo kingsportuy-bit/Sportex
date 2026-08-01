@@ -2,38 +2,51 @@
 
 ## DOCUMENTACION
 
-Define producto y contratos. No ejecuta código ni usa servicios reales.
+Define producto, contratos, tareas y gobernanza. No autoriza runtime, mensajes,
+migraciones ni cambios remotos.
 
-## DESARROLLO
+## DESARROLLO_LOCAL
 
-Implementación local con datos ficticios. Puede cambiar agresivamente mientras preserve pruebas y rollback local.
+Implementacion y pruebas en la computadora o entornos efimeros, con fixtures y
+datos ficticios. No usa secretos, webhooks, numeros ni bases reales.
 
-## STAGING
+## PILOTO_DELTA
 
-Entorno aislado para integraciones, migraciones y certificación. Debe usar empresas, números, credenciales y datos de prueba explícitos.
+Unico entorno real mientras Delta construye y valida SPORTEX antes de ofrecerlo
+al mercado. Puede contener datos y operaciones reales de Delta, por lo que se
+gobierna como produccion restringida:
 
-- stack de aplicación: `sportex_staging`;
-- Supabase compartido, catálogo permitido: `sportex_staging_*`;
-- rol y buckets exclusivos de STAGING;
-- red privada: `sportex_staging_net`;
-- Evolution STAGING y allowlist obligatoria.
+- acceso minimo y auditable;
+- secretos fuera de Git;
+- backup y rollback antes de migraciones;
+- mensajeria real solo con alcance y permiso explicitos;
+- release desde commit remoto y artefacto inmutable;
+- observacion posterior y evidencia ligada al deployment;
+- cambios reversibles y sin mezclar datos de otras marcas.
 
-## PRODUCCION
+No existe un STAGING permanente separado. Los recursos con nombres
+`sportex_staging_*` son transitorios heredados y no se renombran, eliminan ni
+promueven sin una tarea de migracion.
 
-Atiende empresas y conversaciones reales. Requiere autorización explícita de Fito, tarea aprobada, cambio mínimo, evidencia, observabilidad y rollback.
+## PRODUCCION_COMERCIAL
 
-- stack de aplicación nuevo: `sportex_prod`;
-- Supabase compartido, catálogo permitido: `sports_*`;
-- rol y buckets exclusivos de producción;
-- red privada: `sportex_prod_net`;
-- Evolution producción solo durante un cutover aprobado.
+Estado futuro en el que SPORTEX admite empresas externas. Permanece bloqueado
+hasta que Delta valide el piloto y Fito otorgue un GO especifico de salida al
+mercado. Requiere como minimo:
+
+- alcance comercial y soporte definidos;
+- seguridad, aislamiento multitenant y recuperacion certificados;
+- migracion y rollback ensayados;
+- observabilidad y respuesta a incidentes;
+- release exacto certificado en `PILOTO_DELTA`;
+- decision explicita sobre datos, dominio, WhatsApp y facturacion.
 
 ## Reglas transversales
 
-- Un entorno no comparte base, secretos, colas ni webhooks con otro.
-- Un tenant de prueba no representa un entorno.
-- Ningún dato productivo se usa en desarrollo o staging sin autorización y procedimiento documentado.
-- Los envíos de WhatsApp de staging requieren allowlist.
-- Las certificaciones pertenecen a una versión y entorno concretos.
-- STAGING y producción comparten plataforma Supabase, pero no tablas, roles de aplicación, políticas, buckets ni migraciones.
-- Todo despliegue sigue `DEPLOYMENT_PROTOCOL.md`.
+- Un tenant no representa un entorno.
+- Desarrollo local no se conecta a datos reales.
+- Una prueba exitosa no autoriza despliegue ni envios.
+- La documentacion no inventa runtime: se verifica contra infraestructura.
+- Todo cambio remoto requiere tarea, version, alcance, preflight, permiso,
+  rollback y evidencia.
+- Los secretos nunca se guardan en tareas, evidencias, memoria ni Git.

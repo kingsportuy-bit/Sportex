@@ -4,6 +4,8 @@
 
 Esta biblioteca es el índice operativo para encontrar el contrato correcto antes de modificar SPORTEX.
 
+Todas las fichas heredan `MODULE_COMMON_CONTRACT.md`.
+
 ## Uso
 
 1. Leer `../INICIAL.md`.
@@ -73,4 +75,6 @@ Esta biblioteca es el índice operativo para encontrar el contrato correcto ante
 
 ## Regla de estado
 
-Una ficha `NO_INICIADO` define responsabilidad objetivo, pero no prueba implementación. `CERTIFICADO_STAGING` exige evidencia vinculada a una versión concreta.
+Una ficha `NO_INICIADO` define responsabilidad objetivo, pero no prueba
+implementacion. `CERTIFICADO_PILOTO` exige evidencia de `PILOTO_DELTA` ligada a
+una version concreta. `OPERATIVO_COMERCIAL` agrega un gate independiente.

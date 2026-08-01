@@ -1,114 +1,77 @@
 # Roadmap SPORTEX
 
-## F0 - Fundación documental
+Los estados son documentales; no reemplazan evidencia de runtime.
+
+## F0 - Sistema de desarrollo
 
 Estado: `COMPLETADO`.
 
-- documentos rectores;
-- biblioteca modular;
-- tareas formales;
-- validador documental.
+- proyecto Git independiente;
+- estado canonico y vistas generadas;
+- tareas con ciclo de vida;
+- Biblioteca, validadores y release governance;
+- interfaz de producto DELTA -> SPORTEX.
 
-## F0.1 - Entorno e infraestructura
+## F1 - Reconciliacion del sistema existente
 
-Estado: `COMPLETADO`.
+Estado: `PENDIENTE_REVALIDACION`.
 
-- repositorio Git existente y acceso read-only verificados;
-- VPS compartido con BARBEROX verificado;
-- aislamiento obligatorio de los servicios SPORTEX;
-- Supabase autoalojado adoptado como persistencia;
-- Evolution API adoptada como integracion directa de WhatsApp;
-- n8n retirado de la arquitectura activa;
-- contratos de infraestructura, Git, Supabase y Evolution documentados;
-- runtime legado del VPS inventariado como operativo no certificado.
-
-## F0.2 - Separación de datos y protocolo de despliegue
-
-Estado: `CONTRATO_COMPLETADO`.
-
-- Supabase compartido con prefijos, roles, RLS y migraciones por entorno;
-- legado `sportex_*`, STAGING `sportex_staging_*`, producción `sports_*`;
-- protocolo STAGING y producción definido;
-- reemplazo paralelo del legado y rollback definidos;
-- rotación de secretos legado pendiente.
-
-## F1 - Auditoría del SPORTEX anterior
-
-Estado: `NO_INICIADO`.
-
-- inventario funcional;
-- lógica en frontend;
-- tablas y relaciones;
-- componentes reutilizables;
-- deuda de seguridad y aislamiento;
-- plan de extracción.
+- monolito legado y runtime;
+- Core/frontend nuevos bajo `platform/`;
+- contratos y evidencia de julio de 2026;
+- deuda de seguridad;
+- decision de migracion y retiro reversible.
 
 ## F2 - Kernel del Core
 
-Estado: `EN_PROGRESO`.
+Estado: `IMPLEMENTADO_NO_VALIDADO`.
 
-- empresa/tenant;
-- identidad y permisos;
-- comandos y eventos;
-- idempotencia;
-- auditoría;
-- outbox y workers;
-- observabilidad.
+- tenant, identidad y capacidades;
+- idempotencia, auditoria y outbox;
+- clientes, senas certificadas y pedido inicial;
+- persistencia real y autenticacion pendientes de replanificacion.
 
-Primera vertical local completada: tenant, capacidades, idempotencia, auditoría, outbox, clientes y API base. Persistencia real y STAGING pendientes.
-
-## F3 - WhatsApp en modo propuesta
+## F3 - Leads y WhatsApp
 
 Estado: `NO_INICIADO`.
 
-- ingreso normalizado;
-- vinculación cliente/conversación;
-- interpretación IA;
-- evidencia y confianza;
-- aprobación humana;
-- sin mutaciones críticas automáticas.
+- ingreso durable desde Evolution;
+- cliente, conversacion y fuente de anuncio;
+- IA en modo propuesta;
+- seguimiento de no respuesta y resultado comercial;
+- outbound controlado y takeover humano.
 
-## F4 - Seña certificada y nuevo pedido
+## F4 - Pedido comercial completo
 
-Estado: `EN_PROGRESO_LOCAL`.
+Estado: `EN_DEFINICION`.
 
-- pagos;
-- `nuevo_pedido`;
-- costos estimados;
-- proceso y trabajos;
-- planilla proyectada;
-- documentos pendientes;
-- notificaciones.
+- productos, talles, precios y pagos;
+- costos, procesos, trabajos y documentos;
+- fechas, responsables, incidencias y notificaciones.
 
-Certificación manual de seña y creación inicial de pedido implementadas. Costos, proceso, trabajos, documentos y notificaciones quedan pendientes.
-
-## F5 - Producción Delta
+## F5 - Operacion Delta
 
 Estado: `NO_INICIADO`.
 
-- diseño;
-- impresión y compras;
-- talleres;
-- envío;
-- fichas por etapa;
-- cierre y postventa.
+- diseno, impresion/compras, talleres, envio y postventa;
+- fichas versionadas por transferencia;
+- permisos, metricas y auditoria.
 
-## F6 - Piloto STAGING Delta
+## F6 - PILOTO_DELTA
 
-Estado: `NO_INICIADO`.
+Estado: `BLOQUEADO_POR_REPLANIFICACION`.
 
-- migración controlada;
+- runtime e infraestructura revalidados;
+- migracion y rollback;
 - uso real supervisado;
-- métricas y correcciones;
-- rollback;
-- certificación.
+- observabilidad, seguridad y recuperacion;
+- validacion funcional de Delta.
 
-## F7 - Producto multitenant
+## F7 - PRODUCCION_COMERCIAL
 
-Estado: `NO_INICIADO`.
+Estado: `BLOQUEADO`.
 
 - onboarding de marcas;
-- configuración de procesos;
-- roles y planes;
 - aislamiento certificado;
-- operación y soporte.
+- configuracion, planes, soporte e incidentes;
+- GO especifico de salida al mercado.

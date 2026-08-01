@@ -4,6 +4,11 @@ id: TASK-20260719-006
 owner: Codex
 requester: Fito
 estado: done
+lifecycle: closed
+work_type: feature
+campaign: none
+context_focus: architecture
+development_guide_impact: none
 
 ## objetivo
 
@@ -58,5 +63,13 @@ Implementar localmente la primera vertical del nuevo Core SPORTEX: contexto mult
 
 ## evidencia
 
+## rollback
+
+La implementacion queda aislada en `platform/` y versionada; el runtime legado
+no fue reemplazado por esta tarea.
+
+## deuda_restante
+
+Revalidar contratos y comportamiento antes de continuar el Core.
 - `docs/evidencias/TASK-20260719-006_PRIMER_CORE_VERTICAL.md`;
 - validación local completa PASS.

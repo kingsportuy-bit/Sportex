@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-01",
+  "entries": [
+    {
+      "id": "SPX-ERR-20260719-001",
+      "title": "Gate de capacidad VPS",
+      "path": "docs/errors/entries/SPX-ERR-20260719-001-gate-capacidad-vps.md",
+      "searchText": "# spx-err-20260719-001 - gate de capacidad vps\n\n- fecha: 2026-07-19.\n- sintoma: carga aproximada 8 sobre 4 vcpu, docker sobre 160 por ciento de cpu y swap 2/2 gib.\n- causa raiz observada: `supabase_vector` y `supabase_staging_vector` alternaban entre dejar y volver a observar logs con registros danados; docker tambien informaba errores de decodificacion con nul.\n- solucion propuesta: reiniciar solamente ambos collectors con autorizacion, medir de nuevo y corregir configuracion si el bucle regresa.\n- prevencion/guardia: gate de capacidad obligatorio antes de cada despliegue y alertas sobre cpu de docker/vector.\n- alcance: infraestructura compartida; toda mutacion requiere revalidacion y permiso explicito.\n"
+    },
+    {
+      "id": "SPX-ERR-20260801-001",
+      "title": "Guidance mutaba la vista de contexto",
+      "path": "docs/errors/entries/SPX-ERR-20260801-001-guidance-mutaba-vista.md",
+      "searchText": "# spx-err-20260801-001 - guidance mutaba la vista de contexto\n\n- fecha: 2026-08-01.\n- sintoma: `generate-docs` terminaba en pass, pero la siguiente validacion informaba `current_context.md is stale`.\n- causa raiz: el modo `--print-context` escribia las vistas generadas con la intencion temporal `guidance` en lugar de limitarse a imprimir.\n- solucion: separar la salida de consulta de la escritura; `--print-context` ya no modifica archivos.\n- prevencion/guardia: la validacion ejecuta una consulta guidance y vuelve a comprobar que las vistas persistidas siguen idempotentes.\n- alcance: sistema documental sportex; no afecto runtime ni codigo de negocio.\n"
+    }
+  ]
+}

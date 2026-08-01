@@ -1,51 +1,35 @@
 # Contrato Git y releases SPORTEX
 
-## Repositorio
+## Fuente canonica
 
-Se reutilizará `https://github.com/kingsportuy-bit/sportex.git`, preservando su historial.
+El repositorio Git remoto es la fuente de codigo y contratos. Un worktree es
+una carpeta del mismo repositorio; una copia manual no crea una segunda verdad.
 
-El checkout del VPS está en la rama local `master`, en el mismo commit que `origin/main`, mientras `origin/master` quedó atrás. La tarea de integración deberá normalizar esta situación mediante una rama nueva y revisión explícita, nunca con force-push.
+## Reglas
 
-## Incorporación de la nueva base
+- Cada cambio material pertenece a una tarea y rama identificables.
+- No se borran ni revierten cambios ajenos para limpiar un worktree.
+- El siguiente ID de tarea se obtiene con `npm run task:next-id`.
+- Antes de abrir trabajo, `npm run task:doctor` muestra ramas y worktrees.
+- Un release usa un commit remoto y un scope explicito.
+- El artefacto se construye desde `git archive` o mecanismo equivalente del
+  commit aprobado, nunca desde archivos locales sueltos.
+- Evidencia, migraciones y rollback pertenecen a esa misma version.
 
-La carpeta documental nueva no se mezclará mediante copia ciega sobre `main`.
+## Ramas actuales
 
-La tarea de migración deberá:
+La rama de gobernanza nace de `sportex-task007-staging` para preservar el Core
+y frontend ya versionados. El nombre historico de esa rama no define el entorno
+objetivo.
 
-1. partir del commit remoto vigente;
-2. crear una rama de reconstrucción;
-3. inventariar el código anterior;
-4. incorporar la nueva documentación;
-5. conservar lo reutilizable y aislar lo legacy;
-6. validar antes de integrar a `main`;
-7. documentar rollback.
-
-Quedan prohibidos force-push, reescritura de historial y reemplazo destructivo del checkout anterior.
-
-## Commits
-
-Cada commit debe corresponder a una tarea y alcance revisable. Cambios ajenos se conservan y no se mezclan silenciosamente.
+La integracion a `main` se decide en una tarea propia despues de revisar el
+alcance y no implica deploy automatico.
 
 ## Release
 
-Un release requiere:
+`scripts/release-governance-guard.ps1` verifica commit, remoto, scope, limpieza
+y la aprobacion exacta de Fito. `scripts/new-release-bundle.ps1` crea un bundle
+inmutable. Ninguno despliega por si mismo.
 
-- tarea aprobada;
-- commit remoto;
-- entorno;
-- imagen o artefacto inmutable;
-- migraciones;
-- validaciones;
-- evidencia observada;
-- rollback;
-- actualización documental.
-
-El manifiesto y los gates operativos se definen en `DEPLOYMENT_PROTOCOL.md`.
-
-Un build local, healthcheck o imagen sin despliegue observado no certifican un release.
-
-## Promoción
-
-STAGING y producción son despliegues distintos. La evidencia no se hereda entre versiones ni entornos.
-
-Producción usa exactamente el digest certificado en STAGING y requiere autorización explícita nueva.
+`PILOTO_DELTA` y `PRODUCCION_COMERCIAL` son gates distintos. La evidencia del
+piloto puede ser requisito, pero nunca permiso automatico para salir al mercado.

@@ -4,6 +4,11 @@ id: TASK-20260719-001
 owner: Codex
 requester: Fito
 estado: done
+lifecycle: closed
+work_type: documentacion
+campaign: none
+context_focus: documentation
+development_guide_impact: none
 
 ## objetivo
 
@@ -48,5 +53,13 @@ Crear una base documental profesional y validable para reconstruir SPORTEX como 
 
 ## evidencia
 
+## rollback
+
+La fundacion queda preservada en Git; cualquier reemplazo debe ser aditivo y
+conservar sus tareas y evidencias.
+
+## deuda_restante
+
+Absorbida por la migracion de gobernanza de agosto de 2026.
 - `docs/evidencias/TASK-20260719-001_FUNDACION_DOCUMENTAL.md`.
 - `npm run validate-docs`: PASS con 30 documentos requeridos, 16 módulos y 1 tarea.

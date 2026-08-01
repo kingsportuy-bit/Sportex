@@ -147,7 +147,7 @@ Registra eventos autorizados pendientes. En esta vertical se publica `order.crea
 - `payment.certified` para auditoría interna;
 - `order.created` en outbox.
 
-## Tablas STAGING v1
+## Tablas transitorias preparadas en julio de 2026
 
 - `sportex_staging_tenants`;
 - `sportex_staging_memberships`;
@@ -158,4 +158,6 @@ Registra eventos autorizados pendientes. En esta vertical se publica `order.crea
 - `sportex_staging_audit_events`;
 - `sportex_staging_outbox`.
 
-Todas usan RLS forzado. Ninguna migración de esta versión crea o altera tablas `sportex_*` legado o `sports_*` de producción.
+La migracion estatica declara RLS forzado y no crea ni altera `sportex_*` o
+`sports_*`. Su nombre `sportex_staging_*` es historico; no debe ejecutarse ni
+tratarse como esquema objetivo hasta que una tarea de `PILOTO_DELTA` la revise.

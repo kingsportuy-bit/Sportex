@@ -4,6 +4,11 @@ id: TASK-20260719-003
 owner: Codex
 requester: Fito
 estado: done
+lifecycle: closed
+work_type: operacion
+campaign: none
+context_focus: runtime
+development_guide_impact: none
 
 ## objetivo
 
@@ -51,5 +56,12 @@ Verificar como `root`, en modo read-only, el directorio y los servicios SPORTEX 
 
 ## evidencia
 
+## rollback
+
+Auditoria read-only; no modifico el runtime observado.
+
+## deuda_restante
+
+El baseline es historico y debe refrescarse antes de cualquier decision actual.
 - `docs/evidencias/TASK-20260719-003_RUNTIME_LEGADO_VPS.md`;
 - `docs/CURRENT_RUNTIME_BASELINE.md`.

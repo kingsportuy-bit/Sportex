@@ -18,7 +18,7 @@ Eventos normalizados y resultados verificables del proveedor.
 - Deduplicar por evento del proveedor.
 - No certificar pagos ni mover fases.
 - No registrar contenido sensible en logs.
-- Staging usa allowlist.
+- `PILOTO_DELTA` usa destinos y outbound explicitamente autorizados.
 
 ## Contratos
 

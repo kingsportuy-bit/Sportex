@@ -58,4 +58,5 @@ EN_DEFINICION.
 
 ## Cierre documental
 
-Requiere almacenamiento elegido, primer contrato API y ficha de taller integrada en STAGING.
+Requiere almacenamiento elegido, primer contrato API y ficha de taller
+integrada en el piloto.

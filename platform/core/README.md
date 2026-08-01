@@ -11,7 +11,7 @@ La primera vertical disponible incluye:
 - creación idempotente de pedido;
 - auditoría y outbox transaccionales;
 - adaptadores in-memory y PostgreSQL;
-- migración STAGING con RLS forzado;
+- migracion transitoria de julio de 2026 con RLS forzado;
 - API, health, readiness y correlación;
 - autenticación Supabase mediante token Bearer y membresía tenant-aware;
 - frontend estático servido sin acceso directo a base.
@@ -22,6 +22,9 @@ Validación local:
 npm run validate
 ```
 
-No está desplegado ni certificado en STAGING. Development/test conserva headers explícitos; STAGING exige Supabase Auth y membresía activa.
+No esta certificado en `PILOTO_DELTA`. Development/test conserva headers
+explicitos; el codigo todavia usa nombres tecnicos STAGING que deben
+replanificarse antes de cualquier despliegue real. El piloto exige Supabase Auth
+y membresia activa.
 
 Ver `../docs/DOMAIN_MODEL_V1.md`, `../docs/API_CONTRACT_V1.md` y la tarea activa.

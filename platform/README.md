@@ -1,52 +1,66 @@
-# SPORTEX
+# SPORTEX Platform
 
-Reinicio estructural del sistema de gestión para empresas de indumentaria deportiva.
+Sistema operativo y comercial multitenant para marcas de indumentaria
+deportiva. Delta Sport es el piloto de producto.
 
-## Estado actual
+## Proyecto autoritativo
 
-- Fundación documental y modular creada.
-- Runtime legado operativo en `sportex.codexa.uy` y preservado sin cambios.
-- Nuevo Core, autenticación Supabase y frontend operativo implementados localmente en `TASK-20260719-007`.
-- No se copió código del SPORTEX anterior dentro del nuevo Core.
-- No se modificó BARBEROX.
-- Entorno objetivo: VPS compartido con BARBEROX, Supabase autoalojado y Evolution API directa.
-- Supabase objetivo: instancia actual compartida, con `sportex_staging_*` para STAGING y `sports_*` para producción.
-- n8n no forma parte de SPORTEX.
+- Worktree de desarrollo: `C:\Users\Fito\Documents\CODEX\SPORTEX`.
+- Proyecto tecnico: `platform/`.
+- Git: repositorio `kingsportuy-bit/sportex`.
+- DELTA administra prioridades y validacion; SPORTEX administra codigo,
+  arquitectura, tareas, releases y evidencia.
 
-## Dirección acordada
+Las carpetas manuales dentro de DELTA no son fuentes paralelas.
 
-- Una empresa equivale a una marca; no se modelan sucursales.
-- El Core concentra reglas, estados, costos, permisos y transiciones.
-- El frontend no contiene lógica de negocio ni escribe directamente en la base.
-- WhatsApp origina señales y propuestas; el Core valida y ejecuta.
-- El sistema se divide en módulos con responsabilidad y contratos explícitos.
-- Cada transferencia entre etapas puede producir una ficha o documento versionado.
+## Inicio para Codex
 
-## Estructura de transición
+```powershell
+cd C:\Users\Fito\Documents\CODEX\SPORTEX\platform
+npm run scan:text
+npm run context -- guidance
+```
 
-El repositorio histórico conserva el monolito anterior en la raíz. La reconstrucción nueva se integra bajo `platform/` durante STAGING para evitar un reemplazo destructivo antes del cutover.
+Leer `docs/INICIAL.md` antes de cambiar el proyecto.
 
-## Documentos iniciales
+## Arquitectura
 
-- `ANALISIS_DOCUMENTACION_BARBEROX.md`: qué conservar y simplificar.
-- `docs/INICIAL.md`: entrada obligatoria.
-- `docs/CURRENT_RUNTIME_BASELINE.md`: estado real del SPORTEX legado en el VPS.
-- `docs/BIBLIA_SPORTEX.md`: visión y principios de producto.
-- `docs/ARCHITECTURE.md`: arquitectura del monolito modular.
-- `docs/biblioteca/README.md`: índice de módulos, capas y superficies.
-- `docs/INFRASTRUCTURE_CONTRACT.md`: VPS y Docker Swarm.
-- `docs/SUPABASE_CONTRACT.md`: base, Auth y Storage autoalojados.
-- `docs/EVOLUTION_CONTRACT.md`: integración WhatsApp directa.
-- `docs/DEPLOYMENT_PROTOCOL.md`: despliegues, migración, cutover y rollback.
-- `docs/DOMAIN_MODEL_V1.md`: entidades, comandos e invariantes de la primera vertical.
-- `docs/API_CONTRACT_V1.md`: endpoints y errores iniciales.
+- `core/`: dominio, aplicacion, permisos, persistencia y API.
+- `frontend/`: superficie sin autoridad de negocio.
+- `docs/`: fuentes rectoras, tareas, Biblioteca y evidencia.
+- `scripts/`: validacion, continuidad y gobernanza de releases.
+- `deploy/`: artefactos heredados/transitorios; no prueban un deployment.
 
-## Validación
+El monolito anterior permanece en la raiz del repositorio como fuente de
+migracion. La plataforma nueva vive bajo `platform/` hasta que una tarea de
+cutover defina otra cosa.
+
+## Entornos
+
+- `DESARROLLO_LOCAL`: fixtures y pruebas sin datos reales.
+- `PILOTO_DELTA`: unico entorno real durante construccion y validacion.
+- `PRODUCCION_COMERCIAL`: bloqueado hasta validacion Delta y GO de Fito.
+
+No hay STAGING permanente separado. Los nombres `staging` existentes en codigo,
+migraciones o deploy son artefactos de julio de 2026 y deben replantearse antes
+de operar.
+
+## Validacion
 
 ```powershell
 npm run validate
 ```
 
-## Próximo paso
+Validaciones focales:
 
-Resolver el gate de capacidad del VPS, ejecutar la migración controlada `sportex_staging_*` y desplegar `sportex-staging.codexa.uy`. Producción continúa fuera de alcance.
+```powershell
+npm run validate-docs:fast
+npm run validate-tasks
+npm run task:doctor
+npm run task:next-id
+```
+
+## Estado
+
+La fuente viva es `docs/state/PROJECT_STATE.json`; `docs/SESSION_STATE.md` y
+`docs/generated/CURRENT_CONTEXT.md` son vistas generadas.

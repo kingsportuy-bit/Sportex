@@ -1,84 +1,56 @@
 # Conexiones SPORTEX
 
-Este documento registra puntos de acceso sin secretos.
+> SNAPSHOT HISTORICO observado el 2026-07-19. Revalidar cada dato antes de
+> operar. Este documento no autoriza accesos ni contiene secretos.
 
 ## Git
 
-- Repositorio existente: `https://github.com/kingsportuy-bit/sportex.git`.
-- Rama verificada: `main`.
-- Commit local/remoto verificado el 2026-07-19: `a62e5edb326c5b54a0d78c03ffed78227610ed77`.
-- Checkout anterior: `C:\Users\Fito\Documents\APP\SPORTEX`.
-- Estado observado: árbol limpio y acceso read-only al remoto confirmado.
+- Repositorio: `https://github.com/kingsportuy-bit/sportex.git`.
+- `main` observado en `a62e5ed` el 2026-07-19.
+- desarrollo nuevo publicado en `sportex-task007-staging`, commit `ea02fc0`.
+- worktree autoritativo actual:
+  `C:\Users\Fito\Documents\CODEX\SPORTEX`.
+- proyecto tecnico: `platform/`.
 
-Checkout desplegado en el VPS:
+Las carpetas copiadas dentro de DELTA no son fuentes paralelas. El nombre
+historico de una rama no define el entorno actual.
 
-- ruta: `/opt/sportex`;
-- rama local: `master`;
-- commit: `a62e5edb326c5b54a0d78c03ffed78227610ed77`;
-- corresponde a `origin/main`; `origin/master` permanece en el commit anterior.
+## VPS y runtime legado
 
-La carpeta nueva `C:\Users\Fito\Documents\CODEX\DELTA\sportex` todavía no es un checkout Git. Su incorporación al repositorio requiere una tarea específica para preservar historial y auditar el código anterior.
+En el snapshot se observo:
 
-## VPS
+- VPS compartido `31.97.28.4`;
+- stack `sportex`, servicio `sportex_sportex`;
+- dominio `https://sportex.codexa.uy`;
+- checkout `/opt/sportex`;
+- imagen mutable `sportex:latest`;
+- controles de seguridad insuficientes documentados en
+  `CURRENT_RUNTIME_BASELINE.md`.
 
-- SSH: `root@31.97.28.4` mediante clave local existente.
-- Hostname verificado: `codexa`.
-- No registrar claves ni contraseñas aquí.
+No se asume que estos datos sigan vigentes. El runtime legado no se reinicia,
+modifica ni retira sin tarea, observacion actual, permiso y rollback.
 
-Runtime SPORTEX legado observado:
+## Supabase/PostgreSQL
 
-- stack: `sportex`;
-- servicio: `sportex_sportex` `1/1`;
-- dominio: `https://sportex.codexa.uy`;
-- red: `codexanet`;
-- imagen: `sportex:latest`;
-- directorio: `/opt/sportex`.
+En julio se observaron una plataforma compartida y tres convenciones:
 
-## Supabase compartido
+- `sportex_*`: legado;
+- `sportex_staging_*`: migracion nueva preparada, no asumida como ejecutada;
+- `sports_*`: propuesta anterior para produccion, no certificada.
 
-Stacks observados:
+La frontera fisica de `PILOTO_DELTA` debe decidirse tras una auditoria actual.
 
-- producción: servicios `supabase_*`;
-- staging: servicios `supabase_staging_*`.
+## Evolution
 
-Servicios de base observados `1/1`:
+Se observaron servicios de Evolution usados por otros entornos y una instancia
+legado `DELTA` sin conexion aprobada para el nuevo Core. La instancia, numero,
+webhook y outbound del piloto siguen pendientes de una tarea propia.
 
-- `supabase_db`;
-- `supabase_staging_db`.
+## Traefik y dominios
 
-Fronteras SPORTEX:
-
-- legado: `public.sportex_*`, fuente de migración y archivo;
-- nuevo STAGING: `public.sportex_staging_*`;
-- nueva producción: `public.sports_*`.
-
-La misma plataforma exige roles, grants, RLS, migraciones, buckets y guardas de entorno explícitos. Compartir instancia no autoriza acceso cruzado.
-
-## Evolution API
-
-Servicios observados `1/1`:
-
-- producción: `evolution_evolution_api`;
-- staging: `evolution_staging_evolution_api`.
-
-Instancias SPORTEX/Delta observadas:
-
-- producción: `DELTA`, estado `close`, sin webhook configurado;
-- staging: ninguna coincidencia SPORTEX/Delta.
-
-Endpoints conocidos del entorno BARBEROX:
-
-- staging: `https://evolution-staging.codexa.uy`;
-- producción: `https://evolutioncodexa.codexa.uy`.
-
-El nuevo SPORTEX usará inicialmente Evolution STAGING. La instancia legado de producción no se modifica ni reutiliza sin autorización separada.
-
-## Traefik
-
-- Servicio observado: `traefik_traefik` `1/1`.
-- Dominio legado observado: `sportex.codexa.uy`.
-- El dominio de STAGING para la reconstrucción queda pendiente.
+Se observo Traefik compartido y el dominio legado `sportex.codexa.uy`. El
+dominio de `PILOTO_DELTA` no se decide desde este snapshot.
 
 ## n8n
 
-SPORTEX no utilizará n8n. No existe conexión ni dependencia objetivo con esa plataforma.
+SPORTEX no utiliza n8n en la arquitectura objetivo.

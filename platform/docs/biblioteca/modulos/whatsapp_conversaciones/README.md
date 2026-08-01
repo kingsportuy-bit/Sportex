@@ -58,4 +58,5 @@ EN_DEFINICION.
 
 ## Cierre documental
 
-Requiere proveedor elegido, contrato de almacenamiento, E2E STAGING y outbound allowlisted.
+Requiere proveedor elegido, contrato de almacenamiento, E2E de `PILOTO_DELTA`
+y outbound explicitamente autorizado.

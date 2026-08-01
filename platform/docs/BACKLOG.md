@@ -1,39 +1,46 @@
 # Backlog SPORTEX
 
+> Cola de producto de alto nivel. El trabajo ejecutable vive en `TASKS/`.
+
+## Gobierno inmediato
+
+- Replanificar TASK-20260719-007 para `PILOTO_DELTA`.
+- Revalidar runtime, VPS, Git remoto, Supabase y Evolution antes de operar.
+- Auditar el monolito anterior y decidir que se reutiliza o retira.
+- Definir la primera tarea vertical posterior a la gobernanza.
+
 ## Producto y negocio
 
-- Definir ficha de venta a diseño.
-- Definir ficha de diseño a impresión.
-- Definir ficha de taller a envío.
-- Definir ficha de cierre.
+- Trazar lead de anuncio -> conversacion WhatsApp -> venta/no respuesta.
+- Definir ficha de venta a diseno.
+- Definir ficha de diseno a impresion/compras.
+- Definir ficha de taller a envio y ficha de cierre.
 - Documentar plantillas de proceso por producto.
 
 ## Core
 
-- Diseñar entidades y modelo de datos.
-- Definir catálogo de comandos y eventos.
-- Diseñar outbox, jobs y reintentos.
-- Diseñar permisos y roles.
-- Definir política de versionado documental.
+- Completar entidades y modelo de datos.
+- Definir catalogo de comandos y eventos.
+- Completar outbox, jobs, reintentos, permisos y roles.
+- Definir versionado documental y auditoria comercial.
 
 ## Integraciones
 
-- Definir mecanismo de certificación de pagos.
-- Definir ingreso de WhatsApp.
-- Definir aprovisionamiento y ciclo de vida de instancias Evolution por empresa y entorno.
-- Definir almacenamiento de archivos.
+- Definir certificacion de pagos.
+- Implementar ingreso durable de WhatsApp y atribucion de anuncios.
+- Definir instancia Evolution del piloto y politica de outbound.
+- Definir almacenamiento de archivos y retencion.
 
-## Infraestructura y despliegue
+## PILOTO_DELTA
 
-- Repetir gate de capacidad antes de desplegar nuevos servicios.
-- Crear roles y grants separados para STAGING y producción.
-- Crear tablas `sportex_staging_*` mediante migraciones versionadas.
-- Certificar RLS, backup y restauración de tablas STAGING.
-- Desplegar Core, workers y frontend en STAGING.
-- Ensayar migración desde tablas legado `sportex_*`.
-- Crear tablas `sports_*` solamente para el cutover autorizado.
-- Rotar los secretos expuestos del runtime legado.
+- Decidir namespace, roles, buckets y migracion de datos.
+- Certificar RLS, backup y restauracion.
+- Resolver capacidad antes de desplegar servicios nuevos.
+- Rotar secretos inseguros del runtime legado.
+- Definir dominio, observabilidad, rollback y soporte.
 
-## Auditoría pendiente
+## Comercial
 
-- Auditar código, frontend, esquema y tablas del SPORTEX anterior.
+- Certificar aislamiento multiempresa y onboarding.
+- Definir planes, soporte, recuperacion e incidentes.
+- Abrir `PRODUCCION_COMERCIAL` solo con GO de Fito.

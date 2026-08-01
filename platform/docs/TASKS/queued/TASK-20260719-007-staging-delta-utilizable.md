@@ -3,7 +3,12 @@
 id: TASK-20260719-007
 owner: Codex
 requester: Fito
-estado: in_progress
+estado: blocked
+lifecycle: queued
+work_type: operacion
+campaign: none
+context_focus: deploy
+development_guide_impact: none
 
 ## objetivo
 
@@ -68,3 +73,19 @@ Entregar el nuevo SPORTEX en `sportex-staging.codexa.uy` como una superficie ais
 
 - `docs/evidencias/TASK-20260719-007_STAGING_DELTA_UTILIZABLE.md`;
 - `docs/deployments/SPORTEX-STAGING-20260719-001.md`.
+
+## bloqueo_actual
+
+Fito reemplazo el modelo STAGING separado por `PILOTO_DELTA`. El codigo y la
+evidencia existentes se preservan, pero el objetivo, los namespaces, el dominio
+y el plan de cutover deben replantearse en una nueva tarea antes de operar.
+
+## rollback
+
+No desplegar ni migrar desde este contrato. La rama y los artefactos quedan
+preservados como base de trabajo reversible.
+
+## deuda_restante
+
+Convertir las piezas utiles en un plan de piloto Delta coherente con el nuevo
+contrato de entornos y revalidar todo estado runtime.

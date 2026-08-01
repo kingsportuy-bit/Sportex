@@ -19,7 +19,7 @@ Eventos normalizados, identificadores del proveedor y resultados verificables.
 - Sin escrituras directas de dominio.
 - Ingreso deduplicado.
 - Salida mediante worker.
-- STAGING con allowlist.
+- `PILOTO_DELTA` con instancia, destinos y outbound autorizados.
 
 ## Contratos
 

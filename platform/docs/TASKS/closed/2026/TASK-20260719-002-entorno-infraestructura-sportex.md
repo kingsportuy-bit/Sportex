@@ -4,6 +4,11 @@ id: TASK-20260719-002
 owner: Codex
 requester: Fito
 estado: done
+lifecycle: closed
+work_type: operacion
+campaign: none
+context_focus: runtime
+development_guide_impact: none
 
 ## objetivo
 
@@ -49,5 +54,12 @@ Definir y verificar el entorno objetivo de SPORTEX: repositorio existente, VPS c
 
 ## evidencia
 
+## rollback
+
+Trabajo read-only; no requirio rollback de runtime.
+
+## deuda_restante
+
+Toda informacion de infraestructura debe revalidarse antes de operar.
 - `docs/evidencias/TASK-20260719-002_ENTORNO_INFRAESTRUCTURA.md`;
 - `npm run validate-docs`: `PASS` con 35 documentos requeridos, 16 modulos y 2 tareas.

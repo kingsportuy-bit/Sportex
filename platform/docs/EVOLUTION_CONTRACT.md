@@ -1,76 +1,42 @@
-# Contrato Evolution API SPORTEX
+# Contrato Evolution / WhatsApp SPORTEX
 
-## Decisión
+## Rol
 
-Evolution API será el proveedor de WhatsApp. SPORTEX se conectará directamente desde adaptadores y workers del Core, sin n8n.
+Evolution transporta eventos y mensajes. El Core conserva idempotencia,
+autorizacion, estado de conversacion y decisiones de negocio.
 
-## Instancias
+## PILOTO_DELTA
 
-- Cada empresa o marca tendrá su propia instancia Evolution.
-- La instancia pertenece a un único tenant y entorno.
-- Delta será la primera instancia piloto en STAGING.
-- Una instancia de staging nunca envía como producción.
-
-## Baseline observado
-
-- producción contiene una instancia legado llamada `DELTA`;
-- estado observado el 2026-07-19: `close`;
-- no tenía webhook configurado;
-- no se encontró una instancia SPORTEX o Delta en Evolution STAGING.
-
-La instancia legado no queda adoptada automáticamente por el nuevo Core. Su vinculación, reconexión o reemplazo requiere una tarea autorizada y credenciales registradas por tenant y entorno.
+La instancia, webhook y numero a utilizar deben inventariarse y aprobarse en
+una tarea propia. La existencia de una sesion de WhatsApp o una instancia
+llamada `DELTA` no autoriza conectarla.
 
 ## Ingreso
 
-Evolution publica webhooks hacia un endpoint autenticado del Core.
-
-El adaptador:
-
-- valida secreto, origen y contrato;
-- resuelve tenant por integración registrada;
-- asigna idempotencia y correlación;
-- normaliza el evento;
-- guarda referencia segura;
-- entrega al módulo WhatsApp.
-
-No interpreta reglas del negocio ni escribe tablas de pedidos.
+- verificar autenticidad y tenant antes de persistir;
+- conservar ID externo, timestamp, remitente, tipo y payload minimizado;
+- deduplicar por evento/mensaje;
+- persistir antes de procesar;
+- responder rapido y procesar efectos de forma durable;
+- registrar errores sin exponer secretos ni contenido innecesario.
 
 ## Salida
 
-El Core crea outbox autorizado. Un worker Evolution:
+- outbox durable e idempotente;
+- destino, plantilla/contenido, motivo y correlacion auditables;
+- reintentos acotados sin duplicar;
+- takeover humano y detencion disponibles;
+- mensajes reales solo con alcance y permiso explicitos;
+- pruebas locales usan adaptador falso, nunca una sesion real.
 
-- reclama el trabajo;
-- relee tenant, instancia, conversación y permiso;
-- envía;
-- verifica la respuesta del proveedor;
-- registra identificador y resultado;
-- reintenta o falla terminalmente según política.
+## Leads de anuncios
 
-## Seguridad
+Cuando el proveedor entregue contexto de origen, el ingreso conserva IDs de
+mensaje, anuncio/click y conversacion sin tratarlos como verdad de venta. La
+atribucion y el resultado comercial pertenecen a modulos de leads/pedidos y se
+reconcilian con eventos reales.
 
-- credenciales solamente del lado servidor;
-- secretos separados por entorno;
-- webhooks autenticados;
-- payloads sensibles fuera de logs;
-- allowlist obligatoria en STAGING;
-- soporte cross-tenant auditado;
-- QR y reconexión protegidos por permisos.
+## Operacion
 
-## Estados operativos
-
-- `unconfigured`;
-- `provisioning`;
-- `qr_pending`;
-- `connected`;
-- `degraded`;
-- `disconnected`;
-- `blocked`;
-- `retired`.
-
-## Observabilidad
-
-Medir ingreso, duplicados, latencia, conexión, envíos, reintentos y errores por tenant interno sin usar teléfonos como etiquetas.
-
-## Límite actual
-
-No se creó ni modificó ninguna instancia como parte de esta documentación. Existe la instancia legado `DELTA` en producción, actualmente desconectada y sin webhook.
+Crear, reconectar, cambiar webhook, enviar, cerrar sesion o modificar Evolution
+es una operacion real. Requiere preflight, rollback y permiso exacto de Fito.

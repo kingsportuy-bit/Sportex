@@ -10,7 +10,7 @@ Alojar servicios SPORTEX aislados dentro del VPS compartido con BARBEROX.
 - Imágenes inmutables.
 - Traefik como ingress.
 - Health, readiness, logs, métricas y límites.
-- STAGING y producción separados.
+- desarrollo local aislado de `PILOTO_DELTA`; apertura comercial con gate propio.
 - Sin acceso implícito a datos BARBEROX.
 
 ## Contratos
