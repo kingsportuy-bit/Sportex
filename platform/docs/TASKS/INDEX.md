@@ -22,3 +22,4 @@ Actualizado: 2026-08-01.
 - `TASK-20260719-005` | `done` | Supabase compartido con prefijos por entorno | docs/TASKS/closed/2026/TASK-20260719-005-supabase-compartido-prefijos-entorno.md
 - `TASK-20260719-006` | `done` | Primera implementación vertical del Core | docs/TASKS/closed/2026/TASK-20260719-006-primer-core-vertical.md
 - `TASK-20260801-001` | `done` | Sistema de desarrollo gobernado para SPORTEX | docs/TASKS/closed/2026/TASK-20260801-001-sistema-desarrollo-sportex.md
+- `TASK-20260801-003` | `done` | Canonizar remote GitHub de SPORTEX | docs/TASKS/closed/2026/TASK-20260801-003-canonizar-remote-github.md

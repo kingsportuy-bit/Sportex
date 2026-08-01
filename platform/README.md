@@ -7,7 +7,7 @@ deportiva. Delta Sport es el piloto de producto.
 
 - Worktree de desarrollo: `C:\Users\Fito\Documents\CODEX\SPORTEX`.
 - Proyecto tecnico: `platform/`.
-- Git: repositorio `kingsportuy-bit/sportex`.
+- Git: repositorio `kingsportuy-bit/Sportex`.
 - DELTA administra prioridades y validacion; SPORTEX administra codigo,
   arquitectura, tareas, releases y evidencia.
 

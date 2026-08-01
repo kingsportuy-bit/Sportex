@@ -5,7 +5,7 @@
   "environment": "DOCUMENTACION",
   "operatingTarget": "PILOTO_DELTA",
   "mode": "idle",
-  "objective": "Sistema de desarrollo instalado; seleccionar y aprobar la siguiente tarea SPORTEX.",
+  "objective": "Sistema de desarrollo instalado y publicado; seleccionar y aprobar la siguiente tarea SPORTEX.",
   "currentTask": null,
   "activeCampaign": null,
   "decisions": [

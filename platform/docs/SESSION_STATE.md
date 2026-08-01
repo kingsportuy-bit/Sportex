@@ -12,7 +12,7 @@ Actualizado: 2026-08-01.
 
 ## Objetivo actual
 
-Sistema de desarrollo instalado; seleccionar y aprobar la siguiente tarea SPORTEX.
+Sistema de desarrollo instalado y publicado; seleccionar y aprobar la siguiente tarea SPORTEX.
 
 ## Tarea actual
 

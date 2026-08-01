@@ -5,7 +5,7 @@
 
 ## Git
 
-- Repositorio: `https://github.com/kingsportuy-bit/sportex.git`.
+- Repositorio canonico: `https://github.com/kingsportuy-bit/Sportex.git`.
 - `main` observado en `a62e5ed` el 2026-07-19.
 - desarrollo nuevo publicado en `sportex-task007-staging`, commit `ea02fc0`.
 - worktree autoritativo actual:

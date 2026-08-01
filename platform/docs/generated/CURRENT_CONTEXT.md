@@ -10,7 +10,7 @@ Actualizado: 2026-08-01.
 - Entorno documental: `DOCUMENTACION`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Tarea: no cargada para esta consulta.
-- Presupuesto potencial: 7984/20000 caracteres.
+- Presupuesto potencial: 7996/20000 caracteres.
 
 ## Regla de uso
 

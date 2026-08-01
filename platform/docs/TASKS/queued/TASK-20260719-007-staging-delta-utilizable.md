@@ -43,7 +43,7 @@ Entregar el nuevo SPORTEX en `sportex-staging.codexa.uy` como una superficie ais
 - primera vertical local de `TASK-20260719-006`;
 - contratos de arquitectura, seguridad, multitenancy, Supabase y despliegue;
 - Supabase STAGING compartido con catálogo permitido `sportex_staging_*`;
-- repositorio `kingsportuy-bit/sportex`;
+- repositorio `kingsportuy-bit/Sportex`;
 - VPS `31.97.28.4`, Docker Swarm y Traefik existentes;
 - Delta Sport como tenant piloto con datos ficticios.
 
