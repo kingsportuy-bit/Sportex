@@ -26,3 +26,4 @@ Actualizado: 2026-08-03.
 - `TASK-20260802-001` | `done` | Automatizar contexto, tareas y cierre de SPORTEX | docs/TASKS/closed/2026/TASK-20260802-001-automatizar-contexto-tareas-cierre.md
 - `TASK-20260803-001` | `done` | Primera vertical comercial local de SPORTEX | docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md
 - `TASK-20260803-002` | `done` | Versionar OS y primera vertical comercial local | docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md
+- `TASK-20260803-003` | `done` | Reconciliar el commit remoto verificado | docs/TASKS/closed/2026/TASK-20260803-003-reconciliar-push-remoto.md
