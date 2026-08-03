@@ -2,14 +2,18 @@
 
 ## Inicio
 
-Leer `INICIAL.md`, escanear integridad, resolver intencion, cargar estado y
-tarea, y entrar por la Biblioteca. Una consulta de orientacion no altera estado.
+Leer `INICIAL.md`, declarar entorno, escanear integridad y ejecutar
+`npm run context -- <intencion>`. Continuar solamente con
+`SPORTEX_CONTEXT=PASS`, leyendo todas las fuentes bajo `READ:`. El resultado
+identifica campaña, tarea, objetivo, alcance, entorno, riesgos, worktree, rama y
+proxima accion. Una consulta de orientacion no altera estado.
 
 ## Trabajo local
 
 Codex puede editar y validar dentro de una tarea aprobada. Preserva trabajo
-ajeno, evita cambios no relacionados y registra decisiones que afecten el
-contrato.
+ajeno, evita cambios no relacionados y registra tarea, estado, decisiones,
+evidencia y contratos afectados. `PROJECT_STATE.json` registra tambien
+migraciones, pruebas, despliegues, integraciones, datos sensibles y pendientes.
 
 ## Trabajo remoto
 
@@ -33,5 +37,14 @@ compactacion, releer las fuentes generadas; no continuar solo desde memoria.
 ## Cierre
 
 El cierre debe incluir resultado, archivos, pruebas, evidencia, deuda restante,
-estado Git y siguiente paso. Si falta una prueba real, usar un estado pendiente
-en lugar de afirmar que esta listo.
+estado Git y siguiente paso. Ejecutar:
+
+```powershell
+npm run workflow:close -- TASK-AAAAMMDD-NNN
+```
+
+El comando regenera vistas, valida documentacion, workflow, tipos, tests, SQL,
+build, pendientes y evidencia. Solamente `SPORTEX_CLOSE=PASS` habilita declarar
+el checkpoint terminado. No ejecuta deploys ni autoriza operaciones remotas.
+
+Para una consulta sin cambios se usa `npm run workflow:check`.

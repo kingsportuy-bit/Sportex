@@ -9,9 +9,11 @@ retomar SPORTEX sin reconstruir decisiones desde conversaciones sueltas.
 
 - `docs/state/PROJECT_STATE.json`: estado de trabajo canonico.
 - `docs/state/DOCUMENT_REGISTRY.json`: clasificacion, autoridad y router.
+- `docs/DECISIONES.md`: decisiones tecnicas durables y reemplazos.
 - `docs/TASKS/{active,queued,closed}`: contratos de trabajo.
 - `docs/SESSION_STATE.md`, `docs/TASKS/INDEX.md` y
-  `docs/generated/CURRENT_CONTEXT.md`: vistas generadas; no se editan.
+  `docs/generated/CURRENT_CONTEXT.md`, `docs/state/CAMPAIGN_STATE.json` y
+  `docs/errors/index.json`: vistas generadas; no se editan.
 - Git: codigo, contratos y evidencia versionada.
 - Observacion runtime: unica fuente para afirmar que un servicio esta activo.
 
@@ -58,11 +60,16 @@ La documentacion esta sana cuando:
 
 - existe una entrada unica y una tarea activa como maximo;
 - estado, tarea y vistas generadas coinciden;
+- campaña, tarea, entorno, Git y evidencia quedan detectables sin leer chats;
+- migraciones, pruebas, despliegues, integraciones, datos sensibles y
+  pendientes tienen estado explicito;
 - cada documento tiene owner, autoridad e intenciones de lectura;
 - cada modulo tiene contrato comun, tests, evidencia y rollback;
 - no hay NUL, BOM, mojibake ni referencias locales rotas;
 - la guia maestra cambia junto con el sistema de desarrollo;
 - los estados declarados no exceden la evidencia disponible.
+- el cierre material devuelve `SPORTEX_CLOSE=PASS` despues de validar
+  documentacion y regresiones locales de codigo.
 
 ## Presupuesto de contexto
 

@@ -9,7 +9,12 @@
   "scripts": {
     "scan:text": "powershell -ExecutionPolicy Bypass -File scripts/codex-scan-text-nul.ps1",
     "generate-docs": "node scripts/documentation/generate-documentation-views.mjs",
-    "context": "node scripts/documentation/generate-documentation-views.mjs --print-context",
+    "context": "node scripts/sportex-workflow.mjs context",
+    "workflow": "node scripts/sportex-workflow.mjs",
+    "workflow:check": "node scripts/sportex-workflow.mjs check",
+    "workflow:sync": "node scripts/sportex-workflow.mjs sync",
+    "workflow:close": "node scripts/sportex-workflow.mjs close",
+    "test:workflow": "node --test scripts/tests/sportex-workflow.test.mjs",
     "validate-tasks": "node scripts/validate-task-consistency.mjs",
     "validate-development-guide": "node scripts/validate-development-guide-sync.mjs --self-test",
     "validate-docs": "node scripts/validate-docs.mjs --profile=full",
@@ -18,11 +23,12 @@
     "task:doctor": "node scripts/task-worktree-doctor.mjs --strict",
     "task:next-id": "node scripts/task-worktree-doctor.mjs --strict --next-id",
     "errors:preflight": "powershell -ExecutionPolicy Bypass -File scripts/codex-preflight-errors.ps1",
+    "demo:commercial": "powershell -ExecutionPolicy Bypass -File scripts/start-commercial-demo.ps1",
     "check": "npm --workspace @sportex/core run check",
     "test": "npm --workspace @sportex/core test",
     "build": "npm --workspace @sportex/core run build",
     "validate-sql": "npm --workspace @sportex/core run validate-sql",
-    "validate": "npm run scan:text && npm run validate-docs && npm run check && npm test && npm run validate-sql && npm run build",
+    "validate": "npm run scan:text && npm run test:workflow && npm run validate-docs && npm run check && npm test && npm run validate-sql && npm run build",
     "test:e2e:staging": "node scripts/e2e-staging.mjs"
   }
 }

@@ -19,6 +19,7 @@
   "documents": [
     {"path":"docs/INICIAL.md","owner":"development-system","authority":100,"readWhen":["always"]},
     {"path":"docs/SESSION_STATE.md","owner":"development-system","authority":100,"readWhen":["always"]},
+    {"path":"docs/DECISIONES.md","owner":"development-system","authority":95,"readWhen":["guidance","documentation","tasks"]},
     {"path":"docs/OPERADOR_PROYECTO.md","owner":"product-owner","authority":100,"readWhen":["always","guidance","product","operation","incident"]},
     {"path":"docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md","owner":"development-system","authority":95,"readWhen":["guidance","documentation"]},
     {"path":"docs/DOCUMENTATION_ARCHITECTURE.md","owner":"development-system","authority":95,"readWhen":["documentation","architecture","guidance"]},

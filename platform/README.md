@@ -21,7 +21,8 @@ npm run scan:text
 npm run context -- guidance
 ```
 
-Leer `docs/INICIAL.md` antes de cambiar el proyecto.
+`AGENTS.md` ejecuta este protocolo automaticamente en cada hilo. El comando
+debe devolver `SPORTEX_CONTEXT=PASS`; luego se leen los archivos bajo `READ:`.
 
 ## Arquitectura
 
@@ -58,9 +59,21 @@ npm run validate-docs:fast
 npm run validate-tasks
 npm run task:doctor
 npm run task:next-id
+npm run test:workflow
+npm run workflow:check
 ```
+
+Despues de un cambio material:
+
+```powershell
+npm run workflow:close -- TASK-AAAAMMDD-NNN
+```
+
+No hay cierre verificable sin `SPORTEX_CLOSE=PASS`.
 
 ## Estado
 
-La fuente viva es `docs/state/PROJECT_STATE.json`; `docs/SESSION_STATE.md` y
-`docs/generated/CURRENT_CONTEXT.md` son vistas generadas.
+La fuente viva es `docs/state/PROJECT_STATE.json`. `docs/SESSION_STATE.md`,
+`docs/TASKS/INDEX.md`, `docs/generated/CURRENT_CONTEXT.md`,
+`docs/errors/index.json` y `docs/state/CAMPAIGN_STATE.json` son vistas
+generadas.

@@ -15,12 +15,19 @@ Antes de analizar, editar u operar:
 1. leer `docs/INICIAL.md`;
 2. declarar `DOCUMENTACION`, `DESARROLLO_LOCAL`, `PILOTO_DELTA` o
    `PRODUCCION_COMERCIAL`;
-3. resolver la intencion indicada en `docs/MODOS_DE_TRABAJO.md`;
+3. inferir la intencion indicada en `docs/MODOS_DE_TRABAJO.md`;
 4. ejecutar `npm run scan:text`;
-5. leer `docs/state/PROJECT_STATE.json` y las vistas generadas;
-6. leer la tarea activa cuando el modo la requiera;
-7. cargar solo los contratos seleccionados por la intencion;
+5. ejecutar `npm run context -- <intencion>`;
+6. exigir `SPORTEX_CONTEXT=PASS` y leer todos los archivos bajo `READ:`;
+7. confirmar campaña, tarea, objetivo, alcance, entorno, riesgos, worktree,
+   rama y proxima accion informados por el comando;
 8. ejecutar un preflight focal antes de la primera accion con riesgo.
+
+Fito no necesita escribir `lee INICIAL.md`, recordar el ID vigente ni explicar
+lo ocurrido en otros hilos. Si el contexto devuelve `SPORTEX_WORKFLOW=FAIL`, no
+se hacen cambios materiales. Si las fuentes son coherentes y solamente las
+vistas estan desactualizadas, ejecutar `npm run workflow:sync`; una
+contradiccion semantica debe corregirse dentro de una tarea.
 
 La guia maestra es `docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md`.
 
@@ -34,6 +41,10 @@ La guia maestra es `docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md`.
 - Si el pedido contradice la tarea activa, el agente informa el conflicto antes
   de cambiar prioridad o ampliar el alcance.
 - No se declara un modulo listo sin evidencia verificable.
+- Cada cambio material actualiza tarea, `PROJECT_STATE.json`, decisiones,
+  evidencia y los contratos o fichas afectados.
+- `CAMPAIGN_STATE.json`, `SESSION_STATE.md`, `TASKS/INDEX.md`,
+  `CURRENT_CONTEXT.md` y `errors/index.json` son vistas generadas.
 
 ## Arquitectura bloqueante
 
@@ -71,10 +82,18 @@ Antes de cerrar una tarea:
 1. ejecutar validaciones focales y generales aplicables;
 2. actualizar contratos y fichas afectadas;
 3. actualizar `docs/state/PROJECT_STATE.json`;
-4. regenerar vistas con `npm run generate-docs`;
-5. ejecutar `npm run validate-docs` y los tests de producto aplicables;
-6. registrar evidencia y deuda restante;
-7. dejar Git versionado y publicado si la tarea lo exige.
+4. regenerar vistas con `npm run workflow:sync`;
+5. registrar migraciones, pruebas, despliegues, integraciones, datos sensibles,
+   ultima evidencia y pendientes en el estado canonico;
+6. ejecutar `npm run validate` y las pruebas focales aplicables;
+7. registrar evidencia y deuda restante;
+8. ejecutar `npm run workflow:close -- <TASK-ID>`;
+9. no declarar el checkpoint terminado sin `SPORTEX_CLOSE=PASS`;
+10. dejar Git versionado y publicado solamente si la tarea lo exige.
+
+Para una consulta sin cambios, ejecutar `npm run workflow:check` antes de la
+respuesta final. Un cierre es un checkpoint y puede mantener la tarea activa;
+cerrar una tarea exige ademas moverla y sincronizar el estado.
 
 Un PASS local o un healthcheck no prueban por si solos una capacidad de negocio.
 

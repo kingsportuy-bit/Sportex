@@ -18,3 +18,6 @@ Mostrar información del Core y permitir ejecutar acciones autorizadas.
 IMPLEMENTADO_NO_VALIDADO. Frontend nuevo sin acceso a base, con login Supabase
 y comandos del Core; smoke visual local historico en PASS. Despliegue y E2E de
 `PILOTO_DELTA` pendientes de replanificacion.
+
+`TASK-20260803-001` agrega una mesa comercial local para visualizar origen,
+conversación, etapa y próxima acción. No habilita envío ni datos reales.

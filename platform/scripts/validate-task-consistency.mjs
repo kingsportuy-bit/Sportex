@@ -57,6 +57,12 @@ for (const file of files) {
   if (!lifecycleStatus[pathLifecycle]?.has(task.status)) failures.push(`${task.path}: status ${task.status} invalid for ${pathLifecycle}`);
   if (!workTypes.has(task.workType)) failures.push(`${task.path}: invalid work_type ${task.workType}`);
   if (!guideImpact.has(task.guideImpact)) failures.push(`${task.path}: invalid development_guide_impact ${task.guideImpact}`);
+  if (pathLifecycle === 'active') {
+    if (!field(text, 'updated_at')) failures.push(`${task.path}: active task missing updated_at`);
+    for (const section of ['registro_de_avances', 'decisiones']) {
+      if (!new RegExp(`^## ${section}$`, 'imu').test(text)) failures.push(`${task.path}: active task missing section ${section}`);
+    }
+  }
 }
 
 const active = tasks.filter((task) => task.lifecycle === 'active');
@@ -66,7 +72,7 @@ let state;
 try { state = JSON.parse(fs.readFileSync(path.join(root, 'docs', 'state', 'PROJECT_STATE.json'), 'utf8')); }
 catch (error) { failures.push(`PROJECT_STATE invalid: ${error.message}`); }
 if (state) {
-  if (state.schemaVersion !== 1) failures.push('PROJECT_STATE: unsupported schemaVersion');
+  if (state.schemaVersion !== 2) failures.push('PROJECT_STATE: unsupported schemaVersion');
   if (!/^\d{4}-\d{2}-\d{2}$/u.test(state.updatedAt || '')) failures.push('PROJECT_STATE: updatedAt must be YYYY-MM-DD');
   if (active.length === 0 && state.currentTask !== null) failures.push('PROJECT_STATE: currentTask must be null when no active task exists');
   if (active.length === 1) {

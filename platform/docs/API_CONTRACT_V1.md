@@ -71,6 +71,37 @@ Body:
 
 Capacidad: `clients.read`. Nunca acepta `tenantId` por query.
 
+## Mesa comercial local
+
+Disponible solamente si el Core inicia con `development|test`, store `memory`
+y `SPORTEX_DEV_AUTH=true`. No existe en `PILOTO_DELTA` ni producción.
+
+### `POST /v1/local/evolution-replays`
+
+Capacidad: `commercial.replay`. Requiere `Idempotency-Key`.
+
+Recibe un evento reducido estilo Evolution con:
+
+- `event=messages.upsert`;
+- `instance=LOCAL_FIXTURE`;
+- `key.id=msg-ficticio-*` y `remoteJid=contacto-ficticio-*`;
+- mensaje entrante de texto y fecha ISO;
+- `externalAdReply` opcional con IDs ficticios.
+
+El Core rechaza referencias que no sean ficticias. El mismo mensaje del
+proveedor no crea dos conversaciones, leads ni oportunidades aunque llegue con
+otra clave HTTP.
+
+### `GET /v1/commercial/workspace`
+
+Capacidad: `commercial.read`. Devuelve la proyección tenant-aware con
+conversación, atribución, lead, oportunidad, etapa y próxima acción.
+
+### `GET /v1/public-config`
+
+Incluye `localCommercialReplayEnabled` para que la web muestre el modo local
+solo cuando el guard de entorno está activo.
+
 ## Pagos
 
 ### `POST /v1/payments/certify`
@@ -123,6 +154,7 @@ Capacidad: `orders.read`. Devuelve solamente pedidos del tenant resuelto por ide
 - `idempotency_key_required`;
 - `idempotency_key_invalid`;
 - `idempotency_conflict`;
+- `fixture_only`;
 - `client_not_found`;
 - `client_phone_conflict`;
 - `payment_not_found`;

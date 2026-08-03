@@ -3,11 +3,13 @@ const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 const state = {
   config: null,
+  localDemo: false,
   token: sessionStorage.getItem("sportex_access_token"),
   refreshToken: sessionStorage.getItem("sportex_refresh_token"),
   session: null,
   clients: [],
   orders: [],
+  commercial: [],
   orderAttempt: null,
   passwordForced: false,
 };
@@ -28,6 +30,21 @@ const messages = {
   tenant_membership_required: "Tu cuenta todavía no está vinculada a una empresa de SPORTEX.",
   authentication_unavailable: "El acceso está temporalmente fuera de servicio.",
   invalid_payload: "Revisá los datos ingresados.",
+  fixture_only: "El modo local acepta solamente referencias ficticias.",
+};
+
+const localIdentity = {
+  tenantId: "11111111-1111-4111-8111-111111111111",
+  actorId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  capabilities: [
+    "clients.create",
+    "clients.read",
+    "commercial.read",
+    "commercial.replay",
+    "payments.certify",
+    "orders.create",
+    "orders.read",
+  ],
 };
 
 function friendlyError(error) {
@@ -45,6 +62,15 @@ function money(cents, currency = "UYU") {
 
 function shortDate(value) {
   return new Intl.DateTimeFormat("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
+}
+
+function shortDateTime(value) {
+  return new Intl.DateTimeFormat("es-UY", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
 }
 
 function initials(value) {
@@ -81,6 +107,11 @@ async function jsonResponse(response) {
 
 async function api(path, options = {}) {
   const headers = new Headers(options.headers || {});
+  if (state.localDemo) {
+    headers.set("x-sportex-tenant-id", localIdentity.tenantId);
+    headers.set("x-sportex-actor-id", localIdentity.actorId);
+    headers.set("x-sportex-capabilities", localIdentity.capabilities.join(","));
+  }
   if (state.token) headers.set("authorization", `Bearer ${state.token}`);
   if (options.body) headers.set("content-type", "application/json");
   const response = await fetch(path, { ...options, headers });
@@ -113,6 +144,7 @@ function clearSession() {
   state.session = null;
   state.clients = [];
   state.orders = [];
+  state.commercial = [];
   sessionStorage.removeItem("sportex_access_token");
   sessionStorage.removeItem("sportex_refresh_token");
 }
@@ -131,18 +163,24 @@ function showApp() {
 async function loadSession() {
   const payload = await api("/v1/session");
   state.session = payload.data;
-  $("#tenant-name").textContent = state.session.tenantName;
-  $("#account-email").textContent = state.session.email || "Cuenta";
+  $("#tenant-name").textContent = state.localDemo ? "Delta Sport · demo local" : state.session.tenantName;
+  $("#account-email").textContent = state.localDemo ? "Operador ficticio" : state.session.email || "Cuenta";
   $("#account-initials").textContent = initials(state.session.email || state.session.tenantName);
+  $("#account-button").hidden = state.localDemo;
+  $("#logout-button").hidden = state.localDemo;
   if (state.session.passwordChangeRequired) openPasswordDialog(true);
 }
 
 async function loadData() {
-  const [clients, orders] = await Promise.all([api("/v1/clients"), api("/v1/orders")]);
+  const requests = [api("/v1/clients"), api("/v1/orders")];
+  if (state.localDemo) requests.push(api("/v1/commercial/workspace"));
+  const [clients, orders, commercial] = await Promise.all(requests);
   state.clients = clients.data;
   state.orders = orders.data;
+  state.commercial = commercial?.data ?? [];
   renderClients();
   renderOrders();
+  renderCommercial();
 }
 
 function cell(text, className = "") {
@@ -224,6 +262,69 @@ function renderClients() {
   fillClientSelect();
 }
 
+function element(tagName, className = "", text = "") {
+  const node = document.createElement(tagName);
+  if (className) node.className = className;
+  if (text) node.textContent = text;
+  return node;
+}
+
+function renderCommercial() {
+  const list = $("#commercial-list");
+  list.replaceChildren();
+
+  for (const item of state.commercial) {
+    const card = element("article", "commercial-card");
+    const rail = element("div", "evidence-rail");
+    rail.setAttribute("aria-label", "Origen, mensaje y oportunidad vinculados");
+    rail.append(
+      element("span", `evidence-node${item.attribution.classification === "META_EXACTO" ? " is-live" : ""}`, "AD"),
+      element("span", "evidence-node is-live", "MSJ"),
+      element("span", "evidence-node is-live", "OP"),
+    );
+
+    const conversation = element("div", "conversation-pane");
+    const meta = element("div", "conversation-meta");
+    const identity = element("div");
+    identity.append(
+      element("strong", "", item.conversation.contactName),
+      element("small", "", `${item.conversation.messages.length} mensaje · ${shortDateTime(item.conversation.lastActivityAt)}`),
+    );
+    const exact = item.attribution.classification === "META_EXACTO";
+    const attribution = element(
+      "span",
+      `attribution-chip${exact ? "" : " is-unknown"}`,
+      exact ? `META EXACTO · ${item.attribution.adId}` : "ORIGEN DESCONOCIDO",
+    );
+    meta.append(identity, attribution);
+    const latest = item.conversation.messages.at(-1);
+    conversation.append(meta, element("blockquote", "message-quote", latest?.text ?? "Mensaje sin texto"));
+
+    const decision = element("div", "decision-pane");
+    const stage = element("div", "stage-lockup");
+    stage.append(element("span", "", "Etapa comercial"), element("strong", "", item.opportunity.stage));
+    const next = element("div", "next-action");
+    next.append(
+      element("span", "", "Próxima acción · pendiente"),
+      element("strong", "", item.opportunity.nextAction),
+    );
+    decision.append(stage, next);
+    card.append(rail, conversation, decision);
+    list.append(card);
+  }
+
+  const exactCount = state.commercial.filter(
+    (item) => item.attribution.classification === "META_EXACTO",
+  ).length;
+  const unknownCount = state.commercial.length - exactCount;
+  $("#commercial-empty").hidden = state.commercial.length > 0;
+  $("#commercial-count-nav").textContent = String(state.commercial.length);
+  $("#metric-conversations").textContent = String(state.commercial.length).padStart(2, "0");
+  $("#metric-exact").textContent = String(exactCount).padStart(2, "0");
+  $("#metric-unknown").textContent = String(unknownCount).padStart(2, "0");
+  $("#metric-actions").textContent = String(state.commercial.length).padStart(2, "0");
+}
+
 function fillClientSelect() {
   const select = $("#order-client");
   const previous = select.value;
@@ -239,8 +340,11 @@ function fillClientSelect() {
 }
 
 function switchView(name) {
+  $("#commercial-view").hidden = name !== "commercial";
   $("#orders-view").hidden = name !== "orders";
   $("#clients-view").hidden = name !== "clients";
+  $("#local-replay-actions").hidden = !state.localDemo || name !== "commercial";
+  $("#new-order-button").hidden = name === "commercial";
   $$(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.view === name));
 }
 
@@ -353,6 +457,61 @@ async function saveOrder() {
   }
 }
 
+function commercialFixture(kind) {
+  const suffix = `${kind}-${crypto.randomUUID()}`;
+  const exact = kind === "exact";
+  return {
+    event: "messages.upsert",
+    instance: "LOCAL_FIXTURE",
+    data: {
+      key: {
+        id: `msg-ficticio-${suffix}`,
+        remoteJid: `contacto-ficticio-${suffix}`,
+        fromMe: false,
+      },
+      pushName: exact ? "Martina · caso ficticio" : "Diego · caso ficticio",
+      messageTimestamp: new Date().toISOString(),
+      message: {
+        conversation: exact
+          ? "Hola, vi el anuncio de camisetas y quiero consultar para mi equipo."
+          : "Buenas, quisiera consultar por indumentaria para un equipo.",
+      },
+      ...(exact ? {
+        contextInfo: {
+          externalAdReply: {
+            sourceId: `ad-ficticio-${suffix}`,
+            sourceUrl: `https://example.invalid/anuncio/${suffix}`,
+            ctwaClid: `ctwa-ficticio-${suffix}`,
+            ref: `ref-ficticia-${suffix}`,
+          },
+        },
+      } : {}),
+    },
+  };
+}
+
+async function replayCommercialFixture(kind, button) {
+  if (!state.localDemo) return;
+  const payload = commercialFixture(kind);
+  setButtonBusy(button, true, "Procesando…");
+  try {
+    await api("/v1/local/evolution-replays", {
+      method: "POST",
+      headers: { "idempotency-key": `replay-${payload.data.key.id}` },
+      body: JSON.stringify(payload),
+    });
+    await loadData();
+    switchView("commercial");
+    toast(kind === "exact"
+      ? "Caso ficticio cargado con atribución exacta."
+      : "Caso ficticio cargado como origen desconocido.");
+  } catch (error) {
+    toast(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
 function openPasswordDialog(forced = false) {
   state.passwordForced = forced;
   $("#password-form").reset();
@@ -419,6 +578,20 @@ async function initialize() {
     return;
   }
 
+  if (state.config.localCommercialReplayEnabled) {
+    state.localDemo = true;
+    state.token = null;
+    state.refreshToken = null;
+    $("#release-label").textContent = "LOCAL · MEMORIA EFÍMERA";
+    try {
+      await bootstrapAuthenticated();
+      switchView("commercial");
+    } catch (error) {
+      $("#login-error").textContent = friendlyError(error);
+    }
+    return;
+  }
+
   if (!state.token) {
     showLogin();
     return;
@@ -457,6 +630,12 @@ $("#login-form").addEventListener("submit", async (event) => {
 });
 
 $$('[data-open-order], #new-order-button').forEach((button) => button.addEventListener("click", openOrderDialog));
+$$('[data-replay="exact"], #replay-exact-button').forEach((button) => {
+  button.addEventListener("click", () => replayCommercialFixture("exact", button));
+});
+$$('[data-replay="unknown"], #replay-unknown-button').forEach((button) => {
+  button.addEventListener("click", () => replayCommercialFixture("unknown", button));
+});
 $$(".nav-item").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
 $$("input[name=clientMode]").forEach((input) => input.addEventListener("change", syncClientMode));
 $("#order-client").addEventListener("change", syncTeamFromClient);

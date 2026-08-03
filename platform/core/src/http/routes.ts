@@ -1,7 +1,9 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import type { SportexConfig } from "../config.js";
+import type { EvolutionReplayEvent } from "../domain/commercial-models.js";
 import type { ActorContext } from "../domain/models.js";
+import { CommercialReplayService } from "../application/commercial-replay-service.js";
 import { CoreService } from "../application/core-service.js";
 import { idempotencyKey } from "./context.js";
 
@@ -30,9 +32,35 @@ const createOrderSchema = z.object({
   currency: z.enum(["UYU", "USD"]),
 }).strict();
 
+const evolutionReplaySchema = z.object({
+  event: z.literal("messages.upsert"),
+  instance: z.literal("LOCAL_FIXTURE"),
+  data: z.object({
+    key: z.object({
+      id: z.string().regex(/^msg-ficticio-[a-z0-9-]{1,80}$/u),
+      remoteJid: z.string().regex(/^contacto-ficticio-[a-z0-9-]{1,80}$/u),
+      fromMe: z.literal(false),
+    }).strict(),
+    pushName: z.string().trim().min(2).max(120),
+    messageTimestamp: z.string().datetime({ offset: true }),
+    message: z.object({
+      conversation: z.string().trim().min(1).max(4_000),
+    }).strict(),
+    contextInfo: z.object({
+      externalAdReply: z.object({
+        sourceId: z.string().regex(/^ad-ficticio-[a-z0-9-]{1,80}$/u).optional(),
+        sourceUrl: z.string().url().optional(),
+        ctwaClid: z.string().max(160).optional(),
+        ref: z.string().max(160).optional(),
+      }).strict().optional(),
+    }).strict().optional(),
+  }).strict(),
+}).strict();
+
 export async function registerRoutes(
   app: FastifyInstance,
   service: CoreService,
+  commercialService: CommercialReplayService | null,
   config: SportexConfig,
   resolveContext: ContextResolver,
 ): Promise<void> {
@@ -42,6 +70,7 @@ export async function registerRoutes(
       authUrl: config.authPublicUrl ?? null,
       authAnonKey: config.authAnonKey ?? null,
       release: config.release ?? "local",
+      localCommercialReplayEnabled: commercialService !== null,
     },
   }));
 
@@ -106,4 +135,22 @@ export async function registerRoutes(
     const orders = await service.listOrders(context);
     return { data: orders, meta: { correlationId: context.correlationId } };
   });
+
+  if (commercialService) {
+    app.post("/v1/local/evolution-replays", async (request, reply) => {
+      const context = await resolveContext(request);
+      const input = evolutionReplaySchema.parse(request.body) as EvolutionReplayEvent;
+      const result = await commercialService.replay(context, idempotencyKey(request), input);
+      return reply.code(201).send({
+        data: result.data,
+        meta: { correlationId: context.correlationId, replayed: result.replayed },
+      });
+    });
+
+    app.get("/v1/commercial/workspace", async (request) => {
+      const context = await resolveContext(request);
+      const items = await commercialService.list(context);
+      return { data: items, meta: { correlationId: context.correlationId } };
+    });
+  }
 }

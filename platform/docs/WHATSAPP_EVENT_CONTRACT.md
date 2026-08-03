@@ -94,3 +94,19 @@ El worker relee el estado del pedido y la autorización antes de enviar.
 ## Integración directa
 
 Evolution API entrega webhooks directamente al adaptador del Core. Los mensajes salientes se ejecutan desde workers del Core mediante outbox. SPORTEX no utiliza n8n.
+
+## Replay ficticio de desarrollo
+
+La primera vertical usa un adaptador de replay reducido que existe únicamente
+con `development|test`, store en memoria y autenticación de desarrollo.
+
+- acepta solo `LOCAL_FIXTURE`, `msg-ficticio-*` y
+  `contacto-ficticio-*`;
+- normaliza texto entrante, fechas, conversación y evidencia;
+- deduplica por tenant y `providerMessageId`;
+- crea una proyección local de lead y oportunidad;
+- clasifica `META_EXACTO` solo con `externalAdReply.sourceId`;
+- clasifica `DESCONOCIDO` sin inventar campaña o anuncio;
+- no configura webhooks, no consulta Evolution y no produce outbound.
+
+Este replay prueba el contrato; no es el adaptador real de `PILOTO_DELTA`.

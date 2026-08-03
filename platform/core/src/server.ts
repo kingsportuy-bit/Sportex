@@ -4,6 +4,8 @@ import fastifyStatic from "@fastify/static";
 import Fastify, { type FastifyInstance } from "fastify";
 import { ZodError } from "zod";
 import type { SportexConfig } from "./config.js";
+import { InMemoryCommercialReplayStore } from "./adapters/persistence/in-memory-commercial-replay-store.js";
+import { CommercialReplayService } from "./application/commercial-replay-service.js";
 import { CoreService } from "./application/core-service.js";
 import type { CoreStore } from "./ports/core-store.js";
 import { AppError } from "./shared/errors.js";
@@ -26,6 +28,12 @@ export interface BuildServerOptions {
 export async function buildServer(options: BuildServerOptions): Promise<FastifyInstance> {
   const app = Fastify({ logger: options.logger ?? true });
   const service = new CoreService(options.store);
+  const localCommercialReplayEnabled = options.config.storeDriver === "memory"
+    && options.config.devAuthEnabled
+    && (options.config.environment === "development" || options.config.environment === "test");
+  const commercialService = localCommercialReplayEnabled
+    ? new CommercialReplayService(new InMemoryCommercialReplayStore())
+    : null;
   const authFetch = options.authFetch ?? fetch;
   const resolveContext = (request: Parameters<typeof resolveActorContext>[0]) =>
     resolveActorContext(request, options.config, options.store, authFetch);
@@ -105,7 +113,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     }
   });
 
-  await registerRoutes(app, service, options.config, resolveContext);
+  await registerRoutes(app, service, commercialService, options.config, resolveContext);
 
   if (options.config.frontendDir) {
     await app.register(fastifyStatic, {

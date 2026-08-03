@@ -1,13 +1,40 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-01",
-  "environment": "DOCUMENTACION",
+  "updatedAt": "2026-08-03",
+  "updatedBy": "TASK-20260803-002",
+  "environment": "DESARROLLO_LOCAL",
+  "allowedEnvironments": [
+    "DOCUMENTACION",
+    "DESARROLLO_LOCAL"
+  ],
+  "prohibitedEnvironments": [
+    "PILOTO_DELTA",
+    "PRODUCCION_COMERCIAL"
+  ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "idle",
-  "objective": "Sistema de desarrollo instalado y publicado; seleccionar y aprobar la siguiente tarea SPORTEX.",
+  "objective": "OS y primera vertical validados para un commit local unico; push pendiente de autorizacion.",
+  "scope": {
+    "allowed": [
+      "Lectura y verificacion del commit local y su evidencia.",
+      "Preparacion documental de la autorizacion de push."
+    ],
+    "prohibited": [
+      "Push sin autorizacion explicita de Fito.",
+      "Nueva tarea o cambios funcionales sin autorizacion de Fito.",
+      "PILOTO_DELTA, produccion, deploy, integraciones, mensajes o datos reales."
+    ]
+  },
   "currentTask": null,
-  "activeCampaign": null,
+  "activeCampaign": {
+    "id": "CAMP-20260803-001",
+    "title": "SPORTEX — Sistema Comercial Asistido de Delta",
+    "status": "ACTIVE",
+    "source": "DELTA-20260801-002 / DELTA-DEC-007",
+    "startedAt": "2026-08-02"
+  },
+  "nextCampaign": null,
   "decisions": [
     "DELTA dirige producto y valida el piloto; SPORTEX conserva la verdad tecnica.",
     "SPORTEX usa un worktree Git independiente en C:/Users/Fito/Documents/CODEX/SPORTEX.",
@@ -15,21 +42,213 @@
     "PILOTO_DELTA usa controles de produccion y cada mutacion remota requiere permiso explicito.",
     "PRODUCCION_COMERCIAL queda bloqueado hasta validacion de Delta y GO especifico de Fito.",
     "El Core decide negocio; frontend, WhatsApp y Evolution son superficies o adaptadores.",
-    "Solo puede existir una tarea activa y las vistas de estado son generadas."
+    "Solo puede existir una tarea activa y las vistas de estado son generadas.",
+    "PROJECT_STATE.json es la unica fuente canonica del contexto vivo; CAMPAIGN_STATE.json es una vista generada.",
+    "El cierre local valida documentacion, codigo, pruebas y pendientes, pero no autoriza operaciones remotas.",
+    "La primera vertical comercial usa fixtures ficticios, memoria efimera y no expone replay fuera del guard local triple."
   ],
-  "blockers": [
-    "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
-    "El estado runtime de julio de 2026 es historico y requiere revalidacion.",
-    "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
+  "decisionRefs": [
+    "SPORTEX-DEC-001",
+    "SPORTEX-DEC-002",
+    "SPORTEX-DEC-003",
+    "SPORTEX-DEC-004"
   ],
-  "nextActions": [
-    "Decidir si TASK-20260801-002 de seguridad se ejecuta primero.",
-    "Replantear TASK-20260719-007 al modelo PILOTO_DELTA antes de operar.",
-    "Elegir la primera vertical funcional priorizada por Delta."
+  "git": {
+    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
+    "projectRoot": "platform",
+    "branch": "sportex-governance-20260801",
+    "remote": "https://github.com/kingsportuy-bit/Sportex.git",
+    "headAtLastEvidence": "HEAD que contiene TASK-20260803-002; verificar SHA con Git",
+    "workingTreeState": "COMMIT_LOCAL_UNICO_PREPARADO_SIN_PUSH",
+    "lastVerifiedAt": "2026-08-03"
+  },
+  "migrations": {
+    "status": "NO_EJECUTADAS_EN_ESTA_TAREA",
+    "lastVerifiedAt": "2026-08-02",
+    "executed": [],
+    "pending": [
+      "Revalidar y replantear las migraciones heredadas antes de cualquier operacion en PILOTO_DELTA."
+    ],
+    "note": "TASK-20260803-001 no creo ni ejecuto migraciones locales o remotas."
+  },
+  "tests": {
+    "status": "PASS",
+    "lastRunAt": "2026-08-03",
+    "commands": [
+      "node --check frontend/app.js",
+      "npm run test:workflow (8/8)",
+      "npm run validate-docs (65 archivos, 16 modulos)",
+      "npm run check",
+      "npm test (20/20)",
+      "npm run validate-sql",
+      "npm run build",
+      "npm run validate",
+      "QA visual local escritorio y movil",
+      "git diff --check",
+      "npm run validate (workflow 8/8, docs 65/16, Core 20/20, SQL y build)"
+    ],
+    "evidence": "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md",
+    "note": "Auditoria 57/57 y validacion completa en PASS; el commit local queda sin push."
+  },
+  "deployments": {
+    "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
+    "lastVerifiedAt": "2026-08-03",
+    "records": [],
+    "note": "TASK-20260803-002 no consulto ni modifico runtime remoto y no hizo deploy."
+  },
+  "externalIntegrations": [
+    {
+      "name": "GitHub",
+      "status": "COMMIT_LOCAL_PREPARADO_SIN_PUSH",
+      "lastVerifiedAt": "2026-08-03",
+      "writeAuthorized": false,
+      "note": "Fetch de lectura en PASS y base 0/0 antes del commit; push no autorizado ni ejecutado."
+    },
+    {
+      "name": "Supabase",
+      "status": "NO_REVALIDADA_EN_ESTA_TAREA",
+      "lastVerifiedAt": null,
+      "writeAuthorized": false
+    },
+    {
+      "name": "Evolution API",
+      "status": "NO_REVALIDADA_EN_ESTA_TAREA",
+      "lastVerifiedAt": null,
+      "writeAuthorized": false
+    },
+    {
+      "name": "VPS / runtime",
+      "status": "NO_REVALIDADO_EN_ESTA_TAREA",
+      "lastVerifiedAt": null,
+      "writeAuthorized": false
+    }
+  ],
+  "sensitiveData": {
+    "status": "NO_ACCEDIDA_NI_ALMACENADA",
+    "policy": "Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y salidas del workflow."
+  },
+  "latestEvidence": {
+    "taskId": "TASK-20260803-002",
+    "date": "2026-08-03",
+    "path": "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md",
+    "summary": "Auditoria 57/57, control de secretos y validacion completa en PASS; commit local unico preparado sin push.",
+    "environment": "DESARROLLO_LOCAL",
+    "branch": "sportex-governance-20260801"
+  },
+  "recentChanges": [
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-002",
+      "summary": "Se auditaron, validaron y prepararon para un commit local unico los cambios del OS y la primera vertical, sin push.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md"
+      ],
+      "decisions": [
+        "Commit local unico permitido; push retenido hasta autorizacion explicita."
+      ]
+    },
+    {
+      "date": "2026-08-02",
+      "taskId": "TASK-20260803-001",
+      "summary": "Se entrego y valido la primera vertical comercial local desde un evento ficticio de Evolution hasta etapa y proxima accion visibles.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md",
+        "docs/DOMAIN_MODEL_V1.md",
+        "docs/API_CONTRACT_V1.md",
+        "docs/WHATSAPP_EVENT_CONTRACT.md",
+        "docs/EVOLUTION_CONTRACT.md",
+        "docs/biblioteca/modulos/clientes_leads/README.md",
+        "docs/biblioteca/modulos/whatsapp_conversaciones/README.md",
+        "docs/biblioteca/superficies/evolution/README.md",
+        "docs/biblioteca/superficies/api/README.md",
+        "docs/biblioteca/superficies/web/README.md",
+        "core/README.md",
+        "core/src/domain/commercial-models.ts",
+        "core/src/ports/commercial-replay-store.ts",
+        "core/src/adapters/persistence/in-memory-commercial-replay-store.ts",
+        "core/src/application/commercial-replay-service.ts",
+        "core/src/domain/models.ts",
+        "core/src/http/context.ts",
+        "core/src/http/routes.ts",
+        "core/src/server.ts",
+        "core/tests/commercial-replay.test.ts",
+        "frontend/README.md",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js",
+        "scripts/start-commercial-demo.ps1",
+        "package.json",
+        "scripts/sportex-workflow.mjs",
+        "scripts/tests/sportex-workflow.test.mjs"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-001_PRIMERA_VERTICAL_COMERCIAL_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-004"
+      ]
+    },
+    {
+      "date": "2026-08-02",
+      "taskId": "TASK-20260802-001",
+      "summary": "Se instalo y valido el workflow automatico de contexto, tareas, estado, vistas y cierre de SPORTEX sin iniciar la campaña comercial.",
+      "documents": [
+        "AGENTS.md",
+        "README.md",
+        "docs/TASKS/closed/2026/TASK-20260802-001-automatizar-contexto-tareas-cierre.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md",
+        "docs/INICIAL.md",
+        "docs/CORE_DOCUMENTATION_SYSTEM.md",
+        "docs/DOCUMENTATION_ARCHITECTURE.md",
+        "docs/CODEX_WORKFLOW.md",
+        "docs/TASKS/README.md",
+        "docs/evidencias/README.md",
+        "package.json",
+        "scripts/sportex-workflow.mjs",
+        "scripts/sportex-workflow.ps1",
+        "scripts/tests/sportex-workflow.test.mjs",
+        "scripts/documentation/generate-documentation-views.mjs",
+        "scripts/validate-docs.mjs",
+        "scripts/validate-task-consistency.mjs"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260802-001_WORKFLOW_DOCUMENTAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-001",
+        "SPORTEX-DEC-002",
+        "SPORTEX-DEC-003"
+      ]
+    }
   ],
   "runtimeTruth": {
     "status": "PENDIENTE_REVALIDACION",
     "lastEvidenceDate": "2026-07-19",
     "note": "Los documentos heredados son snapshots y no autorizan operaciones actuales."
-  }
+  },
+  "blockers": [
+    "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
+    "El estado runtime de julio de 2026 es historico y requiere revalidacion.",
+    "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
+  ],
+  "risks": [
+    "La primera vertical es intencionalmente efimera y no demuestra persistencia ni operacion real.",
+    "El commit local de TASK-20260802-001 y TASK-20260803-001 permanece sin push hasta autorizacion explicita.",
+    "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
+    "Los snapshots de integraciones y runtime envejecen y no autorizan escrituras."
+  ],
+  "nextActions": [
+    "Informar el SHA y contenido exacto del commit local y esperar autorizacion de Fito para push.",
+    "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta una nueva prioridad explicita."
+  ]
 }

@@ -59,7 +59,8 @@
           <span><strong>SPORTEX</strong><small>DELTA SPORT</small></span>
         </div>
         <nav class="side-nav" aria-label="Navegación principal">
-          <button class="nav-item is-active" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
+          <button class="nav-item is-active" data-view="commercial"><span>Comercial</span><b id="commercial-count-nav">0</b></button>
+          <button class="nav-item" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
           <button class="nav-item" data-view="clients"><span>Clientes</span><b id="clients-count-nav">0</b></button>
         </nav>
         <div class="sidebar-foot">
@@ -75,6 +76,10 @@
             <strong id="tenant-name">Delta Sport</strong>
           </div>
           <div class="topbar-actions">
+            <div id="local-replay-actions" class="replay-actions" hidden>
+              <button id="replay-exact-button" class="button button--signal" type="button">+ Caso con anuncio</button>
+              <button id="replay-unknown-button" class="button button--outline" type="button">+ Origen desconocido</button>
+            </div>
             <button id="account-button" class="account-button" type="button" aria-label="Cambiar contraseña">
               <span id="account-initials">FS</span>
               <small id="account-email">Cuenta</small>
@@ -83,16 +88,50 @@
           </div>
         </header>
 
-        <div class="production-track" aria-label="Etapas de producción">
-          <span class="is-active"><b>01</b> Venta</span>
-          <span><b>02</b> Diseño</span>
-          <span><b>03</b> Impresión y compras</span>
-          <span><b>04</b> Taller</span>
-          <span><b>05</b> Envío</span>
+        <div class="production-track" aria-label="Recorrido de la primera vertical">
+          <span class="is-active"><b>01</b> Origen</span>
+          <span><b>02</b> Conversación</span>
+          <span><b>03</b> Lead</span>
+          <span><b>04</b> Oportunidad</span>
+          <span><b>05</b> Próxima acción</span>
         </div>
 
         <main class="content">
-          <section id="orders-view" class="view-section">
+          <section id="commercial-view" class="view-section">
+            <header class="view-header commercial-header">
+              <div>
+                <span class="section-code">HOY / MESA COMERCIAL LOCAL</span>
+                <h1>Lo que necesita atención</h1>
+              </div>
+              <div class="commercial-intro">
+                <span class="local-proof">DATOS FICTICIOS · SIN ENVÍOS</span>
+                <p>Un hilo de evidencia une el origen, el mensaje y la decisión siguiente. Nada de esta vista toca Evolution real.</p>
+              </div>
+            </header>
+
+            <div class="metrics-strip metrics-strip--commercial">
+              <article><span>Conversaciones</span><strong id="metric-conversations">00</strong></article>
+              <article><span>Origen exacto</span><strong id="metric-exact">00</strong></article>
+              <article><span>Origen desconocido</span><strong id="metric-unknown">00</strong></article>
+              <article><span>Acciones pendientes</span><strong id="metric-actions">00</strong></article>
+            </div>
+
+            <div id="commercial-list" class="commercial-list" aria-live="polite"></div>
+            <section id="commercial-empty" class="commercial-empty">
+              <div class="evidence-spool" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div>
+                <span class="section-code">PRIMER REPLAY</span>
+                <h2>Probá la cadena completa sin conectar nada real.</h2>
+                <p>Cargá un evento ficticio. SPORTEX lo normaliza, conserva o descarta la atribución con honestidad y abre una oportunidad lista para revisar.</p>
+              </div>
+              <div class="empty-actions">
+                <button class="button button--signal" data-replay="exact" type="button">Cargar caso con anuncio</button>
+                <button class="button button--outline" data-replay="unknown" type="button">Cargar origen desconocido</button>
+              </div>
+            </section>
+          </section>
+
+          <section id="orders-view" class="view-section" hidden>
             <header class="view-header">
               <div>
                 <span class="section-code">MESA DE PEDIDOS / HOY</span>

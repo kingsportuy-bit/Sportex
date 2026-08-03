@@ -21,3 +21,6 @@ Payload inválido, permiso insuficiente, tenant incorrecto, caso feliz, idempote
 
 IMPLEMENTADO_NO_VALIDADO. API v1 inicial probada localmente; autenticacion real
 y certificacion en `PILOTO_DELTA` pendientes de replanificacion.
+
+La mesa comercial agrega replay y lectura solo bajo el guard local triple de
+`TASK-20260803-001`; no existe en entornos reales.

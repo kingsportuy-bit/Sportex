@@ -6,6 +6,13 @@ El frontend muestra proyecciones del Core y permite ejecutar comandos autorizado
 
 La primera superficie incluye login Supabase, pedidos, clientes, seña certificada y alta idempotente de pedido. Está servida por el mismo artefacto liviano del Core, pero permanece separada en código y consume exclusivamente `/v1`.
 
+En desarrollo local, `TASK-20260803-001` agrega una mesa comercial de fixtures:
+
+- inicia sin secretos con identidad ficticia de desarrollo;
+- permite cargar un caso con anuncio exacto y otro de origen desconocido;
+- muestra conversación, atribución, lead, oportunidad, etapa y próxima acción;
+- nunca ofrece enviar, publicar, conectar o persistir datos reales.
+
 Queda prohibido:
 
 - escribir directamente en la base;

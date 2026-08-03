@@ -8,6 +8,8 @@ import { AppError } from "../shared/errors.js";
 const capabilitySchema = z.enum([
   "clients.create",
   "clients.read",
+  "commercial.read",
+  "commercial.replay",
   "payments.certify",
   "orders.create",
   "orders.read",

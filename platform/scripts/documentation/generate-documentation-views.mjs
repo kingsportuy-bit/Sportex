@@ -64,13 +64,6 @@ if (intent !== 'guidance' && state.currentTask?.path) {
   selected.push({ path: state.currentTask.path, owner: 'active-task', authority: 100, readWhen: [intent] });
 }
 const uniqueSelected = [...new Map(selected.map((doc) => [doc.path, doc])).values()];
-const potentialChars = uniqueSelected.reduce((total, doc) => {
-  const file = path.join(root, doc.path);
-  return total + (fs.existsSync(file) ? fs.readFileSync(file, 'utf8').length : 0);
-}, 0);
-if (potentialChars > budget) {
-  throw new Error(`Context budget exceeded for ${intent}: ${potentialChars}/${budget} characters`);
-}
 
 function bulletList(items, empty = '- Ninguno.') {
   return items.length ? items.map((item) => `- ${item}`).join('\n') : empty;
@@ -85,27 +78,56 @@ Actualizado: ${state.updatedAt}.
 
 ## Entorno de trabajo
 
-- Modo documental: \`${state.environment}\`.
+- Entorno actual: \`${state.environment}\`.
+- Entornos permitidos: \`${state.allowedEnvironments.join(', ')}\`.
+- Entornos prohibidos: \`${state.prohibitedEnvironments.join(', ')}\`.
 - Objetivo operativo futuro: \`${state.operatingTarget}\`.
 - Intencion actual: \`${state.mode}\`.
+
+## Git
+
+- Worktree: \`${state.git.worktree}\`.
+- Rama: \`${state.git.branch}\`.
+- Remote: \`${state.git.remote}\`.
+- Verificado: \`${state.git.lastVerifiedAt}\`.
+
+## Campaña y tarea
+
+- Campaña activa: ${state.activeCampaign ? `\`${state.activeCampaign.id}\` - ${state.activeCampaign.title}.` : 'ninguna.'}
+- Proxima campaña: ${state.nextCampaign ? `\`${state.nextCampaign.status}\` - ${state.nextCampaign.title}.` : 'ninguna definida.'}
+- Tarea tecnica: ${state.currentTask ? `\`${state.currentTask.id}\`: \`${state.currentTask.status}\` (${state.currentTask.path}).` : 'ninguna tarea activa.'}
 
 ## Objetivo actual
 
 ${state.objective}
 
-## Tarea actual
+## Alcance actual
 
-${state.currentTask ? `- \`${state.currentTask.id}\`: \`${state.currentTask.status}\` (${state.currentTask.path}).` : '- Ninguna tarea activa.'}
+- Permitido: ${state.scope.allowed.join(' | ')}
+- Prohibido: ${state.scope.prohibited.join(' | ')}
 
 ## Decisiones vigentes
 
 ${bulletList(state.decisions)}
 
-## Runtime
+## Estado operativo registrado
 
-- Estado: \`${state.runtimeTruth.status}\`.
-- Ultima evidencia registrada: \`${state.runtimeTruth.lastEvidenceDate}\`.
-- ${state.runtimeTruth.note}
+- Migraciones: \`${state.migrations.status}\`; ejecutadas ${state.migrations.executed.length}; pendientes ${state.migrations.pending.length}.
+- Pruebas: \`${state.tests.status}\`; ultima ejecucion \`${state.tests.lastRunAt}\`.
+- Despliegues: \`${state.deployments.status}\`; registros ${state.deployments.records.length}.
+- Integraciones: ${state.externalIntegrations.map((item) => `${item.name}=\`${item.status}\``).join(' | ')}
+- Datos sensibles: \`${state.sensitiveData.status}\`. ${state.sensitiveData.policy}
+
+## Ultima evidencia verificable
+
+- Tarea: \`${state.latestEvidence.taskId}\`.
+- Fecha: \`${state.latestEvidence.date}\`.
+- Fuente: \`${state.latestEvidence.path}\`.
+- ${state.latestEvidence.summary}
+
+## Riesgos
+
+${bulletList(state.risks)}
 
 ## Bloqueos
 
@@ -141,7 +163,7 @@ ${render(closed)}
 `;
 }
 
-function renderContext() {
+function renderContext(potentialChars) {
   return `# Contexto actual SPORTEX
 
 > GENERADO. No editar manualmente.
@@ -151,10 +173,22 @@ Actualizado: ${state.updatedAt}.
 ## Trabajo
 
 - Intencion: \`${intent}\`.
-- Entorno documental: \`${state.environment}\`.
+- Entorno actual: \`${state.environment}\`.
+- Entornos permitidos: \`${state.allowedEnvironments.join(', ')}\`.
 - Objetivo operativo: \`${state.operatingTarget}\`.
+- Campaña activa: ${state.activeCampaign ? `\`${state.activeCampaign.id}\` - ${state.activeCampaign.title}` : 'ninguna'}.
 - Tarea: ${state.currentTask && intent !== 'guidance' ? `\`${state.currentTask.id}\`` : 'no cargada para esta consulta'}.
+- Worktree: \`${state.git.worktree}\`.
+- Rama: \`${state.git.branch}\`.
 - Presupuesto potencial: ${potentialChars}/${budget} caracteres.
+
+## Objetivo, alcance y riesgo
+
+- Objetivo: ${state.objective}
+- Permitido: ${state.scope.allowed.join(' | ')}
+- Prohibido: ${state.scope.prohibited.join(' | ')}
+- Riesgos: ${state.risks.join(' | ')}
+- Proxima accion: ${state.nextActions[0]}
 
 ## Regla de uso
 
@@ -183,23 +217,60 @@ function renderErrorIndex() {
   return `${JSON.stringify({ schemaVersion: 1, updatedAt: state.updatedAt, entries }, null, 2)}\n`;
 }
 
+function renderCampaignState() {
+  return `${JSON.stringify({
+    schemaVersion: 1,
+    generatedFrom: 'docs/state/PROJECT_STATE.json',
+    updatedAt: state.updatedAt,
+    activeCampaign: state.activeCampaign,
+    nextCampaign: state.nextCampaign,
+  }, null, 2)}\n`;
+}
+
+const sessionOutput = renderSession();
+const potentialChars = uniqueSelected.reduce((total, doc) => {
+  if (doc.path === 'docs/SESSION_STATE.md') return total + sessionOutput.length;
+  const file = path.join(root, doc.path);
+  return total + (fs.existsSync(file) ? fs.readFileSync(file, 'utf8').length : 0);
+}, 0);
+if (potentialChars > budget) {
+  throw new Error(`Context budget exceeded for ${intent}: ${potentialChars}/${budget} characters`);
+}
+
 const outputs = new Map([
-  ['docs/SESSION_STATE.md', renderSession()],
+  ['docs/SESSION_STATE.md', sessionOutput],
   ['docs/TASKS/INDEX.md', renderTaskIndex()],
-  ['docs/generated/CURRENT_CONTEXT.md', renderContext()],
+  ['docs/generated/CURRENT_CONTEXT.md', renderContext(potentialChars)],
   ['docs/errors/index.json', renderErrorIndex()],
+  ['docs/state/CAMPAIGN_STATE.json', renderCampaignState()],
 ]);
 
 if (!printContext) {
-  for (const [relative, content] of outputs) {
-    const normalized = `${content.trimEnd()}\n`;
-    const target = path.join(root, relative);
-    if (check) {
+  if (check) {
+    for (const [relative, content] of outputs) {
+      const normalized = `${content.trimEnd()}\n`;
+      const target = path.join(root, relative);
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8').replace(/\r\n/gu, '\n') : '';
       if (current !== normalized) throw new Error(`${relative} is stale; run npm run generate-docs`);
-    } else {
-      fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.writeFileSync(target, normalized, 'utf8');
+    }
+  } else {
+    const lockPath = path.join(root, 'docs', 'state', '.sportex-workflow.lock');
+    let lock;
+    try {
+      lock = fs.openSync(lockPath, 'wx');
+    } catch {
+      throw new Error('No se pudo obtener docs/state/.sportex-workflow.lock; no ejecutar sync o close en paralelo');
+    }
+    try {
+      for (const [relative, content] of outputs) {
+        const normalized = `${content.trimEnd()}\n`;
+        const target = path.join(root, relative);
+        fs.mkdirSync(path.dirname(target), { recursive: true });
+        fs.writeFileSync(target, normalized, 'utf8');
+      }
+    } finally {
+      fs.closeSync(lock);
+      fs.unlinkSync(lockPath);
     }
   }
 }

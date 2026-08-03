@@ -40,3 +40,14 @@ reconcilian con eventos reales.
 
 Crear, reconectar, cambiar webhook, enviar, cerrar sesion o modificar Evolution
 es una operacion real. Requiere preflight, rollback y permiso exacto de Fito.
+
+## Replay local
+
+`TASK-20260803-001` incorpora un replay de eventos ficticios, protegido por tres
+gates simultáneos: entorno `development|test`, store `memory` y autenticación
+de desarrollo. Solo acepta la instancia `LOCAL_FIXTURE` y referencias con
+prefijo ficticio.
+
+El replay no se conecta a Evolution, no representa el payload productivo
+completo, no persiste en PostgreSQL y no habilita mensajes. Sirve para validar
+normalización, deduplicación, atribución y la proyección comercial local.

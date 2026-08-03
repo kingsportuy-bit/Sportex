@@ -2,7 +2,7 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-08-01.
+Actualizado: 2026-08-03.
 
 ## Activa
 
@@ -23,3 +23,6 @@ Actualizado: 2026-08-01.
 - `TASK-20260719-006` | `done` | Primera implementación vertical del Core | docs/TASKS/closed/2026/TASK-20260719-006-primer-core-vertical.md
 - `TASK-20260801-001` | `done` | Sistema de desarrollo gobernado para SPORTEX | docs/TASKS/closed/2026/TASK-20260801-001-sistema-desarrollo-sportex.md
 - `TASK-20260801-003` | `done` | Canonizar remote GitHub de SPORTEX | docs/TASKS/closed/2026/TASK-20260801-003-canonizar-remote-github.md
+- `TASK-20260802-001` | `done` | Automatizar contexto, tareas y cierre de SPORTEX | docs/TASKS/closed/2026/TASK-20260802-001-automatizar-contexto-tareas-cierre.md
+- `TASK-20260803-001` | `done` | Primera vertical comercial local de SPORTEX | docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md
+- `TASK-20260803-002` | `done` | Versionar OS y primera vertical comercial local | docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md

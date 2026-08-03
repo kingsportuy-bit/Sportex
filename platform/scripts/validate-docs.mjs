@@ -14,6 +14,7 @@ const requiredDocs = [
   '../AGENTS.md', '.gitattributes', '.editorconfig', 'AGENTS.md', 'README.md',
   'docs/INICIAL.md', 'docs/OPERADOR_PROYECTO.md',
   'docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md',
+  'docs/DECISIONES.md',
   'docs/DOCUMENTATION_ARCHITECTURE.md', 'docs/CORE_DOCUMENTATION_SYSTEM.md',
   'docs/MODOS_DE_TRABAJO.md', 'docs/CODEX_WORKFLOW.md',
   'docs/DELTA_PROJECT_INTERFACE.md', 'docs/ENVIRONMENTS_CONTRACT.md',
@@ -40,6 +41,9 @@ const requiredDocs = [
   'docs/errors/entries/SPX-ERR-20260801-001-guidance-mutaba-vista.md',
   'scripts/codex-preflight-errors.ps1', 'scripts/codex-register-error.ps1',
   'scripts/documentation/generate-documentation-views.mjs',
+  'scripts/sportex-workflow.mjs',
+  'scripts/sportex-workflow.ps1',
+  'scripts/tests/sportex-workflow.test.mjs',
   'scripts/validate-task-consistency.mjs',
   'scripts/validate-development-guide-sync.mjs',
   'scripts/task-worktree-doctor.mjs',
@@ -101,7 +105,7 @@ try { registry = JSON.parse(read('docs/state/DOCUMENT_REGISTRY.json')); }
 catch (error) { failures.push(`DOCUMENT_REGISTRY invalid JSON: ${error.message}`); }
 
 if (state) {
-  if (state.schemaVersion !== 1 || state.project !== 'SPORTEX') failures.push('PROJECT_STATE: invalid identity/schema');
+  if (state.schemaVersion !== 2 || state.project !== 'SPORTEX') failures.push('PROJECT_STATE: invalid identity/schema');
   if (!['DOCUMENTACION','DESARROLLO_LOCAL','PILOTO_DELTA','PRODUCCION_COMERCIAL'].includes(state.environment)) failures.push('PROJECT_STATE: invalid environment');
   if (state.operatingTarget !== 'PILOTO_DELTA' && state.operatingTarget !== 'PRODUCCION_COMERCIAL') failures.push('PROJECT_STATE: invalid operatingTarget');
 }
@@ -123,6 +127,7 @@ if (registry) {
 run('scripts/documentation/generate-documentation-views.mjs', ['--check']);
 run('scripts/validate-task-consistency.mjs', [`--root=${root}`]);
 run('scripts/validate-development-guide-sync.mjs', ['--self-test', `--root=${root}`]);
+run('scripts/sportex-workflow.mjs', ['check', '--intent=documentation']);
 
 const guidance = run('scripts/documentation/generate-documentation-views.mjs', ['--print-context','--intent=guidance']);
 for (const expected of ['Intencion: `guidance`', 'consulta read-only', 'docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md']) {

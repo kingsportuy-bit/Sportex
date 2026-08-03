@@ -15,8 +15,9 @@
 - `campaign`: `none` o ID;
 - `context_focus`;
 - `development_guide_impact`: `required` o `none`;
+- `updated_at`: fecha del ultimo checkpoint material;
 - objetivo, alcance permitido/prohibido, entradas, salidas, validacion,
-  evidencia, rollback y deuda restante.
+  evidencia, rollback, deuda restante, registro de avances y decisiones.
 
 ## Reglas
 
@@ -29,6 +30,9 @@
 - Cambiar el sistema de desarrollo exige
   `development_guide_impact: required` y actualizar la guia maestra.
 - La tarea no autoriza runtime; las operaciones reales requieren un GO aparte.
+- Cada checkpoint material debe ser la primera entrada de `recentChanges`,
+  coincidir con `updatedBy` y `latestEvidence`, y cerrar con
+  `SPORTEX_CLOSE=PASS`.
 
 ## Git y worktrees
 
@@ -36,3 +40,13 @@
 - Ejecutar `npm run task:doctor` antes de abrir trabajo nuevo.
 - Obtener el siguiente ID con `npm run task:next-id`.
 - Cada release usa commit remoto y scope explicito.
+
+## Cierre de checkpoint
+
+```powershell
+npm run workflow:close -- TASK-AAAAMMDD-NNN
+```
+
+La tarea puede seguir activa despues del checkpoint. Cuando el objetivo este
+cumplido, se mueve a `closed/<anio>/`, `currentTask` pasa a `null`, se registra
+la siguiente accion y se ejecuta el mismo cierre.

@@ -27,4 +27,5 @@ Eventos normalizados, identificadores del proveedor y resultados verificables.
 
 ## Estado
 
-NO_INICIADO.
+REPLAY_LOCAL_IMPLEMENTADO. El adaptador real permanece `NO_INICIADO`; no hay
+webhook, sesión, consulta ni envío autorizado.

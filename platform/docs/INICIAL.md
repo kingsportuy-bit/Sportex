@@ -16,7 +16,14 @@ npm run context -- guidance
 ```
 
 Para trabajo material, reemplazar `guidance` por la intencion correcta y leer
-la tarea activa que indique la vista generada.
+todos los archivos que el comando enumere bajo `READ:`. Un arranque sano debe
+devolver `SPORTEX_CONTEXT=PASS` y mostrar campaña, tarea, objetivo, alcance,
+entorno, riesgos, worktree, rama y proxima accion.
+
+Fito no necesita pedir que se lea este archivo. `AGENTS.md` obliga a ejecutar
+este arranque en cada hilo nuevo. Si aparece `SPORTEX_WORKFLOW=FAIL`, detener el
+cambio material y reconciliar fuentes; `npm run workflow:sync` se usa solamente
+cuando las fuentes son coherentes y las vistas quedaron desactualizadas.
 
 ## Router de intenciones
 
@@ -44,6 +51,7 @@ La resolucion completa vive en `MODOS_DE_TRABAJO.md`.
 5. `ENVIRONMENTS_CONTRACT.md` para limites de entorno.
 6. `BIBLIA_SPORTEX.md`, `BUSINESS.md` y `ARCHITECTURE.md` para producto.
 7. `biblioteca/README.md` para ubicar owners y contratos focales.
+8. `DECISIONES.md` para decisiones tecnicas durables.
 
 ## Reglas madre
 
@@ -71,3 +79,13 @@ renombrarse o reutilizarse dentro de una tarea de migracion aprobada.
 `IMPLEMENTADO_NO_VALIDADO`, `PENDIENTE_EVIDENCIA`, `BLOQUEADO`,
 `CERTIFICADO_PILOTO` y `OPERATIVO_COMERCIAL` no son equivalentes. El runtime se
 observa; no se declara manualmente desde la documentacion.
+
+## Cierre obligatorio
+
+- Consulta read-only: `npm run workflow:check`.
+- Cambio material: actualizar tarea, estado, decisiones y evidencia; luego
+  ejecutar `npm run workflow:close -- TASK-AAAAMMDD-NNN`.
+- No declarar un checkpoint terminado sin `SPORTEX_CLOSE=PASS`.
+
+El cierre ejecuta la validacion local completa de documentacion, workflow,
+tipos, tests, SQL y build. No despliega ni concede permisos remotos.

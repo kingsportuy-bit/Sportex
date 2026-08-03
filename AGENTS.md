@@ -10,7 +10,12 @@ Antes de analizar o modificar SPORTEX:
 1. entrar en `platform/`;
 2. leer `platform/AGENTS.md`;
 3. leer `platform/docs/INICIAL.md`;
-4. ejecutar los scans, router y validadores indicados alli.
+4. inferir la intencion y ejecutar el contexto automatico indicado alli;
+5. leer todos los archivos enumerados bajo `READ:`.
+
+Fito no necesita pedir `lee INICIAL.md`, recordar una tarea ni describir otro
+hilo. Un contexto sano devuelve `SPORTEX_CONTEXT=PASS` e informa campaña,
+tarea, objetivo, alcance, entorno, riesgos, worktree, rama y proxima accion.
 
 No modificar, desplegar ni retirar el legado de la raiz salvo que una tarea
 SPORTEX aprobada lo incluya expresamente. Una copia dentro de DELTA no es fuente

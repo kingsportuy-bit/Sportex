@@ -1,6 +1,13 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-01",
-  "activeCampaign": null,
-  "note": "Las campanas son opcionales; cada cambio sigue requiriendo una tarea activa."
+  "generatedFrom": "docs/state/PROJECT_STATE.json",
+  "updatedAt": "2026-08-03",
+  "activeCampaign": {
+    "id": "CAMP-20260803-001",
+    "title": "SPORTEX — Sistema Comercial Asistido de Delta",
+    "status": "ACTIVE",
+    "source": "DELTA-20260801-002 / DELTA-DEC-007",
+    "startedAt": "2026-08-02"
+  },
+  "nextCampaign": null
 }

@@ -24,15 +24,16 @@ Evidencia y feedback de DELTA
 ## Arquitectura por responsabilidades
 
 1. `INICIAL.md` enruta la intencion.
-2. `PROJECT_STATE.json` conserva la continuidad canonica.
-3. Las tareas delimitan el cambio; no reemplazan contratos.
-4. La Biblioteca identifica el owner correcto.
-5. Los contratos definen entradas, salidas, permisos y efectos.
-6. Git identifica el cambio exacto.
-7. Los tests prueban codigo y reglas.
-8. La gobernanza de release prueba que se desplego el artefacto aprobado.
-9. La observacion runtime prueba el estado real.
-10. La evidencia permite cerrar sin afirmaciones de memoria.
+2. `sportex-workflow` valida el contexto y devuelve un PASS explicito.
+3. `PROJECT_STATE.json` conserva la continuidad canonica.
+4. Las tareas delimitan el cambio; no reemplazan contratos.
+5. La Biblioteca identifica el owner correcto.
+6. Los contratos definen entradas, salidas, permisos y efectos.
+7. Git identifica el cambio exacto.
+8. Los tests prueban codigo y reglas.
+9. La gobernanza de release prueba que se desplego el artefacto aprobado.
+10. La observacion runtime prueba el estado real.
+11. La evidencia permite cerrar sin afirmaciones de memoria.
 
 ## Flujo normal
 
@@ -82,6 +83,10 @@ debe decidir cuando cambian alcance, riesgo, datos reales o compromisos.
 - Una tarea bloqueada se mueve a cola; no queda fingiendo actividad.
 - Un objetivo grande puede usar una campana, pero cada cambio sigue teniendo
   su propia tarea y alcance.
+- Cada hilo material registra un checkpoint en la tarea, el estado canonico,
+  decisiones y evidencia antes del cierre.
+- Una campaña se abre en `PROJECT_STATE.json`; su vista es
+  `CAMPAIGN_STATE.json`. Activa: `nextCampaign: null`.
 
 ## Entornos
 
@@ -115,6 +120,21 @@ La validacion debe ser proporcional al riesgo:
 
 `IMPLEMENTADO_NO_VALIDADO` es un estado valido. `CERTIFICADO_PILOTO` exige
 evidencia real. `OPERATIVO_COMERCIAL` exige ademas el gate de mercado.
+
+### Cierre ejecutable
+
+```powershell
+npm run workflow:close -- TASK-AAAAMMDD-NNN
+```
+
+Antes de emitir `SPORTEX_CLOSE=PASS`, el workflow exige coincidencia de tarea y
+estado, cambio reciente, decision y evidencia, estado explicito de migraciones,
+pruebas, despliegues, integraciones y datos sensibles, pendientes y proxima
+accion. Luego regenera las vistas y ejecuta `npm run validate`, que cubre scan,
+tests del workflow, documentacion, TypeScript, tests del Core, SQL y build.
+
+Una consulta read-only cierra con `npm run workflow:check`. Ninguno de estos
+comandos concede permisos de runtime.
 
 ## Como se mantiene actualizada esta guia
 
