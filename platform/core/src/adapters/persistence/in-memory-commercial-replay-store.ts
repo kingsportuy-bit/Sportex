@@ -4,13 +4,10 @@ import type {
 } from "../../domain/commercial-models.js";
 import type {
   CommercialReplayStore,
+  CommercialReplayState,
   CommercialReplayTransaction,
 } from "../../ports/commercial-replay-store.js";
-
-interface CommercialReplayState {
-  items: CommercialWorkspaceItem[];
-  idempotency: CommercialReplayIdempotency[];
-}
+import { emptyCommercialReplayState } from "../../ports/commercial-replay-store.js";
 
 class MemoryCommercialReplayTransaction implements CommercialReplayTransaction {
   constructor(
@@ -61,10 +58,23 @@ class MemoryCommercialReplayTransaction implements CommercialReplayTransaction {
       .filter((item) => item.tenantId === this.tenantId)
       .sort((left, right) => right.conversation.lastActivityAt.localeCompare(left.conversation.lastActivityAt));
   }
+
+  async replaceTenant(items: CommercialWorkspaceItem[]): Promise<void> {
+    if (items.some((item) => item.tenantId !== this.tenantId)) {
+      throw new Error("commercial_store_tenant_mismatch");
+    }
+    this.state.items = [
+      ...this.state.items.filter((item) => item.tenantId !== this.tenantId),
+      ...structuredClone(items),
+    ];
+    this.state.idempotency = this.state.idempotency.filter(
+      (record) => record.tenantId !== this.tenantId,
+    );
+  }
 }
 
 export class InMemoryCommercialReplayStore implements CommercialReplayStore {
-  private state: CommercialReplayState = { items: [], idempotency: [] };
+  private state: CommercialReplayState = emptyCommercialReplayState();
   private queue: Promise<void> = Promise.resolve();
 
   async transaction<T>(
@@ -90,5 +100,9 @@ export class InMemoryCommercialReplayStore implements CommercialReplayStore {
 
   snapshot(): CommercialReplayState {
     return structuredClone(this.state);
+  }
+
+  async close(): Promise<void> {
+    return Promise.resolve();
   }
 }

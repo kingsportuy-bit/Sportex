@@ -10,7 +10,7 @@ Actualizado: 2026-08-03.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL`.
 - Entornos prohibidos: `PILOTO_DELTA, PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `idle`.
+- Intencion actual: `product`.
 
 ## Git
 
@@ -23,51 +23,50 @@ Actualizado: 2026-08-03.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20260803-005`: `in_progress` (docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md).
 
 ## Objetivo actual
 
-CAMP-20260803-001 sigue activa con el commit remoto 66c4aad verificado y espera autorizacion de Fito para su siguiente tarea.
+Resguardar en Git la Etapa 0 aprobada antes de implementar.
 
 ## Alcance actual
 
-- Permitido: Lectura y verificacion local de la primera vertical y su evidencia remota. | Documentacion de continuidad de CAMP-20260803-001.
-- Prohibido: Nueva tarea o ampliacion de CAMP-20260803-001 sin autorizacion de Fito. | Codigo o cambios funcionales fuera de una tarea aprobada. | PILOTO_DELTA, produccion, deploy, integraciones, mensajes o datos reales.
+- Permitido: Reconciliar CAMP-20260803-001 y TASK-20260803-005 con el plan V1 de DELTA. | Documentar un unico wireframe de Operacion, Marketing y Administracion. | Preservar Core, persistencia, 18 leads ficticios y trabajo local pendiente.
+- Prohibido: Codigo, commit o push sin autorizacion posterior. | Integraciones, datos reales, mensajes o deploy. | PILOTO_DELTA y PRODUCCION_COMERCIAL.
 
 ## Decisiones vigentes
 
-- DELTA dirige producto y valida el piloto; SPORTEX conserva la verdad tecnica.
-- SPORTEX usa un worktree Git independiente en C:/Users/Fito/Documents/CODEX/SPORTEX.
-- No existe STAGING permanente separado: el entorno real previo al mercado es PILOTO_DELTA.
-- PILOTO_DELTA usa controles de produccion y cada mutacion remota requiere permiso explicito.
-- PRODUCCION_COMERCIAL queda bloqueado hasta validacion de Delta y GO especifico de Fito.
-- El Core decide negocio; frontend, WhatsApp y Evolution son superficies o adaptadores.
-- Solo puede existir una tarea activa y las vistas de estado son generadas.
-- PROJECT_STATE.json es la unica fuente canonica del contexto vivo; CAMPAIGN_STATE.json es una vista generada.
-- El cierre local valida documentacion, codigo, pruebas y pendientes, pero no autoriza operaciones remotas.
-- La primera vertical comercial usa fixtures ficticios, memoria efimera y no expone replay fuera del guard local triple.
+- DELTA decide producto; SPORTEX conserva la verdad tecnica.
+- El Core decide negocio y toda informacion operativa pertenece a un tenant.
+- Solo existe una tarea activa; PROJECT_STATE es canonico y las vistas son generadas.
+- PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.
+- La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.
+- PASS tecnico y aprobacion de producto son gates separados; el wireframe de Etapa 0 fue aprobado y la interfaz vigente sigue sin aprobacion.
+- CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.
 
 ## Estado operativo registrado
 
 - Migraciones: `NO_EJECUTADAS_EN_ESTA_TAREA`; ejecutadas 0; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-03`.
 - Despliegues: `SIN_CAMBIOS_EN_ESTA_TAREA`; registros 0.
-- Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_REVALIDADA_EN_ESTA_TAREA` | Evolution API=`NO_REVALIDADA_EN_ESTA_TAREA` | VPS / runtime=`NO_REVALIDADO_EN_ESTA_TAREA`
-- Datos sensibles: `NO_ACCEDIDA_NI_ALMACENADA`. Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y salidas del workflow.
+- Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_ACCEDIDA_EN_ESTA_TAREA` | Evolution API=`NO_ACCEDIDA_EN_ESTA_TAREA` | VPS / runtime=`NO_ACCEDIDA_EN_ESTA_TAREA`
+- Datos sensibles: `NO_ACCEDIDA_NI_ALMACENADA`. Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y la demo.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260803-003`.
+- Tarea: `TASK-20260803-005`.
 - Fecha: `2026-08-03`.
-- Fuente: `docs/evidencias/TASK-20260803-003_PUSH_REMOTO_RECONCILIADO.md`.
-- Estado y vistas reconciliados con el commit remoto 66c4aad; validacion integral en PASS y cambios funcionales 0.
+- Fuente: `docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md`.
+- Etapa 0 reconciliada con la V1 Operativa y wireframe maestro aprobado por Fito; versionado local pendiente antes de codigo.
 
 ## Riesgos
 
-- La primera vertical es intencionalmente efimera y no demuestra persistencia ni operacion real.
-- El commit remoto 66c4aad prueba codigo y documentacion versionados, no runtime ni operacion real.
+- Wireframe aprobado; la interfaz actual no lo implementa ni esta lista para uso.
+- Los modulos nuevos son objetivos, no capacidades implementadas.
+- El JSON persiste solo fixtures locales; no demuestra operacion ni durabilidad remota.
+- TASK-20260803-004 y TASK-20260803-005 siguen sin commit ni push.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
-- Los snapshots de integraciones y runtime envejecen y no autorizan escrituras.
+- Los snapshots remotos no autorizan escrituras.
 
 ## Bloqueos
 
@@ -77,5 +76,7 @@ CAMP-20260803-001 sigue activa con el commit remoto 66c4aad verificado y espera 
 
 ## Siguientes acciones
 
-- Esperar autorizacion explicita de Fito antes de abrir la siguiente tarea de CAMP-20260803-001.
-- Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta una nueva prioridad explicita.
+- Presentar el commit de resguardo de TASK-20260803-004/005.
+- Pedir autorizacion antes de commit o push.
+- No modificar codigo ni conectar servicios reales.
+- Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

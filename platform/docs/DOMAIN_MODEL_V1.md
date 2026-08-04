@@ -214,3 +214,11 @@ IA y no ejecuta seguimientos ni mensajes.
 La migracion estatica declara RLS forzado y no crea ni altera `sportex_*` o
 `sports_*`. Su nombre `sportex_staging_*` es historico; no debe ejecutarse ni
 tratarse como esquema objetivo hasta que una tarea de `PILOTO_DELTA` la revise.
+
+## Ampliacion CRM local de TASK-20260803-004
+
+Esta seccion reemplaza el alcance efimero inicial para la demo local. La semilla canonica contiene 18 expedientes ficticios con producto `CAMISETAS` o `EQUIPO_COMPLETO`, cantidades, talles, colores, personalizacion, datos confirmados y faltantes.
+
+La oportunidad usa `NUEVO`, `EN_CALIFICACION`, `COTIZADO`, `EN_SEGUIMIENTO`, `PERDIDO` o `SENA_VALIDADA`, y conserva proxima accion, fecha, estado, version, seguimientos e historial. Cada mutacion autorizada incrementa la version. `SENA_VALIDADA` es solo una etapa fixture: no crea ni certifica pagos.
+
+El JSON local atomico conserva solamente fixtures ignorados por Git. La vertical no convierte leads en clientes, no interpreta con IA, no envia mensajes y no crea pagos, pedidos ni produccion.

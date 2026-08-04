@@ -50,3 +50,7 @@ mercado. Requiere como minimo:
 - Todo cambio remoto requiere tarea, version, alcance, preflight, permiso,
   rollback y evidencia.
 - Los secretos nunca se guardan en tareas, evidencias, memoria ni Git.
+
+### Persistencia de la demo CRM
+
+`SPORTEX_COMMERCIAL_DEMO_FILE` puede apuntar a un JSON local de fixtures solamente cuando coinciden `development|test`, store `memory` y `SPORTEX_DEV_AUTH=true`. El archivo queda ignorado por Git. Reiniciar conserva los cambios ficticios; esto no demuestra durabilidad remota ni autoriza promover datos.

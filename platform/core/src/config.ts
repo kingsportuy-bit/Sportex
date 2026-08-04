@@ -16,6 +16,7 @@ export interface SportexConfig {
   authAnonKey?: string;
   authTimeoutMs?: number;
   frontendDir?: string;
+  commercialDemoFile?: string;
   release?: string;
   host: string;
   port: number;
@@ -39,6 +40,7 @@ const schema = z.object({
   SPORTEX_AUTH_ANON_KEY_FILE: z.string().min(1).optional(),
   SPORTEX_AUTH_TIMEOUT_MS: z.coerce.number().int().min(250).max(30_000).default(5_000),
   SPORTEX_FRONTEND_DIR: z.string().min(1).optional(),
+  SPORTEX_COMMERCIAL_DEMO_FILE: z.string().min(1).optional(),
   SPORTEX_RELEASE: z.string().trim().min(1).max(160).default("local"),
   HOST: z.string().min(1).default("127.0.0.1"),
   PORT: z.coerce.number().int().min(1).max(65535).default(8080),
@@ -75,6 +77,11 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     throw new Error("database_url_required");
   }
 
+  if (parsed.SPORTEX_COMMERCIAL_DEMO_FILE
+      && !(isSafeLocalEnvironment && parsed.SPORTEX_STORE === "memory" && parsed.SPORTEX_DEV_AUTH)) {
+    throw new Error("commercial_demo_file_forbidden");
+  }
+
   if (!isSafeLocalEnvironment) {
     if (!parsed.SPORTEX_AUTH_INTERNAL_URL || !parsed.SPORTEX_AUTH_PUBLIC_URL || !authAnonKey) {
       throw new Error("supabase_auth_config_required");
@@ -103,6 +110,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     ...(authAnonKey ? { authAnonKey } : {}),
     authTimeoutMs: parsed.SPORTEX_AUTH_TIMEOUT_MS,
     ...(parsed.SPORTEX_FRONTEND_DIR ? { frontendDir: parsed.SPORTEX_FRONTEND_DIR } : {}),
+    ...(parsed.SPORTEX_COMMERCIAL_DEMO_FILE ? { commercialDemoFile: parsed.SPORTEX_COMMERCIAL_DEMO_FILE } : {}),
     release: parsed.SPORTEX_RELEASE,
     host: parsed.HOST,
     port: parsed.PORT,

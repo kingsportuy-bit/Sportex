@@ -3,6 +3,7 @@ export type Capability =
   | "clients.read"
   | "commercial.read"
   | "commercial.replay"
+  | "commercial.manage"
   | "payments.certify"
   | "orders.create"
   | "orders.read";

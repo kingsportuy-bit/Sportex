@@ -6,12 +6,27 @@ El frontend muestra proyecciones del Core y permite ejecutar comandos autorizado
 
 La primera superficie incluye login Supabase, pedidos, clientes, seña certificada y alta idempotente de pedido. Está servida por el mismo artefacto liviano del Core, pero permanece separada en código y consume exclusivamente `/v1`.
 
-En desarrollo local, `TASK-20260803-001` agrega una mesa comercial de fixtures:
+En desarrollo local, `TASK-20260803-004` valida una mesa CRM de fixtures sobre esta misma superficie:
 
 - inicia sin secretos con identidad ficticia de desarrollo;
-- permite cargar un caso con anuncio exacto y otro de origen desconocido;
-- muestra conversación, atribución, lead, oportunidad, etapa y próxima acción;
-- nunca ofrece enviar, publicar, conectar o persistir datos reales.
+- carga una semilla canonica de 18 leads con atribucion exacta o desconocida;
+- permite filtrar el tablero, abrir el expediente y consultar la conversacion historica;
+- solicita al Core cambiar etapa, editar proxima accion o registrar seguimiento;
+- persiste solamente fixtures en JSON local ignorado por Git;
+- restaura la semilla mediante confirmacion explicita;
+- nunca ofrece enviar, publicar, conectar ni usar datos reales.
+
+Estado CRM: `VALIDADO_DESARROLLO_LOCAL`; no certifica `PILOTO_DELTA`.
+
+Validación de producto del 2026-08-03: `NO_APROBADA`. El resultado técnico,
+los 18 leads y la persistencia permanecen válidos; `TASK-20260803-005` rediseña
+la experiencia alrededor de `Hoy` y `Resultados` antes de una nueva revisión.
+
+Etapa 0 V1: el rediseño propuesto amplía la navegación a Operación (`Hoy`,
+`Leads`, `Pedidos`, `Clientes`), Marketing y Administración. El wireframe
+incluye conversación asistida, tabla de talles, origen histórico, conversión
+objetivo a Cliente/Pedido y tablero productivo. Sigue pendiente de aprobación;
+no representa código ni capacidades nuevas ya implementadas.
 
 Queda prohibido:
 

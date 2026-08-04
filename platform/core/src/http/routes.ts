@@ -57,6 +57,42 @@ const evolutionReplaySchema = z.object({
   }).strict(),
 }).strict();
 
+const commercialItemParamsSchema = z.object({
+  itemId: z.string().trim().min(3).max(120),
+}).strict();
+
+const expectedVersionSchema = z.number().int().positive();
+const commercialStageSchema = z.enum([
+  "NUEVO",
+  "EN_CALIFICACION",
+  "COTIZADO",
+  "EN_SEGUIMIENTO",
+  "PERDIDO",
+  "SENA_VALIDADA",
+]);
+
+const updateCommercialStageSchema = z.object({
+  stage: commercialStageSchema,
+  expectedVersion: expectedVersionSchema,
+  reason: z.string().trim().min(3).max(240).optional(),
+}).strict();
+
+const updateCommercialNextActionSchema = z.object({
+  description: z.string().trim().min(3).max(240),
+  dueAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).nullable(),
+  expectedVersion: expectedVersionSchema,
+}).strict();
+
+const recordCommercialFollowUpSchema = z.object({
+  note: z.string().trim().min(3).max(1_000),
+  outcome: z.enum(["SIN_CAMBIOS", "AVANZO", "SIN_RESPUESTA", "NO_CONTINUA"]),
+  expectedVersion: expectedVersionSchema,
+}).strict();
+
+const resetCommercialDemoSchema = z.object({
+  confirmation: z.literal("RESTAURAR_DATOS_FICTICIOS"),
+}).strict();
+
 export async function registerRoutes(
   app: FastifyInstance,
   service: CoreService,
@@ -71,6 +107,7 @@ export async function registerRoutes(
       authAnonKey: config.authAnonKey ?? null,
       release: config.release ?? "local",
       localCommercialReplayEnabled: commercialService !== null,
+      localCommercialPersistenceEnabled: commercialService !== null && Boolean(config.commercialDemoFile),
     },
   }));
 
@@ -151,6 +188,41 @@ export async function registerRoutes(
       const context = await resolveContext(request);
       const items = await commercialService.list(context);
       return { data: items, meta: { correlationId: context.correlationId } };
+    });
+
+    app.patch("/v1/local/commercial/workspace/:itemId/stage", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = updateCommercialStageSchema.parse(request.body);
+      const item = await commercialService.updateStage(context, params.itemId, {
+        stage: input.stage,
+        expectedVersion: input.expectedVersion,
+        ...(input.reason ? { reason: input.reason } : {}),
+      });
+      return { data: item, meta: { correlationId: context.correlationId } };
+    });
+
+    app.patch("/v1/local/commercial/workspace/:itemId/next-action", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = updateCommercialNextActionSchema.parse(request.body);
+      const item = await commercialService.updateNextAction(context, params.itemId, input);
+      return { data: item, meta: { correlationId: context.correlationId } };
+    });
+
+    app.post("/v1/local/commercial/workspace/:itemId/follow-ups", async (request, reply) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = recordCommercialFollowUpSchema.parse(request.body);
+      const item = await commercialService.recordFollowUp(context, params.itemId, input);
+      return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+    });
+
+    app.post("/v1/local/commercial-demo/reset", async (request) => {
+      const context = await resolveContext(request);
+      const input = resetCommercialDemoSchema.parse(request.body);
+      const result = await commercialService.resetDemo(context, input.confirmation);
+      return { data: result, meta: { correlationId: context.correlationId } };
     });
   }
 }

@@ -11,6 +11,7 @@ export interface CommercialReplayTransaction {
   findByProviderConversationRef(providerConversationRef: string): Promise<CommercialWorkspaceItem | null>;
   save(item: CommercialWorkspaceItem): Promise<void>;
   list(): Promise<CommercialWorkspaceItem[]>;
+  replaceTenant(items: CommercialWorkspaceItem[]): Promise<void>;
 }
 
 export interface CommercialReplayStore {
@@ -18,4 +19,15 @@ export interface CommercialReplayStore {
     tenantId: string,
     operation: (transaction: CommercialReplayTransaction) => Promise<T>,
   ): Promise<T>;
+  close(): Promise<void>;
+}
+
+export interface CommercialReplayState {
+  schemaVersion: 1;
+  items: CommercialWorkspaceItem[];
+  idempotency: CommercialReplayIdempotency[];
+}
+
+export function emptyCommercialReplayState(): CommercialReplayState {
+  return { schemaVersion: 1, items: [], idempotency: [] };
 }

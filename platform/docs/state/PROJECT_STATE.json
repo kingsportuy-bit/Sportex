@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-08-03",
-  "updatedBy": "TASK-20260803-003",
+  "updatedBy": "TASK-20260803-005",
   "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -13,53 +13,74 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "idle",
-  "objective": "CAMP-20260803-001 sigue activa con el commit remoto 66c4aad verificado y espera autorizacion de Fito para su siguiente tarea.",
+  "mode": "product",
+  "objective": "Resguardar en Git la Etapa 0 aprobada antes de implementar.",
   "scope": {
     "allowed": [
-      "Lectura y verificacion local de la primera vertical y su evidencia remota.",
-      "Documentacion de continuidad de CAMP-20260803-001."
+      "Reconciliar CAMP-20260803-001 y TASK-20260803-005 con el plan V1 de DELTA.",
+      "Documentar un unico wireframe de Operacion, Marketing y Administracion.",
+      "Preservar Core, persistencia, 18 leads ficticios y trabajo local pendiente."
     ],
     "prohibited": [
-      "Nueva tarea o ampliacion de CAMP-20260803-001 sin autorizacion de Fito.",
-      "Codigo o cambios funcionales fuera de una tarea aprobada.",
-      "PILOTO_DELTA, produccion, deploy, integraciones, mensajes o datos reales."
+      "Codigo, commit o push sin autorizacion posterior.",
+      "Integraciones, datos reales, mensajes o deploy.",
+      "PILOTO_DELTA y PRODUCCION_COMERCIAL."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260803-005",
+    "title": "Rediseñar la experiencia comercial Hoy",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+    "workType": "feature",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Informar el commit de resguardo y pedir autorizacion antes de crearlo."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
     "status": "ACTIVE",
-    "source": "DELTA-20260801-002 / DELTA-DEC-007",
+    "source": "DELTA-20260801-002 / DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011",
     "startedAt": "2026-08-02"
+  },
+  "campaignPlan": {
+    "id": "CAMP-20260803-001",
+    "stage": "ETAPA_0",
+    "status": "PENDING_PRODUCT_APPROVAL",
+    "sources": [
+      "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
+      "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
+      "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
+      "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
+    ],
+    "nextStage": "ETAPA_1_VERTICAL_LOCAL_COMPLETA"
   },
   "nextCampaign": null,
   "decisions": [
-    "DELTA dirige producto y valida el piloto; SPORTEX conserva la verdad tecnica.",
-    "SPORTEX usa un worktree Git independiente en C:/Users/Fito/Documents/CODEX/SPORTEX.",
-    "No existe STAGING permanente separado: el entorno real previo al mercado es PILOTO_DELTA.",
-    "PILOTO_DELTA usa controles de produccion y cada mutacion remota requiere permiso explicito.",
-    "PRODUCCION_COMERCIAL queda bloqueado hasta validacion de Delta y GO especifico de Fito.",
-    "El Core decide negocio; frontend, WhatsApp y Evolution son superficies o adaptadores.",
-    "Solo puede existir una tarea activa y las vistas de estado son generadas.",
-    "PROJECT_STATE.json es la unica fuente canonica del contexto vivo; CAMPAIGN_STATE.json es una vista generada.",
-    "El cierre local valida documentacion, codigo, pruebas y pendientes, pero no autoriza operaciones remotas.",
-    "La primera vertical comercial usa fixtures ficticios, memoria efimera y no expone replay fuera del guard local triple."
+    "DELTA decide producto; SPORTEX conserva la verdad tecnica.",
+    "El Core decide negocio y toda informacion operativa pertenece a un tenant.",
+    "Solo existe una tarea activa; PROJECT_STATE es canonico y las vistas son generadas.",
+    "PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.",
+    "La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.",
+    "PASS tecnico y aprobacion de producto son gates separados; el wireframe de Etapa 0 fue aprobado y la interfaz vigente sigue sin aprobacion.",
+    "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
     "SPORTEX-DEC-002",
     "SPORTEX-DEC-003",
-    "SPORTEX-DEC-004"
+    "SPORTEX-DEC-004",
+    "SPORTEX-DEC-005",
+    "SPORTEX-DEC-006",
+    "SPORTEX-DEC-007"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "66c4aad1822735673e20009be195711438cc53c0",
-    "workingTreeState": "DOCUMENTACION_LOCAL_PREPARADA_SOBRE_COMMIT_REMOTO_VERIFICADO",
+    "headAtLastEvidence": "47d47e2e6722f3d21d0941652ed3bbfaca1ff620",
+    "workingTreeState": "TASK-20260803-005_ETAPA_0_WIREFRAME_APROBADO_VERSIONADO_PENDIENTE",
     "lastVerifiedAt": "2026-08-03"
   },
   "migrations": {
@@ -67,34 +88,26 @@
     "lastVerifiedAt": "2026-08-03",
     "executed": [],
     "pending": [
-      "Revalidar y replantear las migraciones heredadas antes de cualquier operacion en PILOTO_DELTA."
+      "Revalidar y replantear migraciones antes de cualquier operacion en PILOTO_DELTA."
     ],
-    "note": "TASK-20260803-003 no creo ni ejecuto migraciones locales o remotas."
+    "note": "TASK-20260803-005 no creo ni ejecuto migraciones; este checkpoint fue solo documental."
   },
   "tests": {
     "status": "PASS",
     "lastRunAt": "2026-08-03",
     "commands": [
-      "node --check frontend/app.js",
-      "npm run test:workflow (8/8)",
-      "npm run validate-docs (65 archivos, 16 modulos)",
-      "npm run check",
-      "npm test (20/20)",
-      "npm run validate-sql",
-      "npm run build",
+      "npm run validate-docs",
       "npm run validate",
-      "QA visual local escritorio y movil",
-      "git diff --check",
-      "npm run validate (workflow 8/8, docs 65/16, Core 20/20, SQL y build)"
+      "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260803-003_PUSH_REMOTO_RECONCILIADO.md",
-    "note": "Validacion integral en PASS despues de reconciliar estado y vistas; cambios funcionales 0."
+    "evidence": "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
+    "note": "Checkpoint documental de Etapa 0 en PASS; Fito aprobo el wireframe maestro y no se modifico codigo."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
     "lastVerifiedAt": "2026-08-03",
     "records": [],
-    "note": "TASK-20260803-003 no consulto ni modifico runtime remoto y no hizo deploy."
+    "note": "TASK-20260803-005 no hizo deploy ni consulto o modifico runtime remoto."
   },
   "externalIntegrations": [
     {
@@ -102,40 +115,86 @@
       "status": "REMOTE_COMMIT_VERIFICADO",
       "lastVerifiedAt": "2026-08-03",
       "writeAuthorized": false,
-      "note": "HEAD, tracking y GitHub verificados en 66c4aad1822735673e20009be195711438cc53c0; divergencia 0/0."
+      "note": "HEAD, tracking y origin fueron verificados en 47d47e2e6722f3d21d0941652ed3bbfaca1ff620 antes de TASK-20260803-004. Los cambios acumulados de TASK-20260803-004 y TASK-20260803-005 no tienen commit ni push."
     },
     {
       "name": "Supabase",
-      "status": "NO_REVALIDADA_EN_ESTA_TAREA",
+      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
       "lastVerifiedAt": null,
-      "writeAuthorized": false
+      "writeAuthorized": false,
+      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
     },
     {
       "name": "Evolution API",
-      "status": "NO_REVALIDADA_EN_ESTA_TAREA",
+      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
       "lastVerifiedAt": null,
-      "writeAuthorized": false
+      "writeAuthorized": false,
+      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
     },
     {
       "name": "VPS / runtime",
-      "status": "NO_REVALIDADO_EN_ESTA_TAREA",
+      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
       "lastVerifiedAt": null,
-      "writeAuthorized": false
+      "writeAuthorized": false,
+      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
     }
   ],
   "sensitiveData": {
     "status": "NO_ACCEDIDA_NI_ALMACENADA",
-    "policy": "Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y salidas del workflow."
+    "policy": "Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y la demo."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260803-003",
+    "taskId": "TASK-20260803-005",
     "date": "2026-08-03",
-    "path": "docs/evidencias/TASK-20260803-003_PUSH_REMOTO_RECONCILIADO.md",
-    "summary": "Estado y vistas reconciliados con el commit remoto 66c4aad; validacion integral en PASS y cambios funcionales 0.",
+    "path": "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
+    "summary": "Etapa 0 reconciliada con la V1 Operativa y wireframe maestro aprobado por Fito; versionado local pendiente antes de codigo.",
     "environment": "DOCUMENTACION",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se reconcilio la campana y la tarea activa con la V1 Operativa y se documento un unico wireframe maestro para la Etapa 0.",
+      "documents": [
+        "docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260803-005_VALIDACION_PRODUCTO_Y_WIREFRAME.md",
+        "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
+        "docs/ROADMAP.md",
+        "frontend/README.md",
+        "docs/biblioteca/superficies/web/README.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_VALIDACION_PRODUCTO_Y_WIREFRAME.md",
+        "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-006",
+        "SPORTEX-DEC-007"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-004",
+      "summary": "Se construyo y valido una demo CRM comercial local con 18 fixtures, persistencia JSON, comandos Core, reset y QA responsive.",
+      "documents": [
+        "core/src/application/commercial-replay-service.ts",
+        "core/src/fixtures/commercial-demo-seed.ts",
+        "core/tests/commercial-replay.test.ts",
+        "frontend/app.js",
+        "docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260803-004_DEMO_CRM_COMERCIAL_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-004_DEMO_CRM_COMERCIAL_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-005"
+      ]
+    },
     {
       "date": "2026-08-03",
       "taskId": "TASK-20260803-003",
@@ -248,9 +307,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PENDIENTE_REVALIDACION",
-    "lastEvidenceDate": "2026-07-19",
-    "note": "Los documentos heredados son snapshots y no autorizan operaciones actuales."
+    "status": "VALIDADO_DESARROLLO_LOCAL",
+    "lastEvidenceDate": "2026-08-03",
+    "note": "Demo observada en 127.0.0.1:8080 con health ok, release commercial-local-fixture, 18 fixtures y persistencia local. No prueba runtime remoto."
+  },
+  "productValidation": {
+    "status": "STAGE_0_WIREFRAME_APPROVED_IMPLEMENTATION_PENDING",
+    "lastReviewedAt": "2026-08-03",
+    "reviewedBy": "Fito",
+    "taskId": "TASK-20260803-005",
+    "note": "La interfaz vigente sigue NO_APROBADA sin fallo de Core; Fito aprobo el wireframe maestro de Etapa 0 con 'continua'. La implementacion aun no fue realizada."
   },
   "blockers": [
     "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
@@ -258,13 +324,17 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "La primera vertical es intencionalmente efimera y no demuestra persistencia ni operacion real.",
-    "El commit remoto 66c4aad prueba codigo y documentacion versionados, no runtime ni operacion real.",
+    "Wireframe aprobado; la interfaz actual no lo implementa ni esta lista para uso.",
+    "Los modulos nuevos son objetivos, no capacidades implementadas.",
+    "El JSON persiste solo fixtures locales; no demuestra operacion ni durabilidad remota.",
+    "TASK-20260803-004 y TASK-20260803-005 siguen sin commit ni push.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
-    "Los snapshots de integraciones y runtime envejecen y no autorizan escrituras."
+    "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Esperar autorizacion explicita de Fito antes de abrir la siguiente tarea de CAMP-20260803-001.",
-    "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta una nueva prioridad explicita."
+    "Presentar el commit de resguardo de TASK-20260803-004/005.",
+    "Pedir autorizacion antes de commit o push.",
+    "No modificar codigo ni conectar servicios reales.",
+    "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

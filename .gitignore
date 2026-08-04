@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# SPORTEX local-only fictional demo state
+/platform/.sportex-local/

@@ -5,8 +5,10 @@ import Fastify, { type FastifyInstance } from "fastify";
 import { ZodError } from "zod";
 import type { SportexConfig } from "./config.js";
 import { InMemoryCommercialReplayStore } from "./adapters/persistence/in-memory-commercial-replay-store.js";
+import { LocalJsonCommercialReplayStore } from "./adapters/persistence/local-json-commercial-replay-store.js";
 import { CommercialReplayService } from "./application/commercial-replay-service.js";
 import { CoreService } from "./application/core-service.js";
+import { createCommercialDemoSeed } from "./fixtures/commercial-demo-seed.js";
 import type { CoreStore } from "./ports/core-store.js";
 import { AppError } from "./shared/errors.js";
 import { registerRoutes } from "./http/routes.js";
@@ -31,8 +33,18 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
   const localCommercialReplayEnabled = options.config.storeDriver === "memory"
     && options.config.devAuthEnabled
     && (options.config.environment === "development" || options.config.environment === "test");
-  const commercialService = localCommercialReplayEnabled
-    ? new CommercialReplayService(new InMemoryCommercialReplayStore())
+  const commercialStore = localCommercialReplayEnabled
+    ? options.config.commercialDemoFile
+      ? new LocalJsonCommercialReplayStore(options.config.commercialDemoFile)
+      : new InMemoryCommercialReplayStore()
+    : null;
+  const commercialService = commercialStore
+    ? new CommercialReplayService(
+      commercialStore,
+      undefined,
+      undefined,
+      options.config.commercialDemoFile ? createCommercialDemoSeed : null,
+    )
     : null;
   const authFetch = options.authFetch ?? fetch;
   const resolveContext = (request: Parameters<typeof resolveActorContext>[0]) =>
@@ -133,6 +145,11 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     });
   }
 
-  app.addHook("onClose", async () => options.store.close());
+  app.addHook("onClose", async () => {
+    await Promise.all([
+      options.store.close(),
+      commercialStore?.close() ?? Promise.resolve(),
+    ]);
+  });
   return app;
 }

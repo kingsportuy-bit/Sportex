@@ -165,3 +165,14 @@ Capacidad: `orders.read`. Devuelve solamente pedidos del tenant resuelto por ide
 - `quoted_total_below_deposit`;
 - `not_found`;
 - `internal_error`.
+
+### Mutaciones de la demo CRM local
+
+`TASK-20260803-004` agrega estos comandos bajo el mismo guard triple. Las mutaciones requieren `commercial.manage`, un recurso del tenant y `expectedVersion`:
+
+- `PATCH /v1/local/commercial/workspace/:itemId/stage`: aplica una transicion permitida entre `NUEVO`, `EN_CALIFICACION`, `COTIZADO`, `EN_SEGUIMIENTO`, `PERDIDO` y `SENA_VALIDADA`.
+- `PATCH /v1/local/commercial/workspace/:itemId/next-action`: edita texto y fecha de proxima accion.
+- `POST /v1/local/commercial/workspace/:itemId/follow-ups`: registra una nota interna; no crea un mensaje ni efecto externo.
+- `POST /v1/local/commercial-demo/reset`: exige `confirmation=RESTAURAR_DATOS_FICTICIOS` y repone los 18 fixtures del tenant.
+
+`GET /v1/public-config` incluye `localCommercialPersistenceEnabled`. El JSON local no es una API de datos reales ni persistencia candidata para piloto.

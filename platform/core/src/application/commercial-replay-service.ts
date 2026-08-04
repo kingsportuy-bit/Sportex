@@ -5,7 +5,11 @@ import type {
   CommercialWorkspaceItem,
   EvolutionReplayEvent,
   NormalizedConversationMessage,
+  RecordCommercialFollowUpInput,
+  UpdateCommercialNextActionInput,
+  UpdateCommercialStageInput,
 } from "../domain/commercial-models.js";
+import { allowedCommercialStageTransitions } from "../domain/commercial-models.js";
 import type { ActorContext } from "../domain/models.js";
 import type {
   CommercialReplayStore,
@@ -13,14 +17,20 @@ import type {
 } from "../ports/commercial-replay-store.js";
 import { requireCapability } from "../shared/authorization.js";
 import { requestHash } from "../shared/canonical-json.js";
-import { AppError, conflict } from "../shared/errors.js";
+import { AppError, conflict, notFound } from "../shared/errors.js";
 
 type Clock = () => Date;
 type IdFactory = () => string;
+type CommercialSeedFactory = (tenantId: string) => CommercialWorkspaceItem[];
 
 export interface CommercialReplayResult {
   data: CommercialWorkspaceItem;
   replayed: boolean;
+}
+
+export interface CommercialDemoResetResult {
+  restored: number;
+  fixtureVersion: "commercial-demo-v1";
 }
 
 export class CommercialReplayService {
@@ -28,6 +38,7 @@ export class CommercialReplayService {
     private readonly store: CommercialReplayStore,
     private readonly clock: Clock = () => new Date(),
     private readonly idFactory: IdFactory = randomUUID,
+    private readonly seedFactory: CommercialSeedFactory | null = null,
   ) {}
 
   async replay(
@@ -41,6 +52,7 @@ export class CommercialReplayService {
     const hash = requestHash(input);
 
     return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
       const idempotency = await transaction.findIdempotency(idempotencyKey);
       if (idempotency) {
         if (idempotency.requestHash !== hash) {
@@ -72,7 +84,199 @@ export class CommercialReplayService {
 
   async list(context: ActorContext): Promise<CommercialWorkspaceItem[]> {
     requireCapability(context, "commercial.read");
-    return this.store.transaction(context.tenantId, (transaction) => transaction.list());
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      return transaction.list();
+    });
+  }
+
+  async updateStage(
+    context: ActorContext,
+    itemId: string,
+    input: UpdateCommercialStageInput,
+  ): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.manage");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      this.requireVersion(item, input.expectedVersion);
+      if (item.opportunity.stage === input.stage) return item;
+      if (!allowedCommercialStageTransitions(item.opportunity.stage).includes(input.stage)) {
+        throw conflict("commercial_stage_transition_invalid", "Commercial stage transition is not allowed", {
+          from: item.opportunity.stage,
+          to: input.stage,
+        });
+      }
+
+      const now = this.clock().toISOString();
+      const reason = input.reason?.trim() || "Cambio manual en la demo CRM local";
+      const previous = item.opportunity.stage;
+      const updated: CommercialWorkspaceItem = {
+        ...item,
+        lead: {
+          ...item.lead,
+          status: input.stage === "PERDIDO" ? "PERDIDO" : "ACTIVO",
+        },
+        opportunity: {
+          ...item.opportunity,
+          stage: input.stage,
+          allowedStageTransitions: allowedCommercialStageTransitions(input.stage),
+          nextActionStatus: input.stage === "PERDIDO" ? "SIN_ACCION" : "PENDIENTE",
+          lossReason: input.stage === "PERDIDO" ? reason : null,
+          depositValidation: input.stage === "SENA_VALIDADA" ? {
+            kind: "FIXTURE_MANUAL",
+            note: "Validación manual ficticia; no certifica un pago ni crea un pedido.",
+            validatedAt: now,
+            validatedBy: context.actorId,
+            fixtureOnly: true,
+          } : null,
+          stageHistory: [
+            ...item.opportunity.stageHistory,
+            {
+              id: this.idFactory(),
+              from: previous,
+              to: input.stage,
+              reason,
+              actorId: context.actorId,
+              occurredAt: now,
+            },
+          ],
+          version: item.opportunity.version + 1,
+          updatedAt: now,
+        },
+        activity: [
+          ...item.activity,
+          {
+            type: "STAGE_CHANGED",
+            occurredAt: now,
+            actorId: context.actorId,
+            correlationId: context.correlationId,
+            evidenceMessageId: null,
+            detail: `${previous} → ${input.stage}: ${reason}`,
+          },
+        ],
+      };
+      await transaction.save(updated);
+      return updated;
+    });
+  }
+
+  async updateNextAction(
+    context: ActorContext,
+    itemId: string,
+    input: UpdateCommercialNextActionInput,
+  ): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.manage");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      this.requireVersion(item, input.expectedVersion);
+      const now = this.clock().toISOString();
+      const description = input.description.trim();
+      const updated: CommercialWorkspaceItem = {
+        ...item,
+        opportunity: {
+          ...item.opportunity,
+          nextAction: description,
+          nextActionDueAt: input.dueAt,
+          nextActionStatus: /^sin próxima acción/iu.test(description) ? "SIN_ACCION" : "PENDIENTE",
+          version: item.opportunity.version + 1,
+          updatedAt: now,
+        },
+        activity: [
+          ...item.activity,
+          {
+            type: "NEXT_ACTION_UPDATED",
+            occurredAt: now,
+            actorId: context.actorId,
+            correlationId: context.correlationId,
+            evidenceMessageId: null,
+            detail: input.dueAt ? `${description} · ${input.dueAt}` : description,
+          },
+        ],
+      };
+      await transaction.save(updated);
+      return updated;
+    });
+  }
+
+  async recordFollowUp(
+    context: ActorContext,
+    itemId: string,
+    input: RecordCommercialFollowUpInput,
+  ): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.manage");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      this.requireVersion(item, input.expectedVersion);
+      const now = this.clock().toISOString();
+      const followUp = {
+        id: this.idFactory(),
+        note: input.note.trim(),
+        outcome: input.outcome,
+        actorId: context.actorId,
+        correlationId: context.correlationId,
+        occurredAt: now,
+      };
+      const updated: CommercialWorkspaceItem = {
+        ...item,
+        opportunity: {
+          ...item.opportunity,
+          followUps: [...item.opportunity.followUps, followUp],
+          version: item.opportunity.version + 1,
+          updatedAt: now,
+        },
+        activity: [
+          ...item.activity,
+          {
+            type: "FOLLOW_UP_RECORDED",
+            occurredAt: now,
+            actorId: context.actorId,
+            correlationId: context.correlationId,
+            evidenceMessageId: null,
+            detail: `${input.outcome}: ${followUp.note}`,
+          },
+        ],
+      };
+      await transaction.save(updated);
+      return updated;
+    });
+  }
+
+  async resetDemo(context: ActorContext, confirmation: string): Promise<CommercialDemoResetResult> {
+    requireCapability(context, "commercial.manage");
+    if (confirmation !== "RESTAURAR_DATOS_FICTICIOS") {
+      throw new AppError("commercial_demo_confirmation_required", 400, "Exact reset confirmation is required");
+    }
+    if (!this.seedFactory) throw notFound("commercial_demo_unavailable", "Commercial demo is unavailable");
+    const seed = this.seedFactory(context.tenantId);
+    await this.store.transaction(context.tenantId, (transaction) => transaction.replaceTenant(seed));
+    return { restored: seed.length, fixtureVersion: "commercial-demo-v1" };
+  }
+
+  private async ensureSeeded(transaction: CommercialReplayTransaction, tenantId: string): Promise<void> {
+    if (!this.seedFactory) return;
+    const existing = await transaction.list();
+    if (existing.length === 0) await transaction.replaceTenant(this.seedFactory(tenantId));
+  }
+
+  private async requiredItem(
+    transaction: CommercialReplayTransaction,
+    itemId: string,
+  ): Promise<CommercialWorkspaceItem> {
+    const item = await transaction.findById(itemId);
+    if (!item) throw notFound("commercial_workspace_not_found", "Commercial workspace item was not found");
+    return item;
+  }
+
+  private requireVersion(item: CommercialWorkspaceItem, expectedVersion: number): void {
+    if (item.opportunity.version !== expectedVersion) {
+      throw conflict("commercial_version_conflict", "Commercial workspace version changed", {
+        expectedVersion,
+        currentVersion: item.opportunity.version,
+      });
+    }
   }
 
   private createWorkspaceItem(
@@ -101,6 +305,7 @@ export class CommercialReplayService {
         messages: [message],
         firstContactAt: message.occurredAt,
         lastActivityAt: message.occurredAt,
+        fixtureOnly: true,
       },
       attribution: this.attribution(input, message.id),
       lead: {
@@ -108,6 +313,15 @@ export class CommercialReplayService {
         tenantId: context.tenantId,
         conversationId,
         contactName,
+        teamName: null,
+        productType: null,
+        quantity: null,
+        sizeBreakdown: [],
+        colors: [],
+        personalization: [],
+        requestedDeliveryAt: null,
+        confirmedInfo: [{ label: "Contacto", value: contactName }],
+        missingInfo: ["Equipo", "Producto", "Cantidad", "Talles", "Fecha solicitada"],
         status: "ACTIVO",
         createdAt: message.receivedAt,
       },
@@ -117,9 +331,24 @@ export class CommercialReplayService {
         leadId,
         conversationId,
         stage: "NUEVO",
+        allowedStageTransitions: allowedCommercialStageTransitions("NUEVO"),
         nextAction,
+        nextActionDueAt: null,
         nextActionStatus: "PENDIENTE",
+        quote: null,
+        lossReason: null,
+        depositValidation: null,
+        stageHistory: [{
+          id: this.idFactory(),
+          from: null,
+          to: "NUEVO",
+          reason: "Oportunidad creada desde replay ficticio local",
+          actorId: context.actorId,
+          occurredAt: message.receivedAt,
+        }],
+        followUps: [],
         evidenceMessageId: message.id,
+        version: 1,
         createdAt: message.receivedAt,
         updatedAt: message.receivedAt,
       },
@@ -130,6 +359,7 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
+          detail: "Mensaje ficticio normalizado por el Core.",
         },
         {
           type: "OPPORTUNITY_CREATED",
@@ -137,8 +367,10 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
+          detail: "Lead y oportunidad creados desde replay ficticio local.",
         },
       ],
+      fixtureVersion: null,
     };
   }
 
@@ -157,6 +389,7 @@ export class CommercialReplayService {
       },
       opportunity: {
         ...existing.opportunity,
+        version: existing.opportunity.version + 1,
         updatedAt: message.receivedAt,
       },
       activity: [
@@ -167,6 +400,7 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
+          detail: "Mensaje ficticio agregado a la conversación normalizada.",
         },
       ],
     };
@@ -183,6 +417,7 @@ export class CommercialReplayService {
       contentType: "TEXT",
       text: input.data.message.conversation.trim(),
       evidenceRef: `fixture:${input.data.key.id.trim()}`,
+      fixtureOnly: true,
     };
   }
 
@@ -193,18 +428,26 @@ export class CommercialReplayService {
       return {
         classification: "DESCONOCIDO",
         adId: null,
+        adName: null,
+        campaignId: null,
+        campaignName: null,
         sourceUrl: null,
         ctwaClid: null,
         ref: null,
+        creative: null,
         evidenceMessageId,
       };
     }
     return {
       classification: "META_EXACTO",
       adId: sourceId,
+      adName: null,
+      campaignId: null,
+      campaignName: null,
       sourceUrl: external?.sourceUrl?.trim() || null,
       ctwaClid: external?.ctwaClid?.trim() || null,
       ref: external?.ref?.trim() || null,
+      creative: null,
       evidenceMessageId,
     };
   }

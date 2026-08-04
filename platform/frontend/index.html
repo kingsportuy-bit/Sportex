@@ -76,9 +76,8 @@
             <strong id="tenant-name">Delta Sport</strong>
           </div>
           <div class="topbar-actions">
-            <div id="local-replay-actions" class="replay-actions" hidden>
-              <button id="replay-exact-button" class="button button--signal" type="button">+ Caso con anuncio</button>
-              <button id="replay-unknown-button" class="button button--outline" type="button">+ Origen desconocido</button>
+            <div id="local-demo-actions" class="replay-actions" hidden>
+              <button id="reset-demo-button" class="button button--outline" type="button">Restaurar datos ficticios</button>
             </div>
             <button id="account-button" class="account-button" type="button" aria-label="Cambiar contraseña">
               <span id="account-initials">FS</span>
@@ -100,35 +99,66 @@
           <section id="commercial-view" class="view-section">
             <header class="view-header commercial-header">
               <div>
-                <span class="section-code">HOY / MESA COMERCIAL LOCAL</span>
-                <h1>Lo que necesita atención</h1>
+                <span class="section-code">CRM COMERCIAL / DEMO LOCAL</span>
+                <h1>De la consulta a la próxima acción</h1>
               </div>
               <div class="commercial-intro">
-                <span class="local-proof">DATOS FICTICIOS · SIN ENVÍOS</span>
-                <p>Un hilo de evidencia une el origen, el mensaje y la decisión siguiente. Nada de esta vista toca Evolution real.</p>
+                <span class="local-proof">18 LEADS FICTICIOS · PERSISTENCIA LOCAL</span>
+                <p>Una mesa para entender SPORTEX: origen, conversación, calificación y seguimiento, sin conectar ni enviar nada.</p>
               </div>
             </header>
 
             <div class="metrics-strip metrics-strip--commercial">
-              <article><span>Conversaciones</span><strong id="metric-conversations">00</strong></article>
+              <article><span>Leads en demo</span><strong id="metric-conversations">00</strong></article>
               <article><span>Origen exacto</span><strong id="metric-exact">00</strong></article>
               <article><span>Origen desconocido</span><strong id="metric-unknown">00</strong></article>
               <article><span>Acciones pendientes</span><strong id="metric-actions">00</strong></article>
             </div>
 
-            <div id="commercial-list" class="commercial-list" aria-live="polite"></div>
-            <section id="commercial-empty" class="commercial-empty">
-              <div class="evidence-spool" aria-hidden="true"><span></span><span></span><span></span></div>
-              <div>
-                <span class="section-code">PRIMER REPLAY</span>
-                <h2>Probá la cadena completa sin conectar nada real.</h2>
-                <p>Cargá un evento ficticio. SPORTEX lo normaliza, conserva o descarta la atribución con honestidad y abre una oportunidad lista para revisar.</p>
-              </div>
-              <div class="empty-actions">
-                <button class="button button--signal" data-replay="exact" type="button">Cargar caso con anuncio</button>
-                <button class="button button--outline" data-replay="unknown" type="button">Cargar origen desconocido</button>
-              </div>
+            <section id="stage-board" class="stage-board" aria-label="Tablero general por etapas"></section>
+
+            <section class="crm-filterbar" aria-label="Filtros de leads">
+              <label class="crm-search">Buscar
+                <input id="lead-search" type="search" placeholder="Nombre, equipo o próxima acción" autocomplete="off" />
+              </label>
+              <label>Etapa
+                <select id="stage-filter">
+                  <option value="">Todas</option>
+                  <option value="NUEVO">Nuevo</option>
+                  <option value="EN_CALIFICACION">En calificación</option>
+                  <option value="COTIZADO">Cotizado</option>
+                  <option value="EN_SEGUIMIENTO">En seguimiento</option>
+                  <option value="PERDIDO">Perdido</option>
+                  <option value="SENA_VALIDADA">Seña validada</option>
+                </select>
+              </label>
+              <label>Producto
+                <select id="product-filter">
+                  <option value="">Todos</option>
+                  <option value="CAMISETAS">Camisetas</option>
+                  <option value="EQUIPO_COMPLETO">Equipo completo</option>
+                </select>
+              </label>
+              <label>Origen
+                <select id="attribution-filter">
+                  <option value="">Todos</option>
+                  <option value="META_EXACTO">Anuncio exacto</option>
+                  <option value="DESCONOCIDO">Desconocido</option>
+                </select>
+              </label>
+              <button id="clear-filters" class="button button--outline crm-clear" type="button">Limpiar</button>
             </section>
+
+            <div class="crm-workspace">
+              <aside id="lead-master" class="lead-master" aria-label="Lista de leads">
+                <header class="lead-master-head">
+                  <div><span class="section-code">CARTERA FICTICIA</span><strong id="lead-result-count">0 resultados</strong></div>
+                  <span id="persistence-status" class="persistence-chip">LOCAL</span>
+                </header>
+                <div id="commercial-list" class="lead-list" aria-live="polite"></div>
+              </aside>
+              <section id="lead-detail" class="lead-detail" aria-live="polite"></section>
+            </div>
           </section>
 
           <section id="orders-view" class="view-section" hidden>
@@ -239,6 +269,23 @@
         <div class="sheet-actions">
           <button id="password-cancel" class="button button--outline" value="cancel" type="submit">Cancelar</button>
           <button id="password-save" class="button button--primary" type="button">Guardar contraseña</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="reset-demo-dialog" class="reset-dialog">
+      <form method="dialog">
+        <span class="section-code">RESTAURAR / CONTROL LOCAL</span>
+        <h2>Restaurar 18 leads ficticios</h2>
+        <p>Se perderán únicamente tus cambios locales de esta demo. No se toca ningún dato real ni remoto.</p>
+        <label class="confirmation-check">
+          <input id="reset-confirmation" type="checkbox" />
+          <span>Entiendo y quiero recuperar la semilla ficticia inicial.</span>
+        </label>
+        <p id="reset-error" class="form-error" role="alert"></p>
+        <div class="sheet-actions">
+          <button class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button id="confirm-reset-button" class="button button--primary" type="button" disabled>Restaurar datos</button>
         </div>
       </form>
     </dialog>

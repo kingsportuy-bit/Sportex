@@ -74,3 +74,9 @@ Las respuestas incluyen:
 ## Extensibilidad
 
 Los módulos pueden extraerse a servicios separados solamente cuando exista necesidad medida. Sus contratos internos deben permitirlo sin cambiar el comportamiento del negocio.
+
+## Demo CRM local controlada
+
+En `TASK-20260803-004`, el Core conserva la autoridad de etapas, transiciones, permisos, versiones y reset. La web solo envia comandos especificos con `expectedVersion` y vuelve a leer la proyeccion.
+
+El adaptador JSON local implementa el puerto comercial de manera tenant-aware, serializa escrituras y reemplaza el archivo mediante temporal y rename. Solo se habilita con `development|test + memory + SPORTEX_DEV_AUTH=true`; una configuracion corrupta falla cerrada. No hay outbox, mensajes, pagos, pedidos ni efectos externos.

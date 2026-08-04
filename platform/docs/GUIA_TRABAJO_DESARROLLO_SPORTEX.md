@@ -8,32 +8,14 @@ el proyecto no dependa de la memoria de Fito, Codex ni una conversacion.
 
 ## Organigrama del sistema de desarrollo
 
-```text
-Fito / DELTA (producto y autorizaciones)
-  -> pedido y criterio de aceptacion
-SPORTEX / PROJECT_STATE (trabajo vivo)
-  -> tarea activa y contratos focales
-Biblioteca (owners por modulo, capa y superficie)
-  -> codigo + migraciones + pruebas
-Release governance (commit, alcance, artefacto, permiso, rollback)
-  -> PILOTO_DELTA observado
-Evidencia y feedback de DELTA
-  -> cierre o siguiente tarea
-```
+Fito y DELTA definen producto y autorizaciones; SPORTEX convierte ese alcance en estado, tarea, contratos, codigo, pruebas, release y evidencia.
 
 ## Arquitectura por responsabilidades
 
-1. `INICIAL.md` enruta la intencion.
-2. `sportex-workflow` valida el contexto y devuelve un PASS explicito.
-3. `PROJECT_STATE.json` conserva la continuidad canonica.
-4. Las tareas delimitan el cambio; no reemplazan contratos.
-5. La Biblioteca identifica el owner correcto.
-6. Los contratos definen entradas, salidas, permisos y efectos.
-7. Git identifica el cambio exacto.
-8. Los tests prueban codigo y reglas.
-9. La gobernanza de release prueba que se desplego el artefacto aprobado.
-10. La observacion runtime prueba el estado real.
-11. La evidencia permite cerrar sin afirmaciones de memoria.
+1. INICIAL.md y el workflow resuelven contexto y estado canonico.
+2. La tarea y Biblioteca delimitan owner, contratos y codigo.
+3. Git y tests identifican y prueban el cambio.
+4. Release, runtime y evidencia demuestran lo entregado sin sustituirse entre si.
 
 ## Flujo normal
 
@@ -48,30 +30,11 @@ validacion del piloto no lo activa automaticamente.
 
 ## Que fuente responde cada duda
 
-| Duda | Fuente |
-| --- | --- |
-| que se esta haciendo | `state/PROJECT_STATE.json` |
-| cual es el alcance | tarea en `TASKS/active/` |
-| como se trabaja | esta guia y `MODOS_DE_TRABAJO.md` |
-| quien decide una regla | `OPERADOR_PROYECTO.md` y contrato owner |
-| donde vive una responsabilidad | `biblioteca/README.md` |
-| que comportamiento debe existir | contrato del modulo + negocio |
-| que codigo se entrego | commit Git y scope |
-| que esta ejecutandose | observacion runtime y deployment |
-| que fue probado | evidencia ligada a commit y entorno |
-| que ocurrio antes | tareas cerradas, changelog e historico |
+PROJECT_STATE.json responde el trabajo vivo; la tarea delimita alcance; Biblioteca y contratos definen responsabilidad; Git, tests, runtime y evidencia prueban resultados.
 
 ## Quien puede decidir que
 
-- Fito: negocio, prioridad, alcance comercial, operacion real y salida al mercado.
-- Tarea activa: que puede modificar Codex en el trabajo actual.
-- Contrato owner: comportamiento y frontera tecnica permanente.
-- Codex: implementacion tecnica dentro del alcance, pruebas y recomendacion.
-- Runtime observado: unico que puede demostrar que algo esta activo.
-
-Codex no convierte una idea aprobada en permiso de deploy. Fito no necesita
-definir detalles tecnicos que ya estan dentro de un contrato aprobado, pero si
-debe decidir cuando cambian alcance, riesgo, datos reales o compromisos.
+Fito decide negocio, prioridad y operacion real. La tarea y el contrato owner delimitan la implementacion de Codex; solo el runtime observado demuestra que algo esta activo.
 
 ## Tareas y continuidad
 
@@ -147,12 +110,8 @@ viven en sus documentos owner; esta guia explica el mapa y no los duplica.
 
 ## Glosario simple
 
-- **contrato**: regla estable que define una responsabilidad.
-- **task**: cambio temporal con alcance y cierre.
-- **owner**: modulo o documento responsable de una decision.
-- **gate**: condicion bloqueante antes de avanzar.
-- **evidencia**: prueba reproducible ligada a una version.
-- **artefacto inmutable**: build identificado que no cambia despues de aprobarse.
-- **rollback**: forma probada de volver al estado anterior.
-- **drift**: runtime distinto al release esperado.
-- **piloto**: uso real de Delta antes de abrir SPORTEX al mercado.
+Contrato: regla estable. Task: cambio acotado. Gate: condicion bloqueante. Evidencia: prueba reproducible. Piloto: uso real restringido previo al mercado.
+
+### Demos locales persistentes
+
+Su cierre debe probar semilla ficticia, aislamiento tenant, reinicio del proceso, reset controlado y QA visual responsive. La persistencia local nunca se presenta como base real, migracion, integracion o certificacion de piloto.

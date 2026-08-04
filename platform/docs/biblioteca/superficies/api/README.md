@@ -24,3 +24,7 @@ y certificacion en `PILOTO_DELTA` pendientes de replanificacion.
 
 La mesa comercial agrega replay y lectura solo bajo el guard local triple de
 `TASK-20260803-001`; no existe en entornos reales.
+
+## Demo CRM local
+
+`TASK-20260803-004` suma comandos especificos de etapa, proxima accion, seguimiento y reset bajo el guard local triple. Las mutaciones exigen `commercial.manage`, tenant y version esperada; no existen en entornos reales.

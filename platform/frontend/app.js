@@ -10,6 +10,8 @@ const state = {
   clients: [],
   orders: [],
   commercial: [],
+  selectedCommercialId: null,
+  mobileDetailOpen: false,
   orderAttempt: null,
   passwordForced: false,
 };
@@ -31,6 +33,9 @@ const messages = {
   authentication_unavailable: "El acceso está temporalmente fuera de servicio.",
   invalid_payload: "Revisá los datos ingresados.",
   fixture_only: "El modo local acepta solamente referencias ficticias.",
+  commercial_version_conflict: "El lead cambió en otra acción. Recargamos su versión más reciente.",
+  commercial_stage_transition_invalid: "Esa transición de etapa no está permitida por el Core.",
+  commercial_demo_confirmation_required: "Confirmá la restauración de los datos ficticios.",
 };
 
 const localIdentity = {
@@ -41,6 +46,7 @@ const localIdentity = {
     "clients.read",
     "commercial.read",
     "commercial.replay",
+    "commercial.manage",
     "payments.certify",
     "orders.create",
     "orders.read",
@@ -61,7 +67,8 @@ function money(cents, currency = "UYU") {
 }
 
 function shortDate(value) {
-  return new Intl.DateTimeFormat("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
+  const date = /^\d{4}-\d{2}-\d{2}$/u.test(value) ? new Date(`${value}T12:00:00`) : new Date(value);
+  return new Intl.DateTimeFormat("es-UY", { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
 }
 
 function shortDateTime(value) {
@@ -145,6 +152,8 @@ function clearSession() {
   state.clients = [];
   state.orders = [];
   state.commercial = [];
+  state.selectedCommercialId = null;
+  state.mobileDetailOpen = false;
   sessionStorage.removeItem("sportex_access_token");
   sessionStorage.removeItem("sportex_refresh_token");
 }
@@ -178,6 +187,9 @@ async function loadData() {
   state.clients = clients.data;
   state.orders = orders.data;
   state.commercial = commercial?.data ?? [];
+  if (!state.commercial.some((item) => item.id === state.selectedCommercialId)) {
+    state.selectedCommercialId = state.commercial[0]?.id ?? null;
+  }
   renderClients();
   renderOrders();
   renderCommercial();
@@ -269,60 +281,506 @@ function element(tagName, className = "", text = "") {
   return node;
 }
 
-function renderCommercial() {
+const commercialStages = [
+  "NUEVO",
+  "EN_CALIFICACION",
+  "COTIZADO",
+  "EN_SEGUIMIENTO",
+  "PERDIDO",
+  "SENA_VALIDADA",
+];
+
+const stageLabels = {
+  NUEVO: "Nuevo",
+  EN_CALIFICACION: "En calificación",
+  COTIZADO: "Cotizado",
+  EN_SEGUIMIENTO: "En seguimiento",
+  PERDIDO: "Perdido",
+  SENA_VALIDADA: "Seña validada",
+};
+
+function stageLabel(value) {
+  return stageLabels[value] ?? value;
+}
+
+function productLabel(value) {
+  if (value === "CAMISETAS") return "Camisetas";
+  if (value === "EQUIPO_COMPLETO") return "Equipo completo";
+  return "Producto por confirmar";
+}
+
+function normalizedSearch(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+}
+
+function filteredCommercial() {
+  const search = normalizedSearch($("#lead-search").value.trim());
+  const stage = $("#stage-filter").value;
+  const product = $("#product-filter").value;
+  const attribution = $("#attribution-filter").value;
+  return state.commercial.filter((item) => {
+    const haystack = normalizedSearch([
+      item.conversation.contactName,
+      item.lead.teamName,
+      item.opportunity.nextAction,
+      item.attribution.adName,
+    ].filter(Boolean).join(" "));
+    return (!search || haystack.includes(search))
+      && (!stage || item.opportunity.stage === stage)
+      && (!product || item.lead.productType === product)
+      && (!attribution || item.attribution.classification === attribution);
+  });
+}
+
+function renderStageBoard() {
+  const board = $("#stage-board");
+  board.replaceChildren();
+  const activeStage = $("#stage-filter").value;
+  for (const [index, stage] of commercialStages.entries()) {
+    const count = state.commercial.filter((item) => item.opportunity.stage === stage).length;
+    const button = element("button", `stage-station${activeStage === stage ? " is-filtered" : ""}`);
+    button.type = "button";
+    button.dataset.stage = stage;
+    button.setAttribute("aria-pressed", String(activeStage === stage));
+    button.append(
+      element("span", "stage-index", String(index + 1).padStart(2, "0")),
+      element("strong", "", stageLabel(stage)),
+      element("b", "", String(count).padStart(2, "0")),
+    );
+    button.addEventListener("click", () => {
+      $("#stage-filter").value = $("#stage-filter").value === stage ? "" : stage;
+      state.mobileDetailOpen = false;
+      renderCommercial();
+    });
+    board.append(button);
+  }
+}
+
+function leadResultEmpty(list) {
+  const empty = element("div", "lead-list-empty");
+  empty.append(
+    element("span", "empty-number", "00"),
+    element("strong", "", "No hay leads con estos filtros"),
+    element("p", "", "Probá otra combinación o limpiá los filtros."),
+  );
+  const button = element("button", "button button--outline", "Limpiar filtros");
+  button.type = "button";
+  button.addEventListener("click", clearCommercialFilters);
+  empty.append(button);
+  list.append(empty);
+}
+
+function renderLeadList(items) {
   const list = $("#commercial-list");
   list.replaceChildren();
-
-  for (const item of state.commercial) {
-    const card = element("article", "commercial-card");
-    const rail = element("div", "evidence-rail");
-    rail.setAttribute("aria-label", "Origen, mensaje y oportunidad vinculados");
-    rail.append(
-      element("span", `evidence-node${item.attribution.classification === "META_EXACTO" ? " is-live" : ""}`, "AD"),
-      element("span", "evidence-node is-live", "MSJ"),
-      element("span", "evidence-node is-live", "OP"),
-    );
-
-    const conversation = element("div", "conversation-pane");
-    const meta = element("div", "conversation-meta");
-    const identity = element("div");
-    identity.append(
-      element("strong", "", item.conversation.contactName),
-      element("small", "", `${item.conversation.messages.length} mensaje · ${shortDateTime(item.conversation.lastActivityAt)}`),
-    );
-    const exact = item.attribution.classification === "META_EXACTO";
-    const attribution = element(
-      "span",
-      `attribution-chip${exact ? "" : " is-unknown"}`,
-      exact ? `META EXACTO · ${item.attribution.adId}` : "ORIGEN DESCONOCIDO",
-    );
-    meta.append(identity, attribution);
-    const latest = item.conversation.messages.at(-1);
-    conversation.append(meta, element("blockquote", "message-quote", latest?.text ?? "Mensaje sin texto"));
-
-    const decision = element("div", "decision-pane");
-    const stage = element("div", "stage-lockup");
-    stage.append(element("span", "", "Etapa comercial"), element("strong", "", item.opportunity.stage));
-    const next = element("div", "next-action");
-    next.append(
-      element("span", "", "Próxima acción · pendiente"),
-      element("strong", "", item.opportunity.nextAction),
-    );
-    decision.append(stage, next);
-    card.append(rail, conversation, decision);
-    list.append(card);
+  $("#lead-result-count").textContent = `${items.length} ${items.length === 1 ? "resultado" : "resultados"}`;
+  if (items.length === 0) {
+    leadResultEmpty(list);
+    return;
   }
 
-  const exactCount = state.commercial.filter(
-    (item) => item.attribution.classification === "META_EXACTO",
-  ).length;
+  for (const item of items) {
+    const selected = item.id === state.selectedCommercialId;
+    const button = element("button", `lead-row${selected ? " is-selected" : ""}`);
+    button.type = "button";
+    button.dataset.stage = item.opportunity.stage;
+    button.setAttribute("aria-pressed", String(selected));
+    const top = element("span", "lead-row-top");
+    const identity = element("span", "lead-row-identity");
+    identity.append(
+      element("strong", "", item.lead.teamName || "Equipo por confirmar"),
+      element("small", "", item.conversation.contactName),
+    );
+    top.append(identity, element("span", "lead-stage", stageLabel(item.opportunity.stage)));
+    const meta = element("span", "lead-row-meta");
+    meta.append(
+      element("span", "", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"}`),
+      element(
+        "span",
+        item.attribution.classification === "META_EXACTO" ? "origin-dot is-exact" : "origin-dot is-unknown",
+        item.attribution.classification === "META_EXACTO" ? "Anuncio exacto" : "Desconocido",
+      ),
+    );
+    const next = element("span", "lead-row-next");
+    next.append(element("b", "", "PRÓXIMA"), element("span", "", item.opportunity.nextAction));
+    button.append(top, meta, next);
+    button.addEventListener("click", () => {
+      state.selectedCommercialId = item.id;
+      state.mobileDetailOpen = true;
+      renderCommercial();
+      $("#lead-detail").focus({ preventScroll: true });
+    });
+    list.append(button);
+  }
+}
+
+function detailCard(code, title) {
+  const card = element("section", "detail-card");
+  const header = element("header", "detail-card-head");
+  const text = element("div");
+  text.append(element("span", "section-code", code), element("h3", "", title));
+  header.append(text);
+  card.append(header);
+  return card;
+}
+
+function fact(label, value) {
+  const node = element("div", "brief-fact");
+  node.append(element("span", "", label), element("strong", "", value || "Por confirmar"));
+  return node;
+}
+
+function renderBrief(item) {
+  const card = detailCard("EXPEDIENTE / 01", "Información comercial");
+  const grid = element("div", "brief-grid");
+  grid.append(
+    fact("Producto", productLabel(item.lead.productType)),
+    fact("Cantidad", item.lead.quantity ? `${item.lead.quantity} prendas` : "Por confirmar"),
+    fact("Talles", item.lead.sizeBreakdown.map((size) => `${size.size} × ${size.quantity}`).join(" · ") || "Por confirmar"),
+    fact("Fecha solicitada", item.lead.requestedDeliveryAt ? shortDate(item.lead.requestedDeliveryAt) : "Por confirmar"),
+    fact("Colores", item.lead.colors.join(" + ") || "Por confirmar"),
+    fact("Personalización", item.lead.personalization.join(" · ") || "Por confirmar"),
+  );
+  if (item.opportunity.quote) {
+    grid.append(fact("Cotización ficticia", `${money(item.opportunity.quote.totalCents)} · v${item.opportunity.quote.version}`));
+  }
+  if (item.opportunity.lossReason) grid.append(fact("Motivo de pérdida", item.opportunity.lossReason));
+  card.append(grid);
+  if (item.opportunity.depositValidation) {
+    const warning = element("p", "safety-note");
+    warning.append(element("strong", "", "SEÑA FICTICIA · "), document.createTextNode(item.opportunity.depositValidation.note));
+    card.append(warning);
+  }
+  return card;
+}
+
+function renderQualification(item) {
+  const card = detailCard("CALIFICACIÓN / 02", "Confirmado y faltante");
+  const grid = element("div", "qualification-grid");
+  const confirmed = element("div", "qualification-column is-confirmed");
+  confirmed.append(element("h4", "", `Confirmado · ${item.lead.confirmedInfo.length}`));
+  for (const entry of item.lead.confirmedInfo) {
+    const row = element("div", "qualification-row");
+    row.append(element("span", "", entry.label), element("strong", "", entry.value));
+    confirmed.append(row);
+  }
+  const missing = element("div", "qualification-column is-missing");
+  missing.append(element("h4", "", `Falta · ${item.lead.missingInfo.length}`));
+  if (item.lead.missingInfo.length === 0) {
+    missing.append(element("p", "qualification-complete", "Ficha comercial completa para esta etapa."));
+  } else {
+    const list = element("ul");
+    for (const value of item.lead.missingInfo) list.append(element("li", "", value));
+    missing.append(list);
+  }
+  grid.append(confirmed, missing);
+  card.append(grid);
+  return card;
+}
+
+function renderConversation(item) {
+  const card = detailCard("CONVERSACIÓN / 03", "Hilo ordenado");
+  const note = element("div", "read-only-banner", "Conversación ficticia · solo lectura · sin compositor de mensajes");
+  const timeline = element("div", "conversation-timeline");
+  for (const message of item.conversation.messages) {
+    const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
+    row.append(
+      element("span", "message-author", message.direction === "DELTA" ? "Delta · fixture" : `${item.conversation.contactName} · fixture`),
+      element("p", "", message.text),
+      element("time", "", shortDateTime(message.occurredAt)),
+    );
+    timeline.append(row);
+  }
+  card.append(note, timeline);
+  return card;
+}
+
+function renderHistory(item) {
+  const card = detailCard("TRAZABILIDAD / 04", "Actividad comercial");
+  const timeline = element("div", "activity-timeline");
+  const activity = [...item.activity].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
+  for (const entry of activity) {
+    const row = element("div", "activity-row");
+    row.append(
+      element("span", "activity-node"),
+      element("strong", "", entry.type.replaceAll("_", " ")),
+      element("p", "", entry.detail),
+      element("time", "", shortDateTime(entry.occurredAt)),
+    );
+    timeline.append(row);
+  }
+  card.append(timeline);
+  return card;
+}
+
+function renderOrigin(item) {
+  const card = detailCard("ORIGEN / EVIDENCIA", item.attribution.classification === "META_EXACTO" ? "Anuncio y creativo" : "Origen desconocido");
+  if (item.attribution.classification === "DESCONOCIDO") {
+    const unknown = element("div", "unknown-origin");
+    unknown.append(
+      element("strong", "", "DESCONOCIDO"),
+      element("p", "", "No llegó evidencia publicitaria. SPORTEX no inventa campaña, anuncio ni creativo."),
+    );
+    card.append(unknown);
+    return card;
+  }
+
+  const creative = element("div", "creative-preview");
+  creative.style.setProperty("--creative-accent", item.attribution.creative?.accent || "#2767ff");
+  creative.append(
+    element("span", "creative-format", item.attribution.creative?.format || "ANUNCIO"),
+    element("b", "", item.attribution.creative?.visualLabel || "CREATIVO FICTICIO"),
+    element("strong", "", item.attribution.creative?.title || item.attribution.adName || "Anuncio ficticio"),
+    element("p", "", item.attribution.creative?.body || "Sin descripción del creativo."),
+  );
+  const metadata = element("dl", "origin-metadata");
+  for (const [label, value] of [
+    ["Campaña", item.attribution.campaignName],
+    ["Anuncio", item.attribution.adName],
+    ["ID ficticio", item.attribution.adId],
+    ["Evidencia", item.attribution.evidenceMessageId],
+  ]) {
+    metadata.append(element("dt", "", label), element("dd", "", value || "No informado"));
+  }
+  card.append(creative, metadata);
+  return card;
+}
+
+function fieldLabel(text, control) {
+  const label = element("label", "command-field");
+  label.append(document.createTextNode(text), control);
+  return label;
+}
+
+function renderCommands(item) {
+  const wrapper = element("div", "command-stack");
+
+  const stageCard = detailCard("ACCIÓN / ETAPA", "Cambiar etapa");
+  const stageForm = element("form", "command-form");
+  const stageSelect = element("select");
+  stageSelect.id = "commercial-stage-input";
+  for (const stage of commercialStages) {
+    const option = element("option", "", stageLabel(stage));
+    option.value = stage;
+    option.selected = stage === item.opportunity.stage;
+    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
+    stageSelect.append(option);
+  }
+  const stageButton = element("button", "button button--primary button--full", "Guardar etapa");
+  stageButton.type = "submit";
+  stageForm.append(
+    fieldLabel("Etapa actual", stageSelect),
+    element("p", "command-help", "Las transiciones habilitadas las decide el Core."),
+    stageButton,
+  );
+  stageForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void saveCommercialStage(item, stageSelect.value, stageButton);
+  });
+  stageCard.append(stageForm);
+
+  const actionCard = detailCard("ACCIÓN / PRÓXIMO PASO", "Editar próxima acción");
+  const actionForm = element("form", "command-form");
+  const actionInput = element("textarea");
+  actionInput.id = "commercial-next-action-input";
+  actionInput.maxLength = 240;
+  actionInput.required = true;
+  actionInput.value = item.opportunity.nextAction;
+  const dueInput = element("input");
+  dueInput.type = "date";
+  dueInput.value = item.opportunity.nextActionDueAt || "";
+  const actionButton = element("button", "button button--primary button--full", "Guardar próxima acción");
+  actionButton.type = "submit";
+  actionForm.append(
+    fieldLabel("Descripción", actionInput),
+    fieldLabel("Fecha objetivo", dueInput),
+    actionButton,
+  );
+  actionForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!actionForm.reportValidity()) return;
+    void saveCommercialNextAction(item, actionInput.value, dueInput.value || null, actionButton);
+  });
+  actionCard.append(actionForm);
+
+  const followCard = detailCard("ACCIÓN / SEGUIMIENTO", "Registrar nota interna");
+  const followForm = element("form", "command-form");
+  const followInput = element("textarea");
+  followInput.id = "commercial-followup-input";
+  followInput.placeholder = "Qué ocurrió y qué conviene recordar";
+  followInput.maxLength = 1000;
+  followInput.required = true;
+  const outcomeSelect = element("select");
+  for (const [value, label] of [
+    ["SIN_CAMBIOS", "Sin cambios"],
+    ["AVANZO", "Avanzó"],
+    ["SIN_RESPUESTA", "Sin respuesta"],
+    ["NO_CONTINUA", "No continúa"],
+  ]) {
+    const option = element("option", "", label);
+    option.value = value;
+    outcomeSelect.append(option);
+  }
+  const followButton = element("button", "button button--signal button--full", "Registrar seguimiento");
+  followButton.type = "submit";
+  followForm.append(
+    fieldLabel("Resultado", outcomeSelect),
+    fieldLabel("Nota interna", followInput),
+    element("p", "command-help", "Esto no envía mensajes ni activa automatizaciones."),
+    followButton,
+  );
+  followForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!followForm.reportValidity()) return;
+    void saveCommercialFollowUp(item, followInput.value, outcomeSelect.value, followButton);
+  });
+  followCard.append(followForm);
+
+  wrapper.append(stageCard, actionCard, followCard);
+  return wrapper;
+}
+
+function renderLeadDetail(item) {
+  const detail = $("#lead-detail");
+  detail.replaceChildren();
+  detail.tabIndex = -1;
+  if (!item) {
+    const empty = element("div", "lead-detail-empty");
+    empty.append(
+      element("span", "empty-number", "—"),
+      element("h2", "", "Elegí un lead"),
+      element("p", "", "La ficha completa aparecerá en este panel."),
+    );
+    detail.append(empty);
+    return;
+  }
+
+  const header = element("header", "lead-detail-head");
+  const back = element("button", "mobile-back", "← Volver a leads");
+  back.type = "button";
+  back.addEventListener("click", () => {
+    state.mobileDetailOpen = false;
+    renderCommercial();
+    $("#lead-master").focus({ preventScroll: true });
+  });
+  const identity = element("div", "lead-title");
+  identity.append(
+    element("span", "section-code", `LEAD ${item.id.replace("workspace-ficticio-", "#")}`),
+    element("h2", "", item.lead.teamName || "Equipo por confirmar"),
+    element("p", "", `${item.conversation.contactName} · ${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"} prendas`),
+  );
+  const status = element("div", "lead-status-lockup");
+  const stage = element("span", "detail-stage", stageLabel(item.opportunity.stage));
+  stage.dataset.stage = item.opportunity.stage;
+  status.append(
+    stage,
+    element("small", "", `VERSIÓN ${item.opportunity.version}`),
+    element("strong", "", item.opportunity.nextAction),
+    element("time", "", item.opportunity.nextActionDueAt ? `Objetivo ${shortDate(item.opportunity.nextActionDueAt)}` : "Sin fecha objetivo"),
+  );
+  header.append(back, identity, status);
+
+  const body = element("div", "lead-detail-grid");
+  const main = element("div", "detail-main");
+  main.append(renderBrief(item), renderQualification(item), renderConversation(item), renderHistory(item));
+  const side = element("aside", "detail-side");
+  side.append(renderOrigin(item), renderCommands(item));
+  body.append(main, side);
+  detail.append(header, body);
+}
+
+function replaceCommercialItem(updated) {
+  const index = state.commercial.findIndex((item) => item.id === updated.id);
+  if (index >= 0) state.commercial[index] = updated;
+  state.selectedCommercialId = updated.id;
+}
+
+async function runCommercialMutation(button, busyLabel, operation, successMessage) {
+  setButtonBusy(button, true, busyLabel);
+  try {
+    const response = await operation();
+    replaceCommercialItem(response.data);
+    renderCommercial();
+    toast(successMessage);
+  } catch (error) {
+    if (error instanceof UiError && error.code === "commercial_version_conflict") await loadData();
+    toast(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
+async function saveCommercialStage(item, stage, button) {
+  if (stage === item.opportunity.stage) {
+    toast("La etapa ya está seleccionada.");
+    return;
+  }
+  await runCommercialMutation(button, "Guardando…", () => api(
+    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/stage`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        stage,
+        expectedVersion: item.opportunity.version,
+        reason: stage === "SENA_VALIDADA"
+          ? "Seña ficticia validada manualmente en la demo local"
+          : "Cambio manual desde la demo CRM local",
+      }),
+    },
+  ), `Etapa actualizada a ${stageLabel(stage)}.`);
+}
+
+async function saveCommercialNextAction(item, description, dueAt, button) {
+  await runCommercialMutation(button, "Guardando…", () => api(
+    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/next-action`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ description: description.trim(), dueAt, expectedVersion: item.opportunity.version }),
+    },
+  ), "Próxima acción guardada en el Core local.");
+}
+
+async function saveCommercialFollowUp(item, note, outcome, button) {
+  await runCommercialMutation(button, "Registrando…", () => api(
+    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/follow-ups`,
+    {
+      method: "POST",
+      body: JSON.stringify({ note: note.trim(), outcome, expectedVersion: item.opportunity.version }),
+    },
+  ), "Seguimiento interno registrado. No se envió ningún mensaje.");
+}
+
+function clearCommercialFilters() {
+  $("#lead-search").value = "";
+  $("#stage-filter").value = "";
+  $("#product-filter").value = "";
+  $("#attribution-filter").value = "";
+  state.mobileDetailOpen = false;
+  renderCommercial();
+}
+
+function renderCommercial() {
+  const exactCount = state.commercial.filter((item) => item.attribution.classification === "META_EXACTO").length;
   const unknownCount = state.commercial.length - exactCount;
-  $("#commercial-empty").hidden = state.commercial.length > 0;
+  const pendingCount = state.commercial.filter((item) => item.opportunity.nextActionStatus === "PENDIENTE").length;
   $("#commercial-count-nav").textContent = String(state.commercial.length);
   $("#metric-conversations").textContent = String(state.commercial.length).padStart(2, "0");
   $("#metric-exact").textContent = String(exactCount).padStart(2, "0");
   $("#metric-unknown").textContent = String(unknownCount).padStart(2, "0");
-  $("#metric-actions").textContent = String(state.commercial.length).padStart(2, "0");
+  $("#metric-actions").textContent = String(pendingCount).padStart(2, "0");
+  $("#persistence-status").textContent = state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA";
+
+  renderStageBoard();
+  const items = filteredCommercial();
+  if (!items.some((item) => item.id === state.selectedCommercialId)) {
+    state.selectedCommercialId = items[0]?.id ?? null;
+  }
+  renderLeadList(items);
+  renderLeadDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
+  $(".crm-workspace").classList.toggle("is-detail-open", state.mobileDetailOpen && Boolean(state.selectedCommercialId));
 }
 
 function fillClientSelect() {
@@ -343,7 +801,7 @@ function switchView(name) {
   $("#commercial-view").hidden = name !== "commercial";
   $("#orders-view").hidden = name !== "orders";
   $("#clients-view").hidden = name !== "clients";
-  $("#local-replay-actions").hidden = !state.localDemo || name !== "commercial";
+  $("#local-demo-actions").hidden = !state.localDemo || name !== "commercial";
   $("#new-order-button").hidden = name === "commercial";
   $$(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.view === name));
 }
@@ -512,6 +970,37 @@ async function replayCommercialFixture(kind, button) {
   }
 }
 
+function openResetDemoDialog() {
+  $("#reset-confirmation").checked = false;
+  $("#confirm-reset-button").disabled = true;
+  $("#reset-error").textContent = "";
+  $("#reset-demo-dialog").showModal();
+}
+
+async function resetCommercialDemo() {
+  if (!$("#reset-confirmation").checked) return;
+  const button = $("#confirm-reset-button");
+  setButtonBusy(button, true, "Restaurando…");
+  $("#reset-error").textContent = "";
+  try {
+    await api("/v1/local/commercial-demo/reset", {
+      method: "POST",
+      body: JSON.stringify({ confirmation: "RESTAURAR_DATOS_FICTICIOS" }),
+    });
+    state.selectedCommercialId = null;
+    state.mobileDetailOpen = false;
+    clearCommercialFilters();
+    await loadData();
+    $("#reset-demo-dialog").close();
+    toast("Se restauraron los 18 leads ficticios iniciales.");
+  } catch (error) {
+    $("#reset-error").textContent = friendlyError(error);
+  } finally {
+    setButtonBusy(button, false, "");
+    button.disabled = !$("#reset-confirmation").checked;
+  }
+}
+
 function openPasswordDialog(forced = false) {
   state.passwordForced = forced;
   $("#password-form").reset();
@@ -582,7 +1071,9 @@ async function initialize() {
     state.localDemo = true;
     state.token = null;
     state.refreshToken = null;
-    $("#release-label").textContent = "LOCAL · MEMORIA EFÍMERA";
+    $("#release-label").textContent = state.config.localCommercialPersistenceEnabled
+      ? "LOCAL · PERSISTENTE"
+      : "LOCAL · MEMORIA";
     try {
       await bootstrapAuthenticated();
       switchView("commercial");
@@ -630,12 +1121,17 @@ $("#login-form").addEventListener("submit", async (event) => {
 });
 
 $$('[data-open-order], #new-order-button').forEach((button) => button.addEventListener("click", openOrderDialog));
-$$('[data-replay="exact"], #replay-exact-button').forEach((button) => {
-  button.addEventListener("click", () => replayCommercialFixture("exact", button));
+[$("#lead-search"), $("#stage-filter"), $("#product-filter"), $("#attribution-filter")]
+  .forEach((control) => control.addEventListener("input", () => {
+    state.mobileDetailOpen = false;
+    renderCommercial();
+  }));
+$("#clear-filters").addEventListener("click", clearCommercialFilters);
+$("#reset-demo-button").addEventListener("click", openResetDemoDialog);
+$("#reset-confirmation").addEventListener("change", (event) => {
+  $("#confirm-reset-button").disabled = !event.currentTarget.checked;
 });
-$$('[data-replay="unknown"], #replay-unknown-button').forEach((button) => {
-  button.addEventListener("click", () => replayCommercialFixture("unknown", button));
-});
+$("#confirm-reset-button").addEventListener("click", resetCommercialDemo);
 $$(".nav-item").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
 $$("input[name=clientMode]").forEach((input) => input.addEventListener("change", syncClientMode));
 $("#order-client").addEventListener("change", syncTeamFromClient);

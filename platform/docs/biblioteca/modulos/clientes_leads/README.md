@@ -47,9 +47,7 @@ Teléfono duplicado, varias identidades, fusión reversible, origen publicitario
 ## Evidencia
 
 Alta y listado de clientes tenant-aware, teléfono único por tenant y pruebas en
-`TASK-20260719-006`. `TASK-20260803-001` agrega lead y oportunidad locales,
-tenant-aware, desde una conversación ficticia; la persistencia real permanece
-pendiente.
+`TASK-20260719-006`. `TASK-20260803-004` valida 18 leads y oportunidades ficticios, tenant-aware, con productos, etapas, proxima accion, seguimiento y persistencia JSON exclusivamente local. La persistencia real permanece pendiente.
 
 ## Rollback
 
@@ -57,7 +55,7 @@ Deshacer vínculo o fusión conservando IDs e historial.
 
 ## Estado
 
-IMPLEMENTADO_LOCAL_NO_PERSISTENTE.
+VALIDADO_LOCAL_PERSISTENTE_SOLO_FIXTURES.
 
 ## Cierre documental
 

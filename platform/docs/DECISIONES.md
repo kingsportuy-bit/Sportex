@@ -1,8 +1,7 @@
 # Decisiones tecnicas vigentes de SPORTEX
 
-Este registro conserva decisiones durables del sistema de desarrollo. Una
-tarea referencia sus IDs; si una decision cambia, se agrega otra y la anterior
-se marca como `REEMPLAZADA`. Las decisiones de negocio permanecen en DELTA.
+Registro durable del sistema. Las tareas referencian sus IDs; una decisión
+nueva marca la anterior como `REEMPLAZADA`. El negocio permanece en DELTA.
 
 ## SPORTEX-DEC-001 - Fuente canonica unica y vistas derivadas
 
@@ -55,3 +54,33 @@ se marca como `REEMPLAZADA`. Las decisiones de negocio permanecen en DELTA.
   definir persistencia real, IA o automatizaciones.
 - Impacto: la campaña queda activa después de cerrar la tarea, pero una tarea
   posterior requiere autorización nueva de Fito.
+
+## SPORTEX-DEC-005 - Persistencia CRM local de fixtures gobernada por el Core
+
+- Fecha: 2026-08-03
+- Estado: `VIGENTE`
+- Decision: la demo CRM usa una semilla canonica de 18 expedientes ficticios y un archivo JSON local atomico, tenant-aware e ignorado por Git. Etapas, transiciones, versiones, proxima accion, seguimientos y reset pertenecen al Core; el frontend solo solicita comandos especificos.
+- Guard: solo existe con `development|test + memory + SPORTEX_DEV_AUTH=true`; una configuracion corrupta falla cerrada.
+- Limite: `SENA_VALIDADA` es una etapa fixture y nunca certifica un pago. La demo no envia mensajes, conecta integraciones, usa datos reales ni crea pedidos o produccion.
+- Motivo: permitir que Fito comprenda y valide el flujo comercial navegable sin fingir infraestructura ni operacion real.
+- Impacto: reiniciar conserva cambios ficticios y el reset explicito repone la semilla; cualquier persistencia real requiere otra tarea y autorizacion.
+
+## SPORTEX-DEC-006 - Validación técnica y validación de producto son gates separados
+
+- Fecha: 2026-08-03
+- Estado: `VIGENTE`
+- Decisión: el PASS técnico no implica aprobación de experiencia. La devolución
+  de producto no falla el Core, la persistencia ni los contratos ya probados.
+- Gate: `TASK-20260803-005` preserva funcionalidad y fixtures; no hay código de
+  rediseño antes de que Fito apruebe el wireframe.
+
+## SPORTEX-DEC-007 - CAMP-20260803-001 entrega la V1 Operativa por etapas
+
+- Fecha: 2026-08-03
+- Estado: `VIGENTE`
+- Decisión: incorporar `DELTA-DEC-007/010/011` a la campaña existente. Etapa 0
+  aprueba el recorrido completo de Operación, Marketing y Administración.
+- Conversión objetivo: el Core idempotente vincula o crea Cliente y genera
+  exactamente un Pedido al validar una seña; aún no está implementado.
+- Gate: preservar Core, persistencia y 18 leads; aprobar el wireframe y luego
+  autorizar el versionado pendiente antes de ampliar código o conexiones.

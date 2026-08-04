@@ -46,9 +46,7 @@ Replay, firma inválida, varios pedidos activos, prompt injection, cuarentena e 
 
 ## Evidencia
 
-Replay local ficticio de `TASK-20260803-001`: normalización, orden,
-deduplicación, atribución exacta/desconocida y aislamiento por tenant. Sin
-evidencia de proveedor, PostgreSQL o `PILOTO_DELTA`.
+Replay local ficticio de `TASK-20260803-001` y semilla de `TASK-20260803-004`: normalizacion, orden, deduplicacion, atribucion exacta/desconocida y aislamiento por tenant. La conversacion es historica y de solo lectura; registrar seguimiento no crea un mensaje. Sin evidencia de proveedor, PostgreSQL o `PILOTO_DELTA`.
 
 ## Rollback
 
@@ -56,7 +54,7 @@ Desvincular propuesta o pedido sin borrar el evento original.
 
 ## Estado
 
-IMPLEMENTADO_LOCAL_NO_PERSISTENTE.
+VALIDADO_LOCAL_PERSISTENTE_SOLO_FIXTURES.
 
 ## Cierre documental
 

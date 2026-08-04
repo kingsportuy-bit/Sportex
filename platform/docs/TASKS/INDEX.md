@@ -6,7 +6,7 @@ Actualizado: 2026-08-03.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260803-005` | `in_progress` | Rediseñar la experiencia comercial Hoy | docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md
 
 ## Cola
 
@@ -27,3 +27,4 @@ Actualizado: 2026-08-03.
 - `TASK-20260803-001` | `done` | Primera vertical comercial local de SPORTEX | docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md
 - `TASK-20260803-002` | `done` | Versionar OS y primera vertical comercial local | docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md
 - `TASK-20260803-003` | `done` | Reconciliar el commit remoto verificado | docs/TASKS/closed/2026/TASK-20260803-003-reconciliar-push-remoto.md
+- `TASK-20260803-004` | `done` | Demo CRM comercial local navegable | docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md
