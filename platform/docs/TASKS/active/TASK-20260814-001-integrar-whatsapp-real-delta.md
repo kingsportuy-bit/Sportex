@@ -355,3 +355,6 @@ DELTA define reglas y valida negocio.
   blanco y lima.
 - El corte queda local y sin mensajes reales. Falta formar commit exacto y
   solicitar GO de deploy para actualizar PILOTO_DELTA.
+- El corte funcional fue versionado y publicado como
+  `1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45`. El runtime publico permanece en
+  `f6a9277`; el unico gate pendiente es el GO exacto de despliegue.

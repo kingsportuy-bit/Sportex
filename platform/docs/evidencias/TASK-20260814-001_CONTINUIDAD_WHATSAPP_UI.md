@@ -41,6 +41,8 @@ duplicado; el eco live reconcilia la vista.
 
 ## Pendiente
 
-Crear el commit inmutable, publicar la rama y pedir el GO remoto exacto para
-desplegar ese SHA en `PILOTO_DELTA`. La aceptacion visual final del login se
-realiza sobre el runtime desplegado, porque la demo local omite autenticacion.
+El candidato funcional inmutable es
+`1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45` y esta publicado en la rama
+`sportex-governance-20260801`. Falta el GO remoto exacto para desplegar ese SHA
+en `PILOTO_DELTA`. La aceptacion visual final del login se realiza sobre el
+runtime desplegado, porque la demo local omite autenticacion.

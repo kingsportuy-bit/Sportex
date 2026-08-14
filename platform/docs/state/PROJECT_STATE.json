@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Formar y publicar el candidato de continuidad WhatsApp/UI; pedir GO exacto antes de desplegarlo en PILOTO_DELTA."
+    "nextAction": "Pedir GO exacto para desplegar 1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45 en PILOTO_DELTA."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -81,8 +81,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "f6a92770b2539975216e81f96fcffc00b4afcb03",
-    "workingTreeState": "TASK-20260814-001_WHATSAPP_CONTINUITY_LOCAL_PASS_PENDING_COMMIT",
+    "headAtLastEvidence": "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45",
+    "workingTreeState": "TASK-20260814-001_REMOTE_CANDIDATE_1CC2C96_READY_FOR_GO",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -115,7 +115,7 @@
       "status": "REMOTE_CANDIDATE_F6A9277_VERIFIED",
       "lastVerifiedAt": "2026-08-03",
       "writeAuthorized": true,
-      "note": "Rama publicada hasta f6a9277; runtime actual d871d2e."
+      "note": "Rama publicada con candidato funcional 1cc2c96; runtime publico permanece en f6a9277 hasta GO exacto."
     },
     {
       "name": "Supabase",
