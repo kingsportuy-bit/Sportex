@@ -27,5 +27,7 @@ Eventos normalizados, identificadores del proveedor y resultados verificables.
 
 ## Estado
 
-REPLAY_LOCAL_IMPLEMENTADO. El adaptador real permanece `NO_INICIADO`; no hay
-webhook, sesión, consulta ni envío autorizado.
+PIPELINE_SIMULADO_DURABLE_VALIDADO_LOCAL. Existen normalización, journal,
+worker, backfill, cuarentena, outbox y receipts con transporte falso. El
+adaptador real permanece `NO_INICIADO`; no hay webhook, sesión, consulta ni
+envío autorizado.

@@ -140,7 +140,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
          (id, tenant_id, conversation_id, provider, provider_instance, provider_message_id,
           direction, content_type, body_text, evidence_ref, occurred_at, received_at,
           source_kind, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'FIXTURE',$12)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$12)
          ON CONFLICT (tenant_id, provider, provider_instance, provider_message_id) DO UPDATE SET
            direction = EXCLUDED.direction,
            body_text = EXCLUDED.body_text,
@@ -150,7 +150,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         [message.id, item.tenantId, item.conversation.id, message.provider,
           item.conversation.providerInstance, message.providerMessageId, message.direction,
           message.contentType, message.text, message.evidenceRef, message.occurredAt,
-          message.receivedAt],
+          message.receivedAt, message.sourceKind ?? "FIXTURE"],
       );
     }
 
@@ -266,7 +266,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
   private async messages(conversationId: string): Promise<NormalizedConversationMessage[]> {
     const result = await this.client.query(
       `SELECT id, provider_message_id, direction, content_type, body_text, evidence_ref,
-              occurred_at, received_at
+              occurred_at, received_at, source_kind
        FROM ${this.tables.messages}
        WHERE tenant_id = $1 AND conversation_id = $2
        ORDER BY occurred_at, id`,
@@ -284,6 +284,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         contentType: "TEXT",
         text: String(row.body_text),
         evidenceRef: String(row.evidence_ref),
+        sourceKind: String(row.source_kind) as NonNullable<NormalizedConversationMessage["sourceKind"]>,
         fixtureOnly: true,
       };
     });

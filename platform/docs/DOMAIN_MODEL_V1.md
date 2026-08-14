@@ -197,8 +197,23 @@ Registra eventos autorizados pendientes. En esta vertical se publica `order.crea
 - estado de la próxima acción: `PENDIENTE`;
 - cada creación y mensaje conserva actor, correlación y evidencia.
 
-La primera vertical no convierte lead en cliente, no extrae producto mediante
-IA y no ejecuta seguimientos ni mensajes.
+La primera vertical no extrae producto mediante IA ni ejecuta seguimientos o
+mensajes reales. `TASK-20260814-001` incorporó la conversión gobernada de una
+oportunidad con seña validada a Cliente, Pago certificado y Pedido único.
+
+## Transporte WhatsApp durable local
+
+El sobre WhatsApp normalizado se persiste antes de la proyección comercial.
+Journal, conversación y outbox son responsabilidades separadas:
+
+```text
+evento simulado -> journal durable -> worker tenant-aware -> conversación/oportunidad
+orden manual confirmada -> outbox durable -> transporte falso -> receipt
+```
+
+El journal conserva `SIMULATED_LIVE` o `BACKFILL`; la conversación conserva el
+origen por mensaje. Un mensaje saliente no puede crear una oportunidad sin una
+conversación previa. Receipts actualizan entrega y no deciden negocio.
 
 ## Tablas transitorias preparadas en julio de 2026
 
@@ -222,3 +237,7 @@ Esta seccion reemplaza el alcance efimero inicial para la demo local. La semilla
 La oportunidad usa `NUEVO`, `EN_CALIFICACION`, `COTIZADO`, `EN_SEGUIMIENTO`, `PERDIDO` o `SENA_VALIDADA`, y conserva proxima accion, fecha, estado, version, seguimientos e historial. Cada mutacion autorizada incrementa la version. `SENA_VALIDADA` es solo una etapa fixture: no crea ni certifica pagos.
 
 El JSON local atomico conserva solamente fixtures ignorados por Git. La vertical no convierte leads en clientes, no interpreta con IA, no envia mensajes y no crea pagos, pedidos ni produccion.
+
+Esa última limitación describe solamente el adaptador JSON de demo. La
+persistencia objetivo PostgreSQL y la conversión gobernada pertenecen a
+`TASK-20260814-001` y no habilitan integraciones reales por sí solas.

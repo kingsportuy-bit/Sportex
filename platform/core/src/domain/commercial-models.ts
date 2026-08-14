@@ -26,11 +26,13 @@ export function allowedCommercialStageTransitions(stage: CommercialStage): Comme
 export interface EvolutionReplayEvent {
   event: "messages.upsert";
   instance: string;
+  receivedAt?: string;
+  sourceKind?: "FIXTURE" | "BACKFILL" | "LIVE";
   data: {
     key: {
       id: string;
       remoteJid: string;
-      fromMe: false;
+      fromMe: boolean;
     };
     pushName: string;
     messageTimestamp: string;
@@ -58,6 +60,7 @@ export interface NormalizedConversationMessage {
   contentType: "TEXT";
   text: string;
   evidenceRef: string;
+  sourceKind?: "FIXTURE" | "BACKFILL" | "LIVE";
   fixtureOnly: true;
 }
 

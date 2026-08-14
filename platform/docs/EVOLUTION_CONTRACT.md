@@ -48,6 +48,19 @@ gates simultáneos: entorno `development|test`, store `memory` y autenticación
 de desarrollo. Solo acepta la instancia `LOCAL_FIXTURE` y referencias con
 prefijo ficticio.
 
-El replay no se conecta a Evolution, no representa el payload productivo
-completo, no persiste en PostgreSQL y no habilita mensajes. Sirve para validar
-normalización, deduplicación, atribución y la proyección comercial local.
+El endpoint de replay original no se conecta a Evolution ni representa el
+payload productivo completo. `TASK-20260814-001` agregó, por fuera del endpoint,
+un pipeline simulado que persiste journal y outbox en PostgreSQL local, procesa
+backfill/live ficticio y usa transporte falso. No crea webhook, no consulta una
+instancia y no habilita mensajes reales.
+
+## Pipeline simulado durable
+
+- el journal persiste el sobre normalizado antes de proyectarlo;
+- la clave `(tenant, provider_event_id)` evita duplicados;
+- el worker procesa un tenant por vez y ordena por fecha de ocurrencia;
+- errores quedan en cuarentena sin borrar la evidencia;
+- backfill conserva su origen y no habilita outbound;
+- el outbox exige confirmación humana y nace detrás de kill switch;
+- receipts no pueden hacer retroceder un estado ya confirmado;
+- las migraciones `20260814_002` y `20260814_003` tienen RLS y rollback local ensayado.

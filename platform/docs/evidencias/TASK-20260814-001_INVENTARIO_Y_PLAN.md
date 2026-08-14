@@ -100,3 +100,18 @@ datos reales, captura pasiva ni envío.
 - Core `32/32` PASS.
 - Sigue faltando persistencia durable del journal/outbox y proyección integrada;
   no se creó webhook, no se consultó Evolution y no se envió ningún mensaje.
+
+## Checkpoint ejecutado — Gate 2B
+
+- Migración `20260814_003`: journal y outbox WhatsApp, RLS forzado y rollback.
+- Ensayo PostgreSQL 16 con 16 tablas: PASS.
+- Journal: persist-before-process, dedupe, backfill, ordering, cuarentena,
+  reanudación y aislamiento entre dos tenants: PASS.
+- Worker sin servidor/UI: proyectó backfill, inbound y outbound en una única
+  conversación ordenada: PASS.
+- Outbox: confirmación, kill switch, idempotencia, transporte falso y receipts
+  monotónicos: PASS.
+- Rollback con datos: 0 tablas comerciales/WhatsApp restantes; 9 tablas Core
+  preservadas.
+- Core `34/34` PASS. Los contenedores temporales verificados fueron eliminados.
+- No hubo acceso a Evolution, Supabase remoto, Meta, VPS, datos ni mensajes reales.

@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Completar Gate 2: persistir journal/outbox y conectar el worker Evolution simulado a la proyección comercial PostgreSQL."
+    "nextAction": "Implementar Gate 3: conectar API y mesa local a las proyecciones, aprobaciones y acciones internas del Core."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_2A_EVOLUTION_SIMULADO_EN_PROGRESO",
+    "status": "GATE_2_CERRADO_PIPELINE_DURABLE_LOCAL_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_2_EVOLUTION_SIMULADO"
+    "nextStage": "GATE_3_MESA_LOCAL_INTEGRADA"
   },
   "nextCampaign": null,
   "decisions": [
@@ -86,13 +86,13 @@
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
-    "status": "MIGRACION_COMERCIAL_DEFINIDA_NO_EJECUTADA",
+    "status": "MIGRACIONES_002_003_ENSAYADAS_LOCALMENTE_NO_REMOTAS",
     "lastVerifiedAt": "2026-08-14",
     "executed": [],
     "pending": [
-      "Ensayar localmente up/down de 20260814_002 antes de cualquier operación en PILOTO_DELTA."
+      "Revalidar namespace y ejecutar 20260814_002/003 solo después de inventario, backup, rollback y GO exacto de PILOTO_DELTA."
     ],
-    "note": "20260814_002 agrega cinco tablas comerciales con RLS y rollback; no fue ejecutada en una base."
+    "note": "20260814_002/003 agregan siete tablas comerciales y WhatsApp. Up/down con datos pasó en PostgreSQL 16 efímero; no se ejecutaron remotamente."
   },
   "tests": {
     "status": "PASS",
@@ -103,7 +103,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "note": "Gate 1A validado con Core 27/27 y recorrido browser local: seña validada a Cliente, Pago y Pedido único dentro de Detalles de WhatsApp."
+    "note": "Gate 2 validado con Core 34/34, PostgreSQL efímero, journal, worker sin UI, outbox falso, receipts y rollback con datos."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
@@ -149,7 +149,7 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Gate 1A integra la ficha comercial y el Core transaccional: seña validada crea Cliente, Pago y Pedido único desde Detalles de WhatsApp.",
+    "summary": "Gate 2 cierra el pipeline WhatsApp simulado durable: journal, worker, proyección, outbox falso, receipts, aislamiento y rollback local.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
@@ -364,7 +364,7 @@
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Completar Gate 2 con journal/outbox durable y proyección comercial integrada.",
+    "Implementar Gate 3 con API/proyecciones, aprobaciones y acciones internas de la mesa local.",
     "Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

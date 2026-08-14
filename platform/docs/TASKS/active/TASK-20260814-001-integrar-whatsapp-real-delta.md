@@ -215,3 +215,20 @@ DELTA define reglas y valida negocio.
   humana, es idempotente y evita regresiones de receipts.
 - Gate 2 continúa: falta persistir el journal/outbox objetivo y conectar el
   handler simulado a la proyección comercial PostgreSQL.
+
+### 2026-08-14 — checkpoint Gate 2B cerrado
+
+- La migración reversible `20260814_003` agrega journal de ingreso y outbox
+  WhatsApp con tenant, RLS forzado, permisos mínimos e índices de trabajo.
+- El store PostgreSQL persiste primero el sobre, deduplica por tenant/evento,
+  recupera pendientes, registra procesados/cuarentena y aísla el outbox.
+- El worker simulado proyecta backfill, inbound y outbound en una conversación
+  ordenada aun cuando la UI no existe o está cerrada.
+- El outbox durable permanece pendiente detrás del kill switch, exige
+  confirmación, envía una sola vez mediante transporte falso y aplica receipts
+  sin regresión.
+- PostgreSQL 16 ensayó las 16 tablas, dos tenants, journal, proyección, outbox y
+  rollback con datos; se retiraron 7 tablas extendidas y quedaron intactas las
+  9 del Core base.
+- Gate 2 queda cerrado. El siguiente corte es Gate 3: API/proyecciones y acciones
+  internas de la mesa local, todavía sin integración real.

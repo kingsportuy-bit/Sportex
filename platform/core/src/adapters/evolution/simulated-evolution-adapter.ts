@@ -7,6 +7,11 @@ import type {
   WhatsAppOutboundCommand,
   WhatsAppOutboundRecord,
 } from "../../domain/whatsapp-transport-models.js";
+import type {
+  WhatsAppIngressCounts,
+  WhatsAppIngressJournal,
+  WhatsAppOutboundStore,
+} from "../../ports/whatsapp-transport-store.js";
 
 function assertIso(value: string, label: string): void {
   if (!Number.isFinite(Date.parse(value))) throw new Error(`${label}_invalid`);
@@ -94,49 +99,52 @@ export class SimulatedEvolutionAdapter {
   }
 }
 
-type IngressState = "PENDING" | "PROCESSED" | "QUARANTINED";
-
 interface JournalEntry {
   envelope: NormalizedWhatsAppIngress;
-  state: IngressState;
+  state: keyof WhatsAppIngressCounts;
   error: string | null;
 }
 
-export class InMemoryEvolutionJournal {
+export class InMemoryEvolutionJournal implements WhatsAppIngressJournal {
   private readonly entries = new Map<string, JournalEntry>();
 
-  ingest(envelope: NormalizedWhatsAppIngress): { duplicate: boolean } {
+  async ingest(envelope: NormalizedWhatsAppIngress): Promise<{ duplicate: boolean }> {
     const key = `${envelope.tenantId}:${envelope.providerEventId}`;
     if (this.entries.has(key)) return { duplicate: true };
     this.entries.set(key, { envelope: structuredClone(envelope), state: "PENDING", error: null });
     return { duplicate: false };
   }
 
-  pending(): NormalizedWhatsAppIngress[] {
+  async pending(tenantId: string, limit = 100): Promise<NormalizedWhatsAppIngress[]> {
     return [...this.entries.values()]
-      .filter((entry) => entry.state === "PENDING")
+      .filter((entry) => entry.state === "PENDING" && entry.envelope.tenantId === tenantId)
       .map((entry) => structuredClone(entry.envelope))
       .sort((left, right) => left.occurredAt.localeCompare(right.occurredAt)
         || left.receivedAt.localeCompare(right.receivedAt)
-        || left.eventId.localeCompare(right.eventId));
+        || left.eventId.localeCompare(right.eventId))
+      .slice(0, limit);
   }
 
-  markProcessed(tenantId: string, providerEventId: string): void {
+  async markProcessed(tenantId: string, providerEventId: string): Promise<void> {
     this.required(tenantId, providerEventId).state = "PROCESSED";
   }
 
-  quarantine(tenantId: string, providerEventId: string, error: unknown): void {
+  async quarantine(tenantId: string, providerEventId: string, error: unknown): Promise<void> {
     const entry = this.required(tenantId, providerEventId);
     entry.state = "QUARANTINED";
     entry.error = error instanceof Error ? error.message : "unknown_processing_error";
   }
 
-  counts(): Record<IngressState, number> {
-    return [...this.entries.values()].reduce<Record<IngressState, number>>(
+  async counts(tenantId: string): Promise<WhatsAppIngressCounts> {
+    return [...this.entries.values()]
+      .filter((entry) => entry.envelope.tenantId === tenantId)
+      .reduce<WhatsAppIngressCounts>(
       (counts, entry) => ({ ...counts, [entry.state]: counts[entry.state] + 1 }),
       { PENDING: 0, PROCESSED: 0, QUARANTINED: 0 },
     );
   }
+
+  async close(): Promise<void> {}
 
   private required(tenantId: string, providerEventId: string): JournalEntry {
     const entry = this.entries.get(`${tenantId}:${providerEventId}`);
@@ -146,15 +154,18 @@ export class InMemoryEvolutionJournal {
 }
 
 export class SimulatedEvolutionWorker {
-  constructor(private readonly journal: InMemoryEvolutionJournal) {}
+  constructor(
+    private readonly journal: WhatsAppIngressJournal,
+    private readonly tenantId: string,
+  ) {}
 
   async drain(handler: (event: NormalizedWhatsAppIngress) => Promise<void>): Promise<void> {
-    for (const event of this.journal.pending()) {
+    for (const event of await this.journal.pending(this.tenantId)) {
       try {
         await handler(event);
-        this.journal.markProcessed(event.tenantId, event.providerEventId);
+        await this.journal.markProcessed(event.tenantId, event.providerEventId);
       } catch (error) {
-        this.journal.quarantine(event.tenantId, event.providerEventId, error);
+        await this.journal.quarantine(event.tenantId, event.providerEventId, error);
       }
     }
   }
@@ -169,11 +180,51 @@ const deliveryRank: Record<WhatsAppDeliveryStatus, number> = {
   FAILED: 1,
 };
 
-function canAdvanceDelivery(current: WhatsAppDeliveryStatus, next: WhatsAppDeliveryStatus): boolean {
+export function canAdvanceDelivery(current: WhatsAppDeliveryStatus, next: WhatsAppDeliveryStatus): boolean {
   if (current === "READ" || current === "FAILED") return false;
   if (next === "UNKNOWN") return current === "PENDING";
   if (next === "FAILED") return current === "PENDING" || current === "UNKNOWN" || current === "SENT";
   return deliveryRank[next] > deliveryRank[current];
+}
+
+export class InMemoryWhatsAppOutboundStore implements WhatsAppOutboundStore {
+  private readonly records = new Map<string, WhatsAppOutboundRecord>();
+
+  async enqueue(record: WhatsAppOutboundRecord): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }> {
+    const key = `${record.tenantId}:${record.idempotencyKey}`;
+    const existing = this.records.get(key);
+    if (existing) {
+      if (existing.destinationRef !== record.destinationRef || existing.text !== record.text) {
+        throw new Error("whatsapp_outbound_idempotency_conflict");
+      }
+      return { duplicate: true, record: structuredClone(existing) };
+    }
+    this.records.set(key, structuredClone(record));
+    return { duplicate: false, record: structuredClone(record) };
+  }
+
+  async findByProviderMessageId(tenantId: string, providerMessageId: string): Promise<WhatsAppOutboundRecord | null> {
+    const record = [...this.records.values()].find((candidate) =>
+      candidate.tenantId === tenantId && candidate.providerMessageId === providerMessageId);
+    return record ? structuredClone(record) : null;
+  }
+
+  async update(record: WhatsAppOutboundRecord): Promise<void> {
+    const key = `${record.tenantId}:${record.idempotencyKey}`;
+    if (!this.records.has(key)) throw new Error("whatsapp_outbound_not_found");
+    this.records.set(key, structuredClone(record));
+  }
+
+  async pendingOutbound(tenantId: string, limit = 100): Promise<WhatsAppOutboundRecord[]> {
+    return [...this.records.values()]
+      .filter((record) => record.tenantId === tenantId && ["PENDING", "UNKNOWN"].includes(record.status))
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt)
+        || left.idempotencyKey.localeCompare(right.idempotencyKey))
+      .slice(0, limit)
+      .map((record) => structuredClone(record));
+  }
+
+  async close(): Promise<void> {}
 }
 
 export class FakeEvolutionOutboundTransport {

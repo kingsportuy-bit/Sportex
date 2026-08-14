@@ -48,7 +48,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACION_COMERCIAL_DEFINIDA_NO_EJECUTADA`; ejecutadas 0; pendientes 1.
+- Migraciones: `MIGRACIONES_002_003_ENSAYADAS_LOCALMENTE_NO_REMOTAS`; ejecutadas 0; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
 - Despliegues: `SIN_CAMBIOS_EN_ESTA_TAREA`; registros 0.
 - Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_ACCEDIDA_EN_ESTA_TAREA` | Evolution API=`NO_ACCEDIDA_EN_ESTA_TAREA` | VPS / runtime=`NO_ACCEDIDA_EN_ESTA_TAREA`
@@ -59,7 +59,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Gate 1A integra la ficha comercial y el Core transaccional: seña validada crea Cliente, Pago y Pedido único desde Detalles de WhatsApp.
+- Gate 2 cierra el pipeline WhatsApp simulado durable: journal, worker, proyección, outbox falso, receipts, aislamiento y rollback local.
 
 ## Riesgos
 
@@ -75,6 +75,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Completar Gate 2 con journal/outbox durable y proyección comercial integrada.
+- Implementar Gate 3 con API/proyecciones, aprobaciones y acciones internas de la mesa local.
 - Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

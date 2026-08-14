@@ -74,9 +74,17 @@ export class CommercialReplayService {
         return { data: duplicate, replayed: true };
       }
 
-      const now = this.clock().toISOString();
+      const now = input.receivedAt
+        ? new Date(input.receivedAt).toISOString()
+        : this.clock().toISOString();
       const message = this.normalizeMessage(input, now);
       const existing = await transaction.findByProviderConversationRef(input.data.key.remoteJid);
+      if (!existing && message.direction === "DELTA") {
+        throw conflict(
+          "commercial_outbound_conversation_not_found",
+          "An outbound message cannot create a commercial opportunity",
+        );
+      }
       const item = existing
         ? this.appendMessage(existing, message, context)
         : this.createWorkspaceItem(input, message, context);
@@ -536,12 +544,13 @@ export class CommercialReplayService {
       id: this.idFactory(),
       provider: "EVOLUTION",
       providerMessageId: input.data.key.id.trim(),
-      direction: "CLIENTE",
+      direction: input.data.key.fromMe ? "DELTA" : "CLIENTE",
       occurredAt: new Date(input.data.messageTimestamp).toISOString(),
       receivedAt,
       contentType: "TEXT",
       text: input.data.message.conversation.trim(),
       evidenceRef: `fixture:${input.data.key.id.trim()}`,
+      sourceKind: input.sourceKind ?? "FIXTURE",
       fixtureOnly: true,
     };
   }
@@ -592,6 +601,9 @@ export class CommercialReplayService {
     }
     if (Number.isNaN(Date.parse(input.data.messageTimestamp))) {
       throw new AppError("invalid_payload", 400, "messageTimestamp must be an ISO date");
+    }
+    if (input.receivedAt && Number.isNaN(Date.parse(input.receivedAt))) {
+      throw new AppError("invalid_payload", 400, "receivedAt must be an ISO date");
     }
     const external = input.data.contextInfo?.externalAdReply;
     if (external?.sourceId && !/^ad-ficticio-[a-z0-9-]{1,80}$/u.test(external.sourceId)) {

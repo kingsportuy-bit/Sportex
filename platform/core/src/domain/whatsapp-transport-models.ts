@@ -74,7 +74,7 @@ export interface WhatsAppOutboundCommand {
 }
 
 export interface WhatsAppOutboundRecord extends WhatsAppOutboundCommand {
-  providerMessageId: string;
+  providerMessageId: string | null;
   status: WhatsAppDeliveryStatus;
   attempts: number;
   createdAt: string;
