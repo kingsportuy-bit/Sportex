@@ -32,7 +32,11 @@ export class CommercialWhatsAppProjector {
       event: "messages.upsert",
       instance: envelope.providerInstance,
       receivedAt: envelope.receivedAt,
-      sourceKind: envelope.source === "BACKFILL" ? "BACKFILL" : "FIXTURE",
+      sourceKind: envelope.source === "BACKFILL"
+        ? "BACKFILL"
+        : envelope.source === "LIVE"
+          ? "LIVE"
+          : "FIXTURE",
       data: {
         key: {
           id: providerMessageId,
@@ -45,6 +49,8 @@ export class CommercialWhatsAppProjector {
         ...(externalAdReply ? { contextInfo: { externalAdReply } } : {}),
       },
     };
-    return this.service.replay(context, envelope.providerEventId, input);
+    return envelope.providerInstance === "LOCAL_FIXTURE"
+      ? this.service.replay(context, envelope.providerEventId, input)
+      : this.service.replayTrustedEvolution(context, envelope.providerEventId, input);
   }
 }

@@ -13,6 +13,14 @@ services:
       SPORTEX_AUTH_ANON_KEY_FILE: /run/secrets/auth_anon_key
       SPORTEX_FRONTEND_DIR: /app/frontend
       SPORTEX_RELEASE: ${SPORTEX_RELEASE:?SPORTEX_RELEASE is required}
+      SPORTEX_EVOLUTION_INGRESS_ENABLED: ${SPORTEX_EVOLUTION_INGRESS_ENABLED:-false}
+      SPORTEX_EVOLUTION_OUTBOUND_ENABLED: "false"
+      SPORTEX_EVOLUTION_INSTANCE: DELTA
+      SPORTEX_EVOLUTION_WEBHOOK_SECRET_FILE: /run/secrets/evolution_webhook_secret
+      SPORTEX_EVOLUTION_API_KEY_FILE: /run/secrets/evolution_api_key
+      SPORTEX_EVOLUTION_BASE_URL: ${SPORTEX_EVOLUTION_BASE_URL:?SPORTEX_EVOLUTION_BASE_URL is required}
+      SPORTEX_DELTA_TENANT_ID: ${SPORTEX_DELTA_TENANT_ID:?SPORTEX_DELTA_TENANT_ID is required}
+      SPORTEX_EVOLUTION_ACTOR_ID: ${SPORTEX_EVOLUTION_ACTOR_ID:?SPORTEX_EVOLUTION_ACTOR_ID is required}
       HOST: 0.0.0.0
       PORT: "8080"
     secrets:
@@ -21,6 +29,12 @@ services:
         mode: 0444
       - source: auth_anon_key
         target: auth_anon_key
+        mode: 0444
+      - source: evolution_webhook_secret
+        target: evolution_webhook_secret
+        mode: 0444
+      - source: evolution_api_key
+        target: evolution_api_key
         mode: 0444
     networks:
       - sportex_private
@@ -78,3 +92,9 @@ secrets:
   auth_anon_key:
     external: true
     name: ${SPORTEX_AUTH_ANON_SECRET:?SPORTEX_AUTH_ANON_SECRET is required}
+  evolution_webhook_secret:
+    external: true
+    name: ${SPORTEX_EVOLUTION_WEBHOOK_SECRET_NAME:?SPORTEX_EVOLUTION_WEBHOOK_SECRET_NAME is required}
+  evolution_api_key:
+    external: true
+    name: ${SPORTEX_EVOLUTION_API_SECRET_NAME:?SPORTEX_EVOLUTION_API_SECRET_NAME is required}

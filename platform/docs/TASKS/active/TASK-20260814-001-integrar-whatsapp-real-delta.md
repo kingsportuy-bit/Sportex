@@ -268,3 +268,24 @@ DELTA define reglas y valida negocio.
   debe demostrar consistencia tras reinicio antes de captura real.
 - Gate 3 queda cerrado. El siguiente paso es preparar Gate 4 en lectura y sin
   tocar Evolution, Supabase remoto, VPS, datos reales, mensajes ni deploy.
+
+### 2026-08-14 — checkpoint Gate 4 preparado localmente
+
+- El inventario remoto de solo lectura confirmo Evolution `2.3.7`, instancia
+  `DELTA` conectada y sin webhook, Core STAGING antiguo `ea02fc0`, runtime
+  legado publico caido y migraciones `002/003/004` todavia ausentes.
+- STAGING conserva 9 tablas base con RLS forzado y no hay backup SPORTEX
+  localizado; crear y verificar uno es obligatorio antes de migrar.
+- El adaptador real cubre texto individual, salidas manuales observadas y
+  receipts, con identidad server-side, deduplicacion y cuarentena.
+- El webhook exige un secreto por header y persiste antes de proyectar. La UI
+  ahora carga la proyeccion comercial tambien fuera de la demo local.
+- El workspace real admite clasificacion, proxima accion y seguimiento; sena y
+  conversion real siguen fail-closed.
+- El envio manual real quedo implementado con confirmacion literal, permiso,
+  idempotency key, outbox y transporte Evolution v2, pero apagado por defecto.
+- Core `41/41`, typecheck, build, SQL y browser oscuro PASS. Detalles y compositor
+  convivieron sin overflow ni errores de consola.
+- No se creo webhook, no se migro, no se desplego, no se leyo contenido real y
+  no se envio ningun mensaje. El siguiente paso es formar el candidato exacto y
+  pedir GO para backup + migracion + deploy + captura pasiva con outbound off.

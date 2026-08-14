@@ -234,7 +234,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       normalizedPhone: row.normalized_phone ? String(row.normalized_phone) : null,
       createdAt: iso(row.contact_created_at),
       updatedAt: iso(row.contact_updated_at),
-      fixtureOnly: true,
+      fixtureOnly: messages.every((message) => message.fixtureOnly),
     };
     const conversation: CommercialConversation = {
       id: String(row.conversation_id),
@@ -248,7 +248,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       messages,
       firstContactAt: iso(row.first_contact_at),
       lastActivityAt: iso(row.last_activity_at),
-      fixtureOnly: true,
+      fixtureOnly: messages.every((message) => message.fixtureOnly),
     };
     return {
       id: String(row.workspace_id),
@@ -285,7 +285,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         text: String(row.body_text),
         evidenceRef: String(row.evidence_ref),
         sourceKind: String(row.source_kind) as NonNullable<NormalizedConversationMessage["sourceKind"]>,
-        fixtureOnly: true,
+        fixtureOnly: String(row.source_kind) === "FIXTURE",
       };
     });
   }

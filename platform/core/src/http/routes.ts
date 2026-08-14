@@ -7,6 +7,7 @@ import { CommercialReplayService } from "../application/commercial-replay-servic
 import { CoreService } from "../application/core-service.js";
 import { LocalWhatsAppSimulationService } from "../application/local-whatsapp-simulation-service.js";
 import { idempotencyKey } from "./context.js";
+import { AppError } from "../shared/errors.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
 
@@ -137,6 +138,8 @@ export async function registerRoutes(
       localCommercialReplayEnabled,
       localCommercialPersistenceEnabled: localCommercialReplayEnabled && Boolean(config.commercialDemoFile),
       localWhatsAppSimulationEnabled: localWhatsAppSimulation !== null,
+      evolutionIngressEnabled: config.evolutionIngressEnabled,
+      evolutionOutboundEnabled: Boolean(config.evolutionOutboundEnabled),
     },
   }));
 
@@ -223,6 +226,37 @@ export async function registerRoutes(
       const context = await resolveContext(request);
       const items = await commercialService.list(context);
       return { data: items, meta: { correlationId: context.correlationId } };
+    });
+
+    app.patch("/v1/commercial/workspace/:itemId/stage", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = updateCommercialStageSchema.parse(request.body);
+      if (input.stage === "SENA_VALIDADA") {
+        throw new AppError("real_deposit_validation_not_implemented", 409, "Real deposit validation is not enabled");
+      }
+      const item = await commercialService.updateStage(context, params.itemId, {
+        stage: input.stage,
+        expectedVersion: input.expectedVersion,
+        ...(input.reason ? { reason: input.reason } : {}),
+      });
+      return { data: item, meta: { correlationId: context.correlationId } };
+    });
+
+    app.patch("/v1/commercial/workspace/:itemId/next-action", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = updateCommercialNextActionSchema.parse(request.body);
+      const item = await commercialService.updateNextAction(context, params.itemId, input);
+      return { data: item, meta: { correlationId: context.correlationId } };
+    });
+
+    app.post("/v1/commercial/workspace/:itemId/follow-ups", async (request, reply) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = recordCommercialFollowUpSchema.parse(request.body);
+      const item = await commercialService.recordFollowUp(context, params.itemId, input);
+      return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
     });
   }
 

@@ -1,4 +1,4 @@
-export type WhatsAppIngressSource = "SIMULATED_LIVE" | "BACKFILL";
+export type WhatsAppIngressSource = "SIMULATED_LIVE" | "LIVE" | "BACKFILL";
 export type WhatsAppDeliveryStatus = "PENDING" | "SENT" | "DELIVERED" | "READ" | "FAILED" | "UNKNOWN";
 
 export interface SimulatedEvolutionMessageEvent {
@@ -45,12 +45,12 @@ export interface NormalizedWhatsAppIngress {
   eventId: string;
   providerEventId: string;
   tenantId: string;
-  environment: "DESARROLLO_LOCAL";
+  environment: "DESARROLLO_LOCAL" | "PILOTO_DELTA";
   occurredAt: string;
   receivedAt: string;
   channel: "WHATSAPP";
   provider: "EVOLUTION";
-  providerInstance: "LOCAL_FIXTURE";
+  providerInstance: string;
   senderRef: string;
   conversationRef: string;
   direction: "CLIENTE" | "DELTA";

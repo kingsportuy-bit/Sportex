@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Preparar Gate 4 en lectura: inventario remoto exacto, seguridad, backup, migracion, rollback, observabilidad y kill switches; sin conectar ni escribir todavia."
+    "nextAction": "Formar candidato exacto y solicitar GO remoto para backup verificado, migraciones 002/003/004, deploy STAGING y webhook DELTA en captura pasiva con outbound apagado."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_3B_PRODUCTION_HANDOFF_LOCAL_PASS",
+    "status": "GATE_4_LOCAL_CANDIDATE_AND_REMOTE_INVENTORY_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_4_PREPARACION_REMOTA_READ_ONLY"
+    "nextStage": "GATE_5_CAPTURA_PASIVA_PENDING_GO"
   },
   "nextCampaign": null,
   "decisions": [
@@ -82,7 +82,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "a18502dcae2f8c585f817ec2eb17e5d6770daf8b",
-    "workingTreeState": "TASK-20260814-001_GATE_3B_PRODUCTION_HANDOFF_LOCAL_VALIDATED",
+    "workingTreeState": "TASK-20260814-001_GATE_4_LOCAL_CANDIDATE_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -103,13 +103,13 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "note": "Gate 3B validado con Core 34/34, PostgreSQL 16 y browser oscuro: Pedido creado pasa a Listo para produccion con permiso, confirmacion, version, idempotencia, auditoria y outbox."
+    "note": "Gate 4 local validado con Core 41/41, adaptador/webhook Evolution real, workspace STAGING, outbound manual preparado pero apagado y browser oscuro sin errores."
   },
   "deployments": {
-    "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
-    "lastVerifiedAt": "2026-08-03",
+    "status": "INVENTARIO_READ_ONLY_SIN_CAMBIOS",
+    "lastVerifiedAt": "2026-08-14",
     "records": [],
-    "note": "TASK-20260803-005 no hizo deploy ni consulto o modifico runtime remoto."
+    "note": "Se inventario VPS/Swarm/Supabase/Evolution en solo lectura. No hubo deploy, migracion, restart, webhook ni escritura."
   },
   "externalIntegrations": [
     {
@@ -121,39 +121,57 @@
     },
     {
       "name": "Supabase",
-      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
-      "lastVerifiedAt": null,
+      "status": "READ_ONLY_STAGING_9_TABLAS_BASE_MIGRACIONES_PENDIENTES",
+      "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": false,
-      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
+      "note": "Solo metadata y conteos: STAGING tiene 9 tablas base con RLS forzado; 002/003/004 no aplicadas. Sin contenido ni escrituras."
     },
     {
       "name": "Evolution API",
-      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
-      "lastVerifiedAt": null,
+      "status": "READ_ONLY_DELTA_OPEN_SIN_WEBHOOK",
+      "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": false,
-      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
+      "note": "Evolution 2.3.7; DELTA open; webhook ausente. No se cambio configuracion ni se enviaron mensajes."
     },
     {
       "name": "VPS / runtime",
-      "status": "NO_ACCEDIDA_EN_ESTA_TAREA",
-      "lastVerifiedAt": null,
+      "status": "READ_ONLY_SWARM_STAGING_STALE_LEGACY_DOWN",
+      "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": false,
-      "note": "Fuera de alcance de TASK-20260803-005; no se conecto ni consulto."
+      "note": "STAGING ea02fc0 esta 1/1; servicio legado 0/1; /opt/sportex a62e5edb. No hubo cambios remotos."
     }
   ],
   "sensitiveData": {
-    "status": "NO_ACCEDIDA_NI_ALMACENADA",
-    "policy": "Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y la demo."
+    "status": "METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO",
+    "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Gate 3B cierra el recorrido local hasta Listo para produccion y ensaya migracion/rollback sin tocar sistemas remotos.",
+    "summary": "Gate 4 local preparado; inventario remoto read-only y outbound apagado.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se preparo el candidato de integracion Evolution real y se reconcilio el runtime remoto en solo lectura, sin desplegar ni enviar mensajes.",
+      "documents": [
+        "core/src/adapters/evolution/evolution-webhook-adapter.ts",
+        "core/src/http/evolution-webhook-routes.ts",
+        "frontend/app.js",
+        "deploy/docker-stack.staging.yml",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -376,9 +394,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "VALIDADO_DESARROLLO_LOCAL",
+    "status": "CANDIDATO_LOCAL_GATE_4_VALIDADO_RUNTIME_REMOTO_SOLO_LECTURA",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Puesto local observado en 127.0.0.1:8081; una seña ficticia creo Cliente/Pago/Pedido y el operador lo entrego a produccion sin perder el chat. El listado reflejo Listo para produccion. No prueba runtime remoto."
+    "note": "Candidato local observado en 127.0.0.1:8082 con bandeja oscura, Detalles y compositor. Runtime remoto fue inventariado pero sigue sin el candidato ni migraciones."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -393,14 +411,15 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.",
+    "Gate 4 sigue local y sin GO remoto.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
     "Validar consistencia PostgreSQL tras reinicio antes del piloto.",
+    "No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Preparar Gate 4: inventario, backup, migracion, rollback, observabilidad y kill switches.",
-    "Demostrar consistencia PostgreSQL tras reinicio antes de cualquier captura pasiva real.",
+    "Versionar Gate 4 y su manifiesto.",
+    "Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

@@ -40,6 +40,8 @@ const state = {
   config: null,
   localDemo: false,
   localWhatsappSimulation: false,
+  commercialWorkspace: false,
+  realWhatsappOutbound: false,
   token: sessionStorage.getItem("sportex_access_token"),
   refreshToken: sessionStorage.getItem("sportex_refresh_token"),
   session: null,
@@ -239,7 +241,7 @@ async function loadSession() {
 
 async function loadData() {
   const requests = [api("/v1/clients"), api("/v1/orders")];
-  if (state.localDemo) requests.push(api("/v1/commercial/workspace"));
+  if (state.commercialWorkspace) requests.push(api("/v1/commercial/workspace"));
   const [clients, orders, commercial] = await Promise.all(requests);
   state.clients = clients.data;
   state.orders = orders.data;
@@ -835,6 +837,7 @@ function openWhatsAppDetails(item) {
 }
 
 function renderOrderConversion(item) {
+  if (!state.localDemo) return null;
   if (item.opportunity.stage !== "SENA_VALIDADA") return null;
   const card = detailCard("PEDIDO / CORE", item.opportunity.coreConversion ? "Pedido vinculado" : "Crear pedido");
   if (item.opportunity.coreConversion) {
@@ -1254,33 +1257,41 @@ function renderWhatsAppComposer(item) {
   input.placeholder = "Escribí un mensaje";
   const send = element("button", "whatsapp-send", "➤");
   send.type = "button";
-  send.disabled = !state.localWhatsappSimulation;
+  const sendingEnabled = state.localWhatsappSimulation || state.realWhatsappOutbound;
+  send.disabled = !sendingEnabled;
   send.title = state.localWhatsappSimulation
     ? "Enviar dentro de la simulación local"
-    : "El envío se habilitará al conectar WhatsApp";
+    : state.realWhatsappOutbound ? "Enviar por WhatsApp" : "El envío se habilitará al conectar WhatsApp";
   send.setAttribute("aria-label", "Enviar mensaje");
   const note = element(
     "small",
     "whatsapp-local-note",
     state.localWhatsappSimulation
       ? "Simulación local · no llega a WhatsApp"
-      : "Vista local · no envía mensajes",
+      : state.realWhatsappOutbound ? "Envío manual por WhatsApp" : "Recepción activa · envío deshabilitado",
   );
   const submit = async () => {
     const text = input.value.trim();
-    if (!text || send.disabled || !state.localWhatsappSimulation) return;
+    if (!text || send.disabled || !sendingEnabled) return;
     setButtonBusy(send, true, "…");
     try {
-      await api(`/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`, {
+      const path = state.localWhatsappSimulation
+        ? `/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`
+        : `/v1/integrations/evolution/workspace/${encodeURIComponent(item.id)}/messages`;
+      await api(path, {
         method: "POST",
-        headers: { "idempotency-key": `local-message-${crypto.randomUUID()}` },
-        body: JSON.stringify({ text }),
+        headers: { "idempotency-key": `whatsapp-message-${crypto.randomUUID()}` },
+        body: JSON.stringify(state.localWhatsappSimulation
+          ? { text }
+          : { text, confirmation: "ENVIAR_A_WHATSAPP" }),
       });
       input.value = "";
       await loadData();
       state.selectedCommercialId = item.id;
       renderWhatsApp();
-      toast("Mensaje agregado a la conversación simulada.");
+      toast(state.localWhatsappSimulation
+        ? "Mensaje agregado a la conversación simulada."
+        : "Mensaje enviado por WhatsApp.");
     } catch (error) {
       toast(friendlyError(error), "error");
     } finally {
@@ -1575,8 +1586,13 @@ async function saveCommercialStage(item, stage, button) {
     toast("La etapa ya está seleccionada.");
     return;
   }
+  if (!state.localDemo && stage === "SENA_VALIDADA") {
+    toast("La validación real de seña se habilitará en su propio corte.", "error");
+    return;
+  }
+  const routePrefix = state.localDemo ? "/v1/local/commercial" : "/v1/commercial";
   await runCommercialMutation(button, "Guardando…", () => api(
-    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/stage`,
+    `${routePrefix}/workspace/${encodeURIComponent(item.id)}/stage`,
     {
       method: "PATCH",
       body: JSON.stringify({
@@ -1584,15 +1600,16 @@ async function saveCommercialStage(item, stage, button) {
         expectedVersion: item.opportunity.version,
         reason: stage === "SENA_VALIDADA"
           ? "Seña ficticia validada manualmente en la demo local"
-          : "Cambio manual desde la demo CRM local",
+          : state.localDemo ? "Cambio manual desde la demo CRM local" : "Cambio manual desde SPORTEX",
       }),
     },
   ), `Etapa actualizada a ${stageLabel(stage)}.`);
 }
 
 async function saveCommercialNextAction(item, description, dueAt, button) {
+  const routePrefix = state.localDemo ? "/v1/local/commercial" : "/v1/commercial";
   await runCommercialMutation(button, "Guardando…", () => api(
-    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/next-action`,
+    `${routePrefix}/workspace/${encodeURIComponent(item.id)}/next-action`,
     {
       method: "PATCH",
       body: JSON.stringify({ description: description.trim(), dueAt, expectedVersion: item.opportunity.version }),
@@ -1601,8 +1618,9 @@ async function saveCommercialNextAction(item, description, dueAt, button) {
 }
 
 async function saveCommercialFollowUp(item, note, outcome, button) {
+  const routePrefix = state.localDemo ? "/v1/local/commercial" : "/v1/commercial";
   await runCommercialMutation(button, "Registrando…", () => api(
-    `/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/follow-ups`,
+    `${routePrefix}/workspace/${encodeURIComponent(item.id)}/follow-ups`,
     {
       method: "POST",
       body: JSON.stringify({ note: note.trim(), outcome, expectedVersion: item.opportunity.version }),
@@ -2088,6 +2106,8 @@ async function initialize() {
     const response = await fetch("/v1/public-config");
     state.config = (await jsonResponse(response)).data;
     state.localWhatsappSimulation = Boolean(state.config.localWhatsAppSimulationEnabled);
+    state.commercialWorkspace = Boolean(state.config.commercialWorkspaceEnabled);
+    state.realWhatsappOutbound = Boolean(state.config.evolutionOutboundEnabled);
     $("#release-label").textContent = `${state.config.environment} · ${state.config.release}`;
   } catch (error) {
     $("#login-error").textContent = friendlyError(error);

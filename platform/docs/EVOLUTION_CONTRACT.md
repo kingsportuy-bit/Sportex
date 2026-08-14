@@ -29,6 +29,15 @@ llamada `DELTA` no autoriza conectarla.
 - mensajes reales solo con alcance y permiso explicitos;
 - pruebas locales usan adaptador falso, nunca una sesion real.
 
+## Corte real PILOTO_DELTA
+
+- La instancia permitida es exactamente `DELTA` y se vincula del lado servidor a un unico tenant y actor tecnico.
+- El webhook es `POST /v1/webhooks/evolution` y exige `x-sportex-webhook-secret`; el secreto no viaja en la URL ni se expone al frontend.
+- El primer corte acepta texto individual entrante y mensajes manuales salientes observados por Evolution. Grupos, estados, broadcasts, medios y contactos LID sin alternativa telefonica inequivoca quedan fuera o en cuarentena.
+- Cada evento se guarda primero en el journal durable y se deduplica por tenant y una identidad estable derivada de evento, instancia, mensaje y estado.
+- El envio real queda apagado por defecto. Al habilitarlo exige STAGING, ingreso real activo, API key montada como secreto, confirmacion humana por mensaje e idempotencia durable; su activacion requiere un GO externo especifico.
+- El backfill es una fase separada: nunca dispara mensajes ni cambia automaticamente etapas comerciales.
+
 ## Leads de anuncios
 
 Cuando el proveedor entregue contexto de origen, el ingreso conserva IDs de

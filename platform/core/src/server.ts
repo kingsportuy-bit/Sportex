@@ -15,6 +15,12 @@ import type { CoreStore } from "./ports/core-store.js";
 import { AppError } from "./shared/errors.js";
 import { registerRoutes } from "./http/routes.js";
 import { checkAuthReady, resolveActorContext, type AuthFetch } from "./http/context.js";
+import { EvolutionWebhookAdapter } from "./adapters/evolution/evolution-webhook-adapter.js";
+import { PostgresWhatsAppTransportStore } from "./adapters/persistence/postgres-whatsapp-transport-store.js";
+import { RealWhatsAppIntegrationService } from "./application/real-whatsapp-integration-service.js";
+import { registerEvolutionWebhookRoutes } from "./http/evolution-webhook-routes.js";
+import { EvolutionHttpTransport } from "./adapters/evolution/evolution-http-transport.js";
+import { RealWhatsAppOutboundService } from "./application/real-whatsapp-outbound-service.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -53,6 +59,42 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     : null;
   const localWhatsAppSimulation = localCommercialReplayEnabled && commercialService
     ? new LocalWhatsAppSimulationService(commercialService)
+    : null;
+  const realWhatsAppStore = options.config.evolutionIngressEnabled
+    ? new PostgresWhatsAppTransportStore(options.config)
+    : null;
+  const realWhatsAppIntegration = options.config.evolutionIngressEnabled
+    && commercialService
+    && options.config.deltaTenantId
+    && options.config.evolutionActorId
+    && options.config.evolutionInstance
+    ? new RealWhatsAppIntegrationService(
+      new EvolutionWebhookAdapter({
+        tenantId: options.config.deltaTenantId,
+        actorId: options.config.evolutionActorId,
+        instance: options.config.evolutionInstance,
+      }),
+      realWhatsAppStore!,
+      commercialService,
+      options.config.deltaTenantId,
+      options.config.evolutionActorId,
+    )
+    : null;
+  const realWhatsAppOutbound = options.config.evolutionOutboundEnabled
+    && realWhatsAppStore
+    && commercialService
+    && options.config.evolutionBaseUrl
+    && options.config.evolutionInstance
+    && options.config.evolutionApiKey
+    ? new RealWhatsAppOutboundService(
+      realWhatsAppStore,
+      new EvolutionHttpTransport(
+        options.config.evolutionBaseUrl,
+        options.config.evolutionInstance,
+        options.config.evolutionApiKey,
+      ),
+      commercialService,
+    )
     : null;
   const authFetch = options.authFetch ?? fetch;
   const resolveContext = (request: Parameters<typeof resolveActorContext>[0]) =>
@@ -142,6 +184,15 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     localCommercialReplayEnabled,
     localWhatsAppSimulation,
   );
+  if (realWhatsAppIntegration) {
+    await registerEvolutionWebhookRoutes(
+      app,
+      options.config,
+      realWhatsAppIntegration,
+      realWhatsAppOutbound,
+      resolveContext,
+    );
+  }
 
   if (options.config.frontendDir) {
     await app.register(fastifyStatic, {
@@ -165,6 +216,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     await Promise.all([
       options.store.close(),
       commercialStore?.close() ?? Promise.resolve(),
+      realWhatsAppIntegration?.close() ?? Promise.resolve(),
     ]);
   });
   return app;

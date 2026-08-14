@@ -54,6 +54,26 @@ export class CommercialReplayService {
     requireCapability(context, "commercial.replay");
     this.validateIdempotencyKey(idempotencyKey);
     this.validateFixture(input);
+    return this.replayValidated(context, idempotencyKey, input, true);
+  }
+
+  async replayTrustedEvolution(
+    context: ActorContext,
+    idempotencyKey: string,
+    input: EvolutionReplayEvent,
+  ): Promise<CommercialReplayResult> {
+    requireCapability(context, "commercial.replay");
+    this.validateIdempotencyKey(idempotencyKey);
+    this.validateTrustedEvolution(input);
+    return this.replayValidated(context, idempotencyKey, input, false);
+  }
+
+  private async replayValidated(
+    context: ActorContext,
+    idempotencyKey: string,
+    input: EvolutionReplayEvent,
+    fixtureOnly: boolean,
+  ): Promise<CommercialReplayResult> {
     const hash = requestHash(input);
 
     return this.store.transaction(context.tenantId, async (transaction) => {
@@ -78,7 +98,7 @@ export class CommercialReplayService {
       const now = input.receivedAt
         ? new Date(input.receivedAt).toISOString()
         : this.clock().toISOString();
-      const message = this.normalizeMessage(input, now);
+      const message = this.normalizeMessage(input, now, fixtureOnly);
       const existing = await transaction.findByProviderConversationRef(input.data.key.remoteJid);
       if (!existing && message.direction === "DELTA") {
         throw conflict(
@@ -88,7 +108,7 @@ export class CommercialReplayService {
       }
       const item = existing
         ? this.appendMessage(existing, message, context)
-        : this.createWorkspaceItem(input, message, context);
+        : this.createWorkspaceItem(input, message, context, fixtureOnly);
       await transaction.save(item);
       await this.remember(transaction, context.tenantId, idempotencyKey, hash, item.id);
       return { data: item, replayed: false };
@@ -468,6 +488,7 @@ export class CommercialReplayService {
     input: EvolutionReplayEvent,
     message: NormalizedConversationMessage,
     context: ActorContext,
+    fixtureOnly: boolean,
   ): CommercialWorkspaceItem {
     const itemId = this.idFactory();
     const contactId = this.idFactory();
@@ -490,7 +511,7 @@ export class CommercialReplayService {
         normalizedPhone: null,
         createdAt: message.receivedAt,
         updatedAt: message.receivedAt,
-        fixtureOnly: true,
+        fixtureOnly,
       },
       conversation: {
         id: conversationId,
@@ -504,7 +525,7 @@ export class CommercialReplayService {
         messages: [message],
         firstContactAt: message.occurredAt,
         lastActivityAt: message.occurredAt,
-        fixtureOnly: true,
+        fixtureOnly,
       },
       attribution: this.attribution(input, message.id),
       lead: {
@@ -544,7 +565,7 @@ export class CommercialReplayService {
           id: this.idFactory(),
           from: null,
           to: "NUEVO",
-          reason: "Oportunidad creada desde replay ficticio local",
+          reason: fixtureOnly ? "Oportunidad creada desde replay ficticio local" : "Oportunidad creada desde WhatsApp",
           actorId: context.actorId,
           occurredAt: message.receivedAt,
         }],
@@ -561,7 +582,7 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
-          detail: "Mensaje ficticio normalizado por el Core.",
+          detail: fixtureOnly ? "Mensaje ficticio normalizado por el Core." : "Mensaje de WhatsApp normalizado por el Core.",
         },
         {
           type: "OPPORTUNITY_CREATED",
@@ -569,7 +590,7 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
-          detail: "Lead y oportunidad creados desde replay ficticio local.",
+          detail: fixtureOnly ? "Lead y oportunidad creados desde replay ficticio local." : "Lead y oportunidad creados desde WhatsApp.",
         },
       ],
       fixtureVersion: null,
@@ -608,7 +629,11 @@ export class CommercialReplayService {
     };
   }
 
-  private normalizeMessage(input: EvolutionReplayEvent, receivedAt: string): NormalizedConversationMessage {
+  private normalizeMessage(
+    input: EvolutionReplayEvent,
+    receivedAt: string,
+    fixtureOnly: boolean,
+  ): NormalizedConversationMessage {
     return {
       id: this.idFactory(),
       provider: "EVOLUTION",
@@ -618,9 +643,9 @@ export class CommercialReplayService {
       receivedAt,
       contentType: "TEXT",
       text: input.data.message.conversation.trim(),
-      evidenceRef: `fixture:${input.data.key.id.trim()}`,
+      evidenceRef: `${fixtureOnly ? "fixture" : "evolution"}:${input.data.key.id.trim()}`,
       sourceKind: input.sourceKind ?? "FIXTURE",
-      fixtureOnly: true,
+      fixtureOnly,
     };
   }
 
@@ -680,6 +705,27 @@ export class CommercialReplayService {
     }
     if (external?.sourceUrl && new URL(external.sourceUrl).hostname !== "example.invalid") {
       throw new AppError("fixture_only", 400, "Only example.invalid source URLs are accepted");
+    }
+  }
+
+  private validateTrustedEvolution(input: EvolutionReplayEvent): void {
+    if (input.instance !== "DELTA") {
+      throw new AppError("evolution_instance_forbidden", 400, "Evolution instance is not allowed");
+    }
+    if (!/^\d{8,15}@s\.whatsapp\.net$/u.test(input.data.key.remoteJid)) {
+      throw new AppError("evolution_contact_invalid", 400, "WhatsApp contact reference is invalid");
+    }
+    if (!input.data.key.id.trim() || input.data.key.id.length > 160) {
+      throw new AppError("evolution_message_id_invalid", 400, "Evolution message ID is invalid");
+    }
+    if (!input.data.message.conversation.trim()) {
+      throw new AppError("invalid_payload", 400, "Message text is required");
+    }
+    if (Number.isNaN(Date.parse(input.data.messageTimestamp))) {
+      throw new AppError("invalid_payload", 400, "messageTimestamp must be an ISO date");
+    }
+    if (input.receivedAt && Number.isNaN(Date.parse(input.receivedAt))) {
+      throw new AppError("invalid_payload", 400, "receivedAt must be an ISO date");
     }
   }
 

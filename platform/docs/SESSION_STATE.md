@@ -50,22 +50,23 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Migraciones: `MIGRACIONES_002_003_004_ENSAYADAS_LOCALMENTE_NO_REMOTAS`; ejecutadas 0; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
-- Despliegues: `SIN_CAMBIOS_EN_ESTA_TAREA`; registros 0.
-- Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_ACCEDIDA_EN_ESTA_TAREA` | Evolution API=`NO_ACCEDIDA_EN_ESTA_TAREA` | VPS / runtime=`NO_ACCEDIDA_EN_ESTA_TAREA`
-- Datos sensibles: `NO_ACCEDIDA_NI_ALMACENADA`. Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y la demo.
+- Despliegues: `INVENTARIO_READ_ONLY_SIN_CAMBIOS`; registros 0.
+- Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`READ_ONLY_STAGING_9_TABLAS_BASE_MIGRACIONES_PENDIENTES` | Evolution API=`READ_ONLY_DELTA_OPEN_SIN_WEBHOOK` | VPS / runtime=`READ_ONLY_SWARM_STAGING_STALE_LEGACY_DOWN`
+- Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Gate 3B cierra el recorrido local hasta Listo para produccion y ensaya migracion/rollback sin tocar sistemas remotos.
+- Gate 4 local preparado; inventario remoto read-only y outbound apagado.
 
 ## Riesgos
 
-- El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.
+- Gate 4 sigue local y sin GO remoto.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
 - Validar consistencia PostgreSQL tras reinicio antes del piloto.
+- No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones.
 - Los snapshots remotos no autorizan escrituras.
 
 ## Bloqueos
@@ -76,6 +77,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Preparar Gate 4: inventario, backup, migracion, rollback, observabilidad y kill switches.
-- Demostrar consistencia PostgreSQL tras reinicio antes de cualquier captura pasiva real.
+- Versionar Gate 4 y su manifiesto.
+- Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

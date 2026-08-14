@@ -17,6 +17,14 @@ export interface SportexConfig {
   authTimeoutMs?: number;
   frontendDir?: string;
   commercialDemoFile?: string;
+  evolutionIngressEnabled?: boolean;
+  evolutionOutboundEnabled?: boolean;
+  evolutionInstance?: string;
+  evolutionWebhookSecret?: string;
+  evolutionApiKey?: string;
+  evolutionBaseUrl?: string;
+  deltaTenantId?: string;
+  evolutionActorId?: string;
   release?: string;
   host: string;
   port: number;
@@ -41,6 +49,16 @@ const schema = z.object({
   SPORTEX_AUTH_TIMEOUT_MS: z.coerce.number().int().min(250).max(30_000).default(5_000),
   SPORTEX_FRONTEND_DIR: z.string().min(1).optional(),
   SPORTEX_COMMERCIAL_DEMO_FILE: z.string().min(1).optional(),
+  SPORTEX_EVOLUTION_INGRESS_ENABLED: boolFromString.default("false"),
+  SPORTEX_EVOLUTION_OUTBOUND_ENABLED: boolFromString.default("false"),
+  SPORTEX_EVOLUTION_INSTANCE: z.string().trim().min(1).max(120).optional(),
+  SPORTEX_EVOLUTION_WEBHOOK_SECRET: z.string().min(32).optional(),
+  SPORTEX_EVOLUTION_WEBHOOK_SECRET_FILE: z.string().min(1).optional(),
+  SPORTEX_EVOLUTION_API_KEY: z.string().min(20).optional(),
+  SPORTEX_EVOLUTION_API_KEY_FILE: z.string().min(1).optional(),
+  SPORTEX_EVOLUTION_BASE_URL: z.string().url().optional(),
+  SPORTEX_DELTA_TENANT_ID: z.string().uuid().optional(),
+  SPORTEX_EVOLUTION_ACTOR_ID: z.string().uuid().optional(),
   SPORTEX_RELEASE: z.string().trim().min(1).max(160).default("local"),
   HOST: z.string().min(1).default("127.0.0.1"),
   PORT: z.coerce.number().int().min(1).max(65535).default(8080),
@@ -63,6 +81,16 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     parsed.SPORTEX_AUTH_ANON_KEY,
     parsed.SPORTEX_AUTH_ANON_KEY_FILE,
     "auth_anon_key",
+  );
+  const evolutionWebhookSecret = valueOrFile(
+    parsed.SPORTEX_EVOLUTION_WEBHOOK_SECRET,
+    parsed.SPORTEX_EVOLUTION_WEBHOOK_SECRET_FILE,
+    "evolution_webhook_secret",
+  );
+  const evolutionApiKey = valueOrFile(
+    parsed.SPORTEX_EVOLUTION_API_KEY,
+    parsed.SPORTEX_EVOLUTION_API_KEY_FILE,
+    "evolution_api_key",
   );
 
   if (parsed.SPORTEX_DEV_AUTH && !isSafeLocalEnvironment) {
@@ -98,6 +126,28 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     if (parsed.SPORTEX_DATABASE_ROLE !== "sports_app") throw new Error("production_role_required");
   }
 
+  if (parsed.SPORTEX_EVOLUTION_INGRESS_ENABLED) {
+    if (parsed.SPORTEX_ENV !== "staging" || parsed.SPORTEX_STORE !== "postgres") {
+      throw new Error("evolution_ingress_staging_postgres_required");
+    }
+    if (parsed.SPORTEX_EVOLUTION_INSTANCE !== "DELTA") throw new Error("delta_instance_required");
+    if (!evolutionWebhookSecret || evolutionWebhookSecret.length < 32) {
+      throw new Error("evolution_webhook_secret_required");
+    }
+    if (!parsed.SPORTEX_DELTA_TENANT_ID || !parsed.SPORTEX_EVOLUTION_ACTOR_ID) {
+      throw new Error("evolution_identity_binding_required");
+    }
+  }
+
+  if (parsed.SPORTEX_EVOLUTION_OUTBOUND_ENABLED) {
+    if (!parsed.SPORTEX_EVOLUTION_INGRESS_ENABLED || parsed.SPORTEX_ENV !== "staging") {
+      throw new Error("evolution_outbound_staging_ingress_required");
+    }
+    if (!parsed.SPORTEX_EVOLUTION_BASE_URL || !evolutionApiKey) {
+      throw new Error("evolution_outbound_transport_required");
+    }
+  }
+
   return {
     environment: parsed.SPORTEX_ENV,
     storeDriver: parsed.SPORTEX_STORE,
@@ -111,6 +161,14 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     authTimeoutMs: parsed.SPORTEX_AUTH_TIMEOUT_MS,
     ...(parsed.SPORTEX_FRONTEND_DIR ? { frontendDir: parsed.SPORTEX_FRONTEND_DIR } : {}),
     ...(parsed.SPORTEX_COMMERCIAL_DEMO_FILE ? { commercialDemoFile: parsed.SPORTEX_COMMERCIAL_DEMO_FILE } : {}),
+    evolutionIngressEnabled: parsed.SPORTEX_EVOLUTION_INGRESS_ENABLED,
+    evolutionOutboundEnabled: parsed.SPORTEX_EVOLUTION_OUTBOUND_ENABLED,
+    ...(parsed.SPORTEX_EVOLUTION_INSTANCE ? { evolutionInstance: parsed.SPORTEX_EVOLUTION_INSTANCE } : {}),
+    ...(evolutionWebhookSecret ? { evolutionWebhookSecret } : {}),
+    ...(evolutionApiKey ? { evolutionApiKey } : {}),
+    ...(parsed.SPORTEX_EVOLUTION_BASE_URL ? { evolutionBaseUrl: parsed.SPORTEX_EVOLUTION_BASE_URL.replace(/\/$/u, "") } : {}),
+    ...(parsed.SPORTEX_DELTA_TENANT_ID ? { deltaTenantId: parsed.SPORTEX_DELTA_TENANT_ID } : {}),
+    ...(parsed.SPORTEX_EVOLUTION_ACTOR_ID ? { evolutionActorId: parsed.SPORTEX_EVOLUTION_ACTOR_ID } : {}),
     release: parsed.SPORTEX_RELEASE,
     host: parsed.HOST,
     port: parsed.PORT,

@@ -152,3 +152,58 @@ datos reales, captura pasiva ni envío.
   consistencia para el store PostgreSQL antes de conexión real.
 - No se accedió a Evolution, Supabase remoto, Meta, VPS, datos reales ni se
   enviaron mensajes o ejecutaron migraciones remotas.
+
+## Checkpoint ejecutado — Gate 4 local + inventario remoto read-only
+
+### Verdad remota observada
+
+- VPS `codexa`: Docker Swarm activo.
+- Evolution productivo: version `2.3.7`; instancia `DELTA` en estado `open`;
+  webhook no configurado.
+- SPORTEX legado: servicio `sportex_sportex` en `0/1` y artefacto antiguo.
+- SPORTEX STAGING: `sportex_staging_core` en `1/1`, imagen
+  `sportex-staging:ea02fc0`; no representa el candidato actual.
+- Repositorio del VPS: `/opt/sportex` en `a62e5edb...`, limpio pero atrasado.
+- Supabase STAGING: 9 tablas `sportex_staging_*` base con RLS forzado; faltan
+  las 7 tablas de migraciones `002/003` y el constraint `004`.
+- No se encontro evidencia de backup SPORTEX en las ubicaciones operativas
+  inspeccionadas. Antes de toda migracion se exige backup nuevo y restauracion
+  verificable.
+
+La inspeccion fue de metadatos y conteos. No se copiaron conversaciones, PII,
+credenciales ni valores de secretos; no hubo escritura, restart ni deploy.
+
+### Candidato implementado localmente
+
+- `EvolutionWebhookAdapter`: `messages.upsert` y `messages.update`, instancia
+  exacta `DELTA`, texto individual, LID solo con alternativa telefonica segura,
+  grupos/medios fuera de alcance, IDs deterministas y metadata minimizada.
+- `POST /v1/webhooks/evolution`: secreto dedicado en header, tenant/actor
+  vinculados en servidor, journal durable antes de proyeccion y respuesta
+  idempotente.
+- Proyeccion LIVE: Contacto, Conversacion, Lead y Oportunidad reales ya no se
+  marcan como fixtures; inbound y outbound manual externo comparten historia.
+- Workspace real: lectura, clasificacion no sensible, proxima accion y
+  seguimiento. `SENA_VALIDADA` real continua bloqueada.
+- Transporte manual: endpoint Evolution v2 `sendText`, payload `{number,text}`,
+  API key solo en header, confirmacion `ENVIAR_A_WHATSAPP`, permiso, outbox e
+  idempotencia. La bandera de outbound permanece `false` por defecto.
+- Frontend: carga `commercialWorkspaceEnabled` tambien en STAGING; habilita el
+  compositor real solo cuando el servidor publica outbound activo.
+
+### Validacion
+
+- Core: `41/41` PASS.
+- TypeScript check/build: PASS.
+- SQL: 16 tablas objetivo, RLS forzado y rollback: PASS.
+- Browser local oscuro: 18 conversaciones, pestanas, chat, Detalles y compositor
+  visibles a la vez; sin overflow horizontal ni errores de consola.
+- `git diff --check` y NUL scan: PASS.
+
+### Frontera pendiente
+
+La preparacion local no equivale a conexion real. El proximo GO remoto debe
+autorizar exactamente: crear backup y probar restore, aplicar `002/003/004`,
+desplegar el artefacto exacto a `sportex_staging_core`, crear/montar secretos,
+configurar el webhook de `DELTA` y observar captura pasiva. El outbound debe
+permanecer `false`; su canary requiere un GO posterior y un destinatario exacto.

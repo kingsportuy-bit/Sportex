@@ -61,7 +61,7 @@ export interface NormalizedConversationMessage {
   text: string;
   evidenceRef: string;
   sourceKind?: "FIXTURE" | "BACKFILL" | "LIVE";
-  fixtureOnly: true;
+  fixtureOnly: boolean;
 }
 
 export interface CommercialCreative {
@@ -84,7 +84,7 @@ export interface CommercialContact {
   normalizedPhone: string | null;
   createdAt: string;
   updatedAt: string;
-  fixtureOnly: true;
+  fixtureOnly: boolean;
 }
 
 export interface CommercialAttribution {
@@ -112,7 +112,7 @@ export interface CommercialConversation {
   messages: NormalizedConversationMessage[];
   firstContactAt: string;
   lastActivityAt: string;
-  fixtureOnly: true;
+  fixtureOnly: boolean;
 }
 
 export interface CommercialSizeBreakdown {
