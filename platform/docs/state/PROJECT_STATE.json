@@ -81,8 +81,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "a18502dcae2f8c585f817ec2eb17e5d6770daf8b",
-    "workingTreeState": "TASK-20260814-001_GATE_4_LOCAL_CANDIDATE_PENDING_COMMIT",
+    "headAtLastEvidence": "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
+    "workingTreeState": "TASK-20260814-001_GATE_4_RUNTIME_COMMITTED_MANIFEST_PREPARED",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {

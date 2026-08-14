@@ -286,6 +286,8 @@ DELTA define reglas y valida negocio.
   idempotency key, outbox y transporte Evolution v2, pero apagado por defecto.
 - Core `41/41`, typecheck, build, SQL y browser oscuro PASS. Detalles y compositor
   convivieron sin overflow ni errores de consola.
+- Runtime versionado en `34c9664607e9e0483f5a1dfb6164c7b572b676cb`;
+  paquete remoto en `SPORTEX-PILOTO-DELTA-20260814-PREPARED.md`.
 - No se creo webhook, no se migro, no se desplego, no se leyo contenido real y
   no se envio ningun mensaje. El siguiente paso es formar el candidato exacto y
   pedir GO para backup + migracion + deploy + captura pasiva con outbound off.

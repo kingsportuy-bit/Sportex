@@ -207,3 +207,8 @@ autorizar exactamente: crear backup y probar restore, aplicar `002/003/004`,
 desplegar el artefacto exacto a `sportex_staging_core`, crear/montar secretos,
 configurar el webhook de `DELTA` y observar captura pasiva. El outbound debe
 permanecer `false`; su canary requiere un GO posterior y un destinatario exacto.
+
+El runtime quedo versionado en
+`34c9664607e9e0483f5a1dfb6164c7b572b676cb`. El manifiesto preparado fija tenant
+`delta-sport`, actor, migraciones, secretos por nombre, webhook, PASS y rollback
+en `docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md`.

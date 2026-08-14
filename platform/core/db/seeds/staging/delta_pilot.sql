@@ -30,9 +30,13 @@ VALUES (
   ARRAY[
     'clients.create',
     'clients.read',
+    'commercial.read',
+    'commercial.replay',
+    'commercial.manage',
     'payments.certify',
     'orders.create',
-    'orders.read'
+    'orders.read',
+    'production.release'
   ]::text[],
   'active',
   now(),
