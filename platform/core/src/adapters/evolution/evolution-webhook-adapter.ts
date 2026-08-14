@@ -106,13 +106,19 @@ export class EvolutionWebhookAdapter {
     const instance = requiredString(root.instance, "evolution_instance", 120);
     if (instance !== this.options.instance) throw new Error("evolution_instance_forbidden");
     const data = object(root.data, "evolution_data");
-    const key = object(data.key, "evolution_message_key");
-    const messageId = requiredString(key.id, "evolution_message_id", 160);
-    const remoteJid = contactJid(key);
-    const fromMe = key.fromMe === true;
     const receivedAt = this.clock().toISOString();
 
     if (event === "messages.update") {
+      const nestedKey = optionalObject(data.key);
+      const messageId = requiredString(
+        nestedKey?.id ?? data.keyId ?? data.messageId,
+        "evolution_message_id",
+        160,
+      );
+      const remoteJid = contactJid({
+        remoteJid: nestedKey?.remoteJid ?? data.remoteJid,
+        remoteJidAlt: nestedKey?.remoteJidAlt ?? data.remoteJidAlt,
+      });
       const update = optionalObject(data.update);
       const status = deliveryStatus(data.status ?? update?.status);
       const occurredAt = this.optionalOccurredAt(data, receivedAt);
@@ -131,6 +137,10 @@ export class EvolutionWebhookAdapter {
     }
 
     if (event !== "messages.upsert") throw new Error("evolution_event_out_of_scope");
+    const key = object(data.key, "evolution_message_key");
+    const messageId = requiredString(key.id, "evolution_message_id", 160);
+    const remoteJid = contactJid(key);
+    const fromMe = key.fromMe === true;
     const message = object(data.message, "evolution_message");
     const extracted = messageText(message);
     const occurredAt = isoTimestamp(data.messageTimestamp, "evolution_message_timestamp");

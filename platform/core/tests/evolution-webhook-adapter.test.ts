@@ -105,3 +105,22 @@ test("receipt event has a stable deduplication identity and never becomes a chat
   assert.equal(first.contentType, "RECEIPT");
   assert.equal(first.metadata.deliveryStatus, "DELIVERED");
 });
+
+test("receipt event accepts Evolution 2.3.7 flattened MessageUpdate records", () => {
+  const adapter = new EvolutionWebhookAdapter({ tenantId, actorId, instance: "DELTA", clock });
+  const receipt = adapter.normalize({
+    event: "messages.update",
+    instance: "DELTA",
+    data: {
+      keyId: "3A-FLAT-OUT",
+      messageId: "internal-message-id",
+      remoteJid: "59899123456@s.whatsapp.net",
+      fromMe: true,
+      status: "DELIVERY_ACK",
+    },
+  });
+  assert.equal(receipt.providerEventId, "messages.update:DELTA:3A-FLAT-OUT:DELIVERED");
+  assert.equal(receipt.conversationRef, "59899123456@s.whatsapp.net");
+  assert.equal(receipt.contentType, "RECEIPT");
+  assert.equal(receipt.metadata.deliveryStatus, "DELIVERED");
+});
