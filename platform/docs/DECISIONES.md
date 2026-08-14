@@ -30,40 +30,28 @@ nueva marca la anterior como `REEMPLAZADA`. El negocio permanece en DELTA.
 ## SPORTEX-DEC-003 - La campaña comercial no se abre implicitamente
 
 - Fecha: 2026-08-02
-- Estado: `VIGENTE`
-- Decision: `SPORTEX — Sistema Comercial Asistido de Delta` queda como proxima
-  accion con estado `NOT_STARTED`; esta tarea no crea campaña tecnica ni tareas
-  de producto asociadas.
-- Motivo: Fito pidio instalar primero el sistema operativo documental.
-- Impacto: abrir la campaña requerira una accion posterior explicita y una
-  nueva tarea compatible con el handoff de DELTA.
+- Estado: `REEMPLAZADA_POR_SPORTEX_DEC_004`
+- Registro: inicialmente la campaña no se abrió implícitamente; Fito la inició
+  después de instalar el OS. `SPORTEX-DEC-004` gobierna el estado vigente.
 
 ## SPORTEX-DEC-004 - Primera vertical comercial local y sin efectos externos
 
 - Fecha: 2026-08-02
 - Estado: `VIGENTE`
-- Decisión: abrir `CAMP-20260803-001` con una primera vertical limitada a
-  fixtures ficticios, persistencia efímera en memoria y visualización local de
-  conversación, atribución, lead, oportunidad, etapa y próxima acción.
-- Regla de atribución: `META_EXACTO` requiere el `sourceId` entregado en
-  `externalAdReply`; si falta esa evidencia, el Core registra `DESCONOCIDO` y
-  no intenta inferir un anuncio.
-- Límite: esta vertical no habilita webhooks, canales, datos reales, mensajes,
-  migraciones, `PILOTO_DELTA`, deploy ni producción.
-- Motivo: probar la cadena de negocio más pequeña de punta a punta antes de
-  definir persistencia real, IA o automatizaciones.
-- Impacto: la campaña queda activa después de cerrar la tarea, pero una tarea
-  posterior requiere autorización nueva de Fito.
+- Decisión: `CAMP-20260803-001` comienza con conversación, atribución, Lead,
+  Oportunidad, etapa y próxima acción sobre datos ficticios locales.
+- Atribución: `META_EXACTO` exige `externalAdReply.sourceId`; si falta, el Core
+  registra `DESCONOCIDO` sin inferir.
+- Límite: sin webhooks, datos reales, mensajes, migraciones, deploy ni piloto.
 
 ## SPORTEX-DEC-005 - Persistencia CRM local de fixtures gobernada por el Core
 
 - Fecha: 2026-08-03
 - Estado: `VIGENTE`
-- Decision: la demo CRM usa una semilla canonica de 18 expedientes ficticios y un archivo JSON local atomico, tenant-aware e ignorado por Git. Etapas, transiciones, versiones, proxima accion, seguimientos y reset pertenecen al Core; el frontend solo solicita comandos especificos.
-- Guard: solo existe con `development|test + memory + SPORTEX_DEV_AUTH=true`; una configuracion corrupta falla cerrada.
-- Limite: `SENA_VALIDADA` es una etapa fixture y nunca certifica un pago. La demo no envia mensajes, conecta integraciones, usa datos reales ni crea pedidos o produccion.
-- Motivo: permitir que Fito comprenda y valide el flujo comercial navegable sin fingir infraestructura ni operacion real.
-- Impacto: reiniciar conserva cambios ficticios y el reset explicito repone la semilla; cualquier persistencia real requiere otra tarea y autorizacion.
+- Decisión: 18 expedientes ficticios persisten en JSON local atómico y aislado;
+  etapas, versiones, próxima acción, seguimientos y reset pertenecen al Core.
+- Guard: solo `development|test + memory + SPORTEX_DEV_AUTH=true`; corrupción
+  falla cerrada. `SEÑA_VALIDADA` no certifica pagos ni crea pedidos reales.
 
 ## SPORTEX-DEC-006 - Validación técnica y validación de producto son gates separados
 
@@ -78,9 +66,35 @@ nueva marca la anterior como `REEMPLAZADA`. El negocio permanece en DELTA.
 
 - Fecha: 2026-08-03
 - Estado: `VIGENTE`
-- Decisión: incorporar `DELTA-DEC-007/010/011` a la campaña existente. Etapa 0
-  aprueba el recorrido completo de Operación, Marketing y Administración.
-- Conversión objetivo: el Core idempotente vincula o crea Cliente y genera
-  exactamente un Pedido al validar una seña; aún no está implementado.
-- Gate: preservar Core, persistencia y 18 leads; aprobar el wireframe y luego
-  autorizar el versionado pendiente antes de ampliar código o conexiones.
+- Decisión: `DELTA-DEC-007/010/011` gobiernan la V1 por etapas. La conversión
+  objetivo es `SEÑA_VALIDADA -> Cliente + exactamente un Pedido`, idempotente.
+- Gate: preservar Core, persistencia y 18 leads; conexiones requieren otro GO.
+
+## SPORTEX-DEC-008 - Tableros primero para Leads y Pedidos
+
+- Fecha: 2026-08-03
+- Estado: `VIGENTE`
+- Fuente: `DELTA-DEC-012`.
+- Decisión: `Leads` y `Pedidos` abren en tableros por etapas; una tarjeta abre
+  conversación y ficha. `Clientes` enlaza historias, oportunidades y pedidos.
+- Gate: preservar 18 leads y agregar 6 clientes y 8 pedidos relacionados.
+- Estado: PASS técnico preservado; producto no aprobado y sin autorizar código.
+
+## SPORTEX-DEC-009 - WhatsApp es una superficie operativa separada
+
+- Fecha: 2026-08-13
+- Estado: `VIGENTE`
+- Decisión: SPORTEX será un tercer cliente sincronizado de WhatsApp. `WhatsApp`
+  muestra chats; `Leads` y `Pedidos` conservan tableros distintos; `Clientes`
+  enlaza la historia sin duplicarla.
+- Primer corte: `conversación -> contexto -> próxima acción -> evidencia`, con
+  control humano. El Core conserva reglas, permisos, cálculos e idempotencia.
+- Límite: local y ficticio; Evolution, datos, mensajes y deploy requieren GO remoto.
+
+## SPORTEX-DEC-010 - Integración del WhatsApp de Delta
+
+- Fecha: 2026-08-14
+- Estado: `VIGENTE`
+- Decisión: reutilizar UI/Core y conectar Delta por gates; `SEÑA_VALIDADA` crea
+  un Pedido único. Toda operación remota exige rollback y GO exacto.
+- Evidencia: `TASK-20260814-001`.

@@ -23,10 +23,11 @@ Estado: `IMPLEMENTADO_NO_VALIDADO`.
 
 ## CAMP-20260803-001 - V1 Operativa Delta
 
-Estado: `ETAPA_0_WIREFRAME_APROBADO`.
+Estado: `ETAPA_0_REPLANIFICADA_WIREFRAME_PENDIENTE_APROBACION`.
 
-- E0: wireframe aprobado; falta autorizar y ejecutar el versionado local antes
-  de implementar.
+- E0: interfaz no aprobada. `DELTA-DEC-012` exige tableros
+  de Leads/Pedidos y un mock relacionado de 18 leads, 6 clientes y 8 pedidos.
+  El wireframe espera aprobación.
 - E1: `Hoy -> Lead -> SEÑA_VALIDADA -> Cliente + Pedido` ficticio.
 - E2: persistencia durable, permisos, respaldo y rollback.
 - E3: captura real paralela y de solo lectura.

@@ -53,32 +53,57 @@
     </main>
 
     <div id="app-view" class="app-shell" hidden>
-      <aside class="sidebar">
-        <div class="brand-lockup brand-lockup--light">
-          <span class="delta-logo-frame"><img class="delta-logo" src="/assets/delta-logo.png" alt="Delta Sport" /></span>
-          <span><strong>SPORTEX</strong><small>DELTA SPORT</small></span>
+      <div id="sidebar-scrim" class="sidebar-scrim" hidden></div>
+      <aside id="app-sidebar" class="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-lockup brand-lockup--light">
+            <span class="delta-logo-frame"><img class="delta-logo" src="/assets/delta-logo.png" alt="Delta Sport" /></span>
+            <span><strong>SPORTEX</strong><small id="tenant-name">DELTA SPORT</small></span>
+          </div>
+          <button id="sidebar-close" class="icon-button sidebar-close" type="button" aria-label="Cerrar menú">×</button>
         </div>
+
         <nav class="side-nav" aria-label="Navegación principal">
-          <button class="nav-item is-active" data-view="commercial"><span>Comercial</span><b id="commercial-count-nav">0</b></button>
+          <span class="nav-group-label">Operación</span>
+          <button class="nav-item is-active" data-view="today"><span>Hoy</span><b id="today-count-nav">0</b></button>
+          <button class="nav-item" data-view="whatsapp"><span>WhatsApp</span><b id="whatsapp-count-nav">0</b></button>
+          <button class="nav-item" data-view="leads"><span>Leads</span><b id="commercial-count-nav">0</b></button>
           <button class="nav-item" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
           <button class="nav-item" data-view="clients"><span>Clientes</span><b id="clients-count-nav">0</b></button>
+
+          <span class="nav-group-label">Marketing</span>
+          <button class="nav-item" data-view="ads"><span>Anuncios</span></button>
+          <button class="nav-item" data-view="creatives"><span>Creativos</span></button>
+          <button class="nav-item" data-view="results"><span>Resultados</span></button>
+
+          <span class="nav-group-label">Administración</span>
+          <button class="nav-item" data-view="catalog"><span>Productos, precios y talles</span></button>
+          <button class="nav-item" data-view="playbooks"><span>Procesos y respuestas rápidas</span></button>
+          <button class="nav-item" data-view="suppliers"><span>Proveedores</span></button>
+          <button class="nav-item" data-view="settings"><span>Configuración</span></button>
         </nav>
+
         <div class="sidebar-foot">
-          <span id="release-label">STAGING</span>
+          <span id="release-label">LOCAL</span>
           <button id="logout-button" class="text-button" type="button">Cerrar sesión</button>
         </div>
       </aside>
 
       <div class="workspace">
         <header class="topbar">
-          <div>
-            <span class="section-code">EMPRESA ACTIVA</span>
-            <strong id="tenant-name">Delta Sport</strong>
+          <button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-label="Abrir menú">☰</button>
+          <div class="topbar-title">
+            <span id="topbar-kicker">Operación diaria</span>
+            <strong id="topbar-title">Hoy</strong>
           </div>
           <div class="topbar-actions">
             <div id="local-demo-actions" class="replay-actions" hidden>
-              <button id="reset-demo-button" class="button button--outline" type="button">Restaurar datos ficticios</button>
+              <button id="reset-demo-button" class="button button--quiet" type="button">Restaurar datos iniciales</button>
             </div>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Activar modo oscuro" aria-pressed="false">
+              <span id="theme-toggle-icon" aria-hidden="true">&#9790;</span>
+              <small id="theme-toggle-label">Oscuro</small>
+            </button>
             <button id="account-button" class="account-button" type="button" aria-label="Cambiar contraseña">
               <span id="account-initials">FS</span>
               <small id="account-email">Cuenta</small>
@@ -87,35 +112,48 @@
           </div>
         </header>
 
-        <div class="production-track" aria-label="Recorrido de la primera vertical">
-          <span class="is-active"><b>01</b> Origen</span>
-          <span><b>02</b> Conversación</span>
-          <span><b>03</b> Lead</span>
-          <span><b>04</b> Oportunidad</span>
-          <span><b>05</b> Próxima acción</span>
-        </div>
-
         <main class="content">
-          <section id="commercial-view" class="view-section">
-            <header class="view-header commercial-header">
-              <div>
-                <span class="section-code">CRM COMERCIAL / DEMO LOCAL</span>
-                <h1>De la consulta a la próxima acción</h1>
-              </div>
-              <div class="commercial-intro">
-                <span class="local-proof">18 LEADS FICTICIOS · PERSISTENCIA LOCAL</span>
-                <p>Una mesa para entender SPORTEX: origen, conversación, calificación y seguimiento, sin conectar ni enviar nada.</p>
-              </div>
+          <section id="today-view" class="view-section">
+            <header class="page-intro">
+              <div><span class="page-kicker">Lunes 3 de agosto</span><h1>Hoy</h1></div>
+              <p>Lo que necesita una decisión, ordenado por urgencia y próximo paso.</p>
             </header>
-
-            <div class="metrics-strip metrics-strip--commercial">
-              <article><span>Leads en demo</span><strong id="metric-conversations">00</strong></article>
-              <article><span>Origen exacto</span><strong id="metric-exact">00</strong></article>
-              <article><span>Origen desconocido</span><strong id="metric-unknown">00</strong></article>
-              <article><span>Acciones pendientes</span><strong id="metric-actions">00</strong></article>
+            <div class="today-metrics" aria-label="Resumen de prioridades">
+              <button type="button" data-today-filter="response"><span>Necesitan respuesta</span><strong id="today-response-count">0</strong><small>Conversaciones para atender ahora</small></button>
+              <button type="button" data-today-filter="overdue"><span>Seguimientos vencidos</span><strong id="today-overdue-count">0</strong><small>Acciones fuera de fecha</small></button>
+              <button type="button" data-today-filter="waiting"><span>Esperando al cliente</span><strong id="today-waiting-count">0</strong><small>Revisar cuando corresponda</small></button>
+              <button type="button" data-today-filter="all"><span>Próximas acciones</span><strong id="today-action-count">0</strong><small>Todo lo que sigue abierto</small></button>
             </div>
+            <div class="today-board">
+              <header><div><span class="page-kicker">Prioridad</span><h2>Qué atender</h2></div><span id="today-filter-label">Todo lo abierto</span></header>
+              <div id="today-list" class="today-list" aria-live="polite"></div>
+            </div>
+          </section>
 
-            <section id="stage-board" class="stage-board" aria-label="Tablero general por etapas"></section>
+          <section id="whatsapp-view" class="view-section" hidden>
+            <div id="whatsapp-workspace" class="whatsapp-workspace">
+              <aside id="whatsapp-master" class="whatsapp-master" aria-label="Conversaciones de WhatsApp" tabindex="-1">
+                <nav id="whatsapp-stage-tabs" class="whatsapp-stage-rail" aria-label="Etapas del proceso comercial"></nav>
+                <div class="whatsapp-list-pane">
+                  <header class="whatsapp-master-head">
+                    <div><strong>Conversaciones</strong><span id="whatsapp-result-count">0</span></div>
+                    <label class="whatsapp-search">
+                      <span class="sr-only">Buscar conversación</span>
+                      <input id="whatsapp-search" type="search" placeholder="Buscar nombre, equipo o mensaje" autocomplete="off" />
+                    </label>
+                  </header>
+                  <div id="whatsapp-list" class="whatsapp-list" aria-live="polite"></div>
+                </div>
+              </aside>
+              <section id="whatsapp-detail" class="whatsapp-detail" aria-live="polite"></section>
+            </div>
+          </section>
+
+          <section id="commercial-view" class="view-section" hidden>
+            <header class="page-intro page-intro--compact">
+              <div><span class="page-kicker">Venta asistida</span><h1>Leads</h1></div>
+              <p>Elegí una conversación, entendé qué falta y dejá el siguiente paso.</p>
+            </header>
 
             <section class="crm-filterbar" aria-label="Filtros de leads">
               <label class="crm-search">Buscar
@@ -123,36 +161,22 @@
               </label>
               <label>Etapa
                 <select id="stage-filter">
-                  <option value="">Todas</option>
-                  <option value="NUEVO">Nuevo</option>
-                  <option value="EN_CALIFICACION">En calificación</option>
-                  <option value="COTIZADO">Cotizado</option>
-                  <option value="EN_SEGUIMIENTO">En seguimiento</option>
-                  <option value="PERDIDO">Perdido</option>
-                  <option value="SENA_VALIDADA">Seña validada</option>
+                  <option value="">Todas</option><option value="NUEVO">Nuevo</option><option value="EN_CALIFICACION">En calificación</option><option value="COTIZADO">Cotizado</option><option value="EN_SEGUIMIENTO">En seguimiento</option><option value="PERDIDO">Perdido</option><option value="SENA_VALIDADA">Seña validada</option>
                 </select>
               </label>
               <label>Producto
-                <select id="product-filter">
-                  <option value="">Todos</option>
-                  <option value="CAMISETAS">Camisetas</option>
-                  <option value="EQUIPO_COMPLETO">Equipo completo</option>
-                </select>
+                <select id="product-filter"><option value="">Todos</option><option value="CAMISETAS">Camisetas</option><option value="EQUIPO_COMPLETO">Equipo completo</option></select>
               </label>
               <label>Origen
-                <select id="attribution-filter">
-                  <option value="">Todos</option>
-                  <option value="META_EXACTO">Anuncio exacto</option>
-                  <option value="DESCONOCIDO">Desconocido</option>
-                </select>
+                <select id="attribution-filter"><option value="">Todos</option><option value="META_EXACTO">Anuncio exacto</option><option value="DESCONOCIDO">Desconocido</option></select>
               </label>
-              <button id="clear-filters" class="button button--outline crm-clear" type="button">Limpiar</button>
+              <button id="clear-filters" class="button button--quiet crm-clear" type="button">Limpiar</button>
             </section>
 
             <div class="crm-workspace">
-              <aside id="lead-master" class="lead-master" aria-label="Lista de leads">
+              <aside id="lead-master" class="lead-master" aria-label="Lista de leads" tabindex="-1">
                 <header class="lead-master-head">
-                  <div><span class="section-code">CARTERA FICTICIA</span><strong id="lead-result-count">0 resultados</strong></div>
+                  <div><span>Conversaciones</span><strong id="lead-result-count">0 resultados</strong></div>
                   <span id="persistence-status" class="persistence-chip">LOCAL</span>
                 </header>
                 <div id="commercial-list" class="lead-list" aria-live="polite"></div>
@@ -162,13 +186,7 @@
           </section>
 
           <section id="orders-view" class="view-section" hidden>
-            <header class="view-header">
-              <div>
-                <span class="section-code">MESA DE PEDIDOS / HOY</span>
-                <h1>Pedidos de Delta</h1>
-              </div>
-              <p>Ingresan acá cuando la seña fue certificada. El Core mantiene precio, saldo y trazabilidad.</p>
-            </header>
+            <header class="page-intro"><div><span class="page-kicker">Operación</span><h1>Pedidos</h1></div><p>Pedidos creados por el Core y oportunidades que todavía requieren conversión.</p></header>
 
             <div class="metrics-strip">
               <article><span>Pedidos abiertos</span><strong id="metric-orders">0</strong></article>
@@ -188,16 +206,11 @@
                 <button class="button button--outline" data-open-order type="button">Registrar venta</button>
               </div>
             </div>
+            <section class="candidate-panel"><header><span class="page-kicker">Todavía no son pedidos</span><h2>Señas ficticias para revisar</h2></header><div id="order-candidates" class="candidate-list"></div></section>
           </section>
 
           <section id="clients-view" class="view-section" hidden>
-            <header class="view-header">
-              <div>
-                <span class="section-code">CARTERA COMERCIAL</span>
-                <h1>Clientes y equipos</h1>
-              </div>
-              <p>Una identidad comercial por empresa, vinculada a sus pedidos y comprobantes.</p>
-            </header>
+            <header class="page-intro"><div><span class="page-kicker">Operación</span><h1>Clientes</h1></div><p>Clientes creados por el Core y contactos comerciales listos para vincular.</p></header>
             <div class="ledger ledger--clients">
               <div class="ledger-head"><span>Cliente</span><span>Equipo</span><span>WhatsApp</span><span>Alta</span></div>
               <div id="clients-list" class="ledger-body"></div>
@@ -206,10 +219,20 @@
                 <div><strong>Todavía no hay clientes</strong><p>Podés crear uno desde una nueva venta confirmada.</p></div>
               </div>
             </div>
+            <section class="candidate-panel"><header><span class="page-kicker">Conversión pendiente</span><h2>Contactos con seña validada</h2></header><div id="client-candidates" class="candidate-list"></div></section>
+          </section>
+
+          <section id="module-view" class="view-section" hidden>
+            <header class="page-intro"><div><span id="module-kicker" class="page-kicker">Módulo</span><h1 id="module-title">Resultados</h1></div><p id="module-description"></p></header>
+            <div id="module-content" class="module-content"></div>
           </section>
         </main>
       </div>
     </div>
+
+    <dialog id="lead-sheet-dialog" class="lead-sheet-dialog">
+      <div id="lead-sheet-content"></div>
+    </dialog>
 
     <dialog id="order-dialog" class="sheet-dialog">
       <form id="order-form" method="dialog">

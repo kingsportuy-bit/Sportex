@@ -2,11 +2,11 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-08-03.
+Actualizado: 2026-08-14.
 
 ## Activa
 
-- `TASK-20260803-005` | `in_progress` | Rediseñar la experiencia comercial Hoy | docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md
+- `TASK-20260814-001` | `in_progress` | Integrar WhatsApp real de Delta con SPORTEX | docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md
 
 ## Cola
 
@@ -28,3 +28,4 @@ Actualizado: 2026-08-03.
 - `TASK-20260803-002` | `done` | Versionar OS y primera vertical comercial local | docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md
 - `TASK-20260803-003` | `done` | Reconciliar el commit remoto verificado | docs/TASKS/closed/2026/TASK-20260803-003-reconciliar-push-remoto.md
 - `TASK-20260803-004` | `done` | Demo CRM comercial local navegable | docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md
+- `TASK-20260803-005` | `done` | Rediseñar la experiencia comercial Hoy | docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md

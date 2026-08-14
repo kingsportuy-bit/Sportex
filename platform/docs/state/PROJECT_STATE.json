@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-03",
-  "updatedBy": "TASK-20260803-005",
+  "updatedAt": "2026-08-14",
+  "updatedBy": "TASK-20260814-001",
   "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -14,27 +14,25 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "product",
-  "objective": "Resguardar en Git la Etapa 0 aprobada antes de implementar.",
+  "objective": "Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.",
   "scope": {
     "allowed": [
-      "Reconciliar CAMP-20260803-001 y TASK-20260803-005 con el plan V1 de DELTA.",
-      "Documentar un unico wireframe de Operacion, Marketing y Administracion.",
-      "Preservar Core, persistencia, 18 leads ficticios y trabajo local pendiente."
+      "Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas.",
+      "Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato.",
+      "Preparar gates, rollback y manifiesto para la conexión real posterior."
     ],
     "prohibited": [
-      "Codigo, commit o push sin autorizacion posterior.",
-      "Integraciones, datos reales, mensajes o deploy.",
-      "PILOTO_DELTA y PRODUCCION_COMERCIAL."
+      "Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial."
     ]
   },
   "currentTask": {
-    "id": "TASK-20260803-005",
-    "title": "Rediseñar la experiencia comercial Hoy",
+    "id": "TASK-20260814-001",
+    "title": "Integrar WhatsApp real de Delta con SPORTEX",
     "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+    "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Informar el commit de resguardo y pedir autorizacion antes de crearlo."
+    "nextAction": "Ejecutar Gate 1: integrar localmente Contacto, Conversación, Mensaje, Oportunidad, seña, Cliente y Pedido sobre persistencia objetivo y fixtures."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -45,15 +43,15 @@
   },
   "campaignPlan": {
     "id": "CAMP-20260803-001",
-    "stage": "ETAPA_0",
-    "status": "PENDING_PRODUCT_APPROVAL",
+    "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
+    "status": "GATE_1_MODELO_PERSISTENCIA_LOCAL",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "ETAPA_1_VERTICAL_LOCAL_COMPLETA"
+    "nextStage": "GATE_2_EVOLUTION_SIMULADO"
   },
   "nextCampaign": null,
   "decisions": [
@@ -62,8 +60,10 @@
     "Solo existe una tarea activa; PROJECT_STATE es canonico y las vistas son generadas.",
     "PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.",
     "La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.",
-    "PASS tecnico y aprobacion de producto son gates separados; el wireframe de Etapa 0 fue aprobado y la interfaz vigente sigue sin aprobacion.",
-    "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo."
+    "PASS tecnico y aprobacion de producto son gates separados; Fito acepto el concepto WhatsApp primero y la interfaz local sigue en iteracion.",
+    "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
+    "DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.",
+    "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -72,16 +72,18 @@
     "SPORTEX-DEC-004",
     "SPORTEX-DEC-005",
     "SPORTEX-DEC-006",
-    "SPORTEX-DEC-007"
+    "SPORTEX-DEC-007",
+    "SPORTEX-DEC-008",
+    "SPORTEX-DEC-009"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "47d47e2e6722f3d21d0941652ed3bbfaca1ff620",
-    "workingTreeState": "TASK-20260803-005_ETAPA_0_WIREFRAME_APROBADO_VERSIONADO_PENDIENTE",
-    "lastVerifiedAt": "2026-08-03"
+    "headAtLastEvidence": "0ccd4dcd38504450cf06a8dddea0cdc29f4c80b6",
+    "workingTreeState": "TASK-20260803-005_WHATSAPP_LOCAL_ETAPAS_Y_DETALLE_IMPLEMENTADOS",
+    "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
     "status": "NO_EJECUTADAS_EN_ESTA_TAREA",
@@ -94,14 +96,14 @@
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-08-03",
+    "lastRunAt": "2026-08-14",
     "commands": [
       "npm run validate-docs",
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
-    "note": "Checkpoint documental de Etapa 0 en PASS; Fito aprobo el wireframe maestro y no se modifico codigo."
+    "evidence": "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md",
+    "note": "Código, documentación, TypeScript, SQL, build y Core 25/25 en PASS; etapas y detalle fueron validados localmente y no autorizan integración remota."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
@@ -115,7 +117,7 @@
       "status": "REMOTE_COMMIT_VERIFICADO",
       "lastVerifiedAt": "2026-08-03",
       "writeAuthorized": false,
-      "note": "HEAD, tracking y origin fueron verificados en 47d47e2e6722f3d21d0941652ed3bbfaca1ff620 antes de TASK-20260803-004. Los cambios acumulados de TASK-20260803-004 y TASK-20260803-005 no tienen commit ni push."
+      "note": "El remoto sigue verificado en 47d47e2. El resguardo local autorizado 0ccd4dc y la implementacion posterior no fueron enviados; no hay autorizacion de push."
     },
     {
       "name": "Supabase",
@@ -144,35 +146,94 @@
     "policy": "Secretos, tokens, credenciales, telefonos, conversaciones y datos reales permanecen fuera de Git, tareas, evidencias y la demo."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260803-005",
-    "date": "2026-08-03",
-    "path": "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
-    "summary": "Etapa 0 reconciliada con la V1 Operativa y wireframe maestro aprobado por Fito; versionado local pendiente antes de codigo.",
-    "environment": "DOCUMENTACION",
+    "taskId": "TASK-20260814-001",
+    "date": "2026-08-14",
+    "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
+    "summary": "Inventario y plan por gates para integrar las dos verticales existentes, conservar la UI aprobada y preparar WhatsApp real sin reconstruir SPORTEX.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
     {
-      "date": "2026-08-03",
-      "taskId": "TASK-20260803-005",
-      "summary": "Se reconcilio la campana y la tarea activa con la V1 Operativa y se documento un unico wireframe maestro para la Etapa 0.",
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerró el corte visual WhatsApp-first y se abrió la integración real con inventario reutilizar/adaptar/falta y gates locales/remotos.",
       "documents": [
-        "docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
         "docs/state/PROJECT_STATE.json",
         "docs/DECISIONES.md",
-        "docs/evidencias/TASK-20260803-005_VALIDACION_PRODUCTO_Y_WIREFRAME.md",
-        "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md",
-        "docs/ROADMAP.md",
-        "frontend/README.md",
-        "docs/biblioteca/superficies/web/README.md"
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
       ],
       "evidence": [
-        "docs/evidencias/TASK-20260803-005_VALIDACION_PRODUCTO_Y_WIREFRAME.md",
-        "docs/evidencias/TASK-20260803-005_ETAPA_0_V1_OPERATIVA.md"
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se compactaron las viñetas verticales y se amplió Detalles a 440px en desktop y pantalla completa sobre el chat en mobile.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "frontend/README.md",
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/biblioteca/superficies/web/README.md",
+        "docs/biblioteca/modulos/procesos/README.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-009"
+      ]
+    },
+    {
+      "date": "2026-08-13",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se implementó WhatsApp como superficie local separada y se corrigió a un concepto de mensajería primero, sin CRM permanente dentro del chat.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-009"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se registro la no aprobacion de Etapa 0 y se reconcilio DELTA-DEC-012 con un wireframe de tableros, detalles y relaciones.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/ROADMAP.md",
+        "docs/DECISIONES.md",
+        "docs/biblioteca/superficies/web/README.md",
+        "docs/evidencias/TASK-20260803-005_DELTA_DEC_012_WIREFRAME.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_DELTA_DEC_012_WIREFRAME.md"
       ],
       "decisions": [
         "SPORTEX-DEC-006",
-        "SPORTEX-DEC-007"
+        "SPORTEX-DEC-008"
       ]
     },
     {
@@ -235,34 +296,7 @@
         "docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md",
         "docs/state/PROJECT_STATE.json",
         "docs/DECISIONES.md",
-        "docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md",
-        "docs/DOMAIN_MODEL_V1.md",
-        "docs/API_CONTRACT_V1.md",
-        "docs/WHATSAPP_EVENT_CONTRACT.md",
-        "docs/EVOLUTION_CONTRACT.md",
-        "docs/biblioteca/modulos/clientes_leads/README.md",
-        "docs/biblioteca/modulos/whatsapp_conversaciones/README.md",
-        "docs/biblioteca/superficies/evolution/README.md",
-        "docs/biblioteca/superficies/api/README.md",
-        "docs/biblioteca/superficies/web/README.md",
-        "core/README.md",
-        "core/src/domain/commercial-models.ts",
-        "core/src/ports/commercial-replay-store.ts",
-        "core/src/adapters/persistence/in-memory-commercial-replay-store.ts",
-        "core/src/application/commercial-replay-service.ts",
-        "core/src/domain/models.ts",
-        "core/src/http/context.ts",
-        "core/src/http/routes.ts",
-        "core/src/server.ts",
-        "core/tests/commercial-replay.test.ts",
-        "frontend/README.md",
-        "frontend/index.html",
-        "frontend/styles.css",
-        "frontend/app.js",
-        "scripts/start-commercial-demo.ps1",
-        "package.json",
-        "scripts/sportex-workflow.mjs",
-        "scripts/tests/sportex-workflow.test.mjs"
+        "docs/evidencias/TASK-20260803-001_PRIMERA_VERTICAL_COMERCIAL_LOCAL.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20260803-001_PRIMERA_VERTICAL_COMERCIAL_LOCAL.md"
@@ -277,24 +311,9 @@
       "summary": "Se instalo y valido el workflow automatico de contexto, tareas, estado, vistas y cierre de SPORTEX sin iniciar la campaña comercial.",
       "documents": [
         "AGENTS.md",
-        "README.md",
         "docs/TASKS/closed/2026/TASK-20260802-001-automatizar-contexto-tareas-cierre.md",
         "docs/state/PROJECT_STATE.json",
-        "docs/DECISIONES.md",
-        "docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md",
-        "docs/INICIAL.md",
-        "docs/CORE_DOCUMENTATION_SYSTEM.md",
-        "docs/DOCUMENTATION_ARCHITECTURE.md",
-        "docs/CODEX_WORKFLOW.md",
-        "docs/TASKS/README.md",
-        "docs/evidencias/README.md",
-        "package.json",
-        "scripts/sportex-workflow.mjs",
-        "scripts/sportex-workflow.ps1",
-        "scripts/tests/sportex-workflow.test.mjs",
-        "scripts/documentation/generate-documentation-views.mjs",
-        "scripts/validate-docs.mjs",
-        "scripts/validate-task-consistency.mjs"
+        "docs/evidencias/TASK-20260802-001_WORKFLOW_DOCUMENTAL.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20260802-001_WORKFLOW_DOCUMENTAL.md"
@@ -308,15 +327,15 @@
   ],
   "runtimeTruth": {
     "status": "VALIDADO_DESARROLLO_LOCAL",
-    "lastEvidenceDate": "2026-08-03",
-    "note": "Demo observada en 127.0.0.1:8080 con health ok, release commercial-local-fixture, 18 fixtures y persistencia local. No prueba runtime remoto."
+    "lastEvidenceDate": "2026-08-14",
+    "note": "Puesto operativo WhatsApp observado en 127.0.0.1:8080 con 18 conversaciones ficticias, lengüetas laterales, detalle progresivo, escritorio y 390x844. No prueba runtime remoto."
   },
   "productValidation": {
-    "status": "STAGE_0_WIREFRAME_APPROVED_IMPLEMENTATION_PENDING",
-    "lastReviewedAt": "2026-08-03",
+    "status": "LOCAL_UI_CONCEPT_ACCEPTED",
+    "lastReviewedAt": "2026-08-14",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260803-005",
-    "note": "La interfaz vigente sigue NO_APROBADA sin fallo de Core; Fito aprobo el wireframe maestro de Etapa 0 con 'continua'. La implementacion aun no fue realizada."
+    "note": "Fito aceptó el concepto visual WhatsApp primero y pidió iterar con etapas configurables y detalle de contacto/proceso. La conexión real mantiene un GO distinto."
   },
   "blockers": [
     "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
@@ -324,17 +343,14 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "Wireframe aprobado; la interfaz actual no lo implementa ni esta lista para uso.",
-    "Los modulos nuevos son objetivos, no capacidades implementadas.",
-    "El JSON persiste solo fixtures locales; no demuestra operacion ni durabilidad remota.",
-    "TASK-20260803-004 y TASK-20260803-005 siguen sin commit ni push.",
+    "Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures.",
+    "La implementacion de TASK-20260803-005 no tiene commit ni push; 0ccd4dc es solo el resguardo local previo.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Presentar el commit de resguardo de TASK-20260803-004/005.",
-    "Pedir autorizacion antes de commit o push.",
-    "No modificar codigo ni conectar servicios reales.",
+    "Ejecutar Gate 1 local de TASK-20260814-001.",
+    "Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

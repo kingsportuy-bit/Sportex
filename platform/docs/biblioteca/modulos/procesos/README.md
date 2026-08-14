@@ -46,7 +46,9 @@ Plantilla nueva, versión histórica, gate incompleto, ramas paralelas, bloqueo 
 
 ## Evidencia
 
-Proceso Delta documentado; implementación pendiente.
+Proceso Delta documentado. La UI local de `TASK-20260803-005` demuestra que una
+única plantilla puede alimentar pestañas, etiquetas y filtros de WhatsApp; el
+motor, versionado y configuración persistida por empresa siguen pendientes.
 
 ## Rollback
 

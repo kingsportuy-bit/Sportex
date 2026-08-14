@@ -2,7 +2,7 @@
 
 > GENERADO. No editar manualmente.
 
-Actualizado: 2026-08-03.
+Actualizado: 2026-08-14.
 
 ## Trabajo
 
@@ -11,18 +11,18 @@ Actualizado: 2026-08-03.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20260803-005`.
+- Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 40129/60000 caracteres.
+- Presupuesto potencial: 41055/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Resguardar en Git la Etapa 0 aprobada antes de implementar.
-- Permitido: Reconciliar CAMP-20260803-001 y TASK-20260803-005 con el plan V1 de DELTA. | Documentar un unico wireframe de Operacion, Marketing y Administracion. | Preservar Core, persistencia, 18 leads ficticios y trabajo local pendiente.
-- Prohibido: Codigo, commit o push sin autorizacion posterior. | Integraciones, datos reales, mensajes o deploy. | PILOTO_DELTA y PRODUCCION_COMERCIAL.
-- Riesgos: Wireframe aprobado; la interfaz actual no lo implementa ni esta lista para uso. | Los modulos nuevos son objetivos, no capacidades implementadas. | El JSON persiste solo fixtures locales; no demuestra operacion ni durabilidad remota. | TASK-20260803-004 y TASK-20260803-005 siguen sin commit ni push. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Los snapshots remotos no autorizan escrituras.
-- Proxima accion: Presentar el commit de resguardo de TASK-20260803-004/005.
+- Objetivo: Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
+- Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
+- Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
+- Riesgos: Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures. | La implementacion de TASK-20260803-005 no tiene commit ni push; 0ccd4dc es solo el resguardo local previo. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Los snapshots remotos no autorizan escrituras.
+- Proxima accion: Ejecutar Gate 1 local de TASK-20260814-001.
 
 ## Regla de uso
 
@@ -45,4 +45,4 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/NOTIFICATIONS_CONTRACT.md` — owner `notifications`, autoridad 85.
 - `docs/ROADMAP.md` — owner `product`, autoridad 65.
 - `docs/BACKLOG.md` — owner `product`, autoridad 55.
-- `docs/TASKS/active/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md` — owner `active-task`, autoridad 100.
+- `docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md` — owner `active-task`, autoridad 100.

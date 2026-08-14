@@ -1,6 +1,41 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
+const THEME_STORAGE_KEY = "sportex_theme";
+
+function storedTheme() {
+  try {
+    const value = localStorage.getItem(THEME_STORAGE_KEY);
+    if (value === "dark" || value === "light") return value;
+  } catch {
+    // La interfaz sigue funcionando aunque el navegador bloquee el almacenamiento local.
+  }
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const toggle = $("#theme-toggle");
+  if (!toggle) return;
+  toggle.setAttribute("aria-pressed", String(dark));
+  toggle.setAttribute("aria-label", dark ? "Activar modo claro" : "Activar modo oscuro");
+  $("#theme-toggle-icon").textContent = dark ? "\u2600" : "\u263e";
+  $("#theme-toggle-label").textContent = dark ? "Claro" : "Oscuro";
+}
+
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, next);
+  } catch {
+    // La preferencia se conserva durante esta vista aunque no pueda persistirse.
+  }
+  applyTheme(next);
+}
+
+applyTheme(storedTheme());
+
 const state = {
   config: null,
   localDemo: false,
@@ -12,6 +47,14 @@ const state = {
   commercial: [],
   selectedCommercialId: null,
   mobileDetailOpen: false,
+  mobileWhatsappDetailOpen: false,
+  whatsappDetailsOpen: false,
+  mobileWhatsappTab: "chat",
+  whatsappStage: "ALL",
+  currentView: "today",
+  todayFilter: "all",
+  mobileLeadTab: "chat",
+  draftResource: null,
   orderAttempt: null,
   passwordForced: false,
 };
@@ -154,6 +197,7 @@ function clearSession() {
   state.commercial = [];
   state.selectedCommercialId = null;
   state.mobileDetailOpen = false;
+  state.mobileWhatsappDetailOpen = false;
   sessionStorage.removeItem("sportex_access_token");
   sessionStorage.removeItem("sportex_refresh_token");
 }
@@ -192,6 +236,7 @@ async function loadData() {
   }
   renderClients();
   renderOrders();
+  renderWhatsApp();
   renderCommercial();
 }
 
@@ -251,6 +296,30 @@ function renderOrders() {
   $("#metric-quoted").textContent = money(quoted);
   $("#metric-deposits").textContent = money(deposits);
   $("#metric-balance").textContent = money(balance);
+
+  const candidates = $("#order-candidates");
+  if (candidates) {
+    candidates.replaceChildren();
+    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA");
+    for (const item of pending) {
+      const row = element("article", "candidate-row");
+      const text = element("div");
+      text.append(
+        element("strong", "", item.lead.teamName),
+        element("span", "", `${item.conversation.contactName} · seña ficticia validada`),
+        element("small", "", "Todavía no existe un Pedido vinculado."),
+      );
+      const button = element("button", "button button--quiet", "Revisar lead");
+      button.type = "button";
+      button.addEventListener("click", () => {
+        state.selectedCommercialId = item.id;
+        switchView("leads");
+        renderCommercial();
+      });
+      row.append(text, button);
+      candidates.append(row);
+    }
+  }
 }
 
 function renderClients() {
@@ -272,6 +341,30 @@ function renderClients() {
   $("#clients-empty").hidden = state.clients.length > 0;
   $("#clients-count-nav").textContent = String(state.clients.length);
   fillClientSelect();
+
+  const candidates = $("#client-candidates");
+  if (candidates) {
+    candidates.replaceChildren();
+    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA");
+    for (const item of pending) {
+      const row = element("article", "candidate-row");
+      const text = element("div");
+      text.append(
+        element("strong", "", item.conversation.contactName),
+        element("span", "", item.lead.teamName),
+        element("small", "", "Contacto comercial; Cliente automático todavía pendiente."),
+      );
+      const button = element("button", "button button--quiet", "Abrir conversación");
+      button.type = "button";
+      button.addEventListener("click", () => {
+        state.selectedCommercialId = item.id;
+        switchView("leads");
+        renderCommercial();
+      });
+      row.append(text, button);
+      candidates.append(row);
+    }
+  }
 }
 
 function element(tagName, className = "", text = "") {
@@ -281,23 +374,19 @@ function element(tagName, className = "", text = "") {
   return node;
 }
 
-const commercialStages = [
-  "NUEVO",
-  "EN_CALIFICACION",
-  "COTIZADO",
-  "EN_SEGUIMIENTO",
-  "PERDIDO",
-  "SENA_VALIDADA",
+// En PILOTO_DELTA esta definición vendrá versionada desde el Core por empresa.
+// La demo local mantiene una sola fuente para tabs, tableros y comandos.
+const salesProcessStages = [
+  { id: "NUEVO", label: "Contacto inicial", shortLabel: "Inicial" },
+  { id: "EN_CALIFICACION", label: "Calificación", shortLabel: "Calificar" },
+  { id: "COTIZADO", label: "Cotización enviada", shortLabel: "Cotizado" },
+  { id: "EN_SEGUIMIENTO", label: "Seguimiento", shortLabel: "Seguimiento" },
+  { id: "PERDIDO", label: "Cerrado sin venta", shortLabel: "Cerrado" },
+  { id: "SENA_VALIDADA", label: "Seña validada", shortLabel: "Seña" },
 ];
 
-const stageLabels = {
-  NUEVO: "Nuevo",
-  EN_CALIFICACION: "En calificación",
-  COTIZADO: "Cotizado",
-  EN_SEGUIMIENTO: "En seguimiento",
-  PERDIDO: "Perdido",
-  SENA_VALIDADA: "Seña validada",
-};
+const commercialStages = salesProcessStages.map((stage) => stage.id);
+const stageLabels = Object.fromEntries(salesProcessStages.map((stage) => [stage.id, stage.label]));
 
 function stageLabel(value) {
   return stageLabels[value] ?? value;
@@ -307,6 +396,47 @@ function productLabel(value) {
   if (value === "CAMISETAS") return "Camisetas";
   if (value === "EQUIPO_COMPLETO") return "Equipo completo";
   return "Producto por confirmar";
+}
+
+const demoToday = "2026-08-03";
+
+function leadPriority(item) {
+  const dueAt = item.opportunity.nextActionDueAt;
+  if (item.opportunity.stage === "PERDIDO") {
+    return { key: "closed", label: "Cerrado", reason: item.opportunity.lossReason || "No continúa", rank: 9 };
+  }
+  if (dueAt && dueAt < demoToday) {
+    return { key: "overdue", label: "Vencido", reason: `Venció ${shortDate(dueAt)}`, rank: 0 };
+  }
+  if (item.opportunity.stage === "NUEVO" || item.opportunity.stage === "EN_CALIFICACION") {
+    const missing = item.lead.missingInfo[0];
+    return { key: "response", label: "Responder ahora", reason: missing ? `Falta: ${missing}` : "Necesita una respuesta", rank: 1 };
+  }
+  if (item.opportunity.stage === "EN_SEGUIMIENTO") {
+    return { key: "waiting", label: "Esperando cliente", reason: dueAt ? `Revisar ${shortDate(dueAt)}` : "Revisión pendiente", rank: 2 };
+  }
+  if (item.opportunity.stage === "SENA_VALIDADA") {
+    return { key: "decision", label: "Revisar seña", reason: "Cliente y pedido todavía no vinculados", rank: 3 };
+  }
+  return { key: "action", label: "Próxima acción", reason: dueAt ? `Objetivo ${shortDate(dueAt)}` : "Sin fecha definida", rank: 4 };
+}
+
+function commercialSuggestion(item) {
+  if (item.lead.missingInfo.length > 0) {
+    const missing = item.lead.missingInfo.slice(0, 2).join(" y ").toLowerCase();
+    return `Confirmá ${missing} antes de avanzar.`;
+  }
+  if (item.opportunity.stage === "COTIZADO") return "Confirmá que recibieron la cotización y registrá la decisión.";
+  if (item.opportunity.stage === "EN_SEGUIMIENTO") return "Retomá el contacto en la fecha prevista sin repetir preguntas ya respondidas.";
+  if (item.opportunity.stage === "SENA_VALIDADA") return "Revisá la evidencia ficticia. La creación automática de Cliente y Pedido todavía no está implementada.";
+  if (item.opportunity.stage === "PERDIDO") return "El cierre ya está registrado; conservá el motivo para Resultados.";
+  return "Dejá un próximo paso concreto y una fecha para revisarlo.";
+}
+
+function originLabel(item) {
+  return item.attribution.classification === "META_EXACTO"
+    ? item.attribution.adName || "Anuncio identificado"
+    : "Origen desconocido";
 }
 
 function normalizedSearch(value) {
@@ -335,8 +465,79 @@ function filteredCommercial() {
   });
 }
 
-function renderStageBoard() {
-  const board = $("#stage-board");
+function renderToday() {
+  const open = state.commercial.filter((item) => item.opportunity.stage !== "PERDIDO");
+  const priorities = open.map((item) => ({ item, priority: leadPriority(item) }));
+  const counts = {
+    response: priorities.filter(({ priority }) => priority.key === "response").length,
+    overdue: priorities.filter(({ priority }) => priority.key === "overdue").length,
+    waiting: priorities.filter(({ priority }) => priority.key === "waiting").length,
+    all: priorities.length,
+  };
+  $("#today-response-count").textContent = String(counts.response);
+  $("#today-overdue-count").textContent = String(counts.overdue);
+  $("#today-waiting-count").textContent = String(counts.waiting);
+  $("#today-action-count").textContent = String(counts.all);
+  $("#today-count-nav").textContent = String(counts.response + counts.overdue);
+
+  const labels = {
+    all: "Todo lo abierto",
+    response: "Necesitan respuesta",
+    overdue: "Seguimientos vencidos",
+    waiting: "Esperando al cliente",
+  };
+  $("#today-filter-label").textContent = labels[state.todayFilter] || labels.all;
+  $$('[data-today-filter]').forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.todayFilter === state.todayFilter);
+  });
+
+  const list = $("#today-list");
+  list.replaceChildren();
+  const visible = priorities
+    .filter(({ priority }) => state.todayFilter === "all" || priority.key === state.todayFilter)
+    .sort((a, b) => a.priority.rank - b.priority.rank
+      || (a.item.opportunity.nextActionDueAt || "9999").localeCompare(b.item.opportunity.nextActionDueAt || "9999"));
+
+  if (visible.length === 0) {
+    const empty = element("div", "today-empty");
+    empty.append(
+      element("strong", "", state.todayFilter === "overdue" ? "No hay seguimientos vencidos" : "No hay conversaciones en este grupo"),
+      element("p", "", "La lista se actualizará cuando cambie una etapa o próxima acción."),
+    );
+    list.append(empty);
+    return;
+  }
+
+  for (const { item, priority } of visible) {
+    const row = element("article", "today-row");
+    row.dataset.priority = priority.key;
+    const flag = element("div", "today-flag");
+    flag.append(element("span", "", priority.label), element("small", "", priority.reason));
+    const identity = element("div", "today-identity");
+    identity.append(
+      element("strong", "", item.lead.teamName || "Equipo por confirmar"),
+      element("span", "", `${item.conversation.contactName} · ${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"}`),
+    );
+    const next = element("div", "today-next");
+    next.append(element("span", "", "Próxima acción"), element("strong", "", item.opportunity.nextAction));
+    const openButton = element("button", "button button--primary", "Abrir chat");
+    openButton.type = "button";
+    openButton.addEventListener("click", () => {
+      state.selectedCommercialId = item.id;
+      state.mobileDetailOpen = true;
+      state.mobileWhatsappDetailOpen = true;
+      state.mobileWhatsappTab = "chat";
+      state.mobileLeadTab = "chat";
+      switchView("whatsapp");
+      renderWhatsApp();
+    });
+    row.append(flag, identity, next, openButton);
+    list.append(row);
+  }
+}
+
+function renderStageBoard(board) {
+  if (!board) return;
   board.replaceChildren();
   const activeStage = $("#stage-filter").value;
   for (const [index, stage] of commercialStages.entries()) {
@@ -353,6 +554,7 @@ function renderStageBoard() {
     button.addEventListener("click", () => {
       $("#stage-filter").value = $("#stage-filter").value === stage ? "" : stage;
       state.mobileDetailOpen = false;
+      switchView("leads");
       renderCommercial();
     });
     board.append(button);
@@ -384,9 +586,10 @@ function renderLeadList(items) {
 
   for (const item of items) {
     const selected = item.id === state.selectedCommercialId;
+    const priority = leadPriority(item);
     const button = element("button", `lead-row${selected ? " is-selected" : ""}`);
     button.type = "button";
-    button.dataset.stage = item.opportunity.stage;
+    button.dataset.priority = priority.key;
     button.setAttribute("aria-pressed", String(selected));
     const top = element("span", "lead-row-top");
     const identity = element("span", "lead-row-identity");
@@ -394,22 +597,20 @@ function renderLeadList(items) {
       element("strong", "", item.lead.teamName || "Equipo por confirmar"),
       element("small", "", item.conversation.contactName),
     );
-    top.append(identity, element("span", "lead-stage", stageLabel(item.opportunity.stage)));
+    top.append(identity, element("span", "lead-priority", priority.label));
     const meta = element("span", "lead-row-meta");
     meta.append(
       element("span", "", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"}`),
-      element(
-        "span",
-        item.attribution.classification === "META_EXACTO" ? "origin-dot is-exact" : "origin-dot is-unknown",
-        item.attribution.classification === "META_EXACTO" ? "Anuncio exacto" : "Desconocido",
-      ),
+      element("span", "", priority.reason),
     );
     const next = element("span", "lead-row-next");
-    next.append(element("b", "", "PRÓXIMA"), element("span", "", item.opportunity.nextAction));
+    next.append(element("b", "", "SIGUE"), element("span", "", item.opportunity.nextAction));
     button.append(top, meta, next);
     button.addEventListener("click", () => {
       state.selectedCommercialId = item.id;
       state.mobileDetailOpen = true;
+      state.mobileLeadTab = "chat";
+      state.draftResource = null;
       renderCommercial();
       $("#lead-detail").focus({ preventScroll: true });
     });
@@ -434,7 +635,7 @@ function fact(label, value) {
 }
 
 function renderBrief(item) {
-  const card = detailCard("EXPEDIENTE / 01", "Información comercial");
+  const card = detailCard("CONSULTA / 01", "Información comercial");
   const grid = element("div", "brief-grid");
   grid.append(
     fact("Producto", productLabel(item.lead.productType)),
@@ -483,12 +684,12 @@ function renderQualification(item) {
 
 function renderConversation(item) {
   const card = detailCard("CONVERSACIÓN / 03", "Hilo ordenado");
-  const note = element("div", "read-only-banner", "Conversación ficticia · solo lectura · sin compositor de mensajes");
+  const note = element("div", "read-only-banner", "Conversación de ejemplo · sin envío desde esta demo");
   const timeline = element("div", "conversation-timeline");
   for (const message of item.conversation.messages) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(
-      element("span", "message-author", message.direction === "DELTA" ? "Delta · fixture" : `${item.conversation.contactName} · fixture`),
+      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
       element("p", "", message.text),
       element("time", "", shortDateTime(message.occurredAt)),
     );
@@ -499,7 +700,7 @@ function renderConversation(item) {
 }
 
 function renderHistory(item) {
-  const card = detailCard("TRAZABILIDAD / 04", "Actividad comercial");
+  const card = detailCard("HISTORIAL / 04", "Actividad comercial");
   const timeline = element("div", "activity-timeline");
   const activity = [...item.activity].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
   for (const entry of activity) {
@@ -547,6 +748,102 @@ function renderOrigin(item) {
   }
   card.append(creative, metadata);
   return card;
+}
+
+function renderContactOverview(item) {
+  const card = detailCard("CONTACTO", "Quién está escribiendo");
+  const grid = element("div", "brief-grid contact-overview-grid");
+  grid.append(
+    fact("Nombre", item.conversation.contactName),
+    fact("Equipo o institución", item.lead.teamName || "Por confirmar"),
+    fact("Interés actual", productLabel(item.lead.productType)),
+    fact("Cantidad", item.lead.quantity ? `${item.lead.quantity} prendas` : "Por confirmar"),
+    fact("Primer contacto", shortDateTime(item.conversation.firstContactAt)),
+    fact("Última actividad", shortDateTime(item.conversation.lastActivityAt)),
+  );
+  card.append(grid);
+  return card;
+}
+
+function renderProcessOverview(item) {
+  const card = detailCard("PROCESO DE VENTA", "Dónde está y qué sigue");
+  const body = element("div", "process-overview");
+  const current = element("div", "process-current-stage");
+  current.append(
+    element("span", "process-current-label", "Etapa actual"),
+    element("strong", "process-current-value", stageLabel(item.opportunity.stage)),
+    element("small", "", `Versión ${item.opportunity.version}`),
+  );
+  const next = element("div", "process-next-action");
+  next.append(
+    element("span", "process-current-label", "Próxima acción"),
+    element("strong", "", item.opportunity.nextAction),
+    element("small", "", item.opportunity.nextActionDueAt
+      ? `Fecha objetivo: ${shortDate(item.opportunity.nextActionDueAt)}`
+      : "Sin fecha objetivo"),
+  );
+  body.append(current, next);
+
+  const transitions = element("div", "process-transitions");
+  transitions.append(element("span", "process-current-label", "Movimientos disponibles"));
+  const transitionList = element("div", "process-transition-list");
+  const available = item.opportunity.allowedStageTransitions || [];
+  if (available.length === 0) {
+    transitionList.append(element("span", "process-transition-empty", "No hay cambios habilitados desde esta etapa"));
+  } else {
+    for (const stage of available) transitionList.append(element("span", "process-transition-chip", stageLabel(stage)));
+  }
+  transitions.append(transitionList);
+  body.append(transitions);
+
+  if (item.lead.missingInfo.length > 0) {
+    const missing = element("div", "process-missing-summary");
+    missing.append(
+      element("span", "process-current-label", "Para avanzar"),
+      element("strong", "", item.lead.missingInfo.join(" · ")),
+    );
+    body.append(missing);
+  }
+  card.append(body);
+  return card;
+}
+
+function openWhatsAppDetails(item) {
+  state.whatsappDetailsOpen = true;
+  $("#whatsapp-workspace")?.classList.add("is-contact-details-open");
+  renderWhatsAppDetail(item);
+}
+
+function renderWhatsAppInlineDetails(item) {
+  const panel = element("aside", "whatsapp-inline-details");
+  panel.setAttribute("aria-label", "Detalles del contacto y del proceso");
+  const header = element("header", "whatsapp-inline-details-head");
+  const identity = element("div");
+  identity.append(
+    element("span", "page-kicker", "Contacto y proceso"),
+    element("h2", "", item.conversation.contactName),
+    element("p", "", `${item.lead.teamName || "Equipo por confirmar"} · ${stageLabel(item.opportunity.stage)}`),
+  );
+  const close = element("button", "icon-button", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", "Cerrar detalles");
+  close.addEventListener("click", () => {
+    state.whatsappDetailsOpen = false;
+    $("#whatsapp-workspace")?.classList.remove("is-contact-details-open");
+    renderWhatsAppDetail(item);
+    $(".whatsapp-chat-menu")?.focus({ preventScroll: true });
+  });
+  header.append(identity, close);
+  const body = element("div", "whatsapp-inline-details-body");
+  body.append(
+    renderContactOverview(item),
+    renderProcessOverview(item),
+    renderBrief(item),
+    renderOrigin(item),
+    renderHistory(item),
+  );
+  panel.append(header, body);
+  return panel;
 }
 
 function fieldLabel(text, control) {
@@ -643,53 +940,444 @@ function renderCommands(item) {
   return wrapper;
 }
 
-function renderLeadDetail(item) {
-  const detail = $("#lead-detail");
+function openFullLeadSheet(item) {
+  const dialog = $("#lead-sheet-dialog");
+  dialog.classList.remove("is-whatsapp-detail");
+  const content = $("#lead-sheet-content");
+  content.replaceChildren();
+  const header = element("header", "lead-sheet-head");
+  const identity = element("div");
+  identity.append(
+    element("span", "page-kicker", "Ficha completa"),
+    element("h2", "", item.lead.teamName || "Equipo por confirmar"),
+    element("p", "", `${item.conversation.contactName} · ${stageLabel(item.opportunity.stage)} · versión ${item.opportunity.version}`),
+  );
+  const close = element("button", "icon-button", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", "Cerrar ficha");
+  close.addEventListener("click", () => dialog.close());
+  header.append(identity, close);
+  const body = element("div", "lead-sheet-body");
+  body.append(renderBrief(item), renderQualification(item), renderOrigin(item), renderHistory(item));
+  content.append(header, body);
+  dialog.showModal();
+}
+
+function renderDraftArea(item) {
+  const draft = element("section", "draft-area");
+  const heading = element("header");
+  heading.append(element("span", "page-kicker", "Preparar respuesta"), element("small", "", "No se envía desde esta demo"));
+  const input = element("textarea", "draft-input");
+  input.placeholder = "Escribí o ajustá un borrador…";
+  input.value = `Hola ${item.conversation.contactName.split(" ")[0]}, ${commercialSuggestion(item).toLowerCase()}`;
+  const actions = element("div", "draft-actions");
+  const sizes = element("button", "button button--quiet", "Agregar tabla de talles");
+  sizes.type = "button";
+  sizes.addEventListener("click", () => {
+    state.draftResource = "sizes";
+    if (state.currentView === "whatsapp") renderWhatsApp();
+    else renderLeadDetail(item);
+  });
+  const quick = element("button", "button button--quiet", "Usar respuesta rápida");
+  quick.type = "button";
+  quick.addEventListener("click", () => {
+    input.value = item.lead.missingInfo.length
+      ? `Perfecto. Para avanzar, ¿me confirmás ${item.lead.missingInfo.slice(0, 2).join(" y ").toLowerCase()}?`
+      : "Perfecto, quedó todo anotado. Te confirmo el próximo paso enseguida.";
+    input.focus();
+  });
+  const copy = element("button", "button button--primary", "Copiar borrador");
+  copy.type = "button";
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(input.value);
+      toast("Borrador copiado. No se envió ningún mensaje.");
+    } catch {
+      input.select();
+      toast("Seleccionamos el borrador para que puedas copiarlo.");
+    }
+  });
+  actions.append(sizes, quick, copy);
+  draft.append(heading, input);
+  if (state.draftResource === "sizes") {
+    const resource = element("div", "draft-resource");
+    resource.append(
+      element("strong", "", "Tabla de talles agregada al borrador"),
+      element("span", "", item.lead.sizeBreakdown.map((size) => `${size.size}: ${size.quantity}`).join(" · ")),
+      element("small", "", "Referencia ficticia para revisar antes de cualquier envío futuro."),
+    );
+    draft.append(resource);
+  }
+  draft.append(actions);
+  return draft;
+}
+
+function filteredWhatsApp() {
+  const search = normalizedSearch($("#whatsapp-search")?.value);
+  return [...state.commercial]
+    .filter((item) => {
+      if (state.whatsappStage !== "ALL" && item.opportunity.stage !== state.whatsappStage) return false;
+      if (!search) return true;
+      const lastMessage = item.conversation.messages.at(-1)?.text || "";
+      return normalizedSearch([
+        item.conversation.contactName,
+        item.lead.teamName,
+        item.lead.productType,
+        lastMessage,
+      ].filter(Boolean).join(" ")).includes(search);
+    })
+    .sort((left, right) => right.conversation.lastActivityAt.localeCompare(left.conversation.lastActivityAt));
+}
+
+function renderWhatsAppStages() {
+  const rail = $("#whatsapp-stage-tabs");
+  if (!rail) return;
+  rail.replaceChildren();
+  const stages = [
+    { id: "ALL", label: "Todas", shortLabel: "Todas" },
+    ...salesProcessStages,
+  ];
+  for (const [index, stage] of stages.entries()) {
+    const active = state.whatsappStage === stage.id;
+    const count = stage.id === "ALL"
+      ? state.commercial.length
+      : state.commercial.filter((item) => item.opportunity.stage === stage.id).length;
+    const button = element("button", `whatsapp-stage-tab${active ? " is-active" : ""}`);
+    button.type = "button";
+    button.dataset.stage = stage.id;
+    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute("aria-label", `${stage.label}: ${count} conversaciones`);
+    button.append(
+      element("span", "whatsapp-stage-index", stage.id === "ALL" ? "•" : String(index).padStart(2, "0")),
+      element("span", "whatsapp-stage-name", stage.label),
+      element("span", "whatsapp-stage-count", String(count)),
+    );
+    button.addEventListener("click", () => {
+      state.whatsappStage = stage.id;
+      state.mobileWhatsappDetailOpen = false;
+      state.selectedCommercialId = null;
+      renderWhatsApp();
+      $("#whatsapp-list")?.focus({ preventScroll: true });
+    });
+    rail.append(button);
+  }
+}
+
+function renderWhatsAppList(items) {
+  const list = $("#whatsapp-list");
+  if (!list) return;
+  list.replaceChildren();
+  $("#whatsapp-result-count").textContent = String(items.length);
+  if (items.length === 0) {
+    const empty = element("div", "whatsapp-empty");
+    empty.append(
+      element("strong", "", "No encontramos conversaciones"),
+      element("p", "", "Probá con otro nombre, equipo o mensaje."),
+    );
+    list.append(empty);
+    return;
+  }
+
+  for (const item of items) {
+    const selected = item.id === state.selectedCommercialId;
+    const latest = item.conversation.messages.at(-1);
+    const button = element("button", `whatsapp-row${selected ? " is-selected" : ""}`);
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(selected));
+    const avatar = element("span", "whatsapp-avatar", initials(item.conversation.contactName));
+    const copy = element("span", "whatsapp-row-copy");
+    const head = element("span", "whatsapp-row-head");
+    head.append(
+      element("strong", "", item.conversation.contactName),
+      element("time", "", latest ? shortDateTime(latest.occurredAt) : ""),
+    );
+    copy.append(
+      head,
+      element("span", "whatsapp-team", item.lead.teamName || "Equipo por confirmar"),
+      element("span", "whatsapp-preview", latest?.text || "Sin mensajes"),
+    );
+    button.append(avatar, copy);
+    button.addEventListener("click", () => {
+      state.selectedCommercialId = item.id;
+      state.mobileWhatsappDetailOpen = true;
+      state.mobileWhatsappTab = "chat";
+      state.draftResource = null;
+      renderWhatsApp();
+      $("#whatsapp-detail").focus({ preventScroll: true });
+    });
+    list.append(button);
+  }
+}
+
+function renderWhatsAppComposer() {
+  const composer = element("section", "whatsapp-composer");
+  const attach = element("button", "whatsapp-composer-icon", "+");
+  attach.type = "button";
+  attach.disabled = true;
+  attach.title = "Los adjuntos se habilitarán al conectar WhatsApp";
+  attach.setAttribute("aria-label", "Adjuntar");
+  const input = element("textarea", "whatsapp-composer-input");
+  input.rows = 1;
+  input.placeholder = "Escribí un mensaje";
+  const send = element("button", "whatsapp-send", "➤");
+  send.type = "button";
+  send.disabled = true;
+  send.title = "El envío se habilitará al conectar WhatsApp";
+  send.setAttribute("aria-label", "Enviar mensaje");
+  const note = element("small", "whatsapp-local-note", "Vista local · no envía mensajes");
+  composer.append(attach, input, send, note);
+  return composer;
+}
+
+function renderWhatsAppChatPane(item) {
+  const pane = element("section", "lead-chat-pane whatsapp-chat-pane");
+  const header = element("header", "lead-focus-head whatsapp-chat-head");
+  const back = element("button", "mobile-back", "← Chats");
+  back.type = "button";
+  back.addEventListener("click", () => {
+    state.mobileWhatsappDetailOpen = false;
+    renderWhatsApp();
+    $("#whatsapp-master").focus({ preventScroll: true });
+  });
+  const avatar = element("span", "whatsapp-avatar whatsapp-avatar--detail", initials(item.conversation.contactName));
+  const identity = element("div", "whatsapp-chat-identity");
+  identity.append(
+    element("h2", "", item.conversation.contactName),
+    element("p", "", `${item.lead.teamName || "Equipo por confirmar"} · ${productLabel(item.lead.productType)}`),
+  );
+  const menu = element("button", "whatsapp-chat-menu");
+  menu.type = "button";
+  menu.title = "Abrir detalles del contacto y del proceso";
+  menu.setAttribute("aria-label", "Abrir detalles del contacto y del proceso");
+  menu.setAttribute("aria-pressed", String(state.whatsappDetailsOpen));
+  menu.append(element("span", "whatsapp-details-icon", "⋯"), element("span", "whatsapp-details-label", "Detalles"));
+  menu.addEventListener("click", () => openWhatsAppDetails(item));
+  header.append(back, avatar, identity, menu);
+
+  const conversation = element("div", "conversation-timeline lead-conversation");
+  for (const message of item.conversation.messages) {
+    const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
+    row.append(
+      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
+      element("p", "", message.text),
+      element("time", "", shortDateTime(message.occurredAt)),
+    );
+    conversation.append(row);
+  }
+  pane.append(header, conversation, renderWhatsAppComposer());
+  return pane;
+}
+
+function renderWhatsAppDetail(item) {
+  const detail = $("#whatsapp-detail");
+  if (!detail) return;
   detail.replaceChildren();
   detail.tabIndex = -1;
   if (!item) {
-    const empty = element("div", "lead-detail-empty");
+    const empty = element("div", "whatsapp-detail-empty");
     empty.append(
-      element("span", "empty-number", "—"),
-      element("h2", "", "Elegí un lead"),
-      element("p", "", "La ficha completa aparecerá en este panel."),
+      element("span", "whatsapp-empty-mark", "↗"),
+      element("h2", "", "Elegí una conversación"),
+      element("p", "", "El chat, los datos confirmados y el próximo paso quedan juntos."),
     );
     detail.append(empty);
     return;
   }
+  const workspace = element("div", `whatsapp-detail-workspace${state.whatsappDetailsOpen ? " is-details-open" : ""}`);
+  workspace.append(renderWhatsAppChatPane(item));
+  if (state.whatsappDetailsOpen) workspace.append(renderWhatsAppInlineDetails(item));
+  detail.append(workspace);
+}
 
-  const header = element("header", "lead-detail-head");
-  const back = element("button", "mobile-back", "← Volver a leads");
+function renderWhatsApp() {
+  const view = $("#whatsapp-view");
+  if (!view) return;
+  const items = filteredWhatsApp();
+  if (!items.some((item) => item.id === state.selectedCommercialId)) {
+    state.selectedCommercialId = items[0]?.id ?? null;
+  }
+  $("#whatsapp-count-nav").textContent = String(state.commercial.length);
+  renderWhatsAppStages();
+  renderWhatsAppList(items);
+  renderWhatsAppDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
+  $("#whatsapp-workspace").classList.toggle(
+    "is-detail-open",
+    state.mobileWhatsappDetailOpen && Boolean(state.selectedCommercialId),
+  );
+  $("#whatsapp-workspace").classList.toggle(
+    "is-contact-details-open",
+    state.whatsappDetailsOpen && Boolean(state.selectedCommercialId),
+  );
+}
+
+function renderChatPane(item) {
+  const pane = element("section", "lead-chat-pane");
+  pane.dataset.mobilePane = "chat";
+  const header = element("header", "lead-focus-head");
+  const back = element("button", "mobile-back", "← Conversaciones");
   back.type = "button";
   back.addEventListener("click", () => {
     state.mobileDetailOpen = false;
     renderCommercial();
     $("#lead-master").focus({ preventScroll: true });
   });
-  const identity = element("div", "lead-title");
+  const identity = element("div");
   identity.append(
-    element("span", "section-code", `LEAD ${item.id.replace("workspace-ficticio-", "#")}`),
+    element("span", "page-kicker", productLabel(item.lead.productType)),
     element("h2", "", item.lead.teamName || "Equipo por confirmar"),
-    element("p", "", `${item.conversation.contactName} · ${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"} prendas`),
+    element("p", "", `${item.conversation.contactName} · ${item.lead.quantity ?? "?"} prendas`),
   );
-  const status = element("div", "lead-status-lockup");
-  const stage = element("span", "detail-stage", stageLabel(item.opportunity.stage));
-  stage.dataset.stage = item.opportunity.stage;
-  status.append(
-    stage,
-    element("small", "", `VERSIÓN ${item.opportunity.version}`),
-    element("strong", "", item.opportunity.nextAction),
-    element("time", "", item.opportunity.nextActionDueAt ? `Objetivo ${shortDate(item.opportunity.nextActionDueAt)}` : "Sin fecha objetivo"),
-  );
-  header.append(back, identity, status);
+  const sheet = element("button", "button button--quiet", "Ficha completa");
+  sheet.type = "button";
+  sheet.addEventListener("click", () => openFullLeadSheet(item));
+  header.append(back, identity, sheet);
 
-  const body = element("div", "lead-detail-grid");
-  const main = element("div", "detail-main");
-  main.append(renderBrief(item), renderQualification(item), renderConversation(item), renderHistory(item));
-  const side = element("aside", "detail-side");
-  side.append(renderOrigin(item), renderCommands(item));
-  body.append(main, side);
-  detail.append(header, body);
+  const conversation = element("div", "conversation-timeline lead-conversation");
+  for (const message of item.conversation.messages) {
+    const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
+    row.append(
+      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
+      element("p", "", message.text),
+      element("time", "", shortDateTime(message.occurredAt)),
+    );
+    conversation.append(row);
+  }
+  pane.append(header, conversation, renderDraftArea(item));
+  return pane;
+}
+
+function renderWorkPane(item) {
+  const pane = element("aside", "lead-work-pane");
+  pane.dataset.mobilePane = "work";
+  const head = element("header", "work-head");
+  head.append(element("span", "page-kicker", "Trabajo comercial"), element("strong", "", `Versión ${item.opportunity.version}`));
+
+  const stageSection = element("section", "work-section");
+  stageSection.append(element("h3", "", "Etapa"));
+  const stageForm = element("form", "inline-command");
+  const stageSelect = element("select");
+  for (const stage of commercialStages) {
+    const option = element("option", "", stageLabel(stage));
+    option.value = stage;
+    option.selected = stage === item.opportunity.stage;
+    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
+    stageSelect.append(option);
+  }
+  const stageButton = element("button", "button button--quiet", "Guardar");
+  stageButton.type = "submit";
+  stageForm.append(stageSelect, stageButton);
+  stageForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void saveCommercialStage(item, stageSelect.value, stageButton);
+  });
+  stageSection.append(stageForm);
+
+  const summary = element("section", "work-section");
+  summary.append(
+    element("h3", "", "Resumen"),
+    element("p", "work-summary", `${item.lead.teamName} consulta por ${item.lead.quantity ?? "?"} ${productLabel(item.lead.productType).toLowerCase()} en ${item.lead.colors.join(" y ") || "colores por confirmar"}.`),
+  );
+
+  const facts = element("section", "work-section work-facts");
+  facts.append(element("h3", "", "Datos confirmados"));
+  const factList = element("div", "fact-chips");
+  for (const entry of item.lead.confirmedInfo.slice(0, 6)) factList.append(element("span", "", `${entry.label}: ${entry.value}`));
+  facts.append(factList);
+
+  const missing = element("section", "work-section work-missing");
+  missing.append(element("h3", "", "Datos faltantes"));
+  if (item.lead.missingInfo.length === 0) missing.append(element("p", "work-complete", "No falta información para esta etapa."));
+  else {
+    const list = element("ul");
+    for (const value of item.lead.missingInfo) list.append(element("li", "", value));
+    missing.append(list);
+  }
+
+  const action = element("section", "work-section work-action");
+  action.append(element("h3", "", "Próxima acción"));
+  const actionForm = element("form", "work-action-form");
+  const actionInput = element("textarea");
+  actionInput.required = true;
+  actionInput.maxLength = 240;
+  actionInput.value = item.opportunity.nextAction;
+  const due = element("input");
+  due.type = "date";
+  due.value = item.opportunity.nextActionDueAt || "";
+  const save = element("button", "button button--primary", "Guardar siguiente paso");
+  save.type = "submit";
+  actionForm.append(actionInput, due, save);
+  actionForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!actionForm.reportValidity()) return;
+    void saveCommercialNextAction(item, actionInput.value, due.value || null, save);
+  });
+  action.append(actionForm);
+
+  const suggestion = element("section", "work-section work-suggestion");
+  suggestion.append(element("h3", "", "Sugerencia comercial"), element("p", "", commercialSuggestion(item)));
+
+  const origin = element("section", "work-section work-origin");
+  origin.append(
+    element("h3", "", "Anuncio de origen"),
+    element("strong", "", originLabel(item)),
+    element("small", "", "Se conserva aunque cambie el interés actual."),
+  );
+
+  const follow = element("details", "work-followup");
+  follow.append(element("summary", "", "Registrar seguimiento interno"));
+  const followForm = element("form", "work-followup-form");
+  const outcome = element("select");
+  for (const [value, label] of [["SIN_CAMBIOS", "Sin cambios"], ["AVANZO", "Avanzó"], ["SIN_RESPUESTA", "Sin respuesta"], ["NO_CONTINUA", "No continúa"]]) {
+    const option = element("option", "", label);
+    option.value = value;
+    outcome.append(option);
+  }
+  const note = element("textarea");
+  note.required = true;
+  note.placeholder = "Qué ocurrió y qué conviene recordar";
+  const followButton = element("button", "button button--quiet", "Registrar seguimiento");
+  followButton.type = "submit";
+  followForm.append(outcome, note, followButton);
+  followForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!followForm.reportValidity()) return;
+    void saveCommercialFollowUp(item, note.value, outcome.value, followButton);
+  });
+  follow.append(followForm);
+
+  pane.append(head, stageSection, summary, facts, missing, action, suggestion, origin, follow);
+  return pane;
+}
+
+function renderLeadDetail(item) {
+  const detail = $("#lead-detail");
+  detail.replaceChildren();
+  detail.tabIndex = -1;
+  if (!item) {
+    const empty = element("div", "lead-detail-empty");
+    empty.append(element("h2", "", "Elegí una conversación"), element("p", "", "Vas a ver el hilo y el siguiente paso sin salir de Leads."));
+    detail.append(empty);
+    return;
+  }
+
+  const tabs = element("nav", "lead-mobile-tabs");
+  for (const [value, label] of [["chat", "Chat"], ["work", "Trabajo"], ["sheet", "Ficha"]]) {
+    const button = element("button", state.mobileLeadTab === value ? "is-active" : "", label);
+    button.type = "button";
+    button.addEventListener("click", () => {
+      if (value === "sheet") {
+        openFullLeadSheet(item);
+        return;
+      }
+      state.mobileLeadTab = value;
+      renderLeadDetail(item);
+    });
+    tabs.append(button);
+  }
+  const focus = element("div", "lead-focus");
+  focus.dataset.mobileTab = state.mobileLeadTab;
+  focus.append(renderChatPane(item), renderWorkPane(item));
+  detail.append(tabs, focus);
 }
 
 function replaceCommercialItem(updated) {
@@ -763,17 +1451,9 @@ function clearCommercialFilters() {
 }
 
 function renderCommercial() {
-  const exactCount = state.commercial.filter((item) => item.attribution.classification === "META_EXACTO").length;
-  const unknownCount = state.commercial.length - exactCount;
-  const pendingCount = state.commercial.filter((item) => item.opportunity.nextActionStatus === "PENDIENTE").length;
   $("#commercial-count-nav").textContent = String(state.commercial.length);
-  $("#metric-conversations").textContent = String(state.commercial.length).padStart(2, "0");
-  $("#metric-exact").textContent = String(exactCount).padStart(2, "0");
-  $("#metric-unknown").textContent = String(unknownCount).padStart(2, "0");
-  $("#metric-actions").textContent = String(pendingCount).padStart(2, "0");
   $("#persistence-status").textContent = state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA";
 
-  renderStageBoard();
   const items = filteredCommercial();
   if (!items.some((item) => item.id === state.selectedCommercialId)) {
     state.selectedCommercialId = items[0]?.id ?? null;
@@ -781,6 +1461,7 @@ function renderCommercial() {
   renderLeadList(items);
   renderLeadDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
   $(".crm-workspace").classList.toggle("is-detail-open", state.mobileDetailOpen && Boolean(state.selectedCommercialId));
+  renderToday();
 }
 
 function fillClientSelect() {
@@ -797,13 +1478,189 @@ function fillClientSelect() {
   syncTeamFromClient();
 }
 
+const viewMeta = {
+  whatsapp: ["Operación", "WhatsApp"],
+  today: ["Operación diaria", "Hoy"],
+  leads: ["Operación", "Leads"],
+  orders: ["Operación", "Pedidos"],
+  clients: ["Operación", "Clientes"],
+  ads: ["Marketing", "Anuncios"],
+  creatives: ["Marketing", "Creativos"],
+  results: ["Marketing", "Resultados"],
+  catalog: ["Administración", "Productos, precios y talles"],
+  playbooks: ["Administración", "Procesos y respuestas rápidas"],
+  suppliers: ["Administración", "Proveedores"],
+  settings: ["Administración", "Configuración"],
+};
+
+function moduleCard(title, description, meta = "") {
+  const card = element("article", "module-card");
+  card.append(element("h2", "", title), element("p", "", description));
+  if (meta) card.append(element("small", "", meta));
+  return card;
+}
+
+function renderModule(name) {
+  const content = $("#module-content");
+  content.replaceChildren();
+  const exact = state.commercial.filter((item) => item.attribution.classification === "META_EXACTO");
+  const unknown = state.commercial.length - exact.length;
+  const meta = viewMeta[name] || ["SPORTEX", "Módulo"];
+  $("#module-kicker").textContent = meta[0];
+  $("#module-title").textContent = meta[1];
+
+  if (name === "ads") {
+    $("#module-description").textContent = "De qué anuncio llegó cada conversación cuando existe evidencia.";
+    const grouped = new Map();
+    for (const item of exact) {
+      const key = item.attribution.adId || item.attribution.adName;
+      const group = grouped.get(key) || { name: item.attribution.adName, campaign: item.attribution.campaignName, count: 0 };
+      group.count += 1;
+      grouped.set(key, group);
+    }
+    const grid = element("div", "module-grid");
+    for (const group of grouped.values()) grid.append(moduleCard(group.name || "Anuncio ficticio", `${group.count} conversaciones atribuidas`, group.campaign || "Campaña ficticia"));
+    grid.append(moduleCard("Origen desconocido", `${unknown} conversaciones sin evidencia publicitaria`, "SPORTEX no inventa atribución"));
+    content.append(grid);
+    return;
+  }
+
+  if (name === "creatives") {
+    $("#module-description").textContent = "Piezas que originaron conversaciones en esta muestra ficticia.";
+    const grid = element("div", "creative-module-grid");
+    const seen = new Set();
+    for (const item of exact) {
+      const creative = item.attribution.creative;
+      const key = creative?.title || item.attribution.adId;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const card = element("article", "creative-module-card");
+      card.style.setProperty("--creative-color", creative?.accent || "#2457d6");
+      card.append(
+        element("span", "", creative?.format || "ANUNCIO"),
+        element("h2", "", creative?.title || item.attribution.adName || "Creativo ficticio"),
+        element("p", "", creative?.body || "Pieza de referencia para la atribución local."),
+        element("small", "", item.attribution.adName || "Anuncio ficticio"),
+      );
+      grid.append(card);
+    }
+    content.append(grid);
+    return;
+  }
+
+  if (name === "results") {
+    $("#module-description").textContent = "Etapas, atribución y pérdidas separadas de la operación diaria.";
+    const metrics = element("div", "results-metrics");
+    const active = state.commercial.filter((item) => item.opportunity.stage !== "PERDIDO").length;
+    const deposits = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA").length;
+    metrics.append(
+      moduleCard("Conversaciones", String(state.commercial.length), "Muestra ficticia"),
+      moduleCard("Activas", String(active), "Sin las perdidas"),
+      moduleCard("Origen exacto", String(exact.length), `${unknown} desconocidas`),
+      moduleCard("Seña validada", String(deposits), "Aún sin pedido vinculado"),
+    );
+    const funnel = element("section", "results-panel");
+    funnel.append(element("h2", "", "Embudo comercial"));
+    const board = element("div", "stage-board");
+    renderStageBoard(board);
+    funnel.append(board);
+    const losses = element("section", "results-panel");
+    losses.append(element("h2", "", "Motivos de pérdida"));
+    for (const item of state.commercial.filter((entry) => entry.opportunity.stage === "PERDIDO")) {
+      const row = element("div", "result-row");
+      row.append(element("strong", "", item.lead.teamName), element("span", "", item.opportunity.lossReason || "Sin motivo"));
+      losses.append(row);
+    }
+    content.append(metrics, funnel, losses);
+    return;
+  }
+
+  if (name === "catalog") {
+    $("#module-description").textContent = "Referencias ficticias que ayudan a responder sin inventar datos.";
+    const sizes = [...new Set(state.commercial.flatMap((item) => item.lead.sizeBreakdown.map((size) => size.size)))];
+    const grid = element("div", "module-grid");
+    grid.append(
+      moduleCard("Camisetas", "Producto disponible en la muestra local.", "Precio: por confirmar antes de cotizar"),
+      moduleCard("Equipos completos", "Camiseta, short y medias como interés comercial.", "Precio: por confirmar antes de cotizar"),
+      moduleCard("Tabla de talles", sizes.join(" · "), "Se agrega al borrador desde Leads"),
+    );
+    content.append(grid);
+    return;
+  }
+
+  if (name === "playbooks") {
+    $("#module-description").textContent = "Guías breves para avanzar una conversación con lenguaje natural.";
+    const grid = element("div", "playbook-list");
+    for (const [title, goal, next] of [
+      ["Primer contacto", "Entender producto, cantidad y fecha", "Pedir solo lo que falta"],
+      ["Consulta por talles", "Aclarar adulto o niño", "Preparar la tabla correcta"],
+      ["Cotización sin respuesta", "Confirmar recepción sin presionar", "Dejar fecha de revisión"],
+      ["Seña detectada", "Revisar evidencia y cotización", "Validación humana obligatoria"],
+    ]) grid.append(moduleCard(title, goal, next));
+    content.append(grid);
+    return;
+  }
+
+  if (name === "suppliers") {
+    $("#module-description").textContent = "Registro ficticio para entender qué información necesitará producción.";
+    const grid = element("div", "module-grid");
+    grid.append(
+      moduleCard("Proveedor de tela A", "Tela sublimada y referencias de color.", "Ficticio · sin canal conectado"),
+      moduleCard("Taller Norte", "Corte y confección de camisetas.", "Ficticio · sin mensajes"),
+      moduleCard("Medias Sur", "Medias por color y cantidad.", "Ficticio · sin pedidos"),
+    );
+    content.append(grid);
+    return;
+  }
+
+  $("#module-description").textContent = "Controles de esta demo local, sin conexiones ni datos reales.";
+  const grid = element("div", "module-grid");
+  grid.append(
+    moduleCard("Datos locales", state.config?.localCommercialPersistenceEnabled ? "Los cambios ficticios se conservan al reiniciar." : "Los cambios viven en memoria.", "18 leads ficticios"),
+    moduleCard("Conexiones", "Evolution, Meta, Chatwoot y Supabase remoto están desconectados.", "Sin mensajes ni deploy"),
+  );
+  const reset = element("button", "button button--primary", "Restaurar los 18 datos iniciales");
+  reset.type = "button";
+  reset.addEventListener("click", openResetDemoDialog);
+  const resetPanel = element("section", "settings-reset");
+  resetPanel.append(element("h2", "", "Restaurar la muestra"), element("p", "", "Descarta únicamente cambios ficticios de esta computadora y recupera la semilla inicial."), reset);
+  content.append(grid, resetPanel);
+}
+
+function openMobileMenu() {
+  $("#app-sidebar").classList.add("is-open");
+  $("#sidebar-scrim").hidden = false;
+  document.body.classList.add("menu-open");
+}
+
+function closeMobileMenu() {
+  $("#app-sidebar").classList.remove("is-open");
+  $("#sidebar-scrim").hidden = true;
+  document.body.classList.remove("menu-open");
+}
+
 function switchView(name) {
-  $("#commercial-view").hidden = name !== "commercial";
+  if (name === "commercial") name = "leads";
+  state.currentView = name;
+  $("#today-view").hidden = name !== "today";
+  $("#whatsapp-view").hidden = name !== "whatsapp";
+  $("#commercial-view").hidden = name !== "leads";
   $("#orders-view").hidden = name !== "orders";
   $("#clients-view").hidden = name !== "clients";
-  $("#local-demo-actions").hidden = !state.localDemo || name !== "commercial";
-  $("#new-order-button").hidden = name === "commercial";
+  const isModule = ["ads", "creatives", "results", "catalog", "playbooks", "suppliers", "settings"].includes(name);
+  $("#module-view").hidden = !isModule;
+  $("#local-demo-actions").hidden = !state.localDemo || name !== "settings";
+  $("#new-order-button").hidden = state.localDemo || name !== "orders";
+  const meta = viewMeta[name] || ["SPORTEX", name];
+  $("#topbar-kicker").textContent = meta[0];
+  $("#topbar-title").textContent = meta[1];
   $$(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.view === name));
+  if (name === "today") renderToday();
+  if (name === "whatsapp") renderWhatsApp();
+  if (name === "leads") renderCommercial();
+  if (isModule) renderModule(name);
+  closeMobileMenu();
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function clientMode() {
@@ -1076,7 +1933,7 @@ async function initialize() {
       : "LOCAL · MEMORIA";
     try {
       await bootstrapAuthenticated();
-      switchView("commercial");
+      switchView("today");
     } catch (error) {
       $("#login-error").textContent = friendlyError(error);
     }
@@ -1127,17 +1984,29 @@ $$('[data-open-order], #new-order-button').forEach((button) => button.addEventLi
     renderCommercial();
   }));
 $("#clear-filters").addEventListener("click", clearCommercialFilters);
+$("#whatsapp-search").addEventListener("input", () => {
+  state.mobileWhatsappDetailOpen = false;
+  renderWhatsApp();
+});
 $("#reset-demo-button").addEventListener("click", openResetDemoDialog);
 $("#reset-confirmation").addEventListener("change", (event) => {
   $("#confirm-reset-button").disabled = !event.currentTarget.checked;
 });
 $("#confirm-reset-button").addEventListener("click", resetCommercialDemo);
 $$(".nav-item").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
+$$('[data-today-filter]').forEach((button) => button.addEventListener("click", () => {
+  state.todayFilter = button.dataset.todayFilter;
+  renderToday();
+}));
+$("#mobile-menu-button").addEventListener("click", openMobileMenu);
+$("#sidebar-close").addEventListener("click", closeMobileMenu);
+$("#sidebar-scrim").addEventListener("click", closeMobileMenu);
 $$("input[name=clientMode]").forEach((input) => input.addEventListener("change", syncClientMode));
 $("#order-client").addEventListener("change", syncTeamFromClient);
 $("#save-order-button").addEventListener("click", saveOrder);
 $("#logout-button").addEventListener("click", logout);
 $("#account-button").addEventListener("click", () => openPasswordDialog(false));
+$("#theme-toggle").addEventListener("click", toggleTheme);
 $("#password-save").addEventListener("click", savePassword);
 $("#password-dialog").addEventListener("cancel", (event) => {
   if (state.passwordForced) event.preventDefault();
