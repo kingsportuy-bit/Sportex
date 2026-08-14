@@ -250,3 +250,21 @@ DELTA define reglas y valida negocio.
   el chat y el compositor siguieron disponibles. Core `34/34` PASS.
 - Gate 3 continúa: faltan las acciones internas y la producción mínima del
   recorrido antes de preparar cualquier conexión remota.
+
+### 2026-08-14 — checkpoint Gate 3B cerrado
+
+- El Core incorpora `production.release`: `intake_pending -> production_ready`
+  con confirmación, versión, idempotencia, auditoría y outbox.
+- La acción `Entregar a producción` vive dentro de Detalles de WhatsApp. El
+  chat sigue disponible y la proyección cambia a `Listo para producción` con
+  próxima acción y registro de actividad.
+- La lista Pedidos refleja el mismo estado y el chip productivo fue corregido
+  para conservar contraste en modo oscuro.
+- PostgreSQL 16 aplicó `001/002/003/004`; rollback `004` conservó el pedido como
+  `intake_pending`, incrementó versión y restauró el constraint anterior.
+- Core `34/34` PASS. Browser local: creación desde seña, entrega a producción,
+  historial y listado final observados de punta a punta.
+- Deuda: JSON persiste la proyección y el Core local usa memoria. PostgreSQL
+  debe demostrar consistencia tras reinicio antes de captura real.
+- Gate 3 queda cerrado. El siguiente paso es preparar Gate 4 en lectura y sin
+  tocar Evolution, Supabase remoto, VPS, datos reales, mensajes ni deploy.

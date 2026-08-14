@@ -8,6 +8,7 @@ import type {
   IdempotencyRecord,
   Membership,
   Order,
+  OrderStatus,
   OutboxEvent,
 } from "../../domain/models.js";
 import type { CoreStore, CoreTransaction } from "../../ports/core-store.js";
@@ -80,7 +81,7 @@ function rowToOrder(row: Record<string, unknown>): Order {
     clientId: String(row.client_id),
     certifiedPaymentId: String(row.certified_payment_id),
     teamName: String(row.team_name),
-    status: "intake_pending",
+    status: String(row.status) as OrderStatus,
     quotedTotalCents: Number(row.quoted_total_cents),
     depositCents: Number(row.deposit_cents),
     balanceCents: Number(row.quoted_total_cents) - Number(row.deposit_cents),
@@ -247,6 +248,15 @@ class PostgresTransaction implements CoreTransaction {
     return row ? rowToOrder(row) : null;
   }
 
+  async findOrderById(id: string): Promise<Order | null> {
+    const result = await this.client.query(
+      `SELECT * FROM ${this.tables.orders} WHERE tenant_id = $1 AND id = $2`,
+      [this.tenantId, id],
+    );
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    return row ? rowToOrder(row) : null;
+  }
+
   async nextOrderSequence(): Promise<number> {
     const result = await this.client.query(
       `INSERT INTO ${this.tables.orderCounters} AS counter (tenant_id, last_value)
@@ -268,6 +278,18 @@ class PostgresTransaction implements CoreTransaction {
         order.teamName, order.status, order.quotedTotalCents, order.depositCents, order.currency,
         order.version, order.createdAt, order.updatedAt],
     );
+  }
+
+  async updateOrder(order: Order, expectedVersion: number): Promise<void> {
+    const result = await this.client.query(
+      `UPDATE ${this.tables.orders}
+       SET status = $3, version = $4, updated_at = $5
+       WHERE tenant_id = $1 AND id = $2 AND version = $6`,
+      [this.tenantId, order.id, order.status, order.version, order.updatedAt, expectedVersion],
+    );
+    if (result.rowCount !== 1) {
+      throw conflict("order_version_conflict", "Order version changed");
+    }
   }
 
   async listOrders(): Promise<Order[]> {

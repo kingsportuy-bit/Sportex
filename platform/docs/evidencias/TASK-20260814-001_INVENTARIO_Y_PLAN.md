@@ -131,3 +131,24 @@ datos reales, captura pasiva ni envío.
   referencias ficticias de la conversación.
 - Core `34/34` PASS y typecheck PASS.
 - No hubo webhook, conexión Evolution, dato real, outbound, deploy ni migración remota.
+
+## Checkpoint ejecutado — Gate 3B
+
+- Recorrido local observado:
+  `seña validada -> Cliente/Pago/Pedido -> Entregar a producción -> Listo para producción`.
+- El comando Core exige `production.release`, confirmación exacta, versión e
+  idempotencia; emite auditoría y outbox `order.production_released`.
+- La proyección comercial conserva `orderVersion`, actor y momento de entrega,
+  incrementa la versión y registra `PRODUCTION_RELEASED`.
+- Browser oscuro: Detalles permitió ejecutar la acción sin perder el chat; la
+  lista Pedidos mostró `Listo para producción` con contraste corregido.
+- PostgreSQL 16 efímero: migraciones `001/002/003/004` PASS; pedido de prueba
+  `production_ready:2`; rollback `004` conservó la fila como
+  `intake_pending:3` y rechazó volver a escribir el estado nuevo.
+- Core `34/34`, validación SQL y typecheck PASS.
+- Hallazgo no oculto: tras reiniciar solo la demo local, el JSON comercial puede
+  conservar la conversión mientras el Core en memoria se reinicia. Esto no
+  invalida el E2E de una misma ejecución, pero es una prueba obligatoria de
+  consistencia para el store PostgreSQL antes de conexión real.
+- No se accedió a Evolution, Supabase remoto, Meta, VPS, datos reales ni se
+  enviaron mensajes o ejecutaron migraciones remotas.

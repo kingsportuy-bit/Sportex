@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Continuar Gate 3: integrar acciones internas y produccion minima sobre la mesa local ya conectada al pipeline simulado."
+    "nextAction": "Preparar Gate 4 en lectura: inventario remoto exacto, seguridad, backup, migracion, rollback, observabilidad y kill switches; sin conectar ni escribir todavia."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_3A_COMPOSITOR_LOCAL_SIMULADO_PASS",
+    "status": "GATE_3B_PRODUCTION_HANDOFF_LOCAL_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_3B_ACCIONES_INTERNAS_Y_PRODUCCION_MINIMA"
+    "nextStage": "GATE_4_PREPARACION_REMOTA_READ_ONLY"
   },
   "nextCampaign": null,
   "decisions": [
@@ -81,18 +81,18 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "0ccd4dcd38504450cf06a8dddea0cdc29f4c80b6",
-    "workingTreeState": "TASK-20260803-005_WHATSAPP_LOCAL_ETAPAS_Y_DETALLE_IMPLEMENTADOS",
+    "headAtLastEvidence": "a18502dcae2f8c585f817ec2eb17e5d6770daf8b",
+    "workingTreeState": "TASK-20260814-001_GATE_3B_PRODUCTION_HANDOFF_LOCAL_VALIDATED",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_ENSAYADAS_LOCALMENTE_NO_REMOTAS",
+    "status": "MIGRACIONES_002_003_004_ENSAYADAS_LOCALMENTE_NO_REMOTAS",
     "lastVerifiedAt": "2026-08-14",
     "executed": [],
     "pending": [
-      "Revalidar namespace y ejecutar 20260814_002/003 solo después de inventario, backup, rollback y GO exacto de PILOTO_DELTA."
+      "Revalidar namespace y ejecutar 20260814_002/003/004 solo después de inventario, backup, rollback y GO exacto de PILOTO_DELTA."
     ],
-    "note": "20260814_002/003 agregan siete tablas comerciales y WhatsApp. Up/down con datos pasó en PostgreSQL 16 efímero; no se ejecutaron remotamente."
+    "note": "20260814_002/003 agregan siete tablas comerciales y WhatsApp; 20260814_004 habilita production_ready. Up/down con datos pasó en PostgreSQL 16 efímero; no se ejecutaron remotamente."
   },
   "tests": {
     "status": "PASS",
@@ -103,7 +103,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "note": "Gate 3A validado con Core 34/34 y browser: compositor local, outbox falso, transporte simulado, journal, proyeccion y detalle coexistente."
+    "note": "Gate 3B validado con Core 34/34, PostgreSQL 16 y browser oscuro: Pedido creado pasa a Listo para produccion con permiso, confirmacion, version, idempotencia, auditoria y outbox."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
@@ -149,11 +149,29 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Gate 3A conecta el compositor local al pipeline simulado y devuelve el mensaje a la misma conversacion sin outbound real.",
+    "summary": "Gate 3B cierra el recorrido local hasta Listo para produccion y ensaya migracion/rollback sin tocar sistemas remotos.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerro Gate 3B con el handoff Core-gobernado de Pedido creado a Listo para produccion, UI integrada y migracion 004 reversible.",
+      "documents": [
+        "core/src/application/core-service.ts",
+        "core/src/application/commercial-replay-service.ts",
+        "frontend/app.js",
+        "core/db/migrations/staging/20260814_004_production_release.up.sql",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -360,7 +378,7 @@
   "runtimeTruth": {
     "status": "VALIDADO_DESARROLLO_LOCAL",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Puesto WhatsApp observado en 127.0.0.1:8081; un mensaje manual ficticio recorrio outbox, transporte simulado, journal y proyeccion y aparecio en el hilo con Detalles abierto. No prueba runtime remoto."
+    "note": "Puesto local observado en 127.0.0.1:8081; una seña ficticia creo Cliente/Pago/Pedido y el operador lo entrego a produccion sin perder el chat. El listado reflejo Listo para produccion. No prueba runtime remoto."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -377,11 +395,12 @@
   "risks": [
     "El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
+    "Validar consistencia PostgreSQL tras reinicio antes del piloto.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.",
-    "Preparar la conexion continua solo despues de cerrar el recorrido local completo.",
+    "Preparar Gate 4: inventario, backup, migracion, rollback, observabilidad y kill switches.",
+    "Demostrar consistencia PostgreSQL tras reinicio antes de cualquier captura pasiva real.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

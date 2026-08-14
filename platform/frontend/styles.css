@@ -136,8 +136,10 @@ input:focus, select:focus, button:focus-visible { border-color: var(--blue); box
 .ledger-row:hover { background: white; }
 .ledger-row .primary { font-weight: 800; }
 .ledger-row .secondary { display: block; color: var(--muted); font-size: 11px; margin-top: 4px; }
-.status-chip { display: inline-flex; width: fit-content; align-items: center; gap: 7px; padding: 7px 9px; background: #e5e9df; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+.status-chip { display: inline-flex; width: fit-content; align-items: center; gap: 7px; padding: 7px 9px; background: #e5e9df; color: #172014; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
 .status-chip::before { content: ""; width: 7px; height: 7px; background: var(--blue); border-radius: 50%; }
+.status-chip--production_ready { background: var(--signal); color: #172014; }
+.status-chip--production_ready::before { background: #172014; }
 .empty-state { min-height: 220px; display: grid; grid-template-columns: auto 1fr auto; gap: 25px; align-items: center; padding: 36px; }
 .empty-number { color: #c4c7c0; font: 900 74px/1 "Arial Narrow", sans-serif; letter-spacing: -.06em; }
 .empty-state strong { font-size: 17px; }

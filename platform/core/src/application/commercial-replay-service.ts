@@ -8,6 +8,7 @@ import type {
   EvolutionReplayEvent,
   NormalizedConversationMessage,
   RecordCommercialFollowUpInput,
+  ReleaseCommercialOrderToProductionInput,
   UpdateCommercialNextActionInput,
   UpdateCommercialStageInput,
 } from "../domain/commercial-models.js";
@@ -324,6 +325,7 @@ export class CommercialReplayService {
         currency: quote.currency,
         convertedAt,
         convertedBy: context.actorId,
+        orderVersion: order.data.version,
       };
       const updated: CommercialWorkspaceItem = {
         ...current,
@@ -343,6 +345,73 @@ export class CommercialReplayService {
           correlationId: context.correlationId,
           evidenceMessageId: current.opportunity.evidenceMessageId,
           detail: `Pedido ${order.data.orderNumber} creado desde la seña validada.`,
+        }],
+      };
+      await transaction.save(updated);
+      return updated;
+    });
+  }
+
+  async releaseOrderToProduction(
+    context: ActorContext,
+    itemId: string,
+    input: ReleaseCommercialOrderToProductionInput,
+  ): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.manage");
+    if (!this.coreService) throw notFound("commercial_core_unavailable", "Commercial Core conversion is unavailable");
+
+    const snapshot = await this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      const conversion = item.opportunity.coreConversion;
+      if (!conversion) throw conflict("commercial_order_required", "The opportunity requires a linked order");
+      if (conversion.productionReleasedAt) return item;
+      this.requireVersion(item, input.expectedVersion);
+      return item;
+    });
+    const conversion = snapshot.opportunity.coreConversion;
+    if (!conversion || conversion.productionReleasedAt) return snapshot;
+
+    const released = await this.coreService.releaseOrderToProduction(
+      context,
+      conversion.orderId,
+      `commercial:${snapshot.opportunity.id}:production-release`,
+      {
+        expectedVersion: conversion.orderVersion ?? 1,
+        confirmation: input.confirmation,
+      },
+    );
+
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = await this.requiredItem(transaction, itemId);
+      const currentConversion = current.opportunity.coreConversion;
+      if (!currentConversion) throw conflict("commercial_order_required", "The opportunity requires a linked order");
+      if (currentConversion.productionReleasedAt) return current;
+      this.requireVersion(current, input.expectedVersion);
+      const releasedAt = this.clock().toISOString();
+      const updated: CommercialWorkspaceItem = {
+        ...current,
+        opportunity: {
+          ...current.opportunity,
+          coreConversion: {
+            ...currentConversion,
+            orderVersion: released.data.version,
+            productionReleasedAt: releasedAt,
+            productionReleasedBy: context.actorId,
+          },
+          nextAction: "Coordinar la primera etapa de producción",
+          nextActionDueAt: null,
+          nextActionStatus: "PENDIENTE",
+          version: current.opportunity.version + 1,
+          updatedAt: releasedAt,
+        },
+        activity: [...current.activity, {
+          type: "PRODUCTION_RELEASED",
+          occurredAt: releasedAt,
+          actorId: context.actorId,
+          correlationId: context.correlationId,
+          evidenceMessageId: current.opportunity.evidenceMessageId,
+          detail: `Pedido ${released.data.orderNumber} entregado a producción.`,
         }],
       };
       await transaction.save(updated);

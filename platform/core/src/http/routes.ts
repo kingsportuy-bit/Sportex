@@ -33,6 +33,15 @@ const createOrderSchema = z.object({
   currency: z.enum(["UYU", "USD"]),
 }).strict();
 
+const orderParamsSchema = z.object({
+  orderId: z.string().uuid(),
+}).strict();
+
+const releaseOrderToProductionSchema = z.object({
+  expectedVersion: z.number().int().positive(),
+  confirmation: z.literal("ENTREGAR_A_PRODUCCION"),
+}).strict();
+
 const evolutionReplaySchema = z.object({
   event: z.literal("messages.upsert"),
   instance: z.literal("LOCAL_FIXTURE"),
@@ -94,6 +103,11 @@ const convertCommercialOpportunitySchema = z.object({
   evidenceReference: z.string().trim().min(3).max(160),
   depositCents: z.number().int().positive().max(1_000_000_000),
   expectedVersion: expectedVersionSchema,
+}).strict();
+
+const releaseCommercialOrderToProductionSchema = z.object({
+  expectedVersion: expectedVersionSchema,
+  confirmation: z.literal("ENTREGAR_A_PRODUCCION"),
 }).strict();
 
 const resetCommercialDemoSchema = z.object({
@@ -188,6 +202,22 @@ export async function registerRoutes(
     return { data: orders, meta: { correlationId: context.correlationId } };
   });
 
+  app.post("/v1/orders/:orderId/release-to-production", async (request) => {
+    const context = await resolveContext(request);
+    const params = orderParamsSchema.parse(request.params);
+    const input = releaseOrderToProductionSchema.parse(request.body);
+    const result = await service.releaseOrderToProduction(
+      context,
+      params.orderId,
+      idempotencyKey(request),
+      input,
+    );
+    return {
+      data: result.data,
+      meta: { correlationId: context.correlationId, replayed: result.replayed },
+    };
+  });
+
   if (commercialService) {
     app.get("/v1/commercial/workspace", async (request) => {
       const context = await resolveContext(request);
@@ -241,6 +271,14 @@ export async function registerRoutes(
       const input = convertCommercialOpportunitySchema.parse(request.body);
       const item = await commercialService.convertValidatedOpportunity(context, params.itemId, input);
       return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+    });
+
+    app.post("/v1/local/commercial/workspace/:itemId/release-to-production", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = releaseCommercialOrderToProductionSchema.parse(request.body);
+      const item = await commercialService.releaseOrderToProduction(context, params.itemId, input);
+      return { data: item, meta: { correlationId: context.correlationId } };
     });
 
     app.post("/v1/local/commercial-demo/reset", async (request) => {

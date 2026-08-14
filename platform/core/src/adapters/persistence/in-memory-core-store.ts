@@ -96,6 +96,12 @@ class MemoryTransaction implements CoreTransaction {
     ) ?? null;
   }
 
+  async findOrderById(id: string): Promise<Order | null> {
+    return this.state.orders.find(
+      (order) => order.tenantId === this.tenantId && order.id === id,
+    ) ?? null;
+  }
+
   async nextOrderSequence(): Promise<number> {
     const next = (this.state.orderCounters[this.tenantId] ?? 0) + 1;
     this.state.orderCounters[this.tenantId] = next;
@@ -104,6 +110,15 @@ class MemoryTransaction implements CoreTransaction {
 
   async createOrder(order: Order): Promise<void> {
     this.state.orders.push(order);
+  }
+
+  async updateOrder(order: Order, expectedVersion: number): Promise<void> {
+    const index = this.state.orders.findIndex(
+      (candidate) => candidate.tenantId === this.tenantId && candidate.id === order.id,
+    );
+    if (index === -1) throw new Error("order_not_found");
+    if (this.state.orders[index]?.version !== expectedVersion) throw new Error("order_version_conflict");
+    this.state.orders[index] = structuredClone(order);
   }
 
   async listOrders(): Promise<Order[]> {

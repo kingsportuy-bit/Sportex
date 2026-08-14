@@ -50,13 +50,18 @@ Proceso Delta documentado. La UI local de `TASK-20260803-005` demuestra que una
 única plantilla puede alimentar pestañas, etiquetas y filtros de WhatsApp; el
 motor, versionado y configuración persistida por empresa siguen pendientes.
 
+`TASK-20260814-001` agrega un primer límite operativo real y acotado:
+`Pedido creado -> Listo para producción`. El Core exige permiso, confirmación,
+versión e idempotencia y deja auditoría/outbox. Este handoff no reemplaza el
+motor configurable ni inventa etapas posteriores.
+
 ## Rollback
 
 Restaurar plantilla para pedidos futuros o migrar instancia con plan explícito.
 
 ## Estado
 
-EN_DEFINICION.
+HANDOFF_MINIMO_LOCAL_VALIDADO; MOTOR_CONFIGURABLE_EN_DEFINICION.
 
 ## Cierre documental
 

@@ -44,3 +44,9 @@ dentro del panel de conversación sin bloquear el compositor. En desarrollo
 local las etapas provienen de una
 plantilla única de fixtures; la superficie no decide transiciones ni demuestra
 todavía configuración persistida por empresa.
+
+`TASK-20260814-001` conecta Detalles con el handoff mínimo del Pedido. Antes de
+la acción muestra `Pedido creado` y exige `Entregar a producción`; después
+muestra `Listo para producción`, el momento y la próxima acción productiva. La
+lista de Pedidos usa el mismo estado del Core y conserva contraste en tema
+claro/oscuro. El frontend no puede autorizar ni decidir la transición.

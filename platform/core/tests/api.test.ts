@@ -21,7 +21,7 @@ function headers(tenantId = tenantA, idempotency = "client-001"): Record<string,
   return {
     "x-sportex-tenant-id": tenantId,
     "x-sportex-actor-id": actor,
-    "x-sportex-capabilities": "clients.create,clients.read,payments.certify,orders.create,orders.read",
+    "x-sportex-capabilities": "clients.create,clients.read,payments.certify,orders.create,orders.read,production.release",
     "idempotency-key": idempotency,
     "x-correlation-id": "corr-api-test",
   };
@@ -122,7 +122,18 @@ test("API completes the client, payment and order vertical", async () => {
   });
   assert.equal(orderResponse.statusCode, 201);
   assert.match(orderResponse.json().data.orderNumber, /^SPX-\d{4}-00001$/u);
+  const releaseResponse = await app.inject({
+    method: "POST",
+    url: `/v1/orders/${orderResponse.json().data.id}/release-to-production`,
+    headers: headers(tenantA, "vertical-production-release"),
+    payload: {
+      expectedVersion: orderResponse.json().data.version,
+      confirmation: "ENTREGAR_A_PRODUCCION",
+    },
+  });
+  assert.equal(releaseResponse.statusCode, 200);
+  assert.equal(releaseResponse.json().data.status, "production_ready");
   assert.equal(store.snapshot().orders.length, 1);
-  assert.equal(store.snapshot().outboxEvents.length, 1);
+  assert.equal(store.snapshot().outboxEvents.length, 2);
   await app.close();
 });

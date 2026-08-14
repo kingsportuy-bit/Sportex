@@ -101,14 +101,16 @@ La IA no crea esta entidad. La primera versión permite certificación manual co
 - `clientId`;
 - `certifiedPaymentId` único por tenant;
 - `teamName`;
-- `status`: inicialmente `intake_pending`;
+- `status`: `intake_pending` o `production_ready`;
 - `quotedTotalCents`;
 - `depositCents` tomado de la seña;
 - `currency`;
 - `version`;
 - timestamps.
 
-Una seña certificada crea como máximo un pedido.
+Una seña certificada crea como máximo un pedido. `production_ready` significa
+que el pedido fue entregado al proceso productivo mínimo; no implica que exista
+todavía un motor completo de etapas de fábrica.
 
 ### IdempotencyRecord
 
@@ -156,11 +158,21 @@ Registra eventos autorizados pendientes. En esta vertical se publica `order.crea
 - crea pedido, auditoría y outbox en una transacción;
 - idempotente.
 
+### `ReleaseOrderToProduction`
+
+- capacidad: `production.release`;
+- exige confirmación exacta `ENTREGAR_A_PRODUCCION`;
+- exige la versión vigente del Pedido;
+- cambia únicamente `intake_pending -> production_ready`;
+- registra auditoría y outbox en la misma transacción;
+- es idempotente y no crea una segunda entrega.
+
 ## Eventos
 
 - `client.created` para auditoría interna;
 - `payment.certified` para auditoría interna;
 - `order.created` en outbox.
+- `order.production_released` en auditoría y outbox.
 
 ## Vertical comercial local
 
@@ -199,7 +211,8 @@ Registra eventos autorizados pendientes. En esta vertical se publica `order.crea
 
 La primera vertical no extrae producto mediante IA ni ejecuta seguimientos o
 mensajes reales. `TASK-20260814-001` incorporó la conversión gobernada de una
-oportunidad con seña validada a Cliente, Pago certificado y Pedido único.
+oportunidad con seña validada a Cliente, Pago certificado y Pedido único, y el
+traspaso explícito de ese Pedido a producción mínima.
 
 ## Transporte WhatsApp durable local
 

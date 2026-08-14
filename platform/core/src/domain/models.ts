@@ -6,7 +6,10 @@ export type Capability =
   | "commercial.manage"
   | "payments.certify"
   | "orders.create"
-  | "orders.read";
+  | "orders.read"
+  | "production.release";
+
+export type OrderStatus = "intake_pending" | "production_ready";
 
 export interface ActorContext {
   tenantId: string;
@@ -60,7 +63,7 @@ export interface Order {
   clientId: string;
   certifiedPaymentId: string;
   teamName: string;
-  status: "intake_pending";
+  status: OrderStatus;
   quotedTotalCents: number;
   depositCents: number;
   balanceCents: number;

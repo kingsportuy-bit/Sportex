@@ -15,6 +15,7 @@ const allCapabilities: Capability[] = [
   "payments.certify",
   "orders.create",
   "orders.read",
+  "production.release",
 ];
 
 function context(tenantId: string, actorId: string, capabilities = allCapabilities): ActorContext {
@@ -122,6 +123,21 @@ test("certified payment creates one order with audit and outbox", async () => {
   assert.equal(store.snapshot().outboxEvents.length, 1);
   assert.equal(store.snapshot().outboxEvents[0]?.eventType, "order.created");
   assert.equal(store.snapshot().auditEvents.length, 3);
+
+  const released = await service.releaseOrderToProduction(actor, created.data.id, "release-order", {
+    expectedVersion: created.data.version,
+    confirmation: "ENTREGAR_A_PRODUCCION",
+  });
+  const releasedReplay = await service.releaseOrderToProduction(actor, created.data.id, "release-order", {
+    expectedVersion: created.data.version,
+    confirmation: "ENTREGAR_A_PRODUCCION",
+  });
+  assert.equal(released.data.status, "production_ready");
+  assert.equal(released.data.version, 2);
+  assert.equal(releasedReplay.replayed, true);
+  assert.equal(store.snapshot().outboxEvents.length, 2);
+  assert.equal(store.snapshot().outboxEvents[1]?.eventType, "order.production_released");
+  assert.equal(store.snapshot().auditEvents.length, 4);
 
   await assert.rejects(
     service.createOrderFromCertifiedPayment(actor, "another-order-key", {

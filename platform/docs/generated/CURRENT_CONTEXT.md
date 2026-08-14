@@ -14,15 +14,15 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 46769/60000 caracteres.
+- Presupuesto potencial: 48541/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
 - Objetivo: Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
-- Riesgos: El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Los snapshots remotos no autorizan escrituras.
-- Proxima accion: Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.
+- Riesgos: El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Validar consistencia PostgreSQL tras reinicio antes del piloto. | Los snapshots remotos no autorizan escrituras.
+- Proxima accion: Preparar Gate 4: inventario, backup, migracion, rollback, observabilidad y kill switches.
 
 ## Regla de uso
 

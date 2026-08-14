@@ -171,6 +171,9 @@ export interface CommercialCoreConversion {
   currency: "UYU";
   convertedAt: string;
   convertedBy: string;
+  orderVersion?: number;
+  productionReleasedAt?: string;
+  productionReleasedBy?: string;
 }
 
 export interface CommercialStageHistoryEntry {
@@ -221,7 +224,8 @@ export interface CommercialActivity {
     | "STAGE_CHANGED"
     | "NEXT_ACTION_UPDATED"
     | "FOLLOW_UP_RECORDED"
-    | "ORDER_CREATED";
+    | "ORDER_CREATED"
+    | "PRODUCTION_RELEASED";
   occurredAt: string;
   actorId: string;
   correlationId: string;
@@ -270,4 +274,9 @@ export interface ConvertCommercialOpportunityInput {
   evidenceReference: string;
   depositCents: number;
   expectedVersion: number;
+}
+
+export interface ReleaseCommercialOrderToProductionInput {
+  expectedVersion: number;
+  confirmation: "ENTREGAR_A_PRODUCCION";
 }

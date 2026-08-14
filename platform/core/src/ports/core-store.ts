@@ -25,8 +25,10 @@ export interface CoreTransaction {
   createPayment(payment: CertifiedPayment): Promise<void>;
 
   findOrderByPaymentId(paymentId: string): Promise<Order | null>;
+  findOrderById(id: string): Promise<Order | null>;
   nextOrderSequence(): Promise<number>;
   createOrder(order: Order): Promise<void>;
+  updateOrder(order: Order, expectedVersion: number): Promise<void>;
   listOrders(): Promise<Order[]>;
 
   appendAudit(event: AuditEvent): Promise<void>;

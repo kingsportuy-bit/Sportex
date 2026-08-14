@@ -497,7 +497,7 @@ test("persistent CRM API edits, restarts and restores only fictional fixtures", 
   const config: SportexConfig = { ...localConfig, commercialDemoFile: file };
   const managerHeaders = {
     ...headers(),
-    "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage,clients.create,clients.read,payments.certify,orders.create,orders.read",
+    "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage,clients.create,clients.read,payments.certify,orders.create,orders.read,production.release",
   };
   try {
     const firstApp = await buildServer({ config, store: new InMemoryCoreStore(), logger: false });
@@ -545,9 +545,22 @@ test("persistent CRM API edits, restarts and restores only fictional fixtures", 
     });
     assert.equal(converted.statusCode, 201);
     assert.match(converted.json().data.opportunity.coreConversion.orderNumber, /^SPX-\d{4}-/u);
+    const released = await secondApp.inject({
+      method: "POST",
+      url: `/v1/local/commercial/workspace/${convertible.id}/release-to-production`,
+      headers: managerHeaders,
+      payload: {
+        expectedVersion: converted.json().data.opportunity.version,
+        confirmation: "ENTREGAR_A_PRODUCCION",
+      },
+    });
+    assert.equal(released.statusCode, 200);
+    assert.ok(released.json().data.opportunity.coreConversion.productionReleasedAt);
+    assert.equal(released.json().data.opportunity.nextAction, "Coordinar la primera etapa de producción");
     const orders = await secondApp.inject({ method: "GET", url: "/v1/orders", headers: managerHeaders });
     const clients = await secondApp.inject({ method: "GET", url: "/v1/clients", headers: managerHeaders });
     assert.equal(orders.json().data.length, 1);
+    assert.equal(orders.json().data[0].status, "production_ready");
     assert.equal(clients.json().data.length, 1);
     await secondApp.close();
   } finally {

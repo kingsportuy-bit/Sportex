@@ -40,6 +40,11 @@ export interface CreateOrderInput {
   currency: Currency;
 }
 
+export interface ReleaseOrderToProductionInput {
+  expectedVersion: number;
+  confirmation: "ENTREGAR_A_PRODUCCION";
+}
+
 type Clock = () => Date;
 type IdFactory = () => string;
 
@@ -211,6 +216,61 @@ export class CoreService {
   async listOrders(context: ActorContext): Promise<Order[]> {
     requireCapability(context, "orders.read");
     return this.store.transaction(context.tenantId, (transaction) => transaction.listOrders());
+  }
+
+  async releaseOrderToProduction(
+    context: ActorContext,
+    orderId: string,
+    idempotencyKey: string,
+    input: ReleaseOrderToProductionInput,
+  ): Promise<CommandResult<Order>> {
+    requireCapability(context, "production.release");
+    if (input.confirmation !== "ENTREGAR_A_PRODUCCION") {
+      throw new AppError("production_release_confirmation_required", 400, "Exact production release confirmation is required");
+    }
+    return this.idempotent(context, "orders.release_to_production", idempotencyKey, input, async (transaction, now) => {
+      const current = await transaction.findOrderById(orderId);
+      if (!current) throw notFound("order_not_found", "Order not found");
+      if (current.status === "production_ready") return current;
+      if (current.version !== input.expectedVersion) {
+        throw conflict("order_version_conflict", "Order version changed", {
+          expectedVersion: input.expectedVersion,
+          currentVersion: current.version,
+        });
+      }
+      const updated: Order = {
+        ...current,
+        status: "production_ready",
+        version: current.version + 1,
+        updatedAt: now,
+      };
+      await transaction.updateOrder(updated, current.version);
+      await transaction.appendAudit(
+        this.audit(context, "order.production_released", "order", updated.id, {
+          orderNumber: updated.orderNumber,
+          previousStatus: current.status,
+          status: updated.status,
+        }, now),
+      );
+      await transaction.enqueueOutbox({
+        id: this.idFactory(),
+        tenantId: context.tenantId,
+        eventType: "order.production_released",
+        aggregateType: "order",
+        aggregateId: updated.id,
+        payload: {
+          orderId: updated.id,
+          orderNumber: updated.orderNumber,
+          status: updated.status,
+        },
+        correlationId: context.correlationId,
+        status: "pending",
+        attempts: 0,
+        availableAt: now,
+        createdAt: now,
+      });
+      return updated;
+    });
   }
 
   private async idempotent<T>(

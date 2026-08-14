@@ -83,6 +83,9 @@ const messages = {
   commercial_deposit_not_validated: "La seña debe estar validada antes de crear el pedido.",
   commercial_order_data_incomplete: "Faltan la cotización o el nombre del equipo para crear el pedido.",
   commercial_conversion_conflict: "Esta oportunidad ya fue convertida con otros datos de pago.",
+  commercial_order_required: "Primero hay que crear y vincular el pedido.",
+  order_version_conflict: "El pedido cambió en otra acción. Recargamos su estado más reciente.",
+  production_release_confirmation_required: "Confirmá la entrega antes de continuar.",
 };
 
 const localIdentity = {
@@ -97,7 +100,13 @@ const localIdentity = {
     "payments.certify",
     "orders.create",
     "orders.read",
+    "production.release",
   ],
+};
+
+const orderStatusLabels = {
+  intake_pending: "Ingreso pendiente",
+  production_ready: "Listo para producción",
 };
 
 function friendlyError(error) {
@@ -275,8 +284,8 @@ function renderOrders() {
 
     const statusCell = document.createElement("span");
     const chip = document.createElement("i");
-    chip.className = "status-chip";
-    chip.textContent = "Ingreso pendiente";
+    chip.className = `status-chip status-chip--${order.status}`;
+    chip.textContent = orderStatusLabels[order.status] ?? order.status;
     statusCell.append(chip);
 
     row.append(
@@ -830,14 +839,31 @@ function renderOrderConversion(item) {
   const card = detailCard("PEDIDO / CORE", item.opportunity.coreConversion ? "Pedido vinculado" : "Crear pedido");
   if (item.opportunity.coreConversion) {
     const conversion = item.opportunity.coreConversion;
+    const productionReleased = Boolean(conversion.productionReleasedAt);
     const grid = element("div", "brief-grid");
     grid.append(
       fact("Pedido", conversion.orderNumber),
       fact("Seña", money(conversion.depositCents, conversion.currency)),
       fact("Total", money(conversion.quotedTotalCents, conversion.currency)),
-      fact("Estado", "Listo para preparar producción"),
+      fact("Estado", productionReleased ? "Listo para producción" : "Pedido creado"),
     );
     card.append(grid);
+    if (!productionReleased) {
+      const release = element("button", "button button--primary button--full", "Entregar a producción");
+      release.type = "button";
+      const error = element("p", "form-error");
+      error.setAttribute("role", "alert");
+      release.addEventListener("click", () => {
+        void releaseCommercialToProduction(item, release, error);
+      });
+      card.append(
+        element("p", "command-help", "Crea una entrega interna trazable. No envía mensajes ni cambia etapas posteriores."),
+        error,
+        release,
+      );
+    } else {
+      card.append(element("p", "command-help", `Entregado ${shortDateTime(conversion.productionReleasedAt)}. La primera etapa productiva se definirá en el módulo Procesos.`));
+    }
     return card;
   }
 
@@ -889,6 +915,29 @@ async function convertCommercialToOrder(item, evidenceReference, amountPesos, bu
     state.whatsappDetailsOpen = true;
     renderWhatsApp();
     toast("Cliente, seña y pedido vinculados.");
+  } catch (error) {
+    errorNode.textContent = friendlyError(error);
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
+async function releaseCommercialToProduction(item, button, errorNode) {
+  errorNode.textContent = "";
+  setButtonBusy(button, true, "Entregando…");
+  try {
+    await api(`/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/release-to-production`, {
+      method: "POST",
+      body: JSON.stringify({
+        expectedVersion: item.opportunity.version,
+        confirmation: "ENTREGAR_A_PRODUCCION",
+      }),
+    });
+    await loadData();
+    state.selectedCommercialId = item.id;
+    state.whatsappDetailsOpen = true;
+    renderWhatsApp();
+    toast("Pedido entregado a producción.");
   } catch (error) {
     errorNode.textContent = friendlyError(error);
   } finally {

@@ -48,7 +48,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_ENSAYADAS_LOCALMENTE_NO_REMOTAS`; ejecutadas 0; pendientes 1.
+- Migraciones: `MIGRACIONES_002_003_004_ENSAYADAS_LOCALMENTE_NO_REMOTAS`; ejecutadas 0; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
 - Despliegues: `SIN_CAMBIOS_EN_ESTA_TAREA`; registros 0.
 - Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_ACCEDIDA_EN_ESTA_TAREA` | Evolution API=`NO_ACCEDIDA_EN_ESTA_TAREA` | VPS / runtime=`NO_ACCEDIDA_EN_ESTA_TAREA`
@@ -59,12 +59,13 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Gate 3A conecta el compositor local al pipeline simulado y devuelve el mensaje a la misma conversacion sin outbound real.
+- Gate 3B cierra el recorrido local hasta Listo para produccion y ensaya migracion/rollback sin tocar sistemas remotos.
 
 ## Riesgos
 
 - El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
+- Validar consistencia PostgreSQL tras reinicio antes del piloto.
 - Los snapshots remotos no autorizan escrituras.
 
 ## Bloqueos
@@ -75,6 +76,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.
-- Preparar la conexion continua solo despues de cerrar el recorrido local completo.
+- Preparar Gate 4: inventario, backup, migracion, rollback, observabilidad y kill switches.
+- Demostrar consistencia PostgreSQL tras reinicio antes de cualquier captura pasiva real.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

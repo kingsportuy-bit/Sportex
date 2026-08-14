@@ -14,6 +14,7 @@ const capabilitySchema = z.enum([
   "payments.certify",
   "orders.create",
   "orders.read",
+  "production.release",
 ]);
 
 const uuidSchema = z.string().uuid();

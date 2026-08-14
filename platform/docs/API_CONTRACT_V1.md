@@ -156,6 +156,22 @@ La respuesta incluye `balanceCents` calculado por el Core.
 
 Capacidad: `orders.read`. Devuelve solamente pedidos del tenant resuelto por identidad.
 
+### `POST /v1/orders/:orderId/release-to-production`
+
+Capacidad: `production.release`. Requiere `Idempotency-Key` y el body:
+
+```json
+{
+  "expectedVersion": 1,
+  "confirmation": "ENTREGAR_A_PRODUCCION"
+}
+```
+
+El Core valida tenant, permiso, confirmación exacta y versión. La transición
+permitida en este corte es `intake_pending -> production_ready`; genera
+auditoría y outbox `order.production_released`. Un reintento idempotente no
+duplica la transición ni los eventos.
+
 ## Códigos de error iniciales
 
 - `authentication_required`;
@@ -176,6 +192,9 @@ Capacidad: `orders.read`. Devuelve solamente pedidos del tenant resuelto por ide
 - `payment_client_mismatch`;
 - `currency_mismatch`;
 - `quoted_total_below_deposit`;
+- `order_not_found`;
+- `order_version_conflict`;
+- `production_release_confirmation_required`;
 - `not_found`;
 - `internal_error`.
 
@@ -186,6 +205,7 @@ Capacidad: `orders.read`. Devuelve solamente pedidos del tenant resuelto por ide
 - `PATCH /v1/local/commercial/workspace/:itemId/stage`: aplica una transicion permitida entre `NUEVO`, `EN_CALIFICACION`, `COTIZADO`, `EN_SEGUIMIENTO`, `PERDIDO` y `SENA_VALIDADA`.
 - `PATCH /v1/local/commercial/workspace/:itemId/next-action`: edita texto y fecha de proxima accion.
 - `POST /v1/local/commercial/workspace/:itemId/follow-ups`: registra una nota interna; no crea un mensaje ni efecto externo.
+- `POST /v1/local/commercial/workspace/:itemId/release-to-production`: exige `production.release`, `expectedVersion`, `Idempotency-Key` y `confirmation=ENTREGAR_A_PRODUCCION`; actualiza el Pedido canónico y su proyección local.
 - `POST /v1/local/commercial-demo/reset`: exige `confirmation=RESTAURAR_DATOS_FICTICIOS` y repone los 18 fixtures del tenant.
 
 `GET /v1/public-config` incluye `localCommercialPersistenceEnabled`. El JSON local no es una API de datos reales ni persistencia candidata para piloto.

@@ -15,6 +15,8 @@ const expectedFiles = [
   "20260814_002_commercial_workspace.down.sql",
   "20260814_003_whatsapp_transport.up.sql",
   "20260814_003_whatsapp_transport.down.sql",
+  "20260814_004_production_release.up.sql",
+  "20260814_004_production_release.down.sql",
 ];
 for (const name of expectedFiles) {
   if (!migrationFiles.includes(name)) failures.push(`missing db/migrations/staging/${name}`);
