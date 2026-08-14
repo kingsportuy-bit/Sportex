@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Promover el hotfix d871d2e de receipts con GO exacto, reactivar MESSAGES_UPDATE y decidir el dominio de acceso a la interfaz."
+    "nextAction": "Promover f6a9277 para cortar reintentos de eventos fuera de alcance y observar captura estable."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_PASSIVE_UPSERT_ACTIVE_RECEIPTS_HOTFIX_PENDING",
+    "status": "GATE_5_REAL_CAPTURE_ACTIVE_UNSUPPORTED_EVENT_FIX_PENDING",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_5_RECEIPTS_HOTFIX_AND_PHYSICAL_INBOUND"
+    "nextStage": "GATE_5_STABLE_CAPTURE_AND_UI_DOMAIN"
   },
   "nextCampaign": null,
   "decisions": [
@@ -81,7 +81,7 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
+    "headAtLastEvidence": "f6a92770b2539975216e81f96fcffc00b4afcb03",
     "workingTreeState": "TASK-20260814-001_GATE_5_DOCS_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
@@ -101,21 +101,21 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "note": "Hotfix receipts validado localmente con Core 42/42; runtime 34c9664 sano con MESSAGES_UPSERT activo y outbound apagado."
+    "note": "Runtime d871d2e captura upserts y receipts; f6a9277 paso 43/43 para exclusiones no reintentables."
   },
   "deployments": {
     "status": "PILOTO_DELTA_34C9664_DEPLOYED_PASSIVE_UPSERT_ONLY",
     "lastVerifiedAt": "2026-08-14",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb"],
-    "note": "sportex_staging_core 1/1; image ID 79ed9f...; health/readiness PASS; outbound false; MESSAGES_UPDATE contenido hasta hotfix."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487"],
+    "note": "sportex_staging_core 1/1 en d871d2e; upserts/receipts activos, captura real y outbound false."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_HOTFIX_D871D2E_VERIFICADO",
+      "status": "REMOTE_CANDIDATE_F6A9277_VERIFIED",
       "lastVerifiedAt": "2026-08-03",
       "writeAuthorized": true,
-      "note": "Rama publicada hasta d871d2e; el runtime autorizado fue construido desde 34c9664."
+      "note": "Rama publicada hasta f6a9277; runtime actual d871d2e."
     },
     {
       "name": "Supabase",
@@ -126,17 +126,17 @@
     },
     {
       "name": "Evolution API",
-      "status": "DELTA_OPEN_WEBHOOK_UPSERT_ACTIVE_OUTBOUND_OFF",
+      "status": "DELTA_OPEN_UPSERT_UPDATE_ACTIVE_OUTBOUND_OFF",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "Webhook privado autenticado activo para MESSAGES_UPSERT; MESSAGES_UPDATE espera hotfix; cero mensajes enviados por SPORTEX."
+      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; captura real presente; cero mensajes enviados por SPORTEX."
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_34C9664_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_D871D2E_HEALTHY",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 en 34c9664, red privada Evolution y rollback ea02fc0 disponible; legado sigue 0/1."
+      "note": "sportex_staging_core 1/1 en d871d2e, red privada Evolution y rollback disponible."
     }
   ],
   "sensitiveData": {
@@ -147,7 +147,7 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "summary": "Gate 5 desplegado con MESSAGES_UPSERT activo y outbound apagado; hotfix receipts d871d2e pendiente de GO.",
+    "summary": "Captura real activa en d871d2e; candidato f6a9277 evita reintentos de eventos fuera de alcance.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
@@ -404,9 +404,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_PASSIVE_UPSERT_ACTIVE_RECEIPTS_HOTFIX_PENDING",
+    "status": "PILOTO_DELTA_REAL_CAPTURE_ACTIVE_F6A9277_PENDING",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Runtime 34c9664 sano y conectado a DELTA por red privada; inbound upsert activo, outbound apagado; hotfix receipts d871d2e no desplegado."
+    "note": "Runtime d871d2e sano: 2 contactos, 2 conversaciones y 7 mensajes reales; outbound apagado."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -422,12 +422,12 @@
   ],
   "risks": [
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
-    "MESSAGES_UPDATE espera d871d2e.",
+    "Eventos no textuales esperan f6a9277 para responder 422.",
     "La interfaz no tiene DNS aprobado.",
     "Falta prueba fisica posterior al hotfix."
   ],
   "nextActions": [
-    "Pedir GO para d871d2e y reactivar MESSAGES_UPDATE.",
+    "Pedir GO para f6a9277.",
     "Decidir dominio de la interfaz.",
     "Luego pedir GO separado para outbound canary.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."

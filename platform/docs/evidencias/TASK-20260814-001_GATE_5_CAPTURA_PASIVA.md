@@ -38,13 +38,20 @@ sin salida, cruce de tenant ni corrupcion.
 
 El webhook quedo temporalmente suscrito solo a `MESSAGES_UPSERT`. La captura
 entrante permanece activa y outbound apagado. El fix focal publicado en
-`d871d2eea627d6a65b7721feaa6a53d0c1c0e487` paso Core `42/42`, TypeScript,
-build y SQL, pero aun no fue desplegado porque requiere GO ligado a ese SHA.
+`d871d2eea627d6a65b7721feaa6a53d0c1c0e487` fue desplegado con imagen ID
+`sha256:527cd16d6d20c9593a97a30ce7f03ef85551ff323cc9b7900a82053afd0d1a0d`.
+`MESSAGES_UPDATE` quedo activo y el receipt plano paso `202 -> 200 duplicate`.
+
+La observacion capturo 2 contactos, 2 conversaciones y 7 mensajes reales: 4
+entrantes y 3 salientes desde fuera de SPORTEX. Outbox permanece en cero.
+Eventos no textuales del primer corte reciben hoy `500` y Evolution los
+reintenta. El candidato `f6a92770b2539975216e81f96fcffc00b4afcb03`
+los rechaza explicitamente con `422`, sin inventar soporte ni crear chats, y
+paso `43/43`, TypeScript, build y SQL.
 
 ## Pendientes reales
 
-- Promover `d871d2eea627d6a65b7721feaa6a53d0c1c0e487` y reactivar
-  `MESSAGES_UPDATE`.
+- Promover `f6a92770b2539975216e81f96fcffc00b4afcb03`.
 - `sportex-staging.codexa.uy` no tiene DNS. El Core funciona por red interna;
   no se usara `sportex.codexa.uy` legado sin decision explicita.
 - El build reporta 4 vulnerabilidades altas de dependencias.

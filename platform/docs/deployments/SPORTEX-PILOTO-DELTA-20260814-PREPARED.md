@@ -1,6 +1,6 @@
 # SPORTEX PILOTO_DELTA — paquete preparado
 
-- Estado: `DEPLOYED_PASSIVE_UPSERT_ONLY_HOTFIX_PENDING`
+- Estado: `DEPLOYED_RECEIPTS_ACTIVE_UNSUPPORTED_EVENT_FIX_PENDING`
 - Fecha: 2026-08-14
 - Task: `TASK-20260814-001`
 - Commit de runtime: `34c9664607e9e0483f5a1dfb6164c7b572b676cb`
@@ -12,7 +12,8 @@
 - Outbound actual: `false`
 - Imagen desplegada: `sportex-staging:34c9664607e9e048`
 - Image ID: `sha256:79ed9f869499780dc6ff864a9e02e14367ef8a904a86657c9a5107b30b7dba3a`
-- Hotfix pendiente: `d871d2eea627d6a65b7721feaa6a53d0c1c0e487`
+- Hotfix desplegado: `d871d2eea627d6a65b7721feaa6a53d0c1c0e487`
+- Siguiente candidato: `f6a92770b2539975216e81f96fcffc00b4afcb03`
 
 ## Orden exacto propuesto
 

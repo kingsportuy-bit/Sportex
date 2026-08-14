@@ -155,6 +155,16 @@ DELTA define reglas y valida negocio.
 
 ## registro_de_avances
 
+### 2026-08-14 - Receipts activos y captura real observada
+
+- `d871d2e` se desplego, `MESSAGES_UPDATE` se reactivo y el receipt plano paso
+  `202 -> 200 duplicate` sin crear burbuja ni outbox.
+- Se capturaron 2 contactos, 2 conversaciones y 7 mensajes reales; outbound
+  SPORTEX sigue apagado.
+- Tres eventos no textuales provocaron reintentos `500`. El candidato
+  `f6a9277` responde `422` para exclusiones conocidas y paso `43/43`, build,
+  tipos y SQL. Espera GO exacto.
+
 ### 2026-08-14 - Gate 5 captura pasiva ejecutado y contenido
 
 - `34c9664` se desplego despues de backup/restore, migraciones `002/003/004`,

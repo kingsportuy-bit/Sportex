@@ -14,15 +14,15 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 50617/60000 caracteres.
+- Presupuesto potencial: 51079/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
 - Objetivo: Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
-- Riesgos: 4 vulnerabilidades altas siguen en TASK-20260801-002. | MESSAGES_UPDATE espera d871d2e. | La interfaz no tiene DNS aprobado. | Falta prueba fisica posterior al hotfix.
-- Proxima accion: Pedir GO para d871d2e y reactivar MESSAGES_UPDATE.
+- Riesgos: 4 vulnerabilidades altas siguen en TASK-20260801-002. | Eventos no textuales esperan f6a9277 para responder 422. | La interfaz no tiene DNS aprobado. | Falta prueba fisica posterior al hotfix.
+- Proxima accion: Pedir GO para f6a9277.
 
 ## Regla de uso
 
