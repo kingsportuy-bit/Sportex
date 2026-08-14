@@ -77,6 +77,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Versionar Gate 4 y su manifiesto.
 - Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.
+- Despues del PASS pasivo, pedir GO separado para un envio manual canary.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

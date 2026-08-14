@@ -14,7 +14,7 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 50007/60000 caracteres.
+- Presupuesto potencial: 50085/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
@@ -22,7 +22,7 @@ Actualizado: 2026-08-14.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
 - Riesgos: Gate 4 sigue local y sin GO remoto. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Validar consistencia PostgreSQL tras reinicio antes del piloto. | No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones. | Los snapshots remotos no autorizan escrituras.
-- Proxima accion: Versionar Gate 4 y su manifiesto.
+- Proxima accion: Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.
 
 ## Regla de uso
 
