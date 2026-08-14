@@ -17,6 +17,10 @@
 - Candidato desplegado: `f6a92770b2539975216e81f96fcffc00b4afcb03`
 - Imagen desplegada final: `sportex-staging:f6a92770b2539975`
 - Image ID final: `sha256:6663af0f404b7481612dd42950d85336259573cf6b62fba3e7866602543e59f7`
+- Candidato de continuidad desplegado: `1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45`
+- Imagen de continuidad: `sportex-staging:1cc2c96fe8f8e0f`
+- Image ID de continuidad: `sha256:f114b0f75d84c5b67b714a457bd935eb4faae806d554243e600c25a1d8f16846`
+- Rollback inmediato de este corte: `sportex-staging:f6a92770b2539975`
 
 ## Orden exacto propuesto
 

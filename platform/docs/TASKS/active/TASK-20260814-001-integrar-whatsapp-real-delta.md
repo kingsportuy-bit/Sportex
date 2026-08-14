@@ -119,6 +119,7 @@ DELTA define reglas y valida negocio.
 
 - `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`;
 - `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md`;
+- `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`;
 - evidencia focal nueva por cada gate;
 - manifiesto, migración, rollback y observación cuando corresponda.
 
@@ -358,3 +359,22 @@ DELTA define reglas y valida negocio.
 - El corte funcional fue versionado y publicado como
   `1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45`. El runtime publico permanece en
   `f6a9277`; el unico gate pendiente es el GO exacto de despliegue.
+
+### 2026-08-14 — continuidad desplegada en el piloto productivo
+
+- Fito autorizo desplegar para probar directamente en el piloto productivo.
+  El guard resolvio el commit exacto `1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45`
+  desde origin y el bundle reproducible dio SHA256
+  `7af3ad6c14151ba29a6a6d309f33bb0d723e0ebc61ad62d5acf285ed27529c76`.
+- Antes del corte se guardo la especificacion del servicio con SHA256
+  `52d5cb6e3d8d823cf4803dacd3f3b1b3341faf18aceb298b4d62fbe49b47d066`.
+  No hubo migraciones ni cambios de datos.
+- Swarm promovio `sportex-staging:1cc2c96fe8f8e0f` en modo `start-first` y
+  confirmo convergencia. Rollback: `sportex-staging:f6a92770b2539975`.
+- URL publica, `/health`, `/ready` y release exacto PASS; Evolution conserva
+  ingreso y outbound manual activos. Cero mensajes fueron enviados durante el
+  despliegue y los logs iniciales dieron cero errores.
+- Browser productivo sin sesion: login grafito, `IMPRESION` y copy de WhatsApp
+  conectado PASS. La revision autenticada de Fito queda como siguiente accion,
+  no como condicion retroactiva del deploy tecnico.
+- Evidencia: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`.

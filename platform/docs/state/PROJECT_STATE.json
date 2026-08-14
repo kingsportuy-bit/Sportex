@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Pedir GO exacto para desplegar 1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45 en PILOTO_DELTA."
+    "nextAction": "Fito valida la bandeja autenticada en sportex.codexa.uy y prueba el primer mensaje manual que elija."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_REAL_CAPTURE_ACTIVE_NEXT_CANDIDATE_LOCAL_PASS",
+    "status": "GATE_5_CONTINUITY_CANDIDATE_PRODUCTIVE_ACTIVE",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -82,7 +82,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45",
-    "workingTreeState": "TASK-20260814-001_REMOTE_CANDIDATE_1CC2C96_READY_FOR_GO",
+    "workingTreeState": "TASK-20260814-001_1CC2C96_DEPLOYED_DOCS_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -104,10 +104,10 @@
     "note": "Candidato local: typecheck y 44/44 PASS; continuidad inbound/outbound, refresco de chat, formularios y paleta corregidos. Runtime publico permanece en f6a9277 hasta GO exacto."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_F6A9277_PUBLIC_OPERATIONAL",
+    "status": "PILOTO_DELTA_1CC2C96_PUBLIC_OPERATIONAL",
     "lastVerifiedAt": "2026-08-14",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03"],
-    "note": "sportex_staging_core 1/1 en f6a9277; sportex.codexa.uy publico, login admin PASS, captura real y outbound manual activo."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45"],
+    "note": "sportex_staging_core 1/1 en 1cc2c96; health/readiness, login visual y assets focales PASS. Evolution ingreso/outbound manual activos; rollback f6a9277."
   },
   "externalIntegrations": [
     {
@@ -133,10 +133,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_F6A9277_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_1CC2C96_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 en f6a9277, dominio productivo, red privada Evolution y rollback disponible."
+      "note": "sportex_staging_core 1/1 en 1cc2c96, dominio productivo, red privada Evolution y rollback f6a9277 disponible."
     }
   ],
   "sensitiveData": {
@@ -146,12 +146,23 @@
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
-    "path": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md",
-    "summary": "Candidato local PASS para continuidad WhatsApp y UI; PILOTO_DELTA sigue en f6a9277 hasta autorizacion remota exacta.",
+    "path": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md",
+    "summary": "Continuidad WhatsApp/UI desplegada en PILOTO_DELTA sobre 1cc2c96; verificacion tecnica y login visual PASS, revision autenticada de Fito pendiente.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se promovio 1cc2c96 directamente al piloto productivo con continuidad WhatsApp, correcciones de formularios y paleta, sin migraciones ni mensajes.",
+      "documents": [
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md",
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md"],
+      "decisions": ["SPORTEX opera temporalmente con validacion production-first durante PILOTO_DELTA."]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -418,9 +429,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_F6A9277_ACTIVE_LOCAL_CONTINUITY_CANDIDATE_PENDING_GO",
+    "status": "PILOTO_DELTA_1CC2C96_CONTINUITY_ACTIVE",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Runtime publico f6a9277 sigue activo; el nuevo corte de continuidad WhatsApp/UI esta validado solo localmente y no fue desplegado."
+    "note": "Runtime publico 1cc2c96 sano; continuidad WhatsApp/UI activa, Evolution ingreso/outbound manual preservados y rollback f6a9277 listo."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -438,7 +449,7 @@
   "nextActions": [
     "Usar sportex.codexa.uy como puesto operativo de Delta.",
     "Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.",
-    "Desplegar el candidato de continuidad/UI solo despues del GO exacto del SHA publicado.",
+    "Fito revisa la experiencia autenticada y prueba el primer mensaje manual que elija.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

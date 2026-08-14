@@ -50,16 +50,16 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
-- Despliegues: `PILOTO_DELTA_F6A9277_PUBLIC_OPERATIONAL`; registros 3.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_F6A9277_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_F6A9277_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_1CC2C96_PUBLIC_OPERATIONAL`; registros 4.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_F6A9277_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_1CC2C96_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
-- Fuente: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md`.
-- Candidato local PASS para continuidad WhatsApp y UI; PILOTO_DELTA sigue en f6a9277 hasta autorizacion remota exacta.
+- Fuente: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`.
+- Continuidad WhatsApp/UI desplegada en PILOTO_DELTA sobre 1cc2c96; verificacion tecnica y login visual PASS, revision autenticada de Fito pendiente.
 
 ## Riesgos
 
@@ -75,5 +75,5 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Usar sportex.codexa.uy como puesto operativo de Delta.
 - Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.
-- Desplegar el candidato de continuidad/UI solo despues del GO exacto del SHA publicado.
+- Fito revisa la experiencia autenticada y prueba el primer mensaje manual que elija.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.
