@@ -6,9 +6,9 @@ Actualizado: 2026-08-14.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
-- Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL`.
-- Entornos prohibidos: `PILOTO_DELTA, PRODUCCION_COMERCIAL`.
+- Entorno actual: `PILOTO_DELTA`.
+- Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
+- Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
 - Intencion actual: `product`.
 
@@ -48,26 +48,25 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_ENSAYADAS_LOCALMENTE_NO_REMOTAS`; ejecutadas 0; pendientes 1.
+- Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
-- Despliegues: `INVENTARIO_READ_ONLY_SIN_CAMBIOS`; registros 0.
-- Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`READ_ONLY_STAGING_9_TABLAS_BASE_MIGRACIONES_PENDIENTES` | Evolution API=`READ_ONLY_DELTA_OPEN_SIN_WEBHOOK` | VPS / runtime=`READ_ONLY_SWARM_STAGING_STALE_LEGACY_DOWN`
+- Despliegues: `PILOTO_DELTA_34C9664_DEPLOYED_PASSIVE_UPSERT_ONLY`; registros 1.
+- Integraciones: GitHub=`REMOTE_HOTFIX_D871D2E_VERIFICADO` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_WEBHOOK_UPSERT_ACTIVE_OUTBOUND_OFF` | VPS / runtime=`PILOTO_DELTA_RUNTIME_34C9664_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
-- Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Gate 4 local preparado; inventario remoto read-only y outbound apagado.
+- Fuente: `docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md`.
+- Gate 5 desplegado con MESSAGES_UPSERT activo y outbound apagado; hotfix receipts d871d2e pendiente de GO.
 
 ## Riesgos
 
-- Gate 4 sigue local y sin GO remoto.
-- TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
-- Validar consistencia PostgreSQL tras reinicio antes del piloto.
-- No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones.
-- Los snapshots remotos no autorizan escrituras.
+- 4 vulnerabilidades altas siguen en TASK-20260801-002.
+- MESSAGES_UPDATE espera d871d2e.
+- La interfaz no tiene DNS aprobado.
+- Falta prueba fisica posterior al hotfix.
 
 ## Bloqueos
 
@@ -77,6 +76,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.
-- Despues del PASS pasivo, pedir GO separado para un envio manual canary.
+- Pedir GO para d871d2e y reactivar MESSAGES_UPDATE.
+- Decidir dominio de la interfaz.
+- Luego pedir GO separado para outbound canary.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

@@ -7,22 +7,22 @@ Actualizado: 2026-08-14.
 ## Trabajo
 
 - Intencion: `product`.
-- Entorno actual: `DESARROLLO_LOCAL`.
-- Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
+- Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 50085/60000 caracteres.
+- Presupuesto potencial: 50617/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
 - Objetivo: Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
-- Riesgos: Gate 4 sigue local y sin GO remoto. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Validar consistencia PostgreSQL tras reinicio antes del piloto. | No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones. | Los snapshots remotos no autorizan escrituras.
-- Proxima accion: Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.
+- Riesgos: 4 vulnerabilidades altas siguen en TASK-20260801-002. | MESSAGES_UPDATE espera d871d2e. | La interfaz no tiene DNS aprobado. | Falta prueba fisica posterior al hotfix.
+- Proxima accion: Pedir GO para d871d2e y reactivar MESSAGES_UPDATE.
 
 ## Regla de uso
 

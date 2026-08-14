@@ -155,6 +155,19 @@ DELTA define reglas y valida negocio.
 
 ## registro_de_avances
 
+### 2026-08-14 - Gate 5 captura pasiva ejecutado y contenido
+
+- `34c9664` se desplego despues de backup/restore, migraciones `002/003/004`,
+  seed, RLS y aislamiento PASS.
+- Evolution `DELTA` quedo conectado por red privada; `MESSAGES_UPSERT` activo
+  y outbound `false`.
+- Smoke idempotente: `202 -> 200 duplicate`, una proyeccion y cero outbox.
+- El trafico real revelo el formato plano de `MESSAGES_UPDATE`; se retiro ese
+  evento temporalmente sin relajar seguridad.
+- El fix `d871d2e` paso `42/42`, build, tipos y SQL y espera GO exacto. El
+  dominio de interfaz tambien sigue sin DNS.
+- Evidencia: `docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md`.
+
 ### 2026-08-14 — inicio autorizado
 
 - Fito autorizó el resultado final y pidió ejecutar sin consultas por decisiones

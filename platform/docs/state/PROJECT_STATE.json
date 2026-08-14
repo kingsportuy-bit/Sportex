@@ -3,13 +3,13 @@
   "project": "SPORTEX",
   "updatedAt": "2026-08-14",
   "updatedBy": "TASK-20260814-001",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
-    "DESARROLLO_LOCAL"
+    "DESARROLLO_LOCAL",
+    "PILOTO_DELTA"
   ],
   "prohibitedEnvironments": [
-    "PILOTO_DELTA",
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Formar candidato exacto y solicitar GO remoto para backup verificado, migraciones 002/003/004, deploy STAGING y webhook DELTA en captura pasiva con outbound apagado."
+    "nextAction": "Promover el hotfix d871d2e de receipts con GO exacto, reactivar MESSAGES_UPDATE y decidir el dominio de acceso a la interfaz."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_4_LOCAL_CANDIDATE_AND_REMOTE_INVENTORY_PASS",
+    "status": "GATE_5_PASSIVE_UPSERT_ACTIVE_RECEIPTS_HOTFIX_PENDING",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_5_CAPTURA_PASIVA_PENDING_GO"
+    "nextStage": "GATE_5_RECEIPTS_HOTFIX_AND_PHYSICAL_INBOUND"
   },
   "nextCampaign": null,
   "decisions": [
@@ -81,18 +81,16 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
-    "workingTreeState": "TASK-20260814-001_GATE_4_RUNTIME_COMMITTED_MANIFEST_PREPARED",
+    "headAtLastEvidence": "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
+    "workingTreeState": "TASK-20260814-001_GATE_5_DOCS_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_004_ENSAYADAS_LOCALMENTE_NO_REMOTAS",
+    "status": "MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS",
     "lastVerifiedAt": "2026-08-14",
-    "executed": [],
-    "pending": [
-      "Revalidar namespace y ejecutar 20260814_002/003/004 solo después de inventario, backup, rollback y GO exacto de PILOTO_DELTA."
-    ],
-    "note": "20260814_002/003 agregan siete tablas comerciales y WhatsApp; 20260814_004 habilita production_ready. Up/down con datos pasó en PostgreSQL 16 efímero; no se ejecutaron remotamente."
+    "executed": ["20260814_002", "20260814_003", "20260814_004"],
+    "pending": [],
+    "note": "Backup y restore PASS; 16 tablas con RLS forzado, tenant/membresia DELTA PASS y 13 tablas legadas intactas."
   },
   "tests": {
     "status": "PASS",
@@ -102,43 +100,43 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "note": "Gate 4 local validado con Core 41/41, adaptador/webhook Evolution real, workspace STAGING, outbound manual preparado pero apagado y browser oscuro sin errores."
+    "evidence": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
+    "note": "Hotfix receipts validado localmente con Core 42/42; runtime 34c9664 sano con MESSAGES_UPSERT activo y outbound apagado."
   },
   "deployments": {
-    "status": "INVENTARIO_READ_ONLY_SIN_CAMBIOS",
+    "status": "PILOTO_DELTA_34C9664_DEPLOYED_PASSIVE_UPSERT_ONLY",
     "lastVerifiedAt": "2026-08-14",
-    "records": [],
-    "note": "Se inventario VPS/Swarm/Supabase/Evolution en solo lectura. No hubo deploy, migracion, restart, webhook ni escritura."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb"],
+    "note": "sportex_staging_core 1/1; image ID 79ed9f...; health/readiness PASS; outbound false; MESSAGES_UPDATE contenido hasta hotfix."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_COMMIT_VERIFICADO",
+      "status": "REMOTE_HOTFIX_D871D2E_VERIFICADO",
       "lastVerifiedAt": "2026-08-03",
-      "writeAuthorized": false,
-      "note": "El remoto sigue verificado en 47d47e2. El resguardo local autorizado 0ccd4dc y la implementacion posterior no fueron enviados; no hay autorizacion de push."
+      "writeAuthorized": true,
+      "note": "Rama publicada hasta d871d2e; el runtime autorizado fue construido desde 34c9664."
     },
     {
       "name": "Supabase",
-      "status": "READ_ONLY_STAGING_9_TABLAS_BASE_MIGRACIONES_PENDIENTES",
+      "status": "PILOTO_DELTA_16_TABLAS_RLS_FORZADO",
       "lastVerifiedAt": "2026-08-14",
-      "writeAuthorized": false,
-      "note": "Solo metadata y conteos: STAGING tiene 9 tablas base con RLS forzado; 002/003/004 no aplicadas. Sin contenido ni escrituras."
+      "writeAuthorized": true,
+      "note": "Backup/restore y 002/003/004 PASS; tenant/membresia DELTA listos; legado intacto."
     },
     {
       "name": "Evolution API",
-      "status": "READ_ONLY_DELTA_OPEN_SIN_WEBHOOK",
+      "status": "DELTA_OPEN_WEBHOOK_UPSERT_ACTIVE_OUTBOUND_OFF",
       "lastVerifiedAt": "2026-08-14",
-      "writeAuthorized": false,
-      "note": "Evolution 2.3.7; DELTA open; webhook ausente. No se cambio configuracion ni se enviaron mensajes."
+      "writeAuthorized": true,
+      "note": "Webhook privado autenticado activo para MESSAGES_UPSERT; MESSAGES_UPDATE espera hotfix; cero mensajes enviados por SPORTEX."
     },
     {
       "name": "VPS / runtime",
-      "status": "READ_ONLY_SWARM_STAGING_STALE_LEGACY_DOWN",
+      "status": "PILOTO_DELTA_RUNTIME_34C9664_HEALTHY",
       "lastVerifiedAt": "2026-08-14",
-      "writeAuthorized": false,
-      "note": "STAGING ea02fc0 esta 1/1; servicio legado 0/1; /opt/sportex a62e5edb. No hubo cambios remotos."
+      "writeAuthorized": true,
+      "note": "sportex_staging_core 1/1 en 34c9664, red privada Evolution y rollback ea02fc0 disponible; legado sigue 0/1."
     }
   ],
   "sensitiveData": {
@@ -148,12 +146,24 @@
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
-    "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Gate 4 local preparado; inventario remoto read-only y outbound apagado.",
-    "environment": "DESARROLLO_LOCAL",
+    "path": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
+    "summary": "Gate 5 desplegado con MESSAGES_UPSERT activo y outbound apagado; hotfix receipts d871d2e pendiente de GO.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se desplego el piloto pasivo, se migraron 002/003/004 con restore probado y se contuvo la incompatibilidad real de receipts en un hotfix separado.",
+      "documents": [
+        "core/src/adapters/evolution/evolution-webhook-adapter.ts",
+        "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md"],
+      "decisions": ["SPORTEX-DEC-010"]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -394,9 +404,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "CANDIDATO_LOCAL_GATE_4_VALIDADO_RUNTIME_REMOTO_SOLO_LECTURA",
+    "status": "PILOTO_DELTA_PASSIVE_UPSERT_ACTIVE_RECEIPTS_HOTFIX_PENDING",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Candidato local observado en 127.0.0.1:8082 con bandeja oscura, Detalles y compositor. Runtime remoto fue inventariado pero sigue sin el candidato ni migraciones."
+    "note": "Runtime 34c9664 sano y conectado a DELTA por red privada; inbound upsert activo, outbound apagado; hotfix receipts d871d2e no desplegado."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -411,15 +421,15 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "Gate 4 sigue local y sin GO remoto.",
-    "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
-    "Validar consistencia PostgreSQL tras reinicio antes del piloto.",
-    "No se encontro backup SPORTEX remoto; backup y restore verificados bloquean migraciones.",
-    "Los snapshots remotos no autorizan escrituras."
+    "4 vulnerabilidades altas siguen en TASK-20260801-002.",
+    "MESSAGES_UPDATE espera d871d2e.",
+    "La interfaz no tiene DNS aprobado.",
+    "Falta prueba fisica posterior al hotfix."
   ],
   "nextActions": [
-    "Pedir GO para backup, 002/003/004, deploy STAGING y webhook con outbound off.",
-    "Despues del PASS pasivo, pedir GO separado para un envio manual canary.",
+    "Pedir GO para d871d2e y reactivar MESSAGES_UPDATE.",
+    "Decidir dominio de la interfaz.",
+    "Luego pedir GO separado para outbound canary.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }
