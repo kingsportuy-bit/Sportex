@@ -13,7 +13,12 @@ param(
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $repoRoot = (& git -C $projectRoot rev-parse --show-toplevel).Trim()
-$projectPrefix = [IO.Path]::GetRelativePath($repoRoot, $projectRoot).Replace('\','/').Trim('.')
+$repoRootPath = [IO.Path]::GetFullPath($repoRoot).TrimEnd('\','/')
+$projectRootPath = [IO.Path]::GetFullPath($projectRoot).TrimEnd('\','/')
+if (-not $projectRootPath.StartsWith($repoRootPath, [StringComparison]::OrdinalIgnoreCase)) {
+  throw 'La raiz del proyecto no pertenece al repositorio Git.'
+}
+$projectPrefix = $projectRootPath.Substring($repoRootPath.Length).TrimStart('\','/').Replace('\','/')
 
 & (Join-Path $PSScriptRoot 'release-governance-guard.ps1') -Mode $Mode -TaskId $TaskId -ReleaseCommit $ReleaseCommit -ScopePaths $ScopePaths -Approval $Approval
 if (-not $?) { throw 'Release governance guard fallo.' }

@@ -23,7 +23,12 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $repoRoot = (& git -C $projectRoot rev-parse --show-toplevel).Trim()
 if (-not $repoRoot) { throw 'No se encontro repositorio Git.' }
-$projectPrefix = [IO.Path]::GetRelativePath($repoRoot, $projectRoot).Replace('\','/').Trim('.')
+$repoRootPath = [IO.Path]::GetFullPath($repoRoot).TrimEnd('\','/')
+$projectRootPath = [IO.Path]::GetFullPath($projectRoot).TrimEnd('\','/')
+if (-not $projectRootPath.StartsWith($repoRootPath, [StringComparison]::OrdinalIgnoreCase)) {
+  throw 'La raiz del proyecto no pertenece al repositorio Git.'
+}
+$projectPrefix = $projectRootPath.Substring($repoRootPath.Length).TrimStart('\','/').Replace('\','/')
 
 function Invoke-Git([string[]]$Arguments) {
   $result = @(& git -C $repoRoot @Arguments)
