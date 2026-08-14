@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Promover f6a9277 para cortar reintentos de eventos fuera de alcance y observar captura estable."
+    "nextAction": "Formar y publicar el candidato de continuidad WhatsApp/UI; pedir GO exacto antes de desplegarlo en PILOTO_DELTA."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_REAL_CAPTURE_ACTIVE_UNSUPPORTED_EVENT_FIX_PENDING",
+    "status": "GATE_5_REAL_CAPTURE_ACTIVE_NEXT_CANDIDATE_LOCAL_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -82,7 +82,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "f6a92770b2539975216e81f96fcffc00b4afcb03",
-    "workingTreeState": "TASK-20260814-001_GATE_5_DOCS_PENDING_COMMIT",
+    "workingTreeState": "TASK-20260814-001_WHATSAPP_CONTINUITY_LOCAL_PASS_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -100,8 +100,8 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "note": "Runtime f6a9277 publico y operativo; paso 43/43 y smoke 422 para exclusiones no reintentables."
+    "evidence": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md",
+    "note": "Candidato local: typecheck y 44/44 PASS; continuidad inbound/outbound, refresco de chat, formularios y paleta corregidos. Runtime publico permanece en f6a9277 hasta GO exacto."
   },
   "deployments": {
     "status": "PILOTO_DELTA_F6A9277_PUBLIC_OPERATIONAL",
@@ -146,12 +146,26 @@
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
-    "path": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "summary": "Piloto DELTA publico en f6a9277: login, captura real y envio manual disponibles con rollback.",
+    "path": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md",
+    "summary": "Candidato local PASS para continuidad WhatsApp y UI; PILOTO_DELTA sigue en f6a9277 hasta autorizacion remota exacta.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se completo localmente la continuidad visible de mensajes Evolution/Sportex, el refresco del chat y las correcciones de formularios, login y paleta.",
+      "documents": [
+        "core/src/application/real-whatsapp-outbound-service.ts",
+        "frontend/app.js",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md"],
+      "decisions": ["Continuidad operativa solicitada por Fito dentro de TASK-20260814-001."]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -404,9 +418,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_REAL_CAPTURE_ACTIVE_F6A9277_PENDING",
+    "status": "PILOTO_DELTA_F6A9277_ACTIVE_LOCAL_CONTINUITY_CANDIDATE_PENDING_GO",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Runtime d871d2e sano: 2 contactos, 2 conversaciones y 7 mensajes reales; outbound apagado."
+    "note": "Runtime publico f6a9277 sigue activo; el nuevo corte de continuidad WhatsApp/UI esta validado solo localmente y no fue desplegado."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -418,14 +432,13 @@
   "blockers": [],
   "risks": [
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
-    "La UI conserva tres textos heredados de la demo que deben corregirse en el proximo candidato de presentacion.",
     "El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.",
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
     "Usar sportex.codexa.uy como puesto operativo de Delta.",
     "Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.",
-    "Corregir los textos heredados de demo en el siguiente candidato visual.",
+    "Desplegar el candidato de continuidad/UI solo despues del GO exacto del SHA publicado.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

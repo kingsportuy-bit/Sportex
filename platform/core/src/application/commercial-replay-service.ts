@@ -623,7 +623,9 @@ export class CommercialReplayService {
           actorId: context.actorId,
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
-          detail: "Mensaje ficticio agregado a la conversación normalizada.",
+          detail: existing.fixtureVersion
+            ? "Mensaje ficticio agregado a la conversación normalizada."
+            : "Mensaje de WhatsApp agregado a la conversación normalizada.",
         },
       ],
     };

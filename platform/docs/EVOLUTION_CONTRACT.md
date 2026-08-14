@@ -50,6 +50,26 @@ reconcilian con eventos reales.
 Crear, reconectar, cambiar webhook, enviar, cerrar sesion o modificar Evolution
 es una operacion real. Requiere preflight, rollback y permiso exacto de Fito.
 
+## Continuidad visible del chat
+
+- Un mensaje que llega desde Evolution se autentica y normaliza, se guarda
+  primero en el journal PostgreSQL y recien despues se proyecta en la
+  conversacion comercial. El panel nunca usa el webhook como fuente visual
+  directa: consulta la proyeccion durable de la base.
+- Un mensaje enviado desde WhatsApp Web vuelve a SPORTEX como evento
+  `messages.upsert` con `fromMe=true`; recorre el mismo journal y aparece en el
+  mismo hilo sin ser reenviado.
+- Un mensaje enviado desde SPORTEX nace en el outbox durable antes de llamar a
+  Evolution. Cuando Evolution confirma el ID externo, se marca `SENT` y se
+  proyecta inmediatamente en el chat. El eco posterior usa ese mismo ID y es
+  idempotente, por lo que no crea una segunda burbuja.
+- Si Evolution confirmo el envio pero falla solamente la proyeccion inmediata,
+  el outbox conserva `SENT`: no se habilita un reintento ciego. El eco live
+  reconcilia el chat.
+- Mientras WhatsApp esta abierto, la interfaz vuelve a consultar la proyeccion
+  cada dos segundos y al recuperar visibilidad. Conserva chat elegido, borrador,
+  foco y posicion de lectura; no mantiene una copia autoritativa en el browser.
+
 ## Replay local
 
 `TASK-20260803-001` incorpora un replay de eventos ficticios, protegido por tres

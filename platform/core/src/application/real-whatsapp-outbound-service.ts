@@ -3,6 +3,7 @@ import type { EvolutionHttpTransport } from "../adapters/evolution/evolution-htt
 import type { ActorContext } from "../domain/models.js";
 import type { WhatsAppOutboundRecord } from "../domain/whatsapp-transport-models.js";
 import type { WhatsAppOutboundStore } from "../ports/whatsapp-transport-store.js";
+import type { EvolutionReplayEvent } from "../domain/commercial-models.js";
 import { requireCapability } from "../shared/authorization.js";
 import { notFound } from "../shared/errors.js";
 
@@ -44,10 +45,10 @@ export class RealWhatsAppOutboundService {
       updatedAt: now,
     });
     if (queued.duplicate && queued.record.providerMessageId) return queued;
+    let sent: WhatsAppOutboundRecord;
     try {
-      const sent = await this.transport.send(command);
+      sent = await this.transport.send(command);
       await this.store.update(sent);
-      return { duplicate: queued.duplicate, record: sent };
     } catch (error) {
       const unknown: WhatsAppOutboundRecord = {
         ...queued.record,
@@ -58,5 +59,45 @@ export class RealWhatsAppOutboundService {
       await this.store.update(unknown);
       throw error;
     }
+
+    try {
+      await this.projectSentMessage(context, item, sent);
+    } catch {
+      // El proveedor ya confirmó el envío. Su eco de Evolution reconciliará
+      // la proyección sin habilitar un reintento ciego que pueda duplicarlo.
+    }
+    return { duplicate: queued.duplicate, record: sent };
+  }
+
+  private async projectSentMessage(
+    context: ActorContext,
+    item: Awaited<ReturnType<CommercialReplayService["list"]>>[number],
+    sent: WhatsAppOutboundRecord,
+  ): Promise<void> {
+    if (!sent.providerMessageId) return;
+    const input: EvolutionReplayEvent = {
+      event: "messages.upsert",
+      instance: item.conversation.providerInstance,
+      receivedAt: sent.updatedAt,
+      sourceKind: "LIVE",
+      data: {
+        key: {
+          id: sent.providerMessageId,
+          remoteJid: item.conversation.providerConversationRef,
+          fromMe: true,
+        },
+        pushName: "Delta",
+        messageTimestamp: sent.updatedAt,
+        message: { conversation: sent.text },
+      },
+    };
+    await this.commercial.replayTrustedEvolution(
+      {
+        ...context,
+        capabilities: [...new Set([...context.capabilities, "commercial.replay" as const])],
+      },
+      `outbound-project-${sent.providerMessageId}`,
+      input,
+    );
   }
 }

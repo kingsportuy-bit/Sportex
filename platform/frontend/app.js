@@ -60,6 +60,9 @@ const state = {
   draftResource: null,
   orderAttempt: null,
   passwordForced: false,
+  liveRefreshTimer: null,
+  liveRefreshBusy: false,
+  commercialSnapshot: "",
 };
 
 class UiError extends Error {
@@ -138,6 +141,25 @@ function shortDateTime(value) {
   }).format(new Date(value));
 }
 
+function todayLabel() {
+  const value = new Intl.DateTimeFormat("es-UY", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "America/Montevideo",
+  }).format(new Date());
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function commercialSnapshot(items) {
+  return JSON.stringify(items.map((item) => [
+    item.id,
+    item.opportunity.version,
+    item.conversation.lastActivityAt,
+    item.conversation.messages.at(-1)?.providerMessageId || "",
+  ]));
+}
+
 function initials(value) {
   return String(value || "SPORTEX")
     .split(/\s+/u)
@@ -204,6 +226,7 @@ function persistSession(payload) {
 }
 
 function clearSession() {
+  stopLiveRefresh();
   state.token = null;
   state.refreshToken = null;
   state.session = null;
@@ -237,6 +260,7 @@ async function loadSession() {
   $("#account-button").hidden = state.localDemo;
   $("#logout-button").hidden = state.localDemo;
   if (state.session.passwordChangeRequired) openPasswordDialog(true);
+  $("#today-date").textContent = todayLabel();
 }
 
 async function loadData() {
@@ -246,6 +270,7 @@ async function loadData() {
   state.clients = clients.data;
   state.orders = orders.data;
   state.commercial = commercial?.data ?? [];
+  state.commercialSnapshot = commercialSnapshot(state.commercial);
   if (!state.commercial.some((item) => item.id === state.selectedCommercialId)) {
     state.selectedCommercialId = state.commercial[0]?.id ?? null;
   }
@@ -253,6 +278,59 @@ async function loadData() {
   renderOrders();
   renderWhatsApp();
   renderCommercial();
+}
+
+async function refreshWhatsAppFromDatabase() {
+  if (state.liveRefreshBusy || !state.commercialWorkspace || state.currentView !== "whatsapp" || document.hidden) return;
+  state.liveRefreshBusy = true;
+  try {
+    const response = await api("/v1/commercial/workspace");
+    const next = response.data ?? [];
+    const snapshot = commercialSnapshot(next);
+    if (snapshot === state.commercialSnapshot) return;
+
+    const selectedId = state.selectedCommercialId;
+    const composer = $(".whatsapp-composer-input");
+    const draft = composer?.value ?? "";
+    const restoreFocus = document.activeElement === composer;
+    const conversation = $(".whatsapp-chat-pane .lead-conversation");
+    const distanceFromBottom = conversation
+      ? conversation.scrollHeight - conversation.scrollTop - conversation.clientHeight
+      : 0;
+
+    state.commercial = next;
+    state.commercialSnapshot = snapshot;
+    state.selectedCommercialId = next.some((item) => item.id === selectedId)
+      ? selectedId
+      : next[0]?.id ?? null;
+    renderWhatsApp();
+    renderToday();
+
+    const refreshedComposer = $(".whatsapp-composer-input");
+    if (refreshedComposer && state.selectedCommercialId === selectedId) {
+      refreshedComposer.value = draft;
+      if (restoreFocus) refreshedComposer.focus({ preventScroll: true });
+    }
+    const refreshedConversation = $(".whatsapp-chat-pane .lead-conversation");
+    if (refreshedConversation && distanceFromBottom < 80) {
+      refreshedConversation.scrollTop = refreshedConversation.scrollHeight;
+    }
+  } catch (error) {
+    if (error?.code !== "request_failed") console.warn("SPORTEX live refresh paused", error);
+  } finally {
+    state.liveRefreshBusy = false;
+  }
+}
+
+function startLiveRefresh() {
+  stopLiveRefresh();
+  if (state.localDemo || !state.commercialWorkspace) return;
+  state.liveRefreshTimer = window.setInterval(() => void refreshWhatsAppFromDatabase(), 2_000);
+}
+
+function stopLiveRefresh() {
+  if (state.liveRefreshTimer) window.clearInterval(state.liveRefreshTimer);
+  state.liveRefreshTimer = null;
 }
 
 function cell(text, className = "") {
@@ -2099,6 +2177,7 @@ async function bootstrapAuthenticated() {
   await loadSession();
   await loadData();
   showApp();
+  startLiveRefresh();
 }
 
 async function initialize() {
@@ -2108,7 +2187,10 @@ async function initialize() {
     state.localWhatsappSimulation = Boolean(state.config.localWhatsAppSimulationEnabled);
     state.commercialWorkspace = Boolean(state.config.commercialWorkspaceEnabled);
     state.realWhatsappOutbound = Boolean(state.config.evolutionOutboundEnabled);
-    $("#release-label").textContent = `${state.config.environment} · ${state.config.release}`;
+    const environmentLabel = state.config.environment === "staging"
+      ? "PILOTO DELTA"
+      : state.config.environment.toUpperCase();
+    $("#release-label").textContent = `${environmentLabel} · ${state.config.release.slice(0, 7)}`;
   } catch (error) {
     $("#login-error").textContent = friendlyError(error);
     return;
@@ -2203,6 +2285,9 @@ $("#password-dialog").addEventListener("cancel", (event) => {
 });
 $("#password-dialog").addEventListener("close", () => {
   if (state.passwordForced) window.setTimeout(() => $("#password-dialog").showModal(), 0);
+});
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) void refreshWhatsAppFromDatabase();
 });
 
 void initialize();

@@ -118,6 +118,7 @@ DELTA define reglas y valida negocio.
 ## evidencia
 
 - `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`;
+- `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md`;
 - evidencia focal nueva por cada gate;
 - manifiesto, migración, rollback y observación cuando corresponda.
 
@@ -330,3 +331,27 @@ DELTA define reglas y valida negocio.
 - No se creo webhook, no se migro, no se desplego, no se leyo contenido real y
   no se envio ningun mensaje. El siguiente paso es formar el candidato exacto y
   pedir GO para backup + migracion + deploy + captura pasiva con outbound off.
+
+### 2026-08-14 — continuidad WhatsApp y correcciones de interfaz
+
+- Se verifico el recorrido real de entrada: Evolution autentica y normaliza,
+  el journal PostgreSQL persiste antes de proyectar, y el panel lee la
+  conversacion durable en vez del payload del webhook.
+- Las salidas hechas desde WhatsApp Web ya ingresan como eventos live
+  `fromMe=true`. Las salidas hechas desde SPORTEX ahora se proyectan con el ID
+  confirmado por Evolution y el eco posterior no duplica la burbuja.
+- Un fallo de proyeccion posterior a un envio confirmado no cambia `SENT` a
+  `UNKNOWN`; se evita el reintento ciego y el eco live queda como reconciliador.
+- WhatsApp consulta la base cada dos segundos mientras la vista esta abierta y
+  al volver a la pestana, conservando conversacion, borrador, foco y scroll.
+- Todos los botones Cancelar/Cerrar de formularios con validacion HTML omiten
+  esa validacion al cerrar. Browser local confirmo dialogo abierto `1 -> 0` con
+  campos obligatorios vacios.
+- La superficie clara usa blanco real en canvas y chat; el login conserva
+  fondo grafito en ambos temas. `USER` fue reemplazado por `IMPRESION` y se
+  retiro el texto que afirmaba falsamente que WhatsApp no estaba conectado.
+- Typecheck, `git diff --check` y Core `44/44` PASS. La inspeccion local de
+  WhatsApp claro/oscuro no mostro overflow ni ruptura de la firma grafito,
+  blanco y lima.
+- El corte queda local y sin mensajes reales. Falta formar commit exacto y
+  solicitar GO de deploy para actualizar PILOTO_DELTA.

@@ -14,14 +14,14 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 51992/60000 caracteres.
+- Presupuesto potencial: 53499/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
 - Objetivo: Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
-- Riesgos: 4 vulnerabilidades altas siguen en TASK-20260801-002. | La UI conserva tres textos heredados de la demo que deben corregirse en el proximo candidato de presentacion. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
+- Riesgos: 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
 - Proxima accion: Usar sportex.codexa.uy como puesto operativo de Delta.
 
 ## Regla de uso

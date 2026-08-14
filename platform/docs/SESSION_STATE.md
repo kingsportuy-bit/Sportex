@@ -58,13 +58,12 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
-- Fuente: `docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md`.
-- Piloto DELTA publico en f6a9277: login, captura real y envio manual disponibles con rollback.
+- Fuente: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md`.
+- Candidato local PASS para continuidad WhatsApp y UI; PILOTO_DELTA sigue en f6a9277 hasta autorizacion remota exacta.
 
 ## Riesgos
 
 - 4 vulnerabilidades altas siguen en TASK-20260801-002.
-- La UI conserva tres textos heredados de la demo que deben corregirse en el proximo candidato de presentacion.
 - El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.
 - Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
 
@@ -76,5 +75,5 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Usar sportex.codexa.uy como puesto operativo de Delta.
 - Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.
-- Corregir los textos heredados de demo en el siguiente candidato visual.
+- Desplegar el candidato de continuidad/UI solo despues del GO exacto del SHA publicado.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

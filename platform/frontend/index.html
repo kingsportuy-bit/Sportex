@@ -24,7 +24,7 @@
         <ol class="route-line" aria-label="Proceso Delta Sport">
           <li class="is-active">Venta</li>
           <li>Diseño</li>
-          <li>USER</li>
+          <li>IMPRESIÓN</li>
           <li>Taller</li>
           <li>Envío</li>
         </ol>
@@ -47,7 +47,7 @@
           </label>
           <p id="login-error" class="form-error" role="alert"></p>
           <button class="button button--primary button--full" type="submit">Entrar a SPORTEX</button>
-          <small class="environment-note">Entorno de validación · los datos productivos todavía no están conectados.</small>
+          <small class="environment-note">Piloto operativo de Delta · WhatsApp conectado.</small>
         </form>
       </section>
     </main>
@@ -115,7 +115,7 @@
         <main class="content">
           <section id="today-view" class="view-section">
             <header class="page-intro">
-              <div><span class="page-kicker">Lunes 3 de agosto</span><h1>Hoy</h1></div>
+              <div><span id="today-date" class="page-kicker">Hoy</span><h1>Hoy</h1></div>
               <p>Lo que necesita una decisión, ordenado por urgencia y próximo paso.</p>
             </header>
             <div class="today-metrics" aria-label="Resumen de prioridades">
@@ -238,7 +238,7 @@
       <form id="order-form" method="dialog">
         <header class="sheet-head">
           <div><span class="section-code">NUEVO PEDIDO / SEÑA CERTIFICADA</span><h2>Registrar venta</h2></div>
-          <button class="icon-button" value="cancel" aria-label="Cerrar" type="submit">×</button>
+          <button class="icon-button" value="cancel" aria-label="Cerrar" type="submit" formnovalidate>×</button>
         </header>
 
         <div class="form-grid">
@@ -275,7 +275,7 @@
 
         <p id="order-error" class="form-error" role="alert"></p>
         <footer class="sheet-actions">
-          <button class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button class="button button--outline" value="cancel" type="submit" formnovalidate>Cancelar</button>
           <button id="save-order-button" class="button button--primary" type="button">Certificar seña y crear pedido</button>
         </footer>
       </form>
@@ -290,7 +290,7 @@
         <label>Repetir contraseña<input id="repeat-password" type="password" minlength="10" autocomplete="new-password" required /></label>
         <p id="password-error" class="form-error" role="alert"></p>
         <div class="sheet-actions">
-          <button id="password-cancel" class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button id="password-cancel" class="button button--outline" value="cancel" type="submit" formnovalidate>Cancelar</button>
           <button id="password-save" class="button button--primary" type="button">Guardar contraseña</button>
         </div>
       </form>
@@ -307,7 +307,7 @@
         </label>
         <p id="reset-error" class="form-error" role="alert"></p>
         <div class="sheet-actions">
-          <button class="button button--outline" value="cancel" type="submit">Cancelar</button>
+          <button class="button button--outline" value="cancel" type="submit" formnovalidate>Cancelar</button>
           <button id="confirm-reset-button" class="button button--primary" type="button" disabled>Restaurar datos</button>
         </div>
       </form>
