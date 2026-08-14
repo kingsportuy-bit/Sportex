@@ -71,6 +71,19 @@ export interface CommercialCreative {
   accent: string;
 }
 
+export interface CommercialContact {
+  id: string;
+  tenantId: string;
+  provider: "EVOLUTION";
+  providerInstance: string;
+  providerContactRef: string;
+  displayName: string;
+  normalizedPhone: string | null;
+  createdAt: string;
+  updatedAt: string;
+  fixtureOnly: true;
+}
+
 export interface CommercialAttribution {
   classification: AttributionClassification;
   adId: string | null;
@@ -87,6 +100,7 @@ export interface CommercialAttribution {
 export interface CommercialConversation {
   id: string;
   tenantId: string;
+  contactId: string;
   channel: "WHATSAPP";
   provider: "EVOLUTION";
   providerInstance: string;
@@ -111,6 +125,7 @@ export interface CommercialConfirmedFact {
 export interface CommercialLead {
   id: string;
   tenantId: string;
+  contactId: string;
   conversationId: string;
   contactName: string;
   teamName: string | null;
@@ -176,6 +191,7 @@ export interface CommercialFollowUp {
 export interface CommercialOpportunity {
   id: string;
   tenantId: string;
+  contactId: string;
   leadId: string;
   conversationId: string;
   stage: CommercialStage;
@@ -213,6 +229,7 @@ export interface CommercialActivity {
 export interface CommercialWorkspaceItem {
   id: string;
   tenantId: string;
+  contact: CommercialContact;
   conversation: CommercialConversation;
   attribution: CommercialAttribution;
   lead: CommercialLead;

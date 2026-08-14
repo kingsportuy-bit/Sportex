@@ -48,7 +48,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Estado operativo registrado
 
-- Migraciones: `NO_EJECUTADAS_EN_ESTA_TAREA`; ejecutadas 0; pendientes 1.
+- Migraciones: `MIGRACION_COMERCIAL_DEFINIDA_NO_EJECUTADA`; ejecutadas 0; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
 - Despliegues: `SIN_CAMBIOS_EN_ESTA_TAREA`; registros 0.
 - Integraciones: GitHub=`REMOTE_COMMIT_VERIFICADO` | Supabase=`NO_ACCEDIDA_EN_ESTA_TAREA` | Evolution API=`NO_ACCEDIDA_EN_ESTA_TAREA` | VPS / runtime=`NO_ACCEDIDA_EN_ESTA_TAREA`
@@ -63,7 +63,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Riesgos
 
-- Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures.
 - El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
 - Los snapshots remotos no autorizan escrituras.
@@ -76,6 +75,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Completar Gate 1 con Contacto reutilizable, persistencia objetivo y migración local ensayada.
+- Completar Gate 1 con store PostgreSQL comercial y migración/rollback local ensayados.
 - Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

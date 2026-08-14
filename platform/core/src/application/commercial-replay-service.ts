@@ -393,6 +393,7 @@ export class CommercialReplayService {
     context: ActorContext,
   ): CommercialWorkspaceItem {
     const itemId = this.idFactory();
+    const contactId = this.idFactory();
     const conversationId = this.idFactory();
     const leadId = this.idFactory();
     const opportunityId = this.idFactory();
@@ -402,9 +403,22 @@ export class CommercialReplayService {
     return {
       id: itemId,
       tenantId: context.tenantId,
+      contact: {
+        id: contactId,
+        tenantId: context.tenantId,
+        provider: "EVOLUTION",
+        providerInstance: input.instance,
+        providerContactRef: input.data.key.remoteJid,
+        displayName: contactName,
+        normalizedPhone: null,
+        createdAt: message.receivedAt,
+        updatedAt: message.receivedAt,
+        fixtureOnly: true,
+      },
       conversation: {
         id: conversationId,
         tenantId: context.tenantId,
+        contactId,
         channel: "WHATSAPP",
         provider: "EVOLUTION",
         providerInstance: input.instance,
@@ -419,6 +433,7 @@ export class CommercialReplayService {
       lead: {
         id: leadId,
         tenantId: context.tenantId,
+        contactId,
         conversationId,
         contactName,
         teamName: null,
@@ -436,6 +451,7 @@ export class CommercialReplayService {
       opportunity: {
         id: opportunityId,
         tenantId: context.tenantId,
+        contactId,
         leadId,
         conversationId,
         stage: "NUEVO",

@@ -188,6 +188,11 @@ test("commercial demo seed contains 18 safe and varied fictional dossiers", () =
 
   for (const item of seed) {
     assert.equal(item.tenantId, tenantA);
+    assert.equal(item.contact.tenantId, tenantA);
+    assert.equal(item.conversation.contactId, item.contact.id);
+    assert.equal(item.lead.contactId, item.contact.id);
+    assert.equal(item.opportunity.contactId, item.contact.id);
+    assert.equal(item.contact.providerContactRef, item.conversation.providerConversationRef);
     assert.equal(item.fixtureVersion, "commercial-demo-v1");
     assert.match(item.id, /^workspace-ficticio-/u);
     assert.ok(item.lead.quantity && item.lead.quantity >= 10);

@@ -63,3 +63,10 @@ Evidencia observable:
 
 El checkpoint prueba integración local. No prueba Evolution, persistencia remota,
 datos reales, captura pasiva ni envío.
+
+## Checkpoint ejecutado — Gate 1B
+
+- Contacto se separó de Conversación, Lead y Oportunidad con relaciones explícitas.
+- La migración aditiva `20260814_002` define cinco tablas comerciales normalizadas.
+- Todas aplican aislamiento por tenant, RLS forzado, permisos mínimos y down migration.
+- `validate-sql`: 14 tablas PASS. La migración permanece local y no ejecutada.

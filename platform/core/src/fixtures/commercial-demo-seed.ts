@@ -224,6 +224,7 @@ function opportunity(spec: DemoSpec, tenantId: string, index: number, createdAt:
   return {
     id: `opportunity-ficticia-${String(index + 1).padStart(2, "0")}`,
     tenantId,
+    contactId: `contact-ficticio-${String(index + 1).padStart(2, "0")}`,
     leadId: `lead-ficticio-${String(index + 1).padStart(2, "0")}`,
     conversationId: `conversation-ficticia-${String(index + 1).padStart(2, "0")}`,
     stage: spec.stage,
@@ -287,9 +288,22 @@ export function createCommercialDemoSeed(tenantId: string): CommercialWorkspaceI
     return {
       id: `workspace-ficticio-${suffix}`,
       tenantId,
+      contact: {
+        id: `contact-ficticio-${suffix}`,
+        tenantId,
+        provider: "EVOLUTION",
+        providerInstance: "LOCAL_FIXTURE",
+        providerContactRef: `contacto-ficticio-seed-${suffix}`,
+        displayName: spec.contactName,
+        normalizedPhone: null,
+        createdAt: first.receivedAt,
+        updatedAt: last.receivedAt,
+        fixtureOnly: true,
+      },
       conversation: {
         id: `conversation-ficticia-${suffix}`,
         tenantId,
+        contactId: `contact-ficticio-${suffix}`,
         channel: "WHATSAPP",
         provider: "EVOLUTION",
         providerInstance: "LOCAL_FIXTURE",
@@ -304,6 +318,7 @@ export function createCommercialDemoSeed(tenantId: string): CommercialWorkspaceI
       lead: {
         id: `lead-ficticio-${suffix}`,
         tenantId,
+        contactId: `contact-ficticio-${suffix}`,
         conversationId: `conversation-ficticia-${suffix}`,
         contactName: spec.contactName,
         teamName: spec.teamName,

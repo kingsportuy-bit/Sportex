@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Continuar Gate 1: normalizar Contacto reutilizable y persistencia objetivo después de integrar localmente seña validada, Cliente, Pago y Pedido."
+    "nextAction": "Completar Gate 1: implementar el store PostgreSQL comercial y ensayar migración/rollback local sobre el modelo normalizado."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_1A_VERTICAL_TRANSACCIONAL_INTEGRADA",
+    "status": "GATE_1B_MODELO_Y_MIGRACION_DEFINIDOS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -86,13 +86,13 @@
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
-    "status": "NO_EJECUTADAS_EN_ESTA_TAREA",
-    "lastVerifiedAt": "2026-08-03",
+    "status": "MIGRACION_COMERCIAL_DEFINIDA_NO_EJECUTADA",
+    "lastVerifiedAt": "2026-08-14",
     "executed": [],
     "pending": [
-      "Revalidar y replantear migraciones antes de cualquier operacion en PILOTO_DELTA."
+      "Ensayar localmente up/down de 20260814_002 antes de cualquier operación en PILOTO_DELTA."
     ],
-    "note": "TASK-20260803-005 no creo ni ejecuto migraciones; este checkpoint fue solo documental."
+    "note": "20260814_002 agrega cinco tablas comerciales con RLS y rollback; no fue ejecutada en una base."
   },
   "tests": {
     "status": "PASS",
@@ -359,13 +359,12 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures.",
     "El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Completar Gate 1 con Contacto reutilizable, persistencia objetivo y migración local ensayada.",
+    "Completar Gate 1 con store PostgreSQL comercial y migración/rollback local ensayados.",
     "Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

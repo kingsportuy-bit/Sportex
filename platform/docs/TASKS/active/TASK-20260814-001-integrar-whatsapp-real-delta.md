@@ -176,3 +176,14 @@ DELTA define reglas y valida negocio.
   producción. No hubo red, datos reales ni outbound.
 - Gate 1 continúa: falta normalizar Contacto como entidad reutilizable, persistencia
   objetivo/migración y prueba de varias conversaciones/oportunidades por contacto.
+
+### 2026-08-14 — checkpoint Gate 1B
+
+- Contacto ya es una raíz separada y Conversación, Lead y Oportunidad lo
+  referencian sin cambiar la proyección consumida por la UI.
+- Se agregó la migración aditiva y reversible `20260814_002` para Contactos,
+  Conversaciones, Mensajes, Oportunidades y vínculos al Core.
+- Las 14 tablas objetivo exigen tenant, RLS forzado y rollback; no se ejecutó la
+  migración en ninguna base.
+- Falta implementar el store PostgreSQL comercial y ensayar up/down local antes
+  de dar Gate 1 por terminado.

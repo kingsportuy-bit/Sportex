@@ -4,16 +4,26 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const migrationRoot = path.join(root, "db", "migrations", "staging");
-const upPath = path.join(migrationRoot, "20260719_001_core_foundation.up.sql");
-const downPath = path.join(migrationRoot, "20260719_001_core_foundation.down.sql");
 const failures = [];
-
-for (const file of [upPath, downPath]) {
-  if (!fs.existsSync(file)) failures.push(`missing ${path.relative(root, file)}`);
+const migrationFiles = fs.existsSync(migrationRoot)
+  ? fs.readdirSync(migrationRoot).filter((name) => name.endsWith(".sql")).sort()
+  : [];
+const expectedFiles = [
+  "20260719_001_core_foundation.up.sql",
+  "20260719_001_core_foundation.down.sql",
+  "20260814_002_commercial_workspace.up.sql",
+  "20260814_002_commercial_workspace.down.sql",
+];
+for (const name of expectedFiles) {
+  if (!migrationFiles.includes(name)) failures.push(`missing db/migrations/staging/${name}`);
 }
-
-const up = fs.existsSync(upPath) ? fs.readFileSync(upPath, "utf8") : "";
-const down = fs.existsSync(downPath) ? fs.readFileSync(downPath, "utf8") : "";
+const readMigrations = (suffix) => migrationFiles
+  .filter((name) => name.endsWith(suffix))
+  .map((name) => ({ name, content: fs.readFileSync(path.join(migrationRoot, name), "utf8") }));
+const upMigrations = readMigrations(".up.sql");
+const downMigrations = readMigrations(".down.sql");
+const up = upMigrations.map((file) => file.content).join("\n");
+const down = downMigrations.map((file) => file.content).join("\n");
 
 const requiredTables = [
   "tenants",
@@ -25,6 +35,11 @@ const requiredTables = [
   "idempotency",
   "audit_events",
   "outbox",
+  "commercial_contacts",
+  "commercial_conversations",
+  "commercial_messages",
+  "commercial_opportunities",
+  "commercial_core_links",
 ].map((name) => `sportex_staging_${name}`);
 
 for (const table of requiredTables) {
@@ -57,8 +72,11 @@ if (!up.includes("pg_advisory_xact_lock") && !fs.readFileSync(path.join(root, "s
   failures.push("idempotency advisory lock missing");
 }
 if (/eyJ[a-zA-Z0-9_-]{20,}/u.test(`${up}\n${down}`)) failures.push("JWT-like secret found in SQL");
-if (!/^BEGIN;/mu.test(up) || !/COMMIT;\s*$/u.test(up)) failures.push("up migration is not transactional");
-if (!/^BEGIN;/mu.test(down) || !/COMMIT;\s*$/u.test(down)) failures.push("down migration is not transactional");
+for (const file of [...upMigrations, ...downMigrations]) {
+  if (!/^BEGIN;/mu.test(file.content) || !/COMMIT;\s*$/u.test(file.content)) {
+    failures.push(`${file.name} is not transactional`);
+  }
+}
 
 if (failures.length) {
   console.error("SPORTEX SQL validation failed:");
