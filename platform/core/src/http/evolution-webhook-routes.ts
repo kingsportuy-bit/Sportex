@@ -11,6 +11,17 @@ import { idempotencyKey } from "./context.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
 
+const expectedIngressRejections = new Set([
+  "evolution_contact_ambiguous",
+  "evolution_event_out_of_scope",
+  "evolution_group_out_of_scope",
+  "evolution_message_type_out_of_scope",
+]);
+
+export function evolutionIngressErrorStatus(error: unknown): number | null {
+  return error instanceof Error && expectedIngressRejections.has(error.message) ? 422 : null;
+}
+
 function secretMatches(candidate: unknown, expected: string): boolean {
   if (typeof candidate !== "string") return false;
   const actualBuffer = Buffer.from(candidate);
@@ -32,7 +43,17 @@ export async function registerEvolutionWebhookRoutes(
     if (!secretMatches(request.headers["x-sportex-webhook-secret"], config.evolutionWebhookSecret)) {
       throw new AppError("evolution_webhook_unauthorized", 401, "Evolution webhook authentication failed");
     }
-    const result = await integration.ingest(request.body);
+    let result: Awaited<ReturnType<RealWhatsAppIntegrationService["ingest"]>>;
+    try {
+      result = await integration.ingest(request.body);
+    } catch (error) {
+      const status = evolutionIngressErrorStatus(error);
+      if (!status) throw error;
+      return reply.code(status).send({
+        error: { code: (error as Error).message, message: "Evolution event is outside the active SPORTEX scope" },
+        meta: { correlationId: request.sportexCorrelationId },
+      });
+    }
     return reply.code(result.duplicate ? 200 : 202).send({
       data: { accepted: true, duplicate: result.duplicate },
       meta: { correlationId: request.sportexCorrelationId },

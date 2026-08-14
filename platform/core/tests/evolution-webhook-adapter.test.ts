@@ -5,6 +5,7 @@ import { InMemoryEvolutionJournal } from "../src/adapters/evolution/simulated-ev
 import { InMemoryCommercialReplayStore } from "../src/adapters/persistence/in-memory-commercial-replay-store.js";
 import { CommercialReplayService } from "../src/application/commercial-replay-service.js";
 import { RealWhatsAppIntegrationService } from "../src/application/real-whatsapp-integration-service.js";
+import { evolutionIngressErrorStatus } from "../src/http/evolution-webhook-routes.js";
 
 const tenantId = "11111111-1111-4111-8111-111111111111";
 const actorId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
@@ -123,4 +124,10 @@ test("receipt event accepts Evolution 2.3.7 flattened MessageUpdate records", ()
   assert.equal(receipt.conversationRef, "59899123456@s.whatsapp.net");
   assert.equal(receipt.contentType, "RECEIPT");
   assert.equal(receipt.metadata.deliveryStatus, "DELIVERED");
+});
+
+test("known first-cut exclusions become non-retryable webhook responses", () => {
+  assert.equal(evolutionIngressErrorStatus(new Error("evolution_message_type_out_of_scope")), 422);
+  assert.equal(evolutionIngressErrorStatus(new Error("evolution_group_out_of_scope")), 422);
+  assert.equal(evolutionIngressErrorStatus(new Error("unexpected_database_failure")), null);
 });
