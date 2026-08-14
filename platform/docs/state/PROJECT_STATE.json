@@ -101,13 +101,13 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "note": "Runtime d871d2e captura upserts y receipts; f6a9277 paso 43/43 para exclusiones no reintentables."
+    "note": "Runtime f6a9277 publico y operativo; paso 43/43 y smoke 422 para exclusiones no reintentables."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_34C9664_DEPLOYED_PASSIVE_UPSERT_ONLY",
+    "status": "PILOTO_DELTA_F6A9277_PUBLIC_OPERATIONAL",
     "lastVerifiedAt": "2026-08-14",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487"],
-    "note": "sportex_staging_core 1/1 en d871d2e; upserts/receipts activos, captura real y outbound false."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03"],
+    "note": "sportex_staging_core 1/1 en f6a9277; sportex.codexa.uy publico, login admin PASS, captura real y outbound manual activo."
   },
   "externalIntegrations": [
     {
@@ -126,17 +126,17 @@
     },
     {
       "name": "Evolution API",
-      "status": "DELTA_OPEN_UPSERT_UPDATE_ACTIVE_OUTBOUND_OFF",
+      "status": "DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; captura real presente; cero mensajes enviados por SPORTEX."
+      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; captura real presente; envio manual habilitado y cero mensajes enviados durante el corte."
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_D871D2E_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_F6A9277_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 en d871d2e, red privada Evolution y rollback disponible."
+      "note": "sportex_staging_core 1/1 en f6a9277, dominio productivo, red privada Evolution y rollback disponible."
     }
   ],
   "sensitiveData": {
@@ -147,7 +147,7 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
-    "summary": "Captura real activa en d871d2e; candidato f6a9277 evita reintentos de eventos fuera de alcance.",
+    "summary": "Piloto DELTA publico en f6a9277: login, captura real y envio manual disponibles con rollback.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
@@ -415,21 +415,17 @@
     "taskId": "TASK-20260803-005",
     "note": "Fito aceptó el concepto visual WhatsApp primero y pidió iterar con etapas configurables y detalle de contacto/proceso. La conexión real mantiene un GO distinto."
   },
-  "blockers": [
-    "TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.",
-    "El estado runtime de julio de 2026 es historico y requiere revalidacion.",
-    "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
-  ],
+  "blockers": [],
   "risks": [
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
-    "Eventos no textuales esperan f6a9277 para responder 422.",
-    "La interfaz no tiene DNS aprobado.",
-    "Falta prueba fisica posterior al hotfix."
+    "La UI conserva tres textos heredados de la demo que deben corregirse en el proximo candidato de presentacion.",
+    "El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.",
+    "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Pedir GO para f6a9277.",
-    "Decidir dominio de la interfaz.",
-    "Luego pedir GO separado para outbound canary.",
+    "Usar sportex.codexa.uy como puesto operativo de Delta.",
+    "Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.",
+    "Corregir los textos heredados de demo en el siguiente candidato visual.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

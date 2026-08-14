@@ -50,8 +50,8 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
-- Despliegues: `PILOTO_DELTA_34C9664_DEPLOYED_PASSIVE_UPSERT_ONLY`; registros 2.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_F6A9277_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_OUTBOUND_OFF` | VPS / runtime=`PILOTO_DELTA_RUNTIME_D871D2E_HEALTHY`
+- Despliegues: `PILOTO_DELTA_F6A9277_PUBLIC_OPERATIONAL`; registros 3.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_F6A9277_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_F6A9277_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -59,24 +59,22 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md`.
-- Captura real activa en d871d2e; candidato f6a9277 evita reintentos de eventos fuera de alcance.
+- Piloto DELTA publico en f6a9277: login, captura real y envio manual disponibles con rollback.
 
 ## Riesgos
 
 - 4 vulnerabilidades altas siguen en TASK-20260801-002.
-- Eventos no textuales esperan f6a9277 para responder 422.
-- La interfaz no tiene DNS aprobado.
-- Falta prueba fisica posterior al hotfix.
+- La UI conserva tres textos heredados de la demo que deben corregirse en el proximo candidato de presentacion.
+- El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.
+- Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
 
 ## Bloqueos
 
-- TASK-20260719-007 debe replantearse al nuevo modelo PILOTO_DELTA antes de cualquier operacion.
-- El estado runtime de julio de 2026 es historico y requiere revalidacion.
-- npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola.
+- Ninguno.
 
 ## Siguientes acciones
 
-- Pedir GO para f6a9277.
-- Decidir dominio de la interfaz.
-- Luego pedir GO separado para outbound canary.
+- Usar sportex.codexa.uy como puesto operativo de Delta.
+- Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.
+- Corregir los textos heredados de demo en el siguiente candidato visual.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

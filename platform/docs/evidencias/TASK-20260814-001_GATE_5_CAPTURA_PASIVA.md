@@ -62,3 +62,33 @@ paso `43/43`, TypeScript, build y SQL.
 - Deshabilitar webhook/ingreso y mantener outbound en `false`.
 - Volver a `sportex-staging:ea02fc0`.
 - Conservar journal/proyecciones; no ejecutar down tras datos reales.
+
+## Promocion PILOTO_DELTA operativa
+
+- GO exacto: `f6a92770b2539975216e81f96fcffc00b4afcb03`.
+- Bundle SHA256: `346c11c3c66ad4097bfd0bde481bf8a363230415614b4bae435f0dc353ed9519`.
+- Imagen: `sportex-staging:f6a92770b2539975`, ID
+  `sha256:6663af0f404b7481612dd42950d85336259573cf6b62fba3e7866602543e59f7`.
+- Smoke de exclusiones: `422`; `key_invalid=0`, `unhandled=0` y
+  `out_of_scope_500=0` para el evento QA controlado.
+- Snapshot previo al corte publico:
+  `/var/backups/sportex/task-20260814-001/pre-production-cutover-f6a9277.json`,
+  SHA256 `e0df63517d0c386e6aa39042b580ab2cc6283889cf00551aac1a0bc8176ffd6b`.
+- `https://sportex.codexa.uy` prioriza el router del piloto y responde health y
+  readiness PASS sobre el release exacto.
+- El acceso por email se habilito solo para usuarios existentes; el alta publica
+  quedo deshabilitada. El administrador DELTA entro correctamente desde navegador.
+- Evolution `DELTA` permanece conectado. La bandeja mostro 6 conversaciones y
+  18 mensajes reales, incluidos mensajes enviados desde WhatsApp fuera de
+  SPORTEX, sin duplicarlos.
+- El envio manual desde SPORTEX esta habilitado y conserva confirmacion humana,
+  idempotencia y outbox. No se envio un mensaje real durante esta promocion:
+  outbox `0` y outbound messages `0` al finalizar la verificacion.
+
+## Deuda visible no bloqueante
+
+- La UI conserva textos heredados de validacion (`staging`, fecha fija y una
+  descripcion historica de fixture). No afectan captura, login ni envio manual,
+  pero deben corregirse en el siguiente candidato de presentacion.
+- Eventos con contacto ambiguo se rechazan sin proyectar. El logger aun los
+  presenta como error aunque la respuesta no reintentable evita crear datos.

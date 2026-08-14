@@ -155,6 +155,21 @@ DELTA define reglas y valida negocio.
 
 ## registro_de_avances
 
+### 2026-08-14 - Piloto productivo utilizable
+
+- El candidato exacto `f6a9277` quedo `1/1` y paso el smoke focal de eventos
+  fuera de alcance con respuesta `422`.
+- `sportex.codexa.uy` ahora apunta al piloto, con snapshot previo y rollback
+  conservado; health y readiness responden el release exacto.
+- El administrador DELTA fue verificado por login real. El alta publica de
+  usuarios permanece cerrada.
+- La interfaz mostro 6 conversaciones y 18 mensajes reales. Detalles convive
+  con el chat y el compositor esta habilitado para envio manual.
+- Outbound manual quedo activo, pero no se envio ningun mensaje real durante el
+  corte: outbox y tabla outbound permanecen en cero.
+- Quedan como deuda de presentacion tres textos heredados de demo y como
+  aceptacion humana el primer envio que Fito decida realizar desde SPORTEX.
+
 ### 2026-08-14 - Receipts activos y captura real observada
 
 - `d871d2e` se desplego, `MESSAGES_UPDATE` se reactivo y el receipt plano paso

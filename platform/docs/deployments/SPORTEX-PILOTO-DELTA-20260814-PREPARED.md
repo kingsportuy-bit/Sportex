@@ -1,19 +1,22 @@
 # SPORTEX PILOTO_DELTA — paquete preparado
 
-- Estado: `DEPLOYED_RECEIPTS_ACTIVE_UNSUPPORTED_EVENT_FIX_PENDING`
+- Estado: `PILOTO_DELTA_PUBLIC_OPERATIONAL`
 - Fecha: 2026-08-14
 - Task: `TASK-20260814-001`
 - Commit de runtime: `34c9664607e9e0483f5a1dfb6164c7b572b676cb`
 - Destino: `sportex_staging_core`
-- URL: `https://sportex-staging.codexa.uy`
+- URL: `https://sportex.codexa.uy`
 - Evolution: version `2.3.7`, instancia `DELTA`
 - Tenant: `08c2b814-2722-44f0-b40a-0271ad8a918b` (`delta-sport`)
 - Actor tecnico/operador: `477880cf-8d44-4cb7-aed2-b8fe211fb0b0`
-- Outbound actual: `false`
+- Outbound actual: `true`, exclusivamente manual y con confirmacion humana
 - Imagen desplegada: `sportex-staging:34c9664607e9e048`
 - Image ID: `sha256:79ed9f869499780dc6ff864a9e02e14367ef8a904a86657c9a5107b30b7dba3a`
 - Hotfix desplegado: `d871d2eea627d6a65b7721feaa6a53d0c1c0e487`
 - Siguiente candidato: `f6a92770b2539975216e81f96fcffc00b4afcb03`
+- Candidato desplegado: `f6a92770b2539975216e81f96fcffc00b4afcb03`
+- Imagen desplegada final: `sportex-staging:f6a92770b2539975`
+- Image ID final: `sha256:6663af0f404b7481612dd42950d85336259573cf6b62fba3e7866602543e59f7`
 
 ## Orden exacto propuesto
 
