@@ -201,3 +201,17 @@ DELTA define reglas y valida negocio.
   sin duplicarlo y confirmó aislamiento entre dos tenants.
 - Gate 1 queda cerrado. El siguiente corte es Gate 2 Evolution simulado, sin
   conexión, datos ni mensajes reales.
+
+### 2026-08-14 — checkpoint Gate 2A
+
+- El adaptador Evolution simulado normaliza mensajes entrantes, salientes y
+  receipts en el sobre canónico WhatsApp, conservando tenant, tiempos, origen,
+  dirección, evidencia y correlación.
+- El journal deduplica por tenant/evento y el worker procesa por tiempo de
+  ocurrencia aunque live y backfill lleguen desordenados.
+- Los errores de proyección quedan en cuarentena sin detener el resto; un worker
+  reconstruido reanuda las entradas pendientes del journal compartido.
+- El transporte saliente falso nace con kill switch activo, exige confirmación
+  humana, es idempotente y evita regresiones de receipts.
+- Gate 2 continúa: falta persistir el journal/outbox objetivo y conectar el
+  handler simulado a la proyección comercial PostgreSQL.

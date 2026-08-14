@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Implementar Gate 2 con adaptador Evolution simulado, ordering, duplicados, receipts, backfill y worker falso."
+    "nextAction": "Completar Gate 2: persistir journal/outbox y conectar el worker Evolution simulado a la proyección comercial PostgreSQL."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_1_CERRADO_POSTGRES_Y_ROLLBACK_PASS",
+    "status": "GATE_2A_EVOLUTION_SIMULADO_EN_PROGRESO",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -364,7 +364,7 @@
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Implementar Gate 2 con Evolution simulado, idempotencia, ordering, receipts, backfill y worker falso.",
+    "Completar Gate 2 con journal/outbox durable y proyección comercial integrada.",
     "Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

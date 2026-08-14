@@ -75,6 +75,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Implementar Gate 2 con Evolution simulado, idempotencia, ordering, receipts, backfill y worker falso.
+- Completar Gate 2 con journal/outbox durable y proyección comercial integrada.
 - Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

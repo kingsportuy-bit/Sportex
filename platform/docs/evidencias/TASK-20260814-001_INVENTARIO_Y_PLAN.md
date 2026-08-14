@@ -89,3 +89,14 @@ datos reales, captura pasiva ni envío.
   reset y mutaciones locales continúan bloqueados fuera de desarrollo seguro.
 - El contenedor temporal verificado fue eliminado. No se tocó ninguna base,
   integración o dato remoto.
+
+## Checkpoint ejecutado — Gate 2A
+
+- Adaptador local Evolution: mensajes en ambos sentidos y receipts normalizados.
+- Journal: deduplicación tenant/evento, orden por `occurredAt`, mezcla controlada
+  de backfill y live simulado, cuarentena y reanudación del worker.
+- Transporte falso: outbound apagado por defecto, confirmación humana,
+  idempotencia y receipts monotónicos (`SENT -> DELIVERED -> READ`).
+- Core `32/32` PASS.
+- Sigue faltando persistencia durable del journal/outbox y proyección integrada;
+  no se creó webhook, no se consultó Evolution y no se envió ningún mensaje.
