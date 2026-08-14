@@ -5,6 +5,7 @@ import type { EvolutionReplayEvent } from "../domain/commercial-models.js";
 import type { ActorContext } from "../domain/models.js";
 import { CommercialReplayService } from "../application/commercial-replay-service.js";
 import { CoreService } from "../application/core-service.js";
+import { LocalWhatsAppSimulationService } from "../application/local-whatsapp-simulation-service.js";
 import { idempotencyKey } from "./context.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
@@ -99,6 +100,10 @@ const resetCommercialDemoSchema = z.object({
   confirmation: z.literal("RESTAURAR_DATOS_FICTICIOS"),
 }).strict();
 
+const simulatedOutboundSchema = z.object({
+  text: z.string().trim().min(1).max(4_000),
+}).strict();
+
 export async function registerRoutes(
   app: FastifyInstance,
   service: CoreService,
@@ -106,6 +111,7 @@ export async function registerRoutes(
   config: SportexConfig,
   resolveContext: ContextResolver,
   localCommercialReplayEnabled: boolean,
+  localWhatsAppSimulation: LocalWhatsAppSimulationService | null,
 ): Promise<void> {
   app.get("/v1/public-config", async () => ({
     data: {
@@ -116,6 +122,7 @@ export async function registerRoutes(
       commercialWorkspaceEnabled: commercialService !== null,
       localCommercialReplayEnabled,
       localCommercialPersistenceEnabled: localCommercialReplayEnabled && Boolean(config.commercialDemoFile),
+      localWhatsAppSimulationEnabled: localWhatsAppSimulation !== null,
     },
   }));
 
@@ -242,5 +249,26 @@ export async function registerRoutes(
       const result = await commercialService.resetDemo(context, input.confirmation);
       return { data: result, meta: { correlationId: context.correlationId } };
     });
+
+    if (localWhatsAppSimulation) {
+      app.get("/v1/local/whatsapp-simulated/status", async (request) => {
+        const context = await resolveContext(request);
+        const result = await localWhatsAppSimulation.status(context);
+        return { data: result, meta: { correlationId: context.correlationId } };
+      });
+
+      app.post("/v1/local/whatsapp-simulated/workspace/:itemId/messages", async (request, reply) => {
+        const context = await resolveContext(request);
+        const params = commercialItemParamsSchema.parse(request.params);
+        const input = simulatedOutboundSchema.parse(request.body);
+        const item = await localWhatsAppSimulation.send(
+          context,
+          params.itemId,
+          input.text,
+          idempotencyKey(request),
+        );
+        return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+      });
+    }
   }
 }

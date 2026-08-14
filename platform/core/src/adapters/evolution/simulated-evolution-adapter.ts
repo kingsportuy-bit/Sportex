@@ -209,6 +209,11 @@ export class InMemoryWhatsAppOutboundStore implements WhatsAppOutboundStore {
     return record ? structuredClone(record) : null;
   }
 
+  async findByIdempotencyKey(tenantId: string, idempotencyKey: string): Promise<WhatsAppOutboundRecord | null> {
+    const record = this.records.get(`${tenantId}:${idempotencyKey}`);
+    return record ? structuredClone(record) : null;
+  }
+
   async update(record: WhatsAppOutboundRecord): Promise<void> {
     const key = `${record.tenantId}:${record.idempotencyKey}`;
     if (!this.records.has(key)) throw new Error("whatsapp_outbound_not_found");

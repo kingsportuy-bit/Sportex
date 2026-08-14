@@ -187,6 +187,18 @@ export class PostgresWhatsAppTransportStore implements WhatsAppIngressJournal, W
     });
   }
 
+  async findByIdempotencyKey(tenantId: string, idempotencyKey: string): Promise<WhatsAppOutboundRecord | null> {
+    return this.withTenant(tenantId, async (client) => {
+      const result = await client.query(
+        `SELECT * FROM ${this.tables.outbound}
+         WHERE tenant_id = $1 AND idempotency_key = $2`,
+        [tenantId, idempotencyKey],
+      );
+      const row = result.rows[0] as Record<string, unknown> | undefined;
+      return row ? rowToOutbound(row) : null;
+    });
+  }
+
   async update(record: WhatsAppOutboundRecord): Promise<void> {
     await this.withTenant(record.tenantId, async (client) => {
       const result = await client.query(

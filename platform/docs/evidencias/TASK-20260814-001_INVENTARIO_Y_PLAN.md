@@ -115,3 +115,19 @@ datos reales, captura pasiva ni envío.
   preservadas.
 - Core `34/34` PASS. Los contenedores temporales verificados fueron eliminados.
 - No hubo acceso a Evolution, Supabase remoto, Meta, VPS, datos ni mensajes reales.
+
+## Checkpoint ejecutado — Gate 3A
+
+- La interfaz local permite escribir y enviar un mensaje manual simulado desde
+  el compositor de la conversación seleccionada.
+- El recorrido observado fue
+  `UI -> API local -> outbox falso -> transporte Evolution simulado -> journal -> worker -> proyección comercial -> UI`.
+- El mensaje de prueba quedó visible como salida de Delta tanto en la lista de
+  conversaciones como dentro del hilo.
+- Detalles se abrió dentro del puesto operativo y el compositor continuó
+  habilitado, por lo que el operador conserva contexto y capacidad de respuesta.
+- La prueba visual detectó y corrigió compatibilidad con un JSON persistente
+  anterior que no contenía Contacto separado; ahora se hidrata solo desde las
+  referencias ficticias de la conversación.
+- Core `34/34` PASS y typecheck PASS.
+- No hubo webhook, conexión Evolution, dato real, outbound, deploy ni migración remota.

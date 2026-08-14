@@ -232,3 +232,21 @@ DELTA define reglas y valida negocio.
   9 del Core base.
 - Gate 2 queda cerrado. El siguiente corte es Gate 3: API/proyecciones y acciones
   internas de la mesa local, todavía sin integración real.
+
+### 2026-08-14 — checkpoint Gate 3A
+
+- El compositor del chat local ya ejecuta un envío manual simulado desde la
+  interfaz, con permiso `commercial.manage`, `Idempotency-Key` y resolución del
+  contacto dentro del tenant.
+- La intención pasa por outbox falso, transporte Evolution simulado, journal,
+  worker y proyector; el mensaje vuelve a la misma conversación como salida de
+  Delta sin conectarse a WhatsApp.
+- La capacidad nace físicamente ausente fuera del triple guard local. La UI
+  informa `Simulación local · no llega a WhatsApp` y no habilita adjuntos.
+- Se agregó compatibilidad segura para expedientes JSON locales anteriores que
+  todavía no incluían la entidad Contacto separada; el contacto se reconstruye
+  desde la conversación ficticia, sin modificar datos reales.
+- Browser local: el mensaje apareció en la lista y en el hilo; al abrir Detalles,
+  el chat y el compositor siguieron disponibles. Core `34/34` PASS.
+- Gate 3 continúa: faltan las acciones internas y la producción mínima del
+  recorrido antes de preparar cualquier conexión remota.

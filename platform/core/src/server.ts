@@ -9,6 +9,7 @@ import { LocalJsonCommercialReplayStore } from "./adapters/persistence/local-jso
 import { PostgresCommercialReplayStore } from "./adapters/persistence/postgres-commercial-replay-store.js";
 import { CommercialReplayService } from "./application/commercial-replay-service.js";
 import { CoreService } from "./application/core-service.js";
+import { LocalWhatsAppSimulationService } from "./application/local-whatsapp-simulation-service.js";
 import { createCommercialDemoSeed } from "./fixtures/commercial-demo-seed.js";
 import type { CoreStore } from "./ports/core-store.js";
 import { AppError } from "./shared/errors.js";
@@ -49,6 +50,9 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
       localCommercialReplayEnabled && options.config.commercialDemoFile ? createCommercialDemoSeed : null,
       service,
     )
+    : null;
+  const localWhatsAppSimulation = localCommercialReplayEnabled && commercialService
+    ? new LocalWhatsAppSimulationService(commercialService)
     : null;
   const authFetch = options.authFetch ?? fetch;
   const resolveContext = (request: Parameters<typeof resolveActorContext>[0]) =>
@@ -136,6 +140,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     options.config,
     resolveContext,
     localCommercialReplayEnabled,
+    localWhatsAppSimulation,
   );
 
   if (options.config.frontendDir) {

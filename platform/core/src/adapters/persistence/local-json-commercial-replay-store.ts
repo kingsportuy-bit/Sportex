@@ -26,6 +26,30 @@ function assertState(value: unknown): asserts value is CommercialReplayState {
   if (invalidItem || invalidIdempotency) throw new Error("commercial_demo_file_invalid");
 }
 
+function hydrateLegacyContacts(state: CommercialReplayState): CommercialReplayState {
+  return {
+    ...state,
+    items: state.items.map((item) => {
+      if (item.contact) return item;
+      return {
+        ...item,
+        contact: {
+          id: `contact-${item.conversation.id}`,
+          tenantId: item.tenantId,
+          provider: "EVOLUTION",
+          providerInstance: item.conversation.providerInstance,
+          providerContactRef: item.conversation.providerConversationRef,
+          displayName: item.conversation.contactName,
+          normalizedPhone: null,
+          createdAt: item.conversation.firstContactAt,
+          updatedAt: item.conversation.lastActivityAt,
+          fixtureOnly: true,
+        },
+      };
+    }),
+  };
+}
+
 class JsonCommercialReplayTransaction implements CommercialReplayTransaction {
   constructor(
     private readonly tenantId: string,
@@ -147,7 +171,7 @@ export class LocalJsonCommercialReplayStore implements CommercialReplayStore {
       throw new Error("commercial_demo_file_invalid");
     }
     assertState(parsed);
-    this.state = parsed;
+    this.state = hydrateLegacyContacts(parsed);
     return this.state;
   }
 

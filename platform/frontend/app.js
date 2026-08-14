@@ -39,6 +39,7 @@ applyTheme(storedTheme());
 const state = {
   config: null,
   localDemo: false,
+  localWhatsappSimulation: false,
   token: sessionStorage.getItem("sportex_access_token"),
   refreshToken: sessionStorage.getItem("sportex_refresh_token"),
   session: null,
@@ -1192,7 +1193,7 @@ function renderWhatsAppList(items) {
   }
 }
 
-function renderWhatsAppComposer() {
+function renderWhatsAppComposer(item) {
   const composer = element("section", "whatsapp-composer");
   const attach = element("button", "whatsapp-composer-icon", "+");
   attach.type = "button";
@@ -1204,10 +1205,46 @@ function renderWhatsAppComposer() {
   input.placeholder = "Escribí un mensaje";
   const send = element("button", "whatsapp-send", "➤");
   send.type = "button";
-  send.disabled = true;
-  send.title = "El envío se habilitará al conectar WhatsApp";
+  send.disabled = !state.localWhatsappSimulation;
+  send.title = state.localWhatsappSimulation
+    ? "Enviar dentro de la simulación local"
+    : "El envío se habilitará al conectar WhatsApp";
   send.setAttribute("aria-label", "Enviar mensaje");
-  const note = element("small", "whatsapp-local-note", "Vista local · no envía mensajes");
+  const note = element(
+    "small",
+    "whatsapp-local-note",
+    state.localWhatsappSimulation
+      ? "Simulación local · no llega a WhatsApp"
+      : "Vista local · no envía mensajes",
+  );
+  const submit = async () => {
+    const text = input.value.trim();
+    if (!text || send.disabled || !state.localWhatsappSimulation) return;
+    setButtonBusy(send, true, "…");
+    try {
+      await api(`/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`, {
+        method: "POST",
+        headers: { "idempotency-key": `local-message-${crypto.randomUUID()}` },
+        body: JSON.stringify({ text }),
+      });
+      input.value = "";
+      await loadData();
+      state.selectedCommercialId = item.id;
+      renderWhatsApp();
+      toast("Mensaje agregado a la conversación simulada.");
+    } catch (error) {
+      toast(friendlyError(error), "error");
+    } finally {
+      setButtonBusy(send, false, "");
+    }
+  };
+  send.addEventListener("click", submit);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      void submit();
+    }
+  });
   composer.append(attach, input, send, note);
   return composer;
 }
@@ -1247,7 +1284,7 @@ function renderWhatsAppChatPane(item) {
     );
     conversation.append(row);
   }
-  pane.append(header, conversation, renderWhatsAppComposer());
+  pane.append(header, conversation, renderWhatsAppComposer(item));
   return pane;
 }
 
@@ -2001,6 +2038,7 @@ async function initialize() {
   try {
     const response = await fetch("/v1/public-config");
     state.config = (await jsonResponse(response)).data;
+    state.localWhatsappSimulation = Boolean(state.config.localWhatsAppSimulationEnabled);
     $("#release-label").textContent = `${state.config.environment} · ${state.config.release}`;
   } catch (error) {
     $("#login-error").textContent = friendlyError(error);

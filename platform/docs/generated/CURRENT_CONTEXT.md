@@ -14,7 +14,7 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 45736/60000 caracteres.
+- Presupuesto potencial: 46769/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
@@ -22,7 +22,7 @@ Actualizado: 2026-08-14.
 - Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
 - Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
 - Riesgos: El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota. | TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias. | Los snapshots remotos no autorizan escrituras.
-- Proxima accion: Implementar Gate 3 con API/proyecciones, aprobaciones y acciones internas de la mesa local.
+- Proxima accion: Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.
 
 ## Regla de uso
 

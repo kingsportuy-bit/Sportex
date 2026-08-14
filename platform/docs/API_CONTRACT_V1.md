@@ -99,8 +99,21 @@ conversación, atribución, lead, oportunidad, etapa y próxima acción.
 
 ### `GET /v1/public-config`
 
-Incluye `localCommercialReplayEnabled` para que la web muestre el modo local
+Incluye `localCommercialReplayEnabled`, `localCommercialPersistenceEnabled` y
+`localWhatsAppSimulationEnabled` para que la web muestre capacidades locales
 solo cuando el guard de entorno está activo.
+
+### `GET /v1/local/whatsapp-simulated/status`
+
+Capacidad: `commercial.read`. Devuelve conteos del journal simulado y del outbox
+pendiente del tenant. No consulta Evolution real.
+
+### `POST /v1/local/whatsapp-simulated/workspace/:itemId/messages`
+
+Capacidad: `commercial.manage`. Requiere `Idempotency-Key` y un body
+`{ "text": "..." }`. Resuelve el contacto desde el expediente tenant-aware,
+registra la intención en el outbox falso y proyecta el resultado dentro de la
+misma conversación. Nunca existe fuera del triple guard local y no envía WhatsApp.
 
 ## Pagos
 

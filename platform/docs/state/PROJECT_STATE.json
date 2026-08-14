@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Implementar Gate 3: conectar API y mesa local a las proyecciones, aprobaciones y acciones internas del Core."
+    "nextAction": "Continuar Gate 3: integrar acciones internas y produccion minima sobre la mesa local ya conectada al pipeline simulado."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,14 +44,14 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_2_CERRADO_PIPELINE_DURABLE_LOCAL_PASS",
+    "status": "GATE_3A_COMPOSITOR_LOCAL_SIMULADO_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
       "DELTA/negocio/procesos/handoff-sportex-inteligencia-conversacional.md",
       "DELTA-DEC-007 / DELTA-DEC-010 / DELTA-DEC-011"
     ],
-    "nextStage": "GATE_3_MESA_LOCAL_INTEGRADA"
+    "nextStage": "GATE_3B_ACCIONES_INTERNAS_Y_PRODUCCION_MINIMA"
   },
   "nextCampaign": null,
   "decisions": [
@@ -103,7 +103,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "note": "Gate 2 validado con Core 34/34, PostgreSQL efímero, journal, worker sin UI, outbox falso, receipts y rollback con datos."
+    "note": "Gate 3A validado con Core 34/34 y browser: compositor local, outbox falso, transporte simulado, journal, proyeccion y detalle coexistente."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
@@ -149,11 +149,27 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Gate 2 cierra el pipeline WhatsApp simulado durable: journal, worker, proyección, outbox falso, receipts, aislamiento y rollback local.",
+    "summary": "Gate 3A conecta el compositor local al pipeline simulado y devuelve el mensaje a la misma conversacion sin outbound real.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "El compositor WhatsApp local envia por el outbox y transporte falsos, proyecta la salida en el mismo hilo y permanece usable con Detalles abierto.",
+      "documents": [
+        "core/src/application/local-whatsapp-simulation-service.ts",
+        "frontend/app.js",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -344,7 +360,7 @@
   "runtimeTruth": {
     "status": "VALIDADO_DESARROLLO_LOCAL",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Puesto WhatsApp observado en 127.0.0.1:8080; una seña ficticia creó y vinculó SPX-2026-00001, Cliente y Pago dentro del detalle sin ocultar el chat. No prueba runtime remoto."
+    "note": "Puesto WhatsApp observado en 127.0.0.1:8081; un mensaje manual ficticio recorrio outbox, transporte simulado, journal y proyeccion y aparecio en el hilo con Detalles abierto. No prueba runtime remoto."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -364,8 +380,8 @@
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Implementar Gate 3 con API/proyecciones, aprobaciones y acciones internas de la mesa local.",
-    "Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.",
+    "Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.",
+    "Preparar la conexion continua solo despues de cerrar el recorrido local completo.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

@@ -23,6 +23,7 @@ export interface WhatsAppIngressJournal {
 export interface WhatsAppOutboundStore {
   enqueue(record: WhatsAppOutboundRecord): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }>;
   findByProviderMessageId(tenantId: string, providerMessageId: string): Promise<WhatsAppOutboundRecord | null>;
+  findByIdempotencyKey(tenantId: string, idempotencyKey: string): Promise<WhatsAppOutboundRecord | null>;
   update(record: WhatsAppOutboundRecord): Promise<void>;
   pendingOutbound(tenantId: string, limit?: number): Promise<WhatsAppOutboundRecord[]>;
   close(): Promise<void>;

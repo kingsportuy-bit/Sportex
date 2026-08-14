@@ -59,7 +59,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Gate 2 cierra el pipeline WhatsApp simulado durable: journal, worker, proyección, outbox falso, receipts, aislamiento y rollback local.
+- Gate 3A conecta el compositor local al pipeline simulado y devuelve el mensaje a la misma conversacion sin outbound real.
 
 ## Riesgos
 
@@ -75,6 +75,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Implementar Gate 3 con API/proyecciones, aprobaciones y acciones internas de la mesa local.
-- Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.
+- Continuar Gate 3 con acciones internas y produccion minima sobre la mesa local.
+- Preparar la conexion continua solo despues de cerrar el recorrido local completo.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

@@ -148,6 +148,30 @@ test("local API exposes the fictional replay and its visible workspace projectio
   assert.equal(listed.statusCode, 200);
   assert.equal(listed.json().data.length, 1);
   assert.equal(listed.json().data[0].opportunity.stage, "NUEVO");
+
+  const sent = await app.inject({
+    method: "POST",
+    url: `/v1/local/whatsapp-simulated/workspace/${listed.json().data[0].id}/messages`,
+    headers: {
+      ...headers("simulated-outbound-api-001"),
+      "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage",
+    },
+    payload: { text: "Respuesta manual desde la mesa local" },
+  });
+  assert.equal(sent.statusCode, 201);
+  assert.equal(sent.json().data.conversation.messages.length, 2);
+  assert.equal(sent.json().data.conversation.messages.at(-1).direction, "DELTA");
+  const transportStatus = await app.inject({
+    method: "GET",
+    url: "/v1/local/whatsapp-simulated/status",
+    headers: {
+      ...headers("status-does-not-use-idempotency"),
+      "x-sportex-capabilities": "commercial.read",
+    },
+  });
+  assert.equal(transportStatus.statusCode, 200);
+  assert.equal(transportStatus.json().data.ingress.PROCESSED, 1);
+  assert.equal(transportStatus.json().data.pendingOutbound, 0);
   await app.close();
 });
 
@@ -192,6 +216,13 @@ test("PostgreSQL enables the commercial projection without exposing local replay
   });
   assert.equal(replay.statusCode, 404);
   assert.equal(mutation.statusCode, 404);
+  const simulatedOutbound = await app.inject({
+    method: "POST",
+    url: "/v1/local/whatsapp-simulated/workspace/workspace-fixture/messages",
+    headers: headers(),
+    payload: { text: "Debe permanecer bloqueado" },
+  });
+  assert.equal(simulatedOutbound.statusCode, 404);
   await app.close();
 });
 
@@ -428,6 +459,25 @@ test("local JSON store persists across reconstruction and fails closed on corrup
     assert.equal(persisted?.opportunity.nextAction, "Esta acción debe sobrevivir el reinicio");
     assert.equal(persisted?.opportunity.version, changed.opportunity.version);
     await secondStore.close();
+
+    const legacyState = JSON.parse(await readFile(file, "utf8")) as {
+      items: Array<Record<string, unknown>>;
+    };
+    delete legacyState.items[0]?.contact;
+    await writeFile(file, `${JSON.stringify(legacyState)}\n`, "utf8");
+    const compatibleStore = new LocalJsonCommercialReplayStore(file);
+    const compatibleService = new CommercialReplayService(
+      compatibleStore,
+      undefined,
+      undefined,
+      createCommercialDemoSeed,
+    );
+    const compatibleItem = (await compatibleService.list(manager)).find((item) => item.id === target.id);
+    assert.equal(
+      compatibleItem?.contact.providerContactRef,
+      compatibleItem?.conversation.providerConversationRef,
+    );
+    await compatibleStore.close();
 
     await writeFile(corruptFile, "{estado-invalido", "utf8");
     const corruptStore = new LocalJsonCommercialReplayStore(corruptFile);
