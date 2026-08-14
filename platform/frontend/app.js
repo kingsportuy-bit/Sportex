@@ -79,6 +79,9 @@ const messages = {
   commercial_version_conflict: "El lead cambió en otra acción. Recargamos su versión más reciente.",
   commercial_stage_transition_invalid: "Esa transición de etapa no está permitida por el Core.",
   commercial_demo_confirmation_required: "Confirmá la restauración de los datos ficticios.",
+  commercial_deposit_not_validated: "La seña debe estar validada antes de crear el pedido.",
+  commercial_order_data_incomplete: "Faltan la cotización o el nombre del equipo para crear el pedido.",
+  commercial_conversion_conflict: "Esta oportunidad ya fue convertida con otros datos de pago.",
 };
 
 const localIdentity = {
@@ -300,7 +303,7 @@ function renderOrders() {
   const candidates = $("#order-candidates");
   if (candidates) {
     candidates.replaceChildren();
-    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA");
+    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA" && !item.opportunity.coreConversion);
     for (const item of pending) {
       const row = element("article", "candidate-row");
       const text = element("div");
@@ -345,7 +348,7 @@ function renderClients() {
   const candidates = $("#client-candidates");
   if (candidates) {
     candidates.replaceChildren();
-    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA");
+    const pending = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA" && !item.opportunity.coreConversion);
     for (const item of pending) {
       const row = element("article", "candidate-row");
       const text = element("div");
@@ -416,6 +419,9 @@ function leadPriority(item) {
     return { key: "waiting", label: "Esperando cliente", reason: dueAt ? `Revisar ${shortDate(dueAt)}` : "Revisión pendiente", rank: 2 };
   }
   if (item.opportunity.stage === "SENA_VALIDADA") {
+    if (item.opportunity.coreConversion) {
+      return { key: "action", label: "Pedido creado", reason: item.opportunity.coreConversion.orderNumber, rank: 3 };
+    }
     return { key: "decision", label: "Revisar seña", reason: "Cliente y pedido todavía no vinculados", rank: 3 };
   }
   return { key: "action", label: "Próxima acción", reason: dueAt ? `Objetivo ${shortDate(dueAt)}` : "Sin fecha definida", rank: 4 };
@@ -428,7 +434,8 @@ function commercialSuggestion(item) {
   }
   if (item.opportunity.stage === "COTIZADO") return "Confirmá que recibieron la cotización y registrá la decisión.";
   if (item.opportunity.stage === "EN_SEGUIMIENTO") return "Retomá el contacto en la fecha prevista sin repetir preguntas ya respondidas.";
-  if (item.opportunity.stage === "SENA_VALIDADA") return "Revisá la evidencia ficticia. La creación automática de Cliente y Pedido todavía no está implementada.";
+  if (item.opportunity.stage === "SENA_VALIDADA" && item.opportunity.coreConversion) return `El pedido ${item.opportunity.coreConversion.orderNumber} ya quedó vinculado a esta conversación.`;
+  if (item.opportunity.stage === "SENA_VALIDADA") return "Revisá la evidencia y convertí la seña validada en Cliente y Pedido desde los detalles.";
   if (item.opportunity.stage === "PERDIDO") return "El cierre ya está registrado; conservá el motivo para Resultados.";
   return "Dejá un próximo paso concreto y una fecha para revisarlo.";
 }
@@ -655,6 +662,9 @@ function renderBrief(item) {
     warning.append(element("strong", "", "SEÑA FICTICIA · "), document.createTextNode(item.opportunity.depositValidation.note));
     card.append(warning);
   }
+  if (item.opportunity.coreConversion) {
+    card.append(fact("Pedido vinculado", item.opportunity.coreConversion.orderNumber));
+  }
   return card;
 }
 
@@ -814,6 +824,77 @@ function openWhatsAppDetails(item) {
   renderWhatsAppDetail(item);
 }
 
+function renderOrderConversion(item) {
+  if (item.opportunity.stage !== "SENA_VALIDADA") return null;
+  const card = detailCard("PEDIDO / CORE", item.opportunity.coreConversion ? "Pedido vinculado" : "Crear pedido");
+  if (item.opportunity.coreConversion) {
+    const conversion = item.opportunity.coreConversion;
+    const grid = element("div", "brief-grid");
+    grid.append(
+      fact("Pedido", conversion.orderNumber),
+      fact("Seña", money(conversion.depositCents, conversion.currency)),
+      fact("Total", money(conversion.quotedTotalCents, conversion.currency)),
+      fact("Estado", "Listo para preparar producción"),
+    );
+    card.append(grid);
+    return card;
+  }
+
+  const form = element("form", "command-form");
+  const reference = element("input");
+  reference.required = true;
+  reference.maxLength = 160;
+  reference.placeholder = "Ej.: transferencia 1234";
+  const amount = element("input");
+  amount.type = "number";
+  amount.required = true;
+  amount.min = "1";
+  amount.step = "1";
+  amount.placeholder = "Importe en pesos";
+  const error = element("p", "form-error");
+  error.setAttribute("role", "alert");
+  const button = element("button", "button button--primary button--full", "Crear cliente y pedido");
+  button.type = "submit";
+  form.append(
+    fieldLabel("Referencia del comprobante", reference),
+    fieldLabel("Seña en pesos", amount),
+    element("p", "command-help", `Total cotizado: ${money(item.opportunity.quote?.totalCents ?? 0)}. La operación es idempotente.`),
+    error,
+    button,
+  );
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    void convertCommercialToOrder(item, reference.value, Number(amount.value), button, error);
+  });
+  card.append(form);
+  return card;
+}
+
+async function convertCommercialToOrder(item, evidenceReference, amountPesos, button, errorNode) {
+  errorNode.textContent = "";
+  setButtonBusy(button, true, "Creando…");
+  try {
+    await api(`/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/convert-to-order`, {
+      method: "POST",
+      body: JSON.stringify({
+        evidenceReference: evidenceReference.trim(),
+        depositCents: amountPesos * 100,
+        expectedVersion: item.opportunity.version,
+      }),
+    });
+    await loadData();
+    state.selectedCommercialId = item.id;
+    state.whatsappDetailsOpen = true;
+    renderWhatsApp();
+    toast("Cliente, seña y pedido vinculados.");
+  } catch (error) {
+    errorNode.textContent = friendlyError(error);
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
 function renderWhatsAppInlineDetails(item) {
   const panel = element("aside", "whatsapp-inline-details");
   panel.setAttribute("aria-label", "Detalles del contacto y del proceso");
@@ -835,10 +916,12 @@ function renderWhatsAppInlineDetails(item) {
   });
   header.append(identity, close);
   const body = element("div", "whatsapp-inline-details-body");
+  const conversion = renderOrderConversion(item);
   body.append(
     renderContactOverview(item),
     renderProcessOverview(item),
     renderBrief(item),
+    ...(conversion ? [conversion] : []),
     renderOrigin(item),
     renderHistory(item),
   );

@@ -142,6 +142,19 @@ export interface CommercialDepositValidation {
   fixtureOnly: true;
 }
 
+export interface CommercialCoreConversion {
+  clientId: string;
+  certifiedPaymentId: string;
+  orderId: string;
+  orderNumber: string;
+  evidenceReference: string;
+  depositCents: number;
+  quotedTotalCents: number;
+  currency: "UYU";
+  convertedAt: string;
+  convertedBy: string;
+}
+
 export interface CommercialStageHistoryEntry {
   id: string;
   from: CommercialStage | null;
@@ -173,6 +186,7 @@ export interface CommercialOpportunity {
   quote: CommercialQuoteSummary | null;
   lossReason: string | null;
   depositValidation: CommercialDepositValidation | null;
+  coreConversion: CommercialCoreConversion | null;
   stageHistory: CommercialStageHistoryEntry[];
   followUps: CommercialFollowUp[];
   evidenceMessageId: string;
@@ -187,7 +201,8 @@ export interface CommercialActivity {
     | "MESSAGE_RECEIVED"
     | "STAGE_CHANGED"
     | "NEXT_ACTION_UPDATED"
-    | "FOLLOW_UP_RECORDED";
+    | "FOLLOW_UP_RECORDED"
+    | "ORDER_CREATED";
   occurredAt: string;
   actorId: string;
   correlationId: string;
@@ -228,5 +243,11 @@ export interface UpdateCommercialNextActionInput {
 export interface RecordCommercialFollowUpInput {
   note: string;
   outcome: CommercialFollowUpOutcome;
+  expectedVersion: number;
+}
+
+export interface ConvertCommercialOpportunityInput {
+  evidenceReference: string;
+  depositCents: number;
   expectedVersion: number;
 }

@@ -163,3 +163,16 @@ DELTA define reglas y valida negocio.
   las dos verticales existentes deben integrarse, no reemplazarse.
 - `HANDOFF-20260814-003` define autoridad, gates, aceptación y límites.
 - La ejecución comienza en Gate 1 después de cerrar/versionar el corte UI.
+
+### 2026-08-14 — checkpoint Gate 1A
+
+- Una seña validada ahora crea y vincula Cliente, Pago certificado y un único
+  Pedido con claves idempotentes por oportunidad.
+- La ficha conserva IDs, pedido, importes, actor, momento y `ORDER_CREATED`.
+- La acción vive en Detalles de WhatsApp sin ocultar el chat.
+- Pasaron reintento sin duplicación, rechazo sin seña, conflicto y API completa.
+- Browser local: Lucas R. pasó de seña ficticia a `SPX-2026-00001`; los contadores
+  visibles cambiaron a 1 Cliente y 1 Pedido y la próxima acción quedó en preparar
+  producción. No hubo red, datos reales ni outbound.
+- Gate 1 continúa: falta normalizar Contacto como entidad reutilizable, persistencia
+  objetivo/migración y prueba de varias conversaciones/oportunidades por contacto.

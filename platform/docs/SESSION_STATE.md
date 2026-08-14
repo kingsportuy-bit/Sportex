@@ -59,12 +59,12 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`.
-- Inventario y plan por gates para integrar las dos verticales existentes, conservar la UI aprobada y preparar WhatsApp real sin reconstruir SPORTEX.
+- Gate 1A integra la ficha comercial y el Core transaccional: seña validada crea Cliente, Pago y Pedido único desde Detalles de WhatsApp.
 
 ## Riesgos
 
 - Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures.
-- La implementacion de TASK-20260803-005 no tiene commit ni push; 0ccd4dc es solo el resguardo local previo.
+- El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
 - Los snapshots remotos no autorizan escrituras.
 
@@ -76,6 +76,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Ejecutar Gate 1 local de TASK-20260814-001.
+- Completar Gate 1 con Contacto reutilizable, persistencia objetivo y migración local ensayada.
 - Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

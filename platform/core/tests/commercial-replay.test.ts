@@ -6,6 +6,7 @@ import test from "node:test";
 import { InMemoryCommercialReplayStore } from "../src/adapters/persistence/in-memory-commercial-replay-store.js";
 import { LocalJsonCommercialReplayStore } from "../src/adapters/persistence/local-json-commercial-replay-store.js";
 import { CommercialReplayService } from "../src/application/commercial-replay-service.js";
+import { CoreService } from "../src/application/core-service.js";
 import { loadConfig, type SportexConfig } from "../src/config.js";
 import type { EvolutionReplayEvent } from "../src/domain/commercial-models.js";
 import type { ActorContext } from "../src/domain/models.js";
@@ -280,6 +281,91 @@ test("Core governs stage, next action, follow-up, versions, permissions and rese
   assert.equal(restored.find((item) => item.id === target.id)?.opportunity.version, 1);
 });
 
+test("validated deposit converts once into Core client, payment and order", async () => {
+  const commercialStore = new InMemoryCommercialReplayStore();
+  const coreStore = new InMemoryCoreStore();
+  const now = () => new Date("2026-08-14T15:00:00.000Z");
+  const core = new CoreService(coreStore, now);
+  const service = new CommercialReplayService(
+    commercialStore,
+    now,
+    undefined,
+    createCommercialDemoSeed,
+    core,
+  );
+  const manager = context(tenantA, [
+    "commercial.read",
+    "commercial.manage",
+    "clients.create",
+    "payments.certify",
+    "orders.create",
+  ]);
+  const target = (await service.list(manager)).find((item) => item.opportunity.stage === "SENA_VALIDADA");
+  assert.ok(target);
+
+  const converted = await service.convertValidatedOpportunity(manager, target.id, {
+    evidenceReference: "fixture-transferencia-delta-001",
+    depositCents: 500_000,
+    expectedVersion: target.opportunity.version,
+  });
+  const replayed = await service.convertValidatedOpportunity(manager, target.id, {
+    evidenceReference: "fixture-transferencia-delta-001",
+    depositCents: 500_000,
+    expectedVersion: target.opportunity.version,
+  });
+
+  assert.equal(converted.opportunity.coreConversion?.orderId, replayed.opportunity.coreConversion?.orderId);
+  assert.match(converted.opportunity.coreConversion?.orderNumber ?? "", /^SPX-2026-/u);
+  assert.equal(converted.opportunity.nextAction, "Preparar el pedido para producción");
+  assert.equal(converted.activity.at(-1)?.type, "ORDER_CREATED");
+  assert.equal(coreStore.snapshot().clients.length, 1);
+  assert.equal(coreStore.snapshot().payments.length, 1);
+  assert.equal(coreStore.snapshot().orders.length, 1);
+  assert.equal(coreStore.snapshot().outboxEvents.length, 1);
+
+  await assert.rejects(
+    service.convertValidatedOpportunity(manager, target.id, {
+      evidenceReference: "otra-transferencia",
+      depositCents: 500_000,
+      expectedVersion: converted.opportunity.version,
+    }),
+    isAppError("commercial_conversion_conflict"),
+  );
+});
+
+test("commercial conversion fails closed before a validated deposit", async () => {
+  const commercialStore = new InMemoryCommercialReplayStore();
+  const coreStore = new InMemoryCoreStore();
+  const core = new CoreService(coreStore);
+  const service = new CommercialReplayService(
+    commercialStore,
+    undefined,
+    undefined,
+    createCommercialDemoSeed,
+    core,
+  );
+  const manager = context(tenantA, [
+    "commercial.read",
+    "commercial.manage",
+    "clients.create",
+    "payments.certify",
+    "orders.create",
+  ]);
+  const target = (await service.list(manager)).find((item) => item.opportunity.stage === "COTIZADO");
+  assert.ok(target);
+
+  await assert.rejects(
+    service.convertValidatedOpportunity(manager, target.id, {
+      evidenceReference: "fixture-transferencia-bloqueada",
+      depositCents: 100_000,
+      expectedVersion: target.opportunity.version,
+    }),
+    isAppError("commercial_deposit_not_validated"),
+  );
+  assert.equal(coreStore.snapshot().clients.length, 0);
+  assert.equal(coreStore.snapshot().orders.length, 0);
+});
+
 test("local JSON store persists across reconstruction and fails closed on corruption", async () => {
   const directory = await mkdtemp(join(tmpdir(), "sportex-crm-"));
   const file = join(directory, "commercial-demo-v1.json");
@@ -327,7 +413,7 @@ test("persistent CRM API edits, restarts and restores only fictional fixtures", 
   const config: SportexConfig = { ...localConfig, commercialDemoFile: file };
   const managerHeaders = {
     ...headers(),
-    "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage",
+    "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage,clients.create,clients.read,payments.certify,orders.create,orders.read",
   };
   try {
     const firstApp = await buildServer({ config, store: new InMemoryCoreStore(), logger: false });
@@ -360,6 +446,25 @@ test("persistent CRM API edits, restarts and restores only fictional fixtures", 
     assert.equal(reset.json().data.restored, 18);
     const restored = await secondApp.inject({ method: "GET", url: "/v1/commercial/workspace", headers: managerHeaders });
     assert.equal(restored.json().data.find((item: { id: string }) => item.id === target.id).opportunity.stage, "NUEVO");
+
+    const convertible = restored.json().data.find((item: { opportunity: { stage: string } }) => item.opportunity.stage === "SENA_VALIDADA");
+    assert.ok(convertible);
+    const converted = await secondApp.inject({
+      method: "POST",
+      url: `/v1/local/commercial/workspace/${convertible.id}/convert-to-order`,
+      headers: managerHeaders,
+      payload: {
+        evidenceReference: "fixture-api-transferencia-001",
+        depositCents: 250_000,
+        expectedVersion: convertible.opportunity.version,
+      },
+    });
+    assert.equal(converted.statusCode, 201);
+    assert.match(converted.json().data.opportunity.coreConversion.orderNumber, /^SPX-\d{4}-/u);
+    const orders = await secondApp.inject({ method: "GET", url: "/v1/orders", headers: managerHeaders });
+    const clients = await secondApp.inject({ method: "GET", url: "/v1/clients", headers: managerHeaders });
+    assert.equal(orders.json().data.length, 1);
+    assert.equal(clients.json().data.length, 1);
     await secondApp.close();
   } finally {
     await rm(directory, { recursive: true, force: true });

@@ -246,6 +246,7 @@ function opportunity(spec: DemoSpec, tenantId: string, index: number, createdAt:
       validatedBy: "actor-ficticio-seed",
       fixtureOnly: true,
     } : null,
+    coreConversion: null,
     stageHistory: [{
       id: `stage-history-ficticio-${String(index + 1).padStart(2, "0")}`,
       from: null,

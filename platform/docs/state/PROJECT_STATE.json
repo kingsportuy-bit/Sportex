@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Ejecutar Gate 1: integrar localmente Contacto, Conversación, Mensaje, Oportunidad, seña, Cliente y Pedido sobre persistencia objetivo y fixtures."
+    "nextAction": "Continuar Gate 1: normalizar Contacto reutilizable y persistencia objetivo después de integrar localmente seña validada, Cliente, Pago y Pedido."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_1_MODELO_PERSISTENCIA_LOCAL",
+    "status": "GATE_1A_VERTICAL_TRANSACCIONAL_INTEGRADA",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -61,7 +61,7 @@
     "PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.",
     "La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.",
     "PASS tecnico y aprobacion de producto son gates separados; Fito acepto el concepto WhatsApp primero y la interfaz local sigue en iteracion.",
-    "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
+      "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
     "DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.",
     "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion."
   ],
@@ -102,8 +102,8 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md",
-    "note": "Código, documentación, TypeScript, SQL, build y Core 25/25 en PASS; etapas y detalle fueron validados localmente y no autorizan integración remota."
+    "evidence": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
+    "note": "Gate 1A validado con Core 27/27 y recorrido browser local: seña validada a Cliente, Pago y Pedido único dentro de Detalles de WhatsApp."
   },
   "deployments": {
     "status": "SIN_CAMBIOS_EN_ESTA_TAREA",
@@ -149,11 +149,27 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
-    "summary": "Inventario y plan por gates para integrar las dos verticales existentes, conservar la UI aprobada y preparar WhatsApp real sin reconstruir SPORTEX.",
+    "summary": "Gate 1A integra la ficha comercial y el Core transaccional: seña validada crea Cliente, Pago y Pedido único desde Detalles de WhatsApp.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se integró de forma idempotente la seña validada con Cliente, Pago y Pedido y se habilitó la acción dentro de Detalles de WhatsApp.",
+      "documents": [
+        "core/src/application/commercial-replay-service.ts",
+        "frontend/app.js",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
@@ -328,7 +344,7 @@
   "runtimeTruth": {
     "status": "VALIDADO_DESARROLLO_LOCAL",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Puesto operativo WhatsApp observado en 127.0.0.1:8080 con 18 conversaciones ficticias, lengüetas laterales, detalle progresivo, escritorio y 390x844. No prueba runtime remoto."
+    "note": "Puesto WhatsApp observado en 127.0.0.1:8080; una seña ficticia creó y vinculó SPX-2026-00001, Cliente y Pago dentro del detalle sin ocultar el chat. No prueba runtime remoto."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -344,12 +360,12 @@
   ],
   "risks": [
     "Los 6 clientes y 8 pedidos son especificacion; el JSON sigue limitado a fixtures.",
-    "La implementacion de TASK-20260803-005 no tiene commit ni push; 0ccd4dc es solo el resguardo local previo.",
+    "El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Ejecutar Gate 1 local de TASK-20260814-001.",
+    "Completar Gate 1 con Contacto reutilizable, persistencia objetivo y migración local ensayada.",
     "Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

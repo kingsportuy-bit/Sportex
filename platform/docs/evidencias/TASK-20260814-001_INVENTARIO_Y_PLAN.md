@@ -44,3 +44,22 @@ partir de una seña validada.
 - No se accedió a Evolution, Meta, Chatwoot, VPS, Supabase remoto ni datos reales.
 - No se desplegó ni migró.
 - No se enviaron mensajes.
+
+## Checkpoint ejecutado — Gate 1A
+
+Se cerró la primera brecha integrada sin reconstruir el Core:
+
+`Conversación -> Oportunidad con seña validada -> Cliente -> Pago certificado -> Pedido`
+
+Evidencia observable:
+
+- endpoint local `convert-to-order` gobernado por etapa, versión y permisos;
+- claves idempotentes estables por oportunidad para Cliente, Pago y Pedido;
+- proyección `coreConversion` en la ficha y evento `ORDER_CREATED`;
+- acción y resultado visibles dentro de Detalles de WhatsApp sin ocultar el chat;
+- prueba de navegador: `SPX-2026-00001`, $ 10.000 de seña, $ 112.320 total,
+  1 Cliente y 1 Pedido sobre fixtures locales;
+- Core `27/27` PASS, incluido reintento sin duplicación y fail-closed sin seña.
+
+El checkpoint prueba integración local. No prueba Evolution, persistencia remota,
+datos reales, captura pasiva ni envío.

@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type {
   CommercialAttribution,
+  CommercialCoreConversion,
+  ConvertCommercialOpportunityInput,
   CommercialReplayIdempotency,
   CommercialWorkspaceItem,
   EvolutionReplayEvent,
@@ -18,6 +20,7 @@ import type {
 import { requireCapability } from "../shared/authorization.js";
 import { requestHash } from "../shared/canonical-json.js";
 import { AppError, conflict, notFound } from "../shared/errors.js";
+import { CoreService } from "./core-service.js";
 
 type Clock = () => Date;
 type IdFactory = () => string;
@@ -39,6 +42,7 @@ export class CommercialReplayService {
     private readonly clock: Clock = () => new Date(),
     private readonly idFactory: IdFactory = randomUUID,
     private readonly seedFactory: CommercialSeedFactory | null = null,
+    private readonly coreService: CoreService | null = null,
   ) {}
 
   async replay(
@@ -130,6 +134,7 @@ export class CommercialReplayService {
             validatedBy: context.actorId,
             fixtureOnly: true,
           } : null,
+          coreConversion: input.stage === "SENA_VALIDADA" ? item.opportunity.coreConversion : null,
           stageHistory: [
             ...item.opportunity.stageHistory,
             {
@@ -244,6 +249,99 @@ export class CommercialReplayService {
     });
   }
 
+  async convertValidatedOpportunity(
+    context: ActorContext,
+    itemId: string,
+    input: ConvertCommercialOpportunityInput,
+  ): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.manage");
+    if (!this.coreService) throw notFound("commercial_core_unavailable", "Commercial Core conversion is unavailable");
+
+    const snapshot = await this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      if (item.opportunity.coreConversion) {
+        this.requireSameConversion(item.opportunity.coreConversion, input);
+        return item;
+      }
+      this.requireVersion(item, input.expectedVersion);
+      if (item.opportunity.stage !== "SENA_VALIDADA" || !item.opportunity.depositValidation) {
+        throw conflict("commercial_deposit_not_validated", "The opportunity requires a validated deposit");
+      }
+      if (!item.opportunity.quote || !item.lead.teamName) {
+        throw conflict("commercial_order_data_incomplete", "The opportunity requires a quote and team name");
+      }
+      return item;
+    });
+    if (snapshot.opportunity.coreConversion) return snapshot;
+
+    const quote = snapshot.opportunity.quote;
+    const teamName = snapshot.lead.teamName;
+    if (!quote || !teamName) throw new Error("commercial_conversion_precondition_lost");
+    const keyPrefix = `commercial:${snapshot.opportunity.id}`;
+    const client = await this.coreService.createClient(context, `${keyPrefix}:client`, {
+      displayName: snapshot.lead.contactName,
+      teamName,
+    });
+    const payment = await this.coreService.certifyPayment(context, `${keyPrefix}:payment`, {
+      clientId: client.data.id,
+      evidenceReference: input.evidenceReference,
+      amountCents: input.depositCents,
+      currency: quote.currency,
+    });
+    const order = await this.coreService.createOrderFromCertifiedPayment(context, `${keyPrefix}:order`, {
+      clientId: client.data.id,
+      certifiedPaymentId: payment.data.id,
+      teamName,
+      quotedTotalCents: quote.totalCents,
+      currency: quote.currency,
+    });
+
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = await this.requiredItem(transaction, itemId);
+      if (current.opportunity.coreConversion) {
+        this.requireSameConversion(current.opportunity.coreConversion, input);
+        return current;
+      }
+      this.requireVersion(current, input.expectedVersion);
+      const convertedAt = this.clock().toISOString();
+      const conversion: CommercialCoreConversion = {
+        clientId: client.data.id,
+        certifiedPaymentId: payment.data.id,
+        orderId: order.data.id,
+        orderNumber: order.data.orderNumber,
+        evidenceReference: input.evidenceReference.trim(),
+        depositCents: input.depositCents,
+        quotedTotalCents: quote.totalCents,
+        currency: quote.currency,
+        convertedAt,
+        convertedBy: context.actorId,
+      };
+      const updated: CommercialWorkspaceItem = {
+        ...current,
+        opportunity: {
+          ...current.opportunity,
+          coreConversion: conversion,
+          nextAction: "Preparar el pedido para producción",
+          nextActionDueAt: null,
+          nextActionStatus: "PENDIENTE",
+          version: current.opportunity.version + 1,
+          updatedAt: convertedAt,
+        },
+        activity: [...current.activity, {
+          type: "ORDER_CREATED",
+          occurredAt: convertedAt,
+          actorId: context.actorId,
+          correlationId: context.correlationId,
+          evidenceMessageId: current.opportunity.evidenceMessageId,
+          detail: `Pedido ${order.data.orderNumber} creado desde la seña validada.`,
+        }],
+      };
+      await transaction.save(updated);
+      return updated;
+    });
+  }
+
   async resetDemo(context: ActorContext, confirmation: string): Promise<CommercialDemoResetResult> {
     requireCapability(context, "commercial.manage");
     if (confirmation !== "RESTAURAR_DATOS_FICTICIOS") {
@@ -276,6 +374,16 @@ export class CommercialReplayService {
         expectedVersion,
         currentVersion: item.opportunity.version,
       });
+    }
+  }
+
+  private requireSameConversion(
+    conversion: CommercialCoreConversion,
+    input: ConvertCommercialOpportunityInput,
+  ): void {
+    if (conversion.evidenceReference !== input.evidenceReference.trim()
+      || conversion.depositCents !== input.depositCents) {
+      throw conflict("commercial_conversion_conflict", "The opportunity was already converted with other payment data");
     }
   }
 
@@ -338,6 +446,7 @@ export class CommercialReplayService {
         quote: null,
         lossReason: null,
         depositValidation: null,
+        coreConversion: null,
         stageHistory: [{
           id: this.idFactory(),
           from: null,

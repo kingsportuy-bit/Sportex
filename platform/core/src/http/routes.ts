@@ -89,6 +89,12 @@ const recordCommercialFollowUpSchema = z.object({
   expectedVersion: expectedVersionSchema,
 }).strict();
 
+const convertCommercialOpportunitySchema = z.object({
+  evidenceReference: z.string().trim().min(3).max(160),
+  depositCents: z.number().int().positive().max(1_000_000_000),
+  expectedVersion: expectedVersionSchema,
+}).strict();
+
 const resetCommercialDemoSchema = z.object({
   confirmation: z.literal("RESTAURAR_DATOS_FICTICIOS"),
 }).strict();
@@ -215,6 +221,14 @@ export async function registerRoutes(
       const params = commercialItemParamsSchema.parse(request.params);
       const input = recordCommercialFollowUpSchema.parse(request.body);
       const item = await commercialService.recordFollowUp(context, params.itemId, input);
+      return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+    });
+
+    app.post("/v1/local/commercial/workspace/:itemId/convert-to-order", async (request, reply) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = convertCommercialOpportunitySchema.parse(request.body);
+      const item = await commercialService.convertValidatedOpportunity(context, params.itemId, input);
       return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
     });
 

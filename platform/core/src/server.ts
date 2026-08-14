@@ -44,6 +44,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
       undefined,
       undefined,
       options.config.commercialDemoFile ? createCommercialDemoSeed : null,
+      service,
     )
     : null;
   const authFetch = options.authFetch ?? fetch;
