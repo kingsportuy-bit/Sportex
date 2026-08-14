@@ -166,6 +166,35 @@ test("commercial replay routes are absent outside the safe local gate", async ()
   await app.close();
 });
 
+test("PostgreSQL enables the commercial projection without exposing local replay mutations", async () => {
+  const config: SportexConfig = {
+    ...localConfig,
+    storeDriver: "postgres",
+    databaseUrl: "postgres://sportex:fixture@127.0.0.1:1/sportex",
+  };
+  const app = await buildServer({ config, store: new InMemoryCoreStore(), logger: false });
+  const publicConfig = await app.inject({ method: "GET", url: "/v1/public-config" });
+  assert.equal(publicConfig.statusCode, 200);
+  assert.equal(publicConfig.json().data.commercialWorkspaceEnabled, true);
+  assert.equal(publicConfig.json().data.localCommercialReplayEnabled, false);
+
+  const replay = await app.inject({
+    method: "POST",
+    url: "/v1/local/evolution-replays",
+    headers: headers(),
+    payload: fixture("postgres-blocked"),
+  });
+  const mutation = await app.inject({
+    method: "PATCH",
+    url: "/v1/local/commercial/workspace/workspace-fixture/stage",
+    headers: headers(),
+    payload: { stage: "EN_CALIFICACION", expectedVersion: 1 },
+  });
+  assert.equal(replay.statusCode, 404);
+  assert.equal(mutation.statusCode, 404);
+  await app.close();
+});
+
 test("commercial demo seed contains 18 safe and varied fictional dossiers", () => {
   const seed = createCommercialDemoSeed(tenantA);
   assert.equal(seed.length, 18);

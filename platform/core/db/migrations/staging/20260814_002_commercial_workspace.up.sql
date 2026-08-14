@@ -61,6 +61,7 @@ CREATE INDEX sportex_staging_commercial_messages_timeline_idx
 CREATE TABLE public.sportex_staging_commercial_opportunities (
   id uuid PRIMARY KEY,
   tenant_id uuid NOT NULL REFERENCES public.sportex_staging_tenants(id),
+  workspace_id uuid NOT NULL,
   contact_id uuid NOT NULL,
   conversation_id uuid NOT NULL,
   stage text NOT NULL CHECK (stage IN ('NUEVO', 'EN_CALIFICACION', 'COTIZADO', 'EN_SEGUIMIENTO', 'PERDIDO', 'SENA_VALIDADA')),
@@ -72,6 +73,7 @@ CREATE TABLE public.sportex_staging_commercial_opportunities (
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
   UNIQUE (tenant_id, id),
+  UNIQUE (tenant_id, workspace_id),
   CONSTRAINT sportex_staging_commercial_opportunities_contact_fk
     FOREIGN KEY (tenant_id, contact_id)
     REFERENCES public.sportex_staging_commercial_contacts(tenant_id, id),

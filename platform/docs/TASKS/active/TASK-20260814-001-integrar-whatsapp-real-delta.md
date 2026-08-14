@@ -187,3 +187,17 @@ DELTA define reglas y valida negocio.
   migración en ninguna base.
 - Falta implementar el store PostgreSQL comercial y ensayar up/down local antes
   de dar Gate 1 por terminado.
+
+### 2026-08-14 — checkpoint Gate 1C cerrado
+
+- El store PostgreSQL comercial persiste Contacto, Conversación, Mensajes,
+  atribución, Lead, Oportunidad, actividad e idempotencia usando tenant y RLS.
+- La proyección comercial se habilita con PostgreSQL, pero las rutas locales de
+  replay, reset y mutación de fixtures permanecen físicamente ausentes fuera
+  del triple gate local.
+- PostgreSQL 16 aislado ejecutó `001 up -> 002 up -> 002 down -> 002 up` y luego
+  `002 down` con datos; el rollback dejó cero tablas comerciales.
+- El ensayo de store creó un expediente por tenant, reejecutó el mismo mensaje
+  sin duplicarlo y confirmó aislamiento entre dos tenants.
+- Gate 1 queda cerrado. El siguiente corte es Gate 2 Evolution simulado, sin
+  conexión, datos ni mensajes reales.

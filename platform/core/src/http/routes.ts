@@ -105,6 +105,7 @@ export async function registerRoutes(
   commercialService: CommercialReplayService | null,
   config: SportexConfig,
   resolveContext: ContextResolver,
+  localCommercialReplayEnabled: boolean,
 ): Promise<void> {
   app.get("/v1/public-config", async () => ({
     data: {
@@ -112,8 +113,9 @@ export async function registerRoutes(
       authUrl: config.authPublicUrl ?? null,
       authAnonKey: config.authAnonKey ?? null,
       release: config.release ?? "local",
-      localCommercialReplayEnabled: commercialService !== null,
-      localCommercialPersistenceEnabled: commercialService !== null && Boolean(config.commercialDemoFile),
+      commercialWorkspaceEnabled: commercialService !== null,
+      localCommercialReplayEnabled,
+      localCommercialPersistenceEnabled: localCommercialReplayEnabled && Boolean(config.commercialDemoFile),
     },
   }));
 
@@ -180,6 +182,14 @@ export async function registerRoutes(
   });
 
   if (commercialService) {
+    app.get("/v1/commercial/workspace", async (request) => {
+      const context = await resolveContext(request);
+      const items = await commercialService.list(context);
+      return { data: items, meta: { correlationId: context.correlationId } };
+    });
+  }
+
+  if (commercialService && localCommercialReplayEnabled) {
     app.post("/v1/local/evolution-replays", async (request, reply) => {
       const context = await resolveContext(request);
       const input = evolutionReplaySchema.parse(request.body) as EvolutionReplayEvent;
@@ -188,12 +198,6 @@ export async function registerRoutes(
         data: result.data,
         meta: { correlationId: context.correlationId, replayed: result.replayed },
       });
-    });
-
-    app.get("/v1/commercial/workspace", async (request) => {
-      const context = await resolveContext(request);
-      const items = await commercialService.list(context);
-      return { data: items, meta: { correlationId: context.correlationId } };
     });
 
     app.patch("/v1/local/commercial/workspace/:itemId/stage", async (request) => {

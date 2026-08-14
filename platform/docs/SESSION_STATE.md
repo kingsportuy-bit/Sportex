@@ -63,7 +63,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Riesgos
 
-- El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.
+- El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.
 - TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.
 - Los snapshots remotos no autorizan escrituras.
 
@@ -75,6 +75,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Completar Gate 1 con store PostgreSQL comercial y migración/rollback local ensayados.
-- Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.
+- Implementar Gate 2 con Evolution simulado, idempotencia, ordering, receipts, backfill y worker falso.
+- Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

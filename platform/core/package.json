@@ -10,6 +10,7 @@
     "check": "tsc --noEmit -p tsconfig.json",
     "test": "npm run build:test && node --test --experimental-test-isolation=none dist-test/tests/**/*.test.js",
     "validate-sql": "node scripts/validate-sql.mjs",
+    "rehearse:commercial-postgres": "npm run build && node scripts/rehearse-commercial-postgres.mjs",
     "build:test": "tsc -p tsconfig.test.json"
   },
   "dependencies": {

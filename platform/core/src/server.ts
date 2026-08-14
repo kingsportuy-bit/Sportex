@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import type { SportexConfig } from "./config.js";
 import { InMemoryCommercialReplayStore } from "./adapters/persistence/in-memory-commercial-replay-store.js";
 import { LocalJsonCommercialReplayStore } from "./adapters/persistence/local-json-commercial-replay-store.js";
+import { PostgresCommercialReplayStore } from "./adapters/persistence/postgres-commercial-replay-store.js";
 import { CommercialReplayService } from "./application/commercial-replay-service.js";
 import { CoreService } from "./application/core-service.js";
 import { createCommercialDemoSeed } from "./fixtures/commercial-demo-seed.js";
@@ -33,8 +34,10 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
   const localCommercialReplayEnabled = options.config.storeDriver === "memory"
     && options.config.devAuthEnabled
     && (options.config.environment === "development" || options.config.environment === "test");
-  const commercialStore = localCommercialReplayEnabled
-    ? options.config.commercialDemoFile
+  const commercialStore = options.config.storeDriver === "postgres"
+    ? new PostgresCommercialReplayStore(options.config)
+    : localCommercialReplayEnabled
+      ? options.config.commercialDemoFile
       ? new LocalJsonCommercialReplayStore(options.config.commercialDemoFile)
       : new InMemoryCommercialReplayStore()
     : null;
@@ -43,7 +46,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
       commercialStore,
       undefined,
       undefined,
-      options.config.commercialDemoFile ? createCommercialDemoSeed : null,
+      localCommercialReplayEnabled && options.config.commercialDemoFile ? createCommercialDemoSeed : null,
       service,
     )
     : null;
@@ -126,7 +129,14 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     }
   });
 
-  await registerRoutes(app, service, commercialService, options.config, resolveContext);
+  await registerRoutes(
+    app,
+    service,
+    commercialService,
+    options.config,
+    resolveContext,
+    localCommercialReplayEnabled,
+  );
 
   if (options.config.frontendDir) {
     await app.register(fastifyStatic, {

@@ -70,3 +70,22 @@ datos reales, captura pasiva ni envío.
 - La migración aditiva `20260814_002` define cinco tablas comerciales normalizadas.
 - Todas aplican aislamiento por tenant, RLS forzado, permisos mínimos y down migration.
 - `validate-sql`: 14 tablas PASS. La migración permanece local y no ejecutada.
+
+## Checkpoint ejecutado — Gate 1C
+
+- Se implementó el store PostgreSQL comercial sobre las cinco tablas nuevas y
+  la idempotencia canónica del Core.
+- La migración conserva el `workspace_id` que consume la interfaz y aplica RLS
+  forzado a las 14 tablas totales.
+- Ensayo aislado PostgreSQL 16:
+  - Core `up`: PASS;
+  - comercial `up`: PASS;
+  - comercial `down`: 0 tablas restantes;
+  - reaplicación: 5 tablas comerciales;
+  - rollback con datos: 0 tablas restantes.
+- Ensayo funcional: dos tenants conservaron un expediente cada uno; repetir el
+  mismo mensaje devolvió replay sin crear un segundo expediente.
+- Core `28/28` PASS. PostgreSQL expone solo la lectura de la proyección; replay,
+  reset y mutaciones locales continúan bloqueados fuera de desarrollo seguro.
+- El contenedor temporal verificado fue eliminado. No se tocó ninguna base,
+  integración o dato remoto.

@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Completar Gate 1: implementar el store PostgreSQL comercial y ensayar migración/rollback local sobre el modelo normalizado."
+    "nextAction": "Implementar Gate 2 con adaptador Evolution simulado, ordering, duplicados, receipts, backfill y worker falso."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_1B_MODELO_Y_MIGRACION_DEFINIDOS",
+    "status": "GATE_1_CERRADO_POSTGRES_Y_ROLLBACK_PASS",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -359,13 +359,13 @@
     "npm audit detecto tres vulnerabilidades altas; TASK-20260801-002 esta en cola."
   ],
   "risks": [
-    "El corte UI fue versionado en 042a027; Gate 1A sigue local y aún no tiene push.",
+    "El corte UI y Gate 1 permanecen locales; aún no tienen push ni autorización remota.",
     "TASK-20260801-002 mantiene pendientes tres vulnerabilidades altas de dependencias.",
     "Los snapshots remotos no autorizan escrituras."
   ],
   "nextActions": [
-    "Completar Gate 1 con store PostgreSQL comercial y migración/rollback local ensayados.",
-    "Diseñar y probar la conexión continua, idempotencia, backfill y envío manual antes de solicitar GO remoto.",
+    "Implementar Gate 2 con Evolution simulado, idempotencia, ordering, receipts, backfill y worker falso.",
+    "Probar la conexión continua y el envío manual falso antes de solicitar cualquier GO remoto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }
