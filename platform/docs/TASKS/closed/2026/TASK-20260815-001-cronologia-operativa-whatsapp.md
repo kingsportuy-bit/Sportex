@@ -89,24 +89,24 @@ con un asistente futuro que permanece sin camino ejecutable.
 - Las revisiones previas incorporaron desacople, migration-first, RLS, E2E,
   contraste y límites, pero no alcanzaron el contrato final.
 
-### 2026-08-15 - reabierta por cuarta revisión NO-GO
-
-- El candidato `e455915` no se publica ni promueve.
-- La humanización pasa a ser estructural y específica por tipo de evento; nunca
-  sustituye tokens dentro de notas, motivos u otro texto libre.
-- TypeScript, backfill SQL y preflight deben producir el mismo detalle exacto.
-- El E2E pasa a tener un comando autocontenido que levanta y limpia su demo.
-
 ### 2026-08-15 - cuarta corrección validada
 
-- TS y SQL humanizan solo campos estructurales; nota, motivo y texto libre se
-  conservan literales aun cuando repiten todos los tokens técnicos.
-- API y PostgreSQL prueban nota máxima de 1000, detalle exacto de 1015 y
-  reconstrucción después de down/re-up.
-- `test:e2e:timeline` levanta y limpia su propia demo 8091; claro/oscuro y
-  desktop/mobile PASS, sin proceso ni JSON residual.
-- Core 52/52, harness PG, E2E, SQL, build, documentación y diff PASS; sin
-  publicación ni efectos remotos.
+- Humanización estructural TS/SQL, nota máxima literal, down/re-up, RLS y E2E
+  autocontenido quedaron PASS; core 52/52 y sin efectos remotos.
+
+### 2026-08-15 - gate documental posterior a 279cdf6
+
+- Se reabre únicamente para canonizar lifecycle y evidencia después del commit
+  de código `279cdf6d4a902ab868db582f5de8c1c2702be0f9`.
+- Alcance exclusivo: tarea, estado, vistas generadas y evidencia; cero código,
+  push, deploy, migración o mensajería.
+- El cierre final debe devolver `SPORTEX_CLOSE=PASS` con este checkpoint activo
+  y luego nuevamente con la tarea cerrada.
+- Cierre activo posterior a `279cdf6`: `SPORTEX_CLOSE=PASS`, 52/52, SQL, build
+  y documentación PASS.
+- Lifecycle vuelve a `done/closed`; el cierre cerrado se ejecuta después de
+  regenerar las vistas y antes del commit documental exclusivo.
+- Cierre con lifecycle cerrado: `SPORTEX_CLOSE=PASS`, `ACTIVE_TASK=none`.
 
 ## decisiones
 

@@ -5,6 +5,18 @@ Task: `TASK-20260815-001`
 Entorno ejecutado: `DESARROLLO_LOCAL`
 Destino preparado: `PILOTO_DELTA`
 
+## Gate documental final
+
+- Candidato de código certificado: `279cdf6d4a902ab868db582f5de8c1c2702be0f9`.
+- Gate ejecutado después de ese commit y limitado a lifecycle/evidencia.
+- Con la tarea activa: `SPORTEX_CLOSE=PASS`, Core 52/52, documentación 65/16,
+  SQL 17 tablas/RLS/rollback, TypeScript y build PASS.
+- La tarea se cierra nuevamente y el mismo cierre se repite con lifecycle
+  `done/closed` antes del commit documental exclusivo.
+- Resultado cerrado: `SPORTEX_CLOSE=PASS`, `ACTIVE_TASK=none` y siguiente paso
+  limitado a re-review del commit documental.
+- No hubo cambio de código, push, deploy, migración ni mensaje.
+
 ## Resultado corregido después del NO-GO
 
 Mensajes WhatsApp y eventos operativos son clases distintas. La cronología es

@@ -76,7 +76,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
-    "workingTreeState": "TASK-20260815-001_FOURTH_CANDIDATE_LOCAL_REVIEW_PENDING",
+    "workingTreeState": "TASK-20260815-001_DOCUMENTAL_GATE_CLOSED_LOCAL",
     "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
@@ -141,7 +141,7 @@
     "taskId": "TASK-20260815-001",
     "date": "2026-08-15",
     "path": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "summary": "Cuarta revision corregida: humanizacion estructural sin tocar texto libre y E2E autocontenido certificados localmente.",
+    "summary": "Gate documental posterior a 279cdf6: lifecycle y evidencia revalidados con SPORTEX_CLOSE=PASS, sin cambio de código.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
@@ -149,7 +149,7 @@
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
-      "summary": "Se corrigio la cuarta revision: humanizacion type-aware TS/SQL, nota tecnica literal y E2E autocontenido certificados localmente.",
+      "summary": "Se ejecuto el gate documental posterior a 279cdf6 con cierre PASS y sin cambio de código ni acción remota.",
       "documents": [
         "core/src/domain/commercial-timeline.ts",
         "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
@@ -509,7 +509,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Someter el cuarto candidato local de TASK-20260815-001 a re-review antes de publicarlo o promoverlo.",
+    "Someter el commit documental exclusivo posterior a 279cdf6 a re-review antes de publicar o promover.",
     "Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
