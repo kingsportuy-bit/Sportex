@@ -416,3 +416,16 @@ DELTA define reglas y valida negocio.
   mantuvo ingreso y outbound manual activos.
 - No hubo mensajes, migraciones ni cambios de datos. Rollback:
   `sportex-staging:a7ceb9b73d53777b`.
+
+### 2026-08-15 - favicon SPORTEX preparado
+
+- Se aislo la `S` exacta del wordmark y se recoloreo con el verde SPORTEX
+  `#DCFF52`, conservando transparencia real y sin modificar el logo fuente.
+- Se agregaron PNG `512x512`, ICO multiresolucion y las referencias de favicon
+  y Apple touch icon en el HTML.
+- Browser local verifico las tres referencias y la legibilidad de la forma en
+  `16x16`, `32x32`, `48x48` y `64x64`.
+- Core `44/44`, build y `git diff --check` PASS.
+- Candidato exacto: `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`.
+- No hubo deploy, migraciones, datos reales ni mensajes. Para verlo en
+  `sportex.codexa.uy` falta promocionar este candidato con un GO remoto exacto.

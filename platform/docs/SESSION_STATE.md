@@ -59,7 +59,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-15`.
 - Fuente: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
-- Logo SPORTEX con transparencia real desplegado y verificado en el piloto productivo c375e58; la fuente original queda intacta.
+- Favicon SPORTEX preparado desde la S exacta del logo en verde #DCFF52; candidato local 3c8c9da pendiente de GO remoto.
 
 ## Riesgos
 

@@ -78,3 +78,22 @@ como nombre del negocio o tenant, pero su logo no forma parte del sistema.
 
 Artefacto anterior: `sportex-staging:1cc2c96fe8f8e0f`. La especificacion previa
 del servicio quedo respaldada en el VPS antes del despliegue.
+
+## Favicon SPORTEX preparado
+
+- Se extrajo la forma exacta de la `S` del wordmark aprobado, sin redibujarla.
+- La forma usa el verde oficial `#DCFF52` y transparencia real; no contiene
+  fondo, texto adicional ni referencias visuales a Delta.
+- PNG: `frontend/assets/sportex-favicon.png`, `512x512`, RGBA, SHA256
+  `2f90d3ba529f12feb9498c54bdbd5c1ea1963b0ba3317bdb83a81bfc2cf4e29`.
+- ICO multiresolucion: `frontend/favicon.ico`, con tamanos `16`, `32`, `48`,
+  `64`, `128` y `256`, SHA256
+  `47bda411f20c4b453fb3cc042f25d8dc02ac09a903f5a93191000d9136f18af6`.
+- El HTML declara ICO, PNG y `apple-touch-icon`; browser local resolvio las tres
+  referencias y la `S` se verifico visualmente entre `16x16` y `64x64`.
+- Core `44/44`, build y `git diff --check` PASS. El script raiz no expone un
+  comando `typecheck`; el build de TypeScript cumplio esa validacion.
+- Candidato local exacto:
+  `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`.
+- Este checkpoint no desplego, no migro datos y no envio mensajes. El runtime
+  productivo permanece en `c375e58cfc19f894623a9a4cf8caa9a43723b395`.
