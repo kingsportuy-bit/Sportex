@@ -19,7 +19,8 @@ job, worker, propuesta, activación o salida automática de IA.
 ## Corte técnico
 
 - ID acotado `activity:<md5>` calculado con el mismo contrato de longitudes en
-  TypeScript y SQL; detalle visible limitado a 1000 caracteres.
+  TypeScript y SQL. La nota canónica admite 1000 caracteres y el detalle
+  derivado 1015, por lo que el prefijo más largo no provoca pérdida.
 - Migración `005` con preflight de array, nulls, longitudes y timestamps,
   backfill, RLS, privilegios mínimos y down que no toca mensajes.
 - `/ready` verifica workspace comercial y tabla `005` aun con flag visual OFF.
@@ -30,11 +31,12 @@ job, worker, propuesta, activación o salida automática de IA.
 ## Pruebas automatizadas
 
 - TypeScript y build: PASS.
-- Core: 50/50 PASS.
+- Core: 51/51 PASS.
 - Documentación/workflow: PASS.
 - SQL estático: 17 tablas, RLS, preflight y rollback: PASS.
 - `git diff --check`: PASS.
 - E2E reproducible: `npm run test:e2e:timeline`.
+- PostgreSQL reproducible: `npm run test:postgres:timeline`.
 
 ## PostgreSQL 16 real local
 
@@ -44,10 +46,14 @@ ficticios. El rehearsal produjo:
 ```text
 SPORTEX_COMMERCIAL_POSTGRES_REHEARSAL=PASS
 TIMELINE_DEGRADED_MAIN_MUTATION_PRESERVED=true
+FOLLOW_UP_MAX_NOTE_LENGTH=1000
+FOLLOW_UP_MAX_DETAIL_LENGTH=1015
 TIMELINE_PROJECTION_FAILURES=read,write
 RLS_APP_TENANT_A_OWN=2
 RLS_APP_TENANT_A_CROSS=0
 RLS_APP_TENANT_B_OWN=1
+REUP_MAX_NOTE_RECONSTRUCTED=true
+SPORTEX_TIMELINE_POSTGRES_HARNESS=PASS
 ```
 
 La prueba renombró temporalmente solo la tabla derivada: `/ready` falló, una
@@ -66,6 +72,7 @@ propios y 0 de B; con tenant B observó 1 propio. El transcript completo está e
 - Preflight con correlación de 201 caracteres: rechazado.
 - Preflight con fecha imposible: rechazado como timestamp inválido.
 - Tras restaurar las fuentes válidas, re-up/backfill: 5 eventos.
+- La nota máxima fue reconstruida con 1015 caracteres y prefijo legible exacto.
 - El contenedor temporal se verificó y eliminó.
 
 ## Navegador desktop y mobile
@@ -74,19 +81,19 @@ El E2E usa Chrome headless mediante `playwright-core`, activa el flag desde la
 demo local y genera capturas ignoradas por Git en
 `.sportex-local/e2e-conversation-timeline/`.
 
-- Desktop 1280×480: scroll real, eventos intercalados, Detalles y compositor
-  visibles juntos, borrador y posición preservados.
-- Mobile 390×844: chat, eventos y compositor legibles; Detalles cubre la
-  superficie del chat, cierra correctamente y devuelve el mismo borrador.
+- Desktop 1280×480 y mobile 390×844 se ensayan en claro y oscuro.
+- El cierre de Detalles conserva estilo local, `aria-label`, click y contraste:
+  claro 16.35:1 texto/fondo y borde/cabecera; oscuro 11.74:1 y 12.30:1.
+- Scroll, compositor, borrador, posición y retorno desde Detalles se preservan.
 - Texto secundario de evento: 10 px mínimo medido; 2 eventos visibles.
-- Capturas: `desktop-1280x480.png`, `mobile-390x844-details.png` y
-  `mobile-390x844.png`.
+- Se generan capturas antes y después del cierre para las cuatro combinaciones.
 
 ## Límites y efectos externos
 
 - No se modificaron reglas comerciales, Delta ADS, Meta ni estados reales.
 - No hubo push, deploy, migración remota ni mensaje real.
-- `fca96c2` permanece como candidato rechazado y no debe promoverse.
+- `fca96c2` y `c22a714` permanecen como candidatos rechazados y no deben
+  promoverse.
 
 ## Promoción y rollback preparados
 

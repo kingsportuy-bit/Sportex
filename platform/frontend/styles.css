@@ -1611,6 +1611,25 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
+.whatsapp-inline-details-close {
+  flex: 0 0 auto;
+  border-color: #18221c;
+  border-radius: 50%;
+  background: #18221c;
+  color: #ffffff;
+}
+.whatsapp-inline-details-close:hover,
+.whatsapp-inline-details-close:focus-visible {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #ffffff;
+}
+:root[data-theme="dark"] .whatsapp-inline-details-close {
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #18221c;
+}
+
 .whatsapp-inline-details-body {
   display: flex;
   flex-direction: column;

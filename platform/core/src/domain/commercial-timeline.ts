@@ -31,12 +31,16 @@ const readableTerms: Record<string, string> = {
   NO_CONTINUA: "No continúa",
 };
 
+// A follow-up accepts a 1,000-character canonical note and prefixes the
+// longest outcome ("SIN_RESPUESTA: "), so the derived detail needs 1,015.
+export const MAX_OPERATIONAL_DETAIL_LENGTH = 1_015;
+
 export function readableOperationalDetail(type: CommercialOperationalEventType, value: string): string {
   if (type === "OPPORTUNITY_CREATED") return "Ya forma parte del seguimiento comercial.";
   return Object.entries(readableTerms).reduce(
     (detail, [technical, readable]) => detail.replaceAll(technical, readable),
     value,
-  ).slice(0, 1_000);
+  ).slice(0, MAX_OPERATIONAL_DETAIL_LENGTH);
 }
 
 export const PASSIVE_ASSISTANT_CONTRACT = Object.freeze({

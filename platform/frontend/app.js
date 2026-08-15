@@ -1061,7 +1061,7 @@ function renderWhatsAppInlineDetails(item) {
     element("h2", "", item.conversation.contactName),
     element("p", "", `${item.lead.teamName || "Equipo por confirmar"} · ${stageLabel(item.opportunity.stage)}`),
   );
-  const close = element("button", "icon-button", "×");
+  const close = element("button", "icon-button whatsapp-inline-details-close", "×");
   close.type = "button";
   close.setAttribute("aria-label", "Cerrar detalles");
   close.addEventListener("click", () => {

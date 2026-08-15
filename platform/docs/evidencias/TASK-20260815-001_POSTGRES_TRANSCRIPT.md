@@ -15,6 +15,8 @@ WHATSAPP_JOURNAL_PROCESSED=1
 WHATSAPP_OUTBOX_IDEMPOTENT=true
 CONVERSATION_TIMELINE_SEPARATED=true
 TIMELINE_DEGRADED_MAIN_MUTATION_PRESERVED=true
+FOLLOW_UP_MAX_NOTE_LENGTH=1000
+FOLLOW_UP_MAX_DETAIL_LENGTH=1015
 TIMELINE_PROJECTION_FAILURES=read,write
 RLS_APP_TENANT_A_OWN=2
 RLS_APP_TENANT_A_CROSS=0
@@ -30,14 +32,16 @@ se usó una aserción de servicio como sustituto del rol PostgreSQL.
 ```text
 MESSAGES_BEFORE_DOWN=3
 MESSAGES_AFTER_DOWN=3
-PREFLIGHT_NULL=PASS
-ERROR: timeline_preflight_legacy_contract_invalid
-PREFLIGHT_LENGTH=PASS
-ERROR: timeline_preflight_legacy_contract_invalid
-PREFLIGHT_TIMESTAMP=PASS
-ERROR: timeline_preflight_legacy_timestamp_invalid
+PREFLIGHT_NULL_ACTOR=PASS
+PREFLIGHT_CORRELATION_201=PASS
+PREFLIGHT_INVALID_TIMESTAMP=PASS
 REUP_EVENTS=5
+REUP_MAX_NOTE_RECONSTRUCTED=true
+SPORTEX_TIMELINE_POSTGRES_HARNESS=PASS
 ```
 
-El entorno fue temporal, sin secretos ni datos reales. Tras reponer las fuentes
-válidas se aplicó re-up correctamente y el contenedor se eliminó.
+Salida reproducible con `npm run test:postgres:timeline`. El harness versionado
+crea PostgreSQL 16 temporal, aplica `001..005`, ejecuta servicio, readiness,
+degradación y RLS; baja `005`, inyecta y rechaza cada fuente inválida, vuelve a
+aplicar `005` y prueba la reconstrucción exacta de la nota máxima. El contenedor
+se elimina siempre y no usa secretos ni datos reales.

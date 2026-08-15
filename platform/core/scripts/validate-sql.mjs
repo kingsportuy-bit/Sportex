@@ -87,7 +87,9 @@ for (const token of [
   "timeline_preflight_activity_data_not_array",
   "timeline_preflight_legacy_contract_invalid",
   "timeline_preflight_legacy_timestamp_invalid",
-  "char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1000",
+  "char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1015",
+  "char_length(detail) BETWEEN 1 AND 1015",
+  "'SIN_RESPUESTA', 'Sin respuesta'",
   "'activity:' || md5(concat(",
 ]) {
   if (!timelineUp.includes(token)) failures.push(`timeline migration missing ${token}`);

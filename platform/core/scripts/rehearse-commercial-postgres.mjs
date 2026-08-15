@@ -95,12 +95,18 @@ try {
   );
   timelineTableRenamed = true;
   await assert.rejects(() => store.checkReady());
+  const maximumNote = "n".repeat(1_000);
   const degraded = await service.recordFollowUp(context(tenantA), created.data.id, {
-    outcome: "AVANZO",
-    note: "La mutación principal debe sobrevivir a una proyección degradada.",
+    outcome: "SIN_RESPUESTA",
+    note: maximumNote,
     expectedVersion: 2,
   });
   assert.equal(degraded.opportunity.version, 3);
+  assert.equal(degraded.opportunity.followUps.at(-1)?.note, maximumNote);
+  assert.equal(
+    degraded.timeline.find((entry) => entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "FOLLOW_UP_RECORDED")?.detail,
+    `Sin respuesta: ${maximumNote}`,
+  );
   assert.equal(
     degraded.timeline.some((entry) =>
       entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "FOLLOW_UP_RECORDED"),
@@ -116,6 +122,10 @@ try {
   assert.equal(
     sourcePersisted.rows[0].activity_data.some((activity) => activity.type === "FOLLOW_UP_RECORDED"),
     true,
+  );
+  assert.equal(
+    sourcePersisted.rows[0].activity_data.find((activity) => activity.type === "FOLLOW_UP_RECORDED")?.detail,
+    `SIN_RESPUESTA: ${maximumNote}`,
   );
   await adminPool.query(
     "ALTER TABLE public.sportex_staging_conversation_timeline_events_degraded RENAME TO sportex_staging_conversation_timeline_events",
@@ -238,6 +248,8 @@ try {
   console.log("WHATSAPP_OUTBOX_IDEMPOTENT=true");
   console.log("CONVERSATION_TIMELINE_SEPARATED=true");
   console.log("TIMELINE_DEGRADED_MAIN_MUTATION_PRESERVED=true");
+  console.log("FOLLOW_UP_MAX_NOTE_LENGTH=1000");
+  console.log("FOLLOW_UP_MAX_DETAIL_LENGTH=1015");
   console.log(`TIMELINE_PROJECTION_FAILURES=${timelineFailures.map((failure) => failure.operation).join(",")}`);
   console.log(`RLS_APP_TENANT_A_OWN=${tenantAOwnCount}`);
   console.log(`RLS_APP_TENANT_A_CROSS=${tenantACrossCount}`);

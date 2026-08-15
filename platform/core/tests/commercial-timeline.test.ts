@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  MAX_OPERATIONAL_DETAIL_LENGTH,
   buildConversationTimeline,
   PASSIVE_ASSISTANT_CONTRACT,
   mergeOperationalEvents,
@@ -56,7 +57,7 @@ test("event identity and readable detail stay inside the database contract", () 
   const event = projectOperationalEvents({ ...item, activity: [activity] })[0]!;
   assert.match(operationalEventId(activity), /^activity:[0-9a-f]{32}$/u);
   assert.equal(event.id.length, 41);
-  assert.equal(event.detail.length, 1_000);
+  assert.equal(event.detail.length, MAX_OPERATIONAL_DETAIL_LENGTH);
 });
 
 test("persisted and source events merge by deterministic identity without losing either side", () => {
@@ -101,4 +102,23 @@ test("assistant is representable only as passive event data and cannot become a 
     actorKind: "ASSISTANT",
     origin: "ASSISTANT",
   });
+});
+
+test("maximum follow-up note remains complete in the readable timeline detail", () => {
+  const item = fixture();
+  const note = "n".repeat(1_000);
+  item.activity.push({
+    type: "FOLLOW_UP_RECORDED",
+    occurredAt: "2026-08-15T17:00:00.000Z",
+    actorId: "operator-max-note",
+    actorKind: "HUMAN",
+    origin: "OPERATOR",
+    correlationId: "follow-up-max-note",
+    evidenceMessageId: null,
+    detail: `SIN_RESPUESTA: ${note}`,
+  });
+
+  const projected = projectOperationalEvents(item).find((entry) => entry.correlationId === "follow-up-max-note");
+  assert.equal(projected?.detail, `Sin respuesta: ${note}`);
+  assert.equal(projected?.detail.length, MAX_OPERATIONAL_DETAIL_LENGTH);
 });

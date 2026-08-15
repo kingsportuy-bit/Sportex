@@ -24,7 +24,7 @@ BEGIN
     IF jsonb_typeof(activity) <> 'object'
       OR coalesce(char_length(activity->>'actorId'), 0) NOT BETWEEN 1 AND 160
       OR coalesce(char_length(activity->>'correlationId'), 0) NOT BETWEEN 1 AND 200
-      OR coalesce(char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1000
+      OR coalesce(char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1015
       OR (activity ? 'evidenceMessageId'
           AND activity->>'evidenceMessageId' IS NOT NULL
           AND char_length(activity->>'evidenceMessageId') NOT BETWEEN 1 AND 200)
@@ -62,7 +62,7 @@ CREATE TABLE public.sportex_staging_conversation_timeline_events (
     evidence_message_id IS NULL OR char_length(evidence_message_id) BETWEEN 1 AND 200
   ),
   label text NOT NULL CHECK (char_length(label) BETWEEN 3 AND 160),
-  detail text NOT NULL CHECK (char_length(detail) BETWEEN 1 AND 1000),
+  detail text NOT NULL CHECK (char_length(detail) BETWEEN 1 AND 1015),
   occurred_at timestamptz NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (tenant_id, event_id),
@@ -112,7 +112,22 @@ SELECT
     WHEN 'ORDER_CREATED' THEN 'Cliente y pedido creados'
     WHEN 'PRODUCTION_RELEASED' THEN 'Pedido entregado a producción'
   END,
-  activity.value->>'detail',
+  CASE
+    WHEN activity.value->>'type' = 'OPPORTUNITY_CREATED'
+      THEN 'Ya forma parte del seguimiento comercial.'
+    ELSE replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
+      activity.value->>'detail',
+      'EN_CALIFICACION', 'Calificación'),
+      'SIN_RESPUESTA', 'Sin respuesta'),
+      'NO_CONTINUA', 'No continúa'),
+      'SENA_VALIDADA', 'Seña validada'),
+      'EN_SEGUIMIENTO', 'Seguimiento'),
+      'COTIZADO', 'Cotización enviada'),
+      'PERDIDO', 'Cerrado sin venta'),
+      'SIN_CAMBIOS', 'Sin cambios'),
+      'AVANZO', 'Avanzó'),
+      'NUEVO', 'Contacto inicial')
+  END,
   (activity.value->>'occurredAt')::timestamptz
 FROM public.sportex_staging_commercial_opportunities opportunity
 CROSS JOIN LATERAL jsonb_array_elements(opportunity.activity_data) AS activity(value)

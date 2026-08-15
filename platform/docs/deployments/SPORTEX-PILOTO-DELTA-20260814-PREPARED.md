@@ -90,7 +90,7 @@ solo durante la prueba y verificacion de `SENT/DELIVERED` sin duplicados.
 
 ## Addendum TASK-20260815-001 — cronología operativa
 
-- Estado: candidato corregido local pendiente de segunda revisión; no publicado.
+- Estado: tercer candidato corregido local pendiente de re-review; no publicado.
 - Migración requerida antes de la imagen: `20260815_005_conversation_timeline`.
 - Preflight: backup/restore, legado válido, rol app y RLS cross-tenant.
 - Smoke migration-first: tabla `005`, workspace comercial y `/ready=200` antes

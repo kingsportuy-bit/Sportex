@@ -12,8 +12,30 @@ await mkdir(outputDirectory, { recursive: true });
 const browser = await chromium.launch({ executablePath, headless: true });
 const results = [];
 
-async function openWhatsApp(page, mobile) {
+function rgbChannels(cssColor) {
+  const channels = cssColor.match(/[\d.]+/gu)?.slice(0, 3).map(Number);
+  assert.equal(channels?.length, 3, `unsupported computed color: ${cssColor}`);
+  return channels;
+}
+
+function relativeLuminance(cssColor) {
+  return rgbChannels(cssColor)
+    .map((channel) => channel / 255)
+    .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
+}
+
+function contrastRatio(first, second) {
+  const [lighter, darker] = [relativeLuminance(first), relativeLuminance(second)].sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+async function openWhatsApp(page, mobile, theme) {
   await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.evaluate((selectedTheme) => {
+    document.documentElement.dataset.theme = selectedTheme;
+    localStorage.setItem("sportex_theme", selectedTheme);
+  }, theme);
   const config = await page.evaluate(() => fetch("/v1/public-config").then((response) => response.json()));
   assert.equal(config.data.conversationTimelineEnabled, true);
   const whatsappNavigation = page.locator('[data-view="whatsapp"]');
@@ -23,10 +45,10 @@ async function openWhatsApp(page, mobile) {
   await page.locator(".whatsapp-operational-event").first().waitFor({ state: "visible" });
 }
 
-async function inspectViewport(name, viewport, mobile) {
+async function inspectViewport(name, viewport, mobile, theme) {
   const page = await browser.newPage({ viewport });
   try {
-    await openWhatsApp(page, mobile);
+    await openWhatsApp(page, mobile, theme);
     const composer = page.locator(".whatsapp-composer-input");
     const conversation = page.locator(".whatsapp-chat-pane .lead-conversation");
     const draft = `Borrador E2E ${name}`;
@@ -46,12 +68,27 @@ async function inspectViewport(name, viewport, mobile) {
     await details.evaluate(async (node) => {
       await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
     });
+    const closeDetails = page.getByRole("button", { name: "Cerrar detalles" });
     const detailsStyle = await details.evaluate((node) => ({
       opacity: getComputedStyle(node).opacity,
       backgroundColor: getComputedStyle(node).backgroundColor,
     }));
+    const closeStyle = await closeDetails.evaluate((node) => {
+      const style = getComputedStyle(node);
+      const header = node.closest(".whatsapp-inline-details-head");
+      return {
+        color: style.color,
+        backgroundColor: style.backgroundColor,
+        borderColor: style.borderTopColor,
+        headerBackgroundColor: header ? getComputedStyle(header).backgroundColor : "",
+      };
+    });
+    const closeTextContrast = contrastRatio(closeStyle.color, closeStyle.backgroundColor);
+    const closeBoundaryContrast = contrastRatio(closeStyle.borderColor, closeStyle.headerBackgroundColor);
     assert.equal(detailsStyle.opacity, "1");
     assert.notEqual(detailsStyle.backgroundColor, "rgba(0, 0, 0, 0)");
+    assert.ok(closeTextContrast >= 4.5, JSON.stringify({ name, theme, closeStyle, closeTextContrast }));
+    assert.ok(closeBoundaryContrast >= 3, JSON.stringify({ name, theme, closeStyle, closeBoundaryContrast }));
     assert.equal(await composer.inputValue(), draft);
     const after = await conversation.evaluate((node) => ({
       scrollTop: node.scrollTop,
@@ -74,13 +111,14 @@ async function inspectViewport(name, viewport, mobile) {
       assert.ok(box && workspaceBox);
       assert.ok(Math.abs(box.width - workspaceBox.width) <= 2);
       assert.ok(Math.abs(box.height - workspaceBox.height) <= 2);
-      await page.screenshot({ path: resolve(outputDirectory, `${name}-details.png`), fullPage: true });
-      await page.getByRole("button", { name: "Cerrar detalles" }).click();
-      await composer.waitFor({ state: "visible" });
-      assert.equal(await composer.inputValue(), draft);
     } else {
       assert.equal(await composer.isVisible(), true);
     }
+    await page.screenshot({ path: resolve(outputDirectory, `${name}-details.png`), fullPage: true });
+    await closeDetails.click();
+    await details.waitFor({ state: "hidden" });
+    await composer.waitFor({ state: "visible" });
+    assert.equal(await composer.inputValue(), draft);
 
     const screenshot = resolve(outputDirectory, `${name}.png`);
     await page.screenshot({ path: screenshot, fullPage: true });
@@ -93,7 +131,11 @@ async function inspectViewport(name, viewport, mobile) {
         nodes.filter((node) => node.getClientRects().length > 0).length),
       composerVisible: await composer.isVisible(),
       draftPreserved: (await composer.inputValue()) === draft,
-      detailsVisible: mobile ? false : await details.isVisible(),
+      theme,
+      detailsVisible: await details.isVisible(),
+      closeStyle,
+      closeTextContrast,
+      closeBoundaryContrast,
       eventTextSize,
       scroll: before,
       screenshot,
@@ -104,8 +146,10 @@ async function inspectViewport(name, viewport, mobile) {
 }
 
 try {
-  await inspectViewport("desktop-1280x480", { width: 1280, height: 480 }, false);
-  await inspectViewport("mobile-390x844", { width: 390, height: 844 }, true);
+  for (const theme of ["light", "dark"]) {
+    await inspectViewport(`desktop-${theme}-1280x480`, { width: 1280, height: 480 }, false, theme);
+    await inspectViewport(`mobile-${theme}-390x844`, { width: 390, height: 844 }, true, theme);
+  }
   process.stdout.write(`${JSON.stringify({ ok: true, baseUrl, results }, null, 2)}\n`);
 } finally {
   await browser.close();

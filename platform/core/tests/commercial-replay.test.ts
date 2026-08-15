@@ -155,6 +155,24 @@ test("local API exposes the fictional replay and its visible workspace projectio
     true,
   );
 
+  const maximumNote = "n".repeat(1_000);
+  const followed = await app.inject({
+    method: "POST",
+    url: `/v1/local/commercial/workspace/${listed.json().data[0].id}/follow-ups`,
+    headers: {
+      ...headers("follow-up-max-note-api"),
+      "x-sportex-capabilities": "commercial.read,commercial.replay,commercial.manage",
+    },
+    payload: { note: maximumNote, outcome: "SIN_RESPUESTA", expectedVersion: 1 },
+  });
+  assert.equal(followed.statusCode, 201);
+  assert.equal(followed.json().data.opportunity.followUps.at(-1).note, maximumNote);
+  assert.equal(
+    followed.json().data.timeline.find((entry: { eventType?: string }) =>
+      entry.eventType === "FOLLOW_UP_RECORDED")?.detail,
+    `Sin respuesta: ${maximumNote}`,
+  );
+
   const sent = await app.inject({
     method: "POST",
     url: `/v1/local/whatsapp-simulated/workspace/${listed.json().data[0].id}/messages`,

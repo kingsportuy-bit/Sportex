@@ -90,13 +90,8 @@ con un asistente futuro que permanece sin camino ejecutable.
 
 ### 2026-08-15 - implementación local certificada
 
-- Modelo, migración, persistencia, API, UI y flag opt-in implementados.
-- Validación TypeScript, 48/48 tests, SQL, build y diff: PASS.
-- PostgreSQL 16 local: up/down/re-up, backfill, RLS e idempotencia: PASS.
-- Navegador local: mensajes y eventos separados; compositor conservado.
-- No hubo deploy, migración remota, cambios en Delta ADS ni mensajes reales.
-- La eventual promoción queda detrás de candidato publicado, backup/restore y
-  GO propietario exacto.
+- Primer candidato local implementado y validado sin acciones remotas; la
+  revisión posterior lo rechazó y sus resultados quedaron superados.
 
 ### 2026-08-15 - reabierta por NO-GO de revisión
 
@@ -108,16 +103,27 @@ con un asistente futuro que permanece sin camino ejecutable.
 
 ### 2026-08-15 - correcciones de revisión validadas
 
-- Savepoints y fusión fuente/proyección demuestran que un fallo timeline no
-  revierte la mutación principal ni oculta su evento fuente.
-- `/ready`, healthcheck y protocolo exigen migración `005` antes de imagen;
-  rollback vuelve a la imagen anterior antes de considerar down.
-- PostgreSQL 16: degradación, límites legacy, up/down/re-up y RLS directo con
-  rol app PASS.
-- E2E Chrome reproducible desktop/mobile: scroll, compositor, borrador,
-  Detalles y texto mínimo de 10 px PASS.
-- Core 50/50, TypeScript, SQL, build, documentación y diff PASS.
-- No hubo publicación, despliegue, migración remota ni mensajes reales.
+- Segundo candidato local corrigió desacople, migration-first, RLS y E2E, pero
+  la tercera revisión lo rechazó por las brechas documentadas abajo.
+
+### 2026-08-15 - reabierta por tercera revisión NO-GO
+
+- El candidato `c22a714` no se publica ni promueve.
+- Se corrige el contraste local del cierre de Detalles y se agrega validación
+  perceptual automatizada en claro/oscuro, desktop/mobile.
+- Se alinea sin pérdida la nota máxima de seguimiento con la actividad fuente,
+  la API, el preflight, la proyección y la migración.
+- El ensayo completo PostgreSQL pasa a un harness versionado y reproducible.
+
+### 2026-08-15 - tercera corrección validada
+
+- Cierre de Detalles visible y accionable con contraste medido en claro/oscuro
+  y desktop/mobile; compositor, borrador y scroll permanecen estables.
+- Nota canónica de 1000 y detalle derivado de 1015 se conservan completos en
+  API, servicio, fuente, migración y reconstrucción PostgreSQL.
+- El harness versionado prueba PG16, migraciones, preflight, down/re-up,
+  readiness, degradación, RLS y reconstrucción con resultado PASS.
+- Core 51/51, E2E, SQL, build, documentación y diff PASS; sin acción remota.
 
 ## decisiones
 
