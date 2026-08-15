@@ -228,10 +228,41 @@ export interface CommercialActivity {
     | "PRODUCTION_RELEASED";
   occurredAt: string;
   actorId: string;
+  actorKind?: "HUMAN" | "SYSTEM" | "ASSISTANT";
+  origin?: "OPERATOR" | "CORE" | "INTEGRATION" | "ASSISTANT";
   correlationId: string;
   evidenceMessageId: string | null;
   detail: string;
 }
+
+export type CommercialOperationalEventType = Exclude<CommercialActivity["type"], "MESSAGE_RECEIVED">;
+export type CommercialTimelineActorKind = "HUMAN" | "SYSTEM" | "ASSISTANT";
+export type CommercialTimelineOrigin = "OPERATOR" | "CORE" | "INTEGRATION" | "ASSISTANT";
+
+export interface CommercialTimelineMessage {
+  kind: "MESSAGE";
+  id: string;
+  occurredAt: string;
+  message: NormalizedConversationMessage;
+}
+
+export interface CommercialTimelineOperationalEvent {
+  kind: "OPERATIONAL_EVENT";
+  id: string;
+  eventType: CommercialOperationalEventType;
+  occurredAt: string;
+  actor: {
+    kind: CommercialTimelineActorKind;
+    ref: string;
+  };
+  origin: CommercialTimelineOrigin;
+  correlationId: string;
+  evidenceMessageId: string | null;
+  label: string;
+  detail: string;
+}
+
+export type CommercialTimelineEntry = CommercialTimelineMessage | CommercialTimelineOperationalEvent;
 
 export interface CommercialWorkspaceItem {
   id: string;
@@ -242,6 +273,7 @@ export interface CommercialWorkspaceItem {
   lead: CommercialLead;
   opportunity: CommercialOpportunity;
   activity: CommercialActivity[];
+  timeline?: CommercialTimelineEntry[];
   fixtureVersion: "commercial-demo-v1" | null;
 }
 

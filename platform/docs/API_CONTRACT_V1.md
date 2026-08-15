@@ -97,6 +97,19 @@ otra clave HTTP.
 Capacidad: `commercial.read`. Devuelve la proyección tenant-aware con
 conversación, atribución, lead, oportunidad, etapa y próxima acción.
 
+Desde `TASK-20260815-001` conserva `conversation.messages` sin cambios y agrega
+`timeline`, una lista ordenada y discriminada:
+
+- `kind=MESSAGE` referencia el mensaje WhatsApp original;
+- `kind=OPERATIONAL_EVENT` representa un hito ya aceptado por el Core;
+- un evento operativo nunca posee `providerMessageId`, receipt ni apariencia
+  contractual de mensaje;
+- actor/origen admiten `ASSISTANT` como dato futuro, pero el runtime actual no
+  ofrece activación, proveedor, propuesta ni salida automática.
+
+`conversationTimelineEnabled` en `GET /v1/public-config` controla solamente la
+presentación web. Nace `false`; no altera captura, mensajes ni persistencia.
+
 ### `GET /v1/public-config`
 
 Incluye `localCommercialReplayEnabled`, `localCommercialPersistenceEnabled` y

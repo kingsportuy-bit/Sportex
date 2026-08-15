@@ -91,6 +91,18 @@ Todo mensaje saliente se crea en outbox con:
 
 El worker relee el estado del pedido y la autorización antes de enviar.
 
+## Mensajes y eventos operativos
+
+- El mensaje conserva identidad, contenido, dirección y receipt del proveedor.
+- Un hito del Core se proyecta como evento operativo separado y nunca se
+  inserta en la tabla de mensajes ni se envía a WhatsApp.
+- La API puede combinarlos en una cronología de lectura con orden estable.
+- Deduplicación, reintentos y webhooks técnicos permanecen en observabilidad,
+  no como eventos visibles para el operador.
+- Un origen futuro `ASSISTANT` sigue sometido a permisos, Core y outbox. En el
+  corte vigente solo puede representarse como dato histórico: no existe camino
+  autónomo ejecutable.
+
 ## Integración directa
 
 Evolution API entrega webhooks directamente al adaptador del Core. Los mensajes salientes se ejecutan desde workers del Core mediante outbox. SPORTEX no utiliza n8n.

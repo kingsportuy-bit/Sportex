@@ -41,7 +41,7 @@ const input = {
 const context = (tenantId) => ({
   tenantId,
   actorId,
-  capabilities: ["commercial.read", "commercial.replay"],
+  capabilities: ["commercial.read", "commercial.replay", "commercial.manage"],
   correlationId: `postgres-rehearsal-${tenantId}`,
 });
 
@@ -62,6 +62,28 @@ try {
   assert.equal((await service.list(context(tenantA))).length, 1);
   assert.equal((await service.list(context(tenantB))).length, 1);
   assert.equal(created.data.conversation.messages.length, 1);
+  assert.equal(created.data.timeline.some((entry) => entry.kind === "MESSAGE"), true);
+  assert.equal(
+    created.data.timeline.some((entry) =>
+      entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "OPPORTUNITY_CREATED"),
+    true,
+  );
+  const staged = await service.updateStage(context(tenantA), created.data.id, {
+    stage: "EN_CALIFICACION",
+    expectedVersion: 1,
+    reason: "Ensayo de cronología PostgreSQL",
+  });
+  assert.equal(
+    staged.timeline.some((entry) =>
+      entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "STAGE_CHANGED"),
+    true,
+  );
+  const reloaded = (await service.list(context(tenantA))).find((item) => item.id === created.data.id);
+  assert.equal(
+    reloaded.timeline.some((entry) =>
+      entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "STAGE_CHANGED"),
+    true,
+  );
 
   const adapter = new SimulatedEvolutionAdapter();
   const projector = new CommercialWhatsAppProjector(service, actorId);
@@ -139,6 +161,7 @@ try {
   console.log("PROVIDER_REPLAYED=true");
   console.log("WHATSAPP_JOURNAL_PROCESSED=1");
   console.log("WHATSAPP_OUTBOX_IDEMPOTENT=true");
+  console.log("CONVERSATION_TIMELINE_SEPARATED=true");
 } finally {
   await transportStore.close();
   await store.close();

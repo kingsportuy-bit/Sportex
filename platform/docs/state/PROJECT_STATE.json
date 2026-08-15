@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-08-15",
-  "updatedBy": "TASK-20260814-001",
+  "updatedBy": "TASK-20260815-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -13,8 +13,8 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "quality",
-  "objective": "Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la siguiente mejora focal sin inventar un envío real.",
+  "mode": "feature",
+  "objective": "Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en mensajes y dejar compatibilidad pasiva para un asistente futuro apagado.",
   "scope": {
     "allowed": [
       "Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas.",
@@ -55,7 +55,8 @@
     "PASS tecnico y aprobacion de producto son gates separados; Fito acepto el concepto WhatsApp primero y la interfaz local sigue en iteracion.",
       "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
     "DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.",
-    "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion."
+    "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.",
+    "SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -66,7 +67,8 @@
     "SPORTEX-DEC-006",
     "SPORTEX-DEC-007",
     "SPORTEX-DEC-008",
-    "SPORTEX-DEC-009"
+    "SPORTEX-DEC-009",
+    "SPORTEX-DEC-011"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
@@ -74,15 +76,15 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
-    "workingTreeState": "TASK-20260814-001_CLOSED_HONESTLY",
+    "workingTreeState": "TASK-20260815-001_CLOSED_LOCAL_CANDIDATE_PENDING",
     "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
     "status": "MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS",
     "lastVerifiedAt": "2026-08-14",
     "executed": ["20260814_002", "20260814_003", "20260814_004"],
-    "pending": [],
-    "note": "Backup y restore PASS; 16 tablas con RLS forzado, tenant/membresia DELTA PASS y 13 tablas legadas intactas."
+    "pending": ["20260815_005"],
+    "note": "Backup y restore PASS para el runtime vigente; 16 tablas con RLS forzado. La migracion aditiva 005 fue ensayada localmente y requiere gate remoto separado."
   },
   "tests": {
     "status": "PASS",
@@ -92,8 +94,8 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md",
-    "note": "Cierre honesto del puesto operativo: 44/44, build, SQL y documentación PASS; el envío manual humano permanece pendiente y no fue inventado."
+    "evidence": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
+    "note": "Cronologia operativa local certificada: 48/48, PostgreSQL up/down/re-up, RLS, build y UI PASS; sin IA ejecutable ni efectos remotos."
   },
   "deployments": {
     "status": "PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL",
@@ -136,14 +138,27 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260814-001",
+    "taskId": "TASK-20260815-001",
     "date": "2026-08-15",
-    "path": "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md",
-    "summary": "TASK-20260814-001 cerrada con integración WhatsApp productiva verificable; el primer envío manual queda como aceptación humana sin prueba inventada.",
-    "environment": "PILOTO_DELTA",
+    "path": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
+    "summary": "Cronologia operativa separada de mensajes certificada localmente, con migracion reversible y compatibilidad pasiva del asistente apagada.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260815-001",
+      "summary": "Se implemento y certifico localmente la cronologia operativa WhatsApp, separada de mensajes y preparada para un asistente futuro no ejecutable.",
+      "documents": [
+        "core/src/domain/commercial-timeline.ts",
+        "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
+        "frontend/app.js",
+        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md"],
+      "decisions": ["SPORTEX-DEC-011"]
+    },
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260814-001",
@@ -489,7 +504,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Abrir la siguiente task focal para cronología operativa y compatibilidad pasiva del asistente.",
+    "Publicar el candidato exacto y preparar el paquete de promocion solo tras el GO propietario exigido por el guard.",
     "Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

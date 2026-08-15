@@ -10,7 +10,7 @@ Actualizado: 2026-08-15.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `quality`.
+- Intencion actual: `feature`.
 
 ## Git
 
@@ -27,7 +27,7 @@ Actualizado: 2026-08-15.
 
 ## Objetivo actual
 
-Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la siguiente mejora focal sin inventar un envío real.
+Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en mensajes y dejar compatibilidad pasiva para un asistente futuro apagado.
 
 ## Alcance actual
 
@@ -45,10 +45,11 @@ Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la
 - CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.
 - DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.
 - SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.
+- SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado.
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
+- Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 1.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-15`.
 - Despliegues: `PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL`; registros 7.
 - Integraciones: GitHub=`REMOTE_CANDIDATE_3C8C9DA_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_3C8C9DA_PUBLIC_HEALTHY`
@@ -56,10 +57,10 @@ Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260814-001`.
+- Tarea: `TASK-20260815-001`.
 - Fecha: `2026-08-15`.
-- Fuente: `docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md`.
-- TASK-20260814-001 cerrada con integración WhatsApp productiva verificable; el primer envío manual queda como aceptación humana sin prueba inventada.
+- Fuente: `docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md`.
+- Cronologia operativa separada de mensajes certificada localmente, con migracion reversible y compatibilidad pasiva del asistente apagada.
 
 ## Riesgos
 
@@ -73,6 +74,6 @@ Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la
 
 ## Siguientes acciones
 
-- Abrir la siguiente task focal para cronología operativa y compatibilidad pasiva del asistente.
+- Publicar el candidato exacto y preparar el paquete de promocion solo tras el GO propietario exigido por el guard.
 - Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

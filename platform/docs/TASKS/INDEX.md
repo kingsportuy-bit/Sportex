@@ -30,3 +30,4 @@ Actualizado: 2026-08-15.
 - `TASK-20260803-004` | `done` | Demo CRM comercial local navegable | docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md
 - `TASK-20260803-005` | `done` | Rediseñar la experiencia comercial Hoy | docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md
 - `TASK-20260814-001` | `done` | Integrar WhatsApp real de Delta con SPORTEX | docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md
+- `TASK-20260815-001` | `done` | Incorporar cronología operativa al chat WhatsApp | docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md

@@ -54,3 +54,6 @@ mercado. Requiere como minimo:
 ### Persistencia de la demo CRM
 
 `SPORTEX_COMMERCIAL_DEMO_FILE` puede apuntar a un JSON local de fixtures solamente cuando coinciden `development|test`, store `memory` y `SPORTEX_DEV_AUTH=true`. El archivo queda ignorado por Git. Reiniciar conserva los cambios ficticios; esto no demuestra durabilidad remota ni autoriza promover datos.
+
+`SPORTEX_CONVERSATION_TIMELINE_ENABLED` controla solo la presentación de la
+cronología y nace apagado. No habilita IA, mensajes, mutaciones ni integraciones.

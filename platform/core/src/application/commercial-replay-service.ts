@@ -13,6 +13,7 @@ import type {
   UpdateCommercialStageInput,
 } from "../domain/commercial-models.js";
 import { allowedCommercialStageTransitions } from "../domain/commercial-models.js";
+import { withConversationTimeline } from "../domain/commercial-timeline.js";
 import type { ActorContext } from "../domain/models.js";
 import type {
   CommercialReplayStore,
@@ -76,7 +77,7 @@ export class CommercialReplayService {
   ): Promise<CommercialReplayResult> {
     const hash = requestHash(input);
 
-    return this.store.transaction(context.tenantId, async (transaction) => {
+    const result = await this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
       const idempotency = await transaction.findIdempotency(idempotencyKey);
       if (idempotency) {
@@ -113,13 +114,14 @@ export class CommercialReplayService {
       await this.remember(transaction, context.tenantId, idempotencyKey, hash, item.id);
       return { data: item, replayed: false };
     });
+    return { ...result, data: withConversationTimeline(result.data) };
   }
 
   async list(context: ActorContext): Promise<CommercialWorkspaceItem[]> {
     requireCapability(context, "commercial.read");
     return this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
-      return transaction.list();
+      return (await transaction.list()).map((item) => item.timeline ? item : withConversationTimeline(item));
     });
   }
 
@@ -133,7 +135,7 @@ export class CommercialReplayService {
       await this.ensureSeeded(transaction, context.tenantId);
       const item = await this.requiredItem(transaction, itemId);
       this.requireVersion(item, input.expectedVersion);
-      if (item.opportunity.stage === input.stage) return item;
+      if (item.opportunity.stage === input.stage) return withConversationTimeline(item);
       if (!allowedCommercialStageTransitions(item.opportunity.stage).includes(input.stage)) {
         throw conflict("commercial_stage_transition_invalid", "Commercial stage transition is not allowed", {
           from: item.opportunity.stage,
@@ -184,6 +186,8 @@ export class CommercialReplayService {
             type: "STAGE_CHANGED",
             occurredAt: now,
             actorId: context.actorId,
+            actorKind: "HUMAN",
+            origin: "OPERATOR",
             correlationId: context.correlationId,
             evidenceMessageId: null,
             detail: `${previous} → ${input.stage}: ${reason}`,
@@ -191,7 +195,7 @@ export class CommercialReplayService {
         ],
       };
       await transaction.save(updated);
-      return updated;
+      return withConversationTimeline(updated);
     });
   }
 
@@ -223,6 +227,8 @@ export class CommercialReplayService {
             type: "NEXT_ACTION_UPDATED",
             occurredAt: now,
             actorId: context.actorId,
+            actorKind: "HUMAN",
+            origin: "OPERATOR",
             correlationId: context.correlationId,
             evidenceMessageId: null,
             detail: input.dueAt ? `${description} · ${input.dueAt}` : description,
@@ -230,7 +236,7 @@ export class CommercialReplayService {
         ],
       };
       await transaction.save(updated);
-      return updated;
+      return withConversationTimeline(updated);
     });
   }
 
@@ -267,6 +273,8 @@ export class CommercialReplayService {
             type: "FOLLOW_UP_RECORDED",
             occurredAt: now,
             actorId: context.actorId,
+            actorKind: "HUMAN",
+            origin: "OPERATOR",
             correlationId: context.correlationId,
             evidenceMessageId: null,
             detail: `${input.outcome}: ${followUp.note}`,
@@ -274,7 +282,7 @@ export class CommercialReplayService {
         ],
       };
       await transaction.save(updated);
-      return updated;
+      return withConversationTimeline(updated);
     });
   }
 
@@ -302,7 +310,7 @@ export class CommercialReplayService {
       }
       return item;
     });
-    if (snapshot.opportunity.coreConversion) return snapshot;
+    if (snapshot.opportunity.coreConversion) return withConversationTimeline(snapshot);
 
     const quote = snapshot.opportunity.quote;
     const teamName = snapshot.lead.teamName;
@@ -362,13 +370,15 @@ export class CommercialReplayService {
           type: "ORDER_CREATED",
           occurredAt: convertedAt,
           actorId: context.actorId,
+          actorKind: "HUMAN",
+          origin: "OPERATOR",
           correlationId: context.correlationId,
           evidenceMessageId: current.opportunity.evidenceMessageId,
           detail: `Pedido ${order.data.orderNumber} creado desde la seña validada.`,
         }],
       };
       await transaction.save(updated);
-      return updated;
+      return withConversationTimeline(updated);
     });
   }
 
@@ -390,7 +400,7 @@ export class CommercialReplayService {
       return item;
     });
     const conversion = snapshot.opportunity.coreConversion;
-    if (!conversion || conversion.productionReleasedAt) return snapshot;
+    if (!conversion || conversion.productionReleasedAt) return withConversationTimeline(snapshot);
 
     const released = await this.coreService.releaseOrderToProduction(
       context,
@@ -429,13 +439,15 @@ export class CommercialReplayService {
           type: "PRODUCTION_RELEASED",
           occurredAt: releasedAt,
           actorId: context.actorId,
+          actorKind: "HUMAN",
+          origin: "OPERATOR",
           correlationId: context.correlationId,
           evidenceMessageId: current.opportunity.evidenceMessageId,
           detail: `Pedido ${released.data.orderNumber} entregado a producción.`,
         }],
       };
       await transaction.save(updated);
-      return updated;
+      return withConversationTimeline(updated);
     });
   }
 
@@ -580,6 +592,8 @@ export class CommercialReplayService {
           type: "MESSAGE_RECEIVED",
           occurredAt: message.receivedAt,
           actorId: context.actorId,
+          actorKind: "SYSTEM",
+          origin: "INTEGRATION",
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
           detail: fixtureOnly ? "Mensaje ficticio normalizado por el Core." : "Mensaje de WhatsApp normalizado por el Core.",
@@ -588,6 +602,8 @@ export class CommercialReplayService {
           type: "OPPORTUNITY_CREATED",
           occurredAt: message.receivedAt,
           actorId: context.actorId,
+          actorKind: "SYSTEM",
+          origin: "CORE",
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
           detail: fixtureOnly ? "Lead y oportunidad creados desde replay ficticio local." : "Lead y oportunidad creados desde WhatsApp.",
@@ -621,6 +637,8 @@ export class CommercialReplayService {
           type: "MESSAGE_RECEIVED",
           occurredAt: message.receivedAt,
           actorId: context.actorId,
+          actorKind: "SYSTEM",
+          origin: "INTEGRATION",
           correlationId: context.correlationId,
           evidenceMessageId: message.id,
           detail: existing.fixtureVersion

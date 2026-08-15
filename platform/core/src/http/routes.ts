@@ -135,6 +135,7 @@ export async function registerRoutes(
       authAnonKey: config.authAnonKey ?? null,
       release: config.release ?? "local",
       commercialWorkspaceEnabled: commercialService !== null,
+      conversationTimelineEnabled: Boolean(config.conversationTimelineEnabled),
       localCommercialReplayEnabled,
       localCommercialPersistenceEnabled: localCommercialReplayEnabled && Boolean(config.commercialDemoFile),
       localWhatsAppSimulationEnabled: localWhatsAppSimulation !== null,

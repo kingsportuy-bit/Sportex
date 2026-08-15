@@ -1,19 +1,12 @@
 # Decisiones tecnicas vigentes de SPORTEX
 
-Registro durable del sistema. Las tareas referencian sus IDs; una decisión
-nueva marca la anterior como `REEMPLAZADA`. El negocio permanece en DELTA.
+Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DELTA.
 
 ## SPORTEX-DEC-001 - Fuente canonica unica y vistas derivadas
 
-- Fecha: 2026-08-02
-- Estado: `VIGENTE`
-- Decision: `docs/state/PROJECT_STATE.json` es la unica fuente canonica del
-  contexto vivo. `SESSION_STATE.md`, `TASKS/INDEX.md`, `CURRENT_CONTEXT.md`,
-  `errors/index.json` y `CAMPAIGN_STATE.json` son vistas regenerables.
-- Motivo: evitar estados paralelos y permitir que un hilo nuevo detecte tarea,
-  campaña, entorno, Git, riesgos y siguiente accion sin memoria del chat.
-- Impacto: las vistas no se editan manualmente y el workflow bloquea si estan
-  desactualizadas o contradicen el estado y las tareas.
+- 2026-08-02 · `VIGENTE`. `docs/state/PROJECT_STATE.json` es la única fuente
+  del contexto vivo; las vistas generadas no se editan y el workflow bloquea
+  si están desactualizadas o contradicen tareas/estado.
 
 ## SPORTEX-DEC-002 - Cierre proporcional al desarrollo de software
 
@@ -98,3 +91,10 @@ nueva marca la anterior como `REEMPLAZADA`. El negocio permanece en DELTA.
 - Decisión: reutilizar UI/Core y conectar Delta por gates; `SEÑA_VALIDADA` crea
   un Pedido único. Toda operación remota exige rollback y GO exacto.
 - Evidencia: `TASK-20260814-001`.
+
+## SPORTEX-DEC-011 - Mensajes y eventos separados; asistente solo compatible
+
+- 2026-08-15 · `VIGENTE`. Mensajes y eventos se persisten separados; la API
+  solo los reúne para lectura y la UI conserva burbujas y separadores.
+- `ASSISTANT` es dato pasivo, sin ejecución. Ocultar la cronología no toca
+  mensajes ni fuentes del Core.

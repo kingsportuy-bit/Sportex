@@ -8,6 +8,11 @@ const authConfig = {
   SPORTEX_AUTH_ANON_KEY: "test-anon-key-with-enough-length",
 };
 
+test("conversation timeline presentation is disabled by default and opt-in", () => {
+  assert.equal(loadConfig({}).conversationTimelineEnabled, false);
+  assert.equal(loadConfig({ SPORTEX_CONVERSATION_TIMELINE_ENABLED: "true" }).conversationTimelineEnabled, true);
+});
+
 test("development auth cannot start outside development or test", () => {
   assert.throws(
     () => loadConfig({ SPORTEX_ENV: "staging", SPORTEX_DEV_AUTH: "true" }),

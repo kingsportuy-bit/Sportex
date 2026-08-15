@@ -148,6 +148,12 @@ test("local API exposes the fictional replay and its visible workspace projectio
   assert.equal(listed.statusCode, 200);
   assert.equal(listed.json().data.length, 1);
   assert.equal(listed.json().data[0].opportunity.stage, "NUEVO");
+  assert.equal(listed.json().data[0].timeline.some((entry: { kind: string }) => entry.kind === "MESSAGE"), true);
+  assert.equal(
+    listed.json().data[0].timeline.some((entry: { kind: string; eventType?: string }) =>
+      entry.kind === "OPERATIONAL_EVENT" && entry.eventType === "OPPORTUNITY_CREATED"),
+    true,
+  );
 
   const sent = await app.inject({
     method: "POST",

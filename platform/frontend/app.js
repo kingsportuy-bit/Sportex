@@ -157,6 +157,7 @@ function commercialSnapshot(items) {
     item.opportunity.version,
     item.conversation.lastActivityAt,
     item.conversation.messages.at(-1)?.providerMessageId || "",
+    item.timeline?.at(-1)?.id || "",
   ]));
 }
 
@@ -1413,7 +1414,33 @@ function renderWhatsAppChatPane(item) {
   header.append(back, avatar, identity, menu);
 
   const conversation = element("div", "conversation-timeline lead-conversation");
-  for (const message of item.conversation.messages) {
+  const timeline = state.config?.conversationTimelineEnabled && item.timeline?.length
+    ? item.timeline
+    : item.conversation.messages.map((message) => ({
+      kind: "MESSAGE",
+      id: `message:${message.providerMessageId}`,
+      occurredAt: message.occurredAt,
+      message,
+    }));
+  for (const entry of timeline) {
+    if (entry.kind === "OPERATIONAL_EVENT") {
+      const event = element("aside", "whatsapp-operational-event");
+      event.dataset.eventType = entry.eventType;
+      event.setAttribute("aria-label", `${entry.label}. ${entry.detail}`);
+      const copy = element("span", "whatsapp-operational-copy");
+      copy.append(
+        element("strong", "", entry.label),
+        element("small", "", entry.detail),
+      );
+      event.append(
+        element("span", "whatsapp-operational-mark", "✓"),
+        copy,
+        element("time", "", shortDateTime(entry.occurredAt)),
+      );
+      conversation.append(event);
+      continue;
+    }
+    const message = entry.message;
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(
       element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),

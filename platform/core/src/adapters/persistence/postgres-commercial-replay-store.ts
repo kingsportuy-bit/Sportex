@@ -8,9 +8,15 @@ import type {
   CommercialLead,
   CommercialOpportunity,
   CommercialReplayIdempotency,
+  CommercialTimelineOperationalEvent,
   CommercialWorkspaceItem,
   NormalizedConversationMessage,
 } from "../../domain/commercial-models.js";
+import {
+  buildConversationTimeline,
+  projectOperationalEvents,
+  readableOperationalDetail,
+} from "../../domain/commercial-timeline.js";
 import type {
   CommercialReplayStore,
   CommercialReplayTransaction,
@@ -22,6 +28,7 @@ interface CommercialTables {
   conversations: string;
   messages: string;
   opportunities: string;
+  timelineEvents: string;
   idempotency: string;
 }
 
@@ -31,6 +38,7 @@ function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): CommercialTables
     conversations: `${prefix}commercial_conversations`,
     messages: `${prefix}commercial_messages`,
     opportunities: `${prefix}commercial_opportunities`,
+    timelineEvents: `${prefix}conversation_timeline_events`,
     idempotency: `${prefix}idempotency`,
   };
 }
@@ -179,6 +187,19 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     if (saved.rowCount !== 1) {
       throw conflict("commercial_version_conflict", "Commercial workspace version changed");
     }
+
+    for (const event of projectOperationalEvents(item)) {
+      await this.client.query(
+        `INSERT INTO ${this.tables.timelineEvents}
+         (event_id, tenant_id, conversation_id, event_type, actor_kind, actor_ref,
+          origin, correlation_id, evidence_message_id, label, detail, occurred_at, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,now())
+         ON CONFLICT (tenant_id, event_id) DO NOTHING`,
+        [event.id, item.tenantId, item.conversation.id, event.eventType,
+          event.actor.kind, event.actor.ref, event.origin, event.correlationId,
+          event.evidenceMessageId, event.label, event.detail, event.occurredAt],
+      );
+    }
   }
 
   async list(): Promise<CommercialWorkspaceItem[]> {
@@ -224,6 +245,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (!row) return null;
     const messages = await this.messages(String(row.conversation_id));
+    const timelineEvents = await this.timelineEvents(String(row.conversation_id));
     const contact: CommercialContact = {
       id: String(row.contact_id),
       tenantId: this.tenantId,
@@ -250,7 +272,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       lastActivityAt: iso(row.last_activity_at),
       fixtureOnly: messages.every((message) => message.fixtureOnly),
     };
-    return {
+    const item: CommercialWorkspaceItem = {
       id: String(row.workspace_id),
       tenantId: this.tenantId,
       contact,
@@ -261,6 +283,39 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       activity: jsonValue<CommercialActivity[]>(row.activity_data),
       fixtureVersion: null,
     };
+    return { ...item, timeline: buildConversationTimeline(item, timelineEvents) };
+  }
+
+  private async timelineEvents(conversationId: string): Promise<CommercialTimelineOperationalEvent[]> {
+    const result = await this.client.query(
+      `SELECT event_id, event_type, actor_kind, actor_ref, origin, correlation_id,
+              evidence_message_id, label, detail, occurred_at
+       FROM ${this.tables.timelineEvents}
+       WHERE tenant_id = $1 AND conversation_id = $2
+       ORDER BY occurred_at, event_id`,
+      [this.tenantId, conversationId],
+    );
+    return result.rows.map((candidate) => {
+      const row = candidate as Record<string, unknown>;
+      return {
+        kind: "OPERATIONAL_EVENT",
+        id: String(row.event_id),
+        eventType: String(row.event_type) as CommercialTimelineOperationalEvent["eventType"],
+        occurredAt: iso(row.occurred_at),
+        actor: {
+          kind: String(row.actor_kind) as CommercialTimelineOperationalEvent["actor"]["kind"],
+          ref: String(row.actor_ref),
+        },
+        origin: String(row.origin) as CommercialTimelineOperationalEvent["origin"],
+        correlationId: String(row.correlation_id),
+        evidenceMessageId: row.evidence_message_id ? String(row.evidence_message_id) : null,
+        label: String(row.label),
+        detail: readableOperationalDetail(
+          String(row.event_type) as CommercialTimelineOperationalEvent["eventType"],
+          String(row.detail),
+        ),
+      };
+    });
   }
 
   private async messages(conversationId: string): Promise<NormalizedConversationMessage[]> {

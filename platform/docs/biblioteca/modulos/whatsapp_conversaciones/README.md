@@ -26,7 +26,9 @@ Evento persistido, conversación vinculada, hechos propuestos y correlación.
 
 ## Persistencia
 
-Conversaciones, participantes, eventos, mensajes referenciados, propuestas y vínculos a pedidos.
+Conversaciones, participantes, mensajes referenciados y eventos operativos
+separados, propuestas y vínculos a pedidos. La cronología es una proyección;
+no convierte eventos en mensajes.
 
 ## Auditoría
 
@@ -46,11 +48,10 @@ Replay, firma inválida, varios pedidos activos, prompt injection, cuarentena e 
 
 ## Evidencia
 
-Replay local ficticio de `TASK-20260803-001`, semilla de `TASK-20260803-004` y
-pipeline durable de `TASK-20260814-001`: normalización, orden, deduplicación,
-atribución, aislamiento, journal PostgreSQL, worker sin UI, backfill,
-cuarentena, outbox falso y receipts. Sin evidencia de proveedor real ni
-`PILOTO_DELTA`.
+`TASK-20260814-001` certificó el proveedor real y el puesto operativo en
+`PILOTO_DELTA`. `TASK-20260815-001` agrega localmente una cronología
+discriminada, migración reversible, backfill, RLS y compatibilidad pasiva de
+actor `ASSISTANT`, sin bot ni outbound IA.
 
 ## Rollback
 
@@ -58,7 +59,7 @@ Desvincular propuesta o pedido sin borrar el evento original.
 
 ## Estado
 
-VALIDADO_LOCAL_PIPELINE_DURABLE_SOLO_FIXTURES.
+PILOTO_DELTA_WHATSAPP_OPERATIVO_CRONOLOGIA_CANDIDATA_LOCAL.
 
 ## Cierre documental
 

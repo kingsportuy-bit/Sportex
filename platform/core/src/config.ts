@@ -17,6 +17,7 @@ export interface SportexConfig {
   authTimeoutMs?: number;
   frontendDir?: string;
   commercialDemoFile?: string;
+  conversationTimelineEnabled?: boolean;
   evolutionIngressEnabled?: boolean;
   evolutionOutboundEnabled?: boolean;
   evolutionInstance?: string;
@@ -49,6 +50,7 @@ const schema = z.object({
   SPORTEX_AUTH_TIMEOUT_MS: z.coerce.number().int().min(250).max(30_000).default(5_000),
   SPORTEX_FRONTEND_DIR: z.string().min(1).optional(),
   SPORTEX_COMMERCIAL_DEMO_FILE: z.string().min(1).optional(),
+  SPORTEX_CONVERSATION_TIMELINE_ENABLED: boolFromString.default("false"),
   SPORTEX_EVOLUTION_INGRESS_ENABLED: boolFromString.default("false"),
   SPORTEX_EVOLUTION_OUTBOUND_ENABLED: boolFromString.default("false"),
   SPORTEX_EVOLUTION_INSTANCE: z.string().trim().min(1).max(120).optional(),
@@ -161,6 +163,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): SportexConf
     authTimeoutMs: parsed.SPORTEX_AUTH_TIMEOUT_MS,
     ...(parsed.SPORTEX_FRONTEND_DIR ? { frontendDir: parsed.SPORTEX_FRONTEND_DIR } : {}),
     ...(parsed.SPORTEX_COMMERCIAL_DEMO_FILE ? { commercialDemoFile: parsed.SPORTEX_COMMERCIAL_DEMO_FILE } : {}),
+    conversationTimelineEnabled: parsed.SPORTEX_CONVERSATION_TIMELINE_ENABLED,
     evolutionIngressEnabled: parsed.SPORTEX_EVOLUTION_INGRESS_ENABLED,
     evolutionOutboundEnabled: parsed.SPORTEX_EVOLUTION_OUTBOUND_ENABLED,
     ...(parsed.SPORTEX_EVOLUTION_INSTANCE ? { evolutionInstance: parsed.SPORTEX_EVOLUTION_INSTANCE } : {}),

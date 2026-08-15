@@ -790,6 +790,12 @@ button { cursor: pointer; }
 .whatsapp-chat-pane .message-row { border: 0; border-radius: 8px; }
 .whatsapp-chat-pane .message-row.is-client { background: white; }
 .whatsapp-chat-pane .message-row.is-delta { background: #dcebd6; box-shadow: 0 2px 7px rgb(24 34 28 / 5%); }
+.whatsapp-operational-event { justify-self: center; width: min(78%, 540px); display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 7px 10px; border: 1px solid color-mix(in srgb, var(--signal) 24%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--paper) 92%, var(--signal)); color: var(--ink-soft); box-shadow: 0 2px 7px rgb(24 34 28 / 4%); }
+.whatsapp-operational-mark { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--signal) 24%, transparent); color: color-mix(in srgb, var(--signal) 62%, #203023); font-size: 10px; font-weight: 900; }
+.whatsapp-operational-copy { min-width: 0; display: grid; gap: 2px; }
+.whatsapp-operational-copy strong { overflow: hidden; font-size: 9px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.whatsapp-operational-copy small { overflow: hidden; color: var(--muted); font-size: 8px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
+.whatsapp-operational-event time { color: var(--muted); font-size: 7px; white-space: nowrap; }
 .whatsapp-composer { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr) 42px; gap: 9px; align-items: end; padding: 12px 14px; border-top: 1px solid var(--line); background: var(--paper); }
 .whatsapp-composer-icon, .whatsapp-send { width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #657068; font-size: 24px; }
 .whatsapp-send { width: 42px; height: 42px; background: var(--blue); color: white; font-size: 18px; }
@@ -816,6 +822,8 @@ button { cursor: pointer; }
   .whatsapp-chat-head .whatsapp-avatar { display: none; }
   .whatsapp-chat-menu { flex: 0 0 auto; }
   .whatsapp-chat-pane .lead-conversation { padding: 12px 10px 30px; }
+  .whatsapp-operational-event { width: min(94%, 480px); grid-template-columns: 20px minmax(0, 1fr); border-radius: 12px; }
+  .whatsapp-operational-event time { grid-column: 2; }
   .whatsapp-composer { grid-template-columns: 36px minmax(0, 1fr) 40px; gap: 7px; padding: 9px; }
   .whatsapp-composer-icon { width: 36px; height: 40px; }
   .whatsapp-send { width: 40px; height: 40px; }

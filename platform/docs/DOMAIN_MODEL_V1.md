@@ -228,6 +228,20 @@ El journal conserva `SIMULATED_LIVE` o `BACKFILL`; la conversación conserva el
 origen por mensaje. Un mensaje saliente no puede crear una oportunidad sin una
 conversación previa. Receipts actualizan entrega y no deciden negocio.
 
+## Cronología operativa de conversación
+
+La cronología es una proyección reconstruible, no una nueva fuente de verdad.
+Combina por tiempo dos tipos discriminados sin mezclarlos en persistencia:
+
+- `MESSAGE`: mensaje WhatsApp con su identidad de proveedor intacta;
+- `OPERATIONAL_EVENT`: oportunidad, etapa, próxima acción, seguimiento,
+  Cliente/Pedido o entrega a producción ya aceptados por el Core.
+
+Los eventos operativos viven en una tabla aditiva, son idempotentes por evento,
+pertenecen a tenant y conversación, y conservan actor, origen, correlación y
+evidencia. `ASSISTANT` es un actor/origen válido para compatibilidad futura;
+representarlo no crea un comando, job, propuesta, outbox ni efecto externo.
+
 ## Tablas transitorias preparadas en julio de 2026
 
 - `sportex_staging_tenants`;

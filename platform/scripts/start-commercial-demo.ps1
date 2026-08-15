@@ -12,6 +12,7 @@ $env:SPORTEX_STORE = 'memory'
 $env:SPORTEX_DEV_AUTH = 'true'
 $env:SPORTEX_FRONTEND_DIR = $frontendRoot
 $env:SPORTEX_COMMERCIAL_DEMO_FILE = $demoDataFile
+$env:SPORTEX_CONVERSATION_TIMELINE_ENABLED = 'true'
 $env:SPORTEX_RELEASE = 'commercial-local-fixture'
 $env:HOST = '127.0.0.1'
 $env:PORT = [string]$Port

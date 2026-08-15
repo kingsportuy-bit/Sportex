@@ -17,6 +17,8 @@ const expectedFiles = [
   "20260814_003_whatsapp_transport.down.sql",
   "20260814_004_production_release.up.sql",
   "20260814_004_production_release.down.sql",
+  "20260815_005_conversation_timeline.up.sql",
+  "20260815_005_conversation_timeline.down.sql",
 ];
 for (const name of expectedFiles) {
   if (!migrationFiles.includes(name)) failures.push(`missing db/migrations/staging/${name}`);
@@ -46,6 +48,7 @@ const requiredTables = [
   "commercial_core_links",
   "whatsapp_ingress_events",
   "whatsapp_outbound_messages",
+  "conversation_timeline_events",
 ].map((name) => `sportex_staging_${name}`);
 
 for (const table of requiredTables) {

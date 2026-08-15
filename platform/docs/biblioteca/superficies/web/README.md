@@ -50,3 +50,8 @@ la acción muestra `Pedido creado` y exige `Entregar a producción`; después
 muestra `Listo para producción`, el momento y la próxima acción productiva. La
 lista de Pedidos usa el mismo estado del Core y conserva contraste en tema
 claro/oscuro. El frontend no puede autorizar ni decidir la transición.
+
+`TASK-20260815-001` intercala en el chat separadores compactos para hitos del
+Core. Las burbujas siguen reservadas a mensajes reales. Desktop y mobile
+conservan compositor y Detalles; el flag de presentación nace apagado y su
+rollback no interrumpe la captura de WhatsApp.
