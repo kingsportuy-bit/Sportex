@@ -87,9 +87,11 @@ for (const token of [
   "timeline_preflight_activity_data_not_array",
   "timeline_preflight_legacy_contract_invalid",
   "timeline_preflight_legacy_timestamp_invalid",
-  "char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1015",
+  "sportex_timeline_readable_detail(event_type text, source_detail text)",
+  "char_length(pg_temp.sportex_timeline_readable_detail(",
   "char_length(detail) BETWEEN 1 AND 1015",
-  "'SIN_RESPUESTA', 'Sin respuesta'",
+  "readable_first || substr(source_detail, first_separator)",
+  "readable_first || ' → ' || readable_second || substr(remainder, second_separator)",
   "'activity:' || md5(concat(",
 ]) {
   if (!timelineUp.includes(token)) failures.push(`timeline migration missing ${token}`);

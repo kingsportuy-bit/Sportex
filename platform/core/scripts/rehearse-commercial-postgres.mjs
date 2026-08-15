@@ -15,6 +15,9 @@ if (!databaseUrl) throw new Error("DATABASE_URL is required");
 const tenantA = "11111111-1111-4111-8111-111111111111";
 const tenantB = "22222222-2222-4222-8222-222222222222";
 const actorId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+const technicalTokenProbe = "NUEVO|EN_CALIFICACION|COTIZADO|EN_SEGUIMIENTO|PERDIDO|SENA_VALIDADA|SIN_CAMBIOS|AVANZO|SIN_RESPUESTA|NO_CONTINUA|";
+const maximumTechnicalTokenNote = () =>
+  technicalTokenProbe.repeat(Math.ceil(999 / technicalTokenProbe.length)).slice(0, 999) + "Z";
 const config = {
   environment: "test",
   storeDriver: "postgres",
@@ -95,7 +98,7 @@ try {
   );
   timelineTableRenamed = true;
   await assert.rejects(() => store.checkReady());
-  const maximumNote = "n".repeat(1_000);
+  const maximumNote = maximumTechnicalTokenNote();
   const degraded = await service.recordFollowUp(context(tenantA), created.data.id, {
     outcome: "SIN_RESPUESTA",
     note: maximumNote,

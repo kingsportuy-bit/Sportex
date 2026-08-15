@@ -83,47 +83,30 @@ con un asistente futuro que permanece sin camino ejecutable.
 
 ## registro_de_avances
 
-### 2026-08-15 - task abierta
+### 2026-08-15 - historial de candidatos rechazados
 
-- `TASK-20260814-001` cerró con evidencia sin inventar el envío manual.
-- Se abrió este corte focal bajo el handoff aprobado y sin acciones remotas.
+- `fca96c2`, `c22a714` y `e455915` no se publican ni promueven.
+- Las revisiones previas incorporaron desacople, migration-first, RLS, E2E,
+  contraste y límites, pero no alcanzaron el contrato final.
 
-### 2026-08-15 - implementación local certificada
+### 2026-08-15 - reabierta por cuarta revisión NO-GO
 
-- Primer candidato local implementado y validado sin acciones remotas; la
-  revisión posterior lo rechazó y sus resultados quedaron superados.
+- El candidato `e455915` no se publica ni promueve.
+- La humanización pasa a ser estructural y específica por tipo de evento; nunca
+  sustituye tokens dentro de notas, motivos u otro texto libre.
+- TypeScript, backfill SQL y preflight deben producir el mismo detalle exacto.
+- El E2E pasa a tener un comando autocontenido que levanta y limpia su demo.
 
-### 2026-08-15 - reabierta por NO-GO de revisión
+### 2026-08-15 - cuarta corrección validada
 
-- El candidato `fca96c2` no se publica ni promueve.
-- Se corrige la frontera transaccional para que la cronología derivada nunca
-  revierta la mutación principal ni pierda su evento fuente.
-- Se agrega preflight migration-first/readiness, compatibilidad legacy,
-  observabilidad, E2E reproducible y aislamiento RLS con rol de aplicación.
-
-### 2026-08-15 - correcciones de revisión validadas
-
-- Segundo candidato local corrigió desacople, migration-first, RLS y E2E, pero
-  la tercera revisión lo rechazó por las brechas documentadas abajo.
-
-### 2026-08-15 - reabierta por tercera revisión NO-GO
-
-- El candidato `c22a714` no se publica ni promueve.
-- Se corrige el contraste local del cierre de Detalles y se agrega validación
-  perceptual automatizada en claro/oscuro, desktop/mobile.
-- Se alinea sin pérdida la nota máxima de seguimiento con la actividad fuente,
-  la API, el preflight, la proyección y la migración.
-- El ensayo completo PostgreSQL pasa a un harness versionado y reproducible.
-
-### 2026-08-15 - tercera corrección validada
-
-- Cierre de Detalles visible y accionable con contraste medido en claro/oscuro
-  y desktop/mobile; compositor, borrador y scroll permanecen estables.
-- Nota canónica de 1000 y detalle derivado de 1015 se conservan completos en
-  API, servicio, fuente, migración y reconstrucción PostgreSQL.
-- El harness versionado prueba PG16, migraciones, preflight, down/re-up,
-  readiness, degradación, RLS y reconstrucción con resultado PASS.
-- Core 51/51, E2E, SQL, build, documentación y diff PASS; sin acción remota.
+- TS y SQL humanizan solo campos estructurales; nota, motivo y texto libre se
+  conservan literales aun cuando repiten todos los tokens técnicos.
+- API y PostgreSQL prueban nota máxima de 1000, detalle exacto de 1015 y
+  reconstrucción después de down/re-up.
+- `test:e2e:timeline` levanta y limpia su propia demo 8091; claro/oscuro y
+  desktop/mobile PASS, sin proceso ni JSON residual.
+- Core 52/52, harness PG, E2E, SQL, build, documentación y diff PASS; sin
+  publicación ni efectos remotos.
 
 ## decisiones
 

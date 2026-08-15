@@ -60,7 +60,7 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 - Tarea: `TASK-20260815-001`.
 - Fecha: `2026-08-15`.
 - Fuente: `docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md`.
-- Tercera revision corregida: contraste Detalles, nota maxima sin perdida y harness PostgreSQL completo certificados localmente.
+- Cuarta revision corregida: humanizacion estructural sin tocar texto libre y E2E autocontenido certificados localmente.
 
 ## Riesgos
 
@@ -74,6 +74,6 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 
 ## Siguientes acciones
 
-- Someter el tercer candidato local de TASK-20260815-001 a re-review antes de publicarlo o promoverlo.
+- Someter el cuarto candidato local de TASK-20260815-001 a re-review antes de publicarlo o promoverlo.
 - Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

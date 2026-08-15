@@ -1,5 +1,76 @@
 BEGIN;
 
+CREATE FUNCTION pg_temp.sportex_timeline_readable_detail(event_type text, source_detail text)
+RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE
+STRICT
+AS $$
+DECLARE
+  first_separator integer;
+  second_separator integer;
+  controlled_first text;
+  controlled_second text;
+  remainder text;
+  readable_first text;
+  readable_second text;
+BEGIN
+  IF event_type = 'OPPORTUNITY_CREATED' THEN
+    RETURN 'Ya forma parte del seguimiento comercial.';
+  END IF;
+
+  IF event_type = 'FOLLOW_UP_RECORDED' THEN
+    first_separator := strpos(source_detail, ': ');
+    IF first_separator = 0 THEN RETURN source_detail; END IF;
+    controlled_first := left(source_detail, first_separator - 1);
+    readable_first := CASE controlled_first
+      WHEN 'SIN_CAMBIOS' THEN 'Sin cambios'
+      WHEN 'AVANZO' THEN 'Avanzó'
+      WHEN 'SIN_RESPUESTA' THEN 'Sin respuesta'
+      WHEN 'NO_CONTINUA' THEN 'No continúa'
+      ELSE NULL
+    END;
+    RETURN CASE
+      WHEN readable_first IS NULL THEN source_detail
+      ELSE readable_first || substr(source_detail, first_separator)
+    END;
+  END IF;
+
+  IF event_type = 'STAGE_CHANGED' THEN
+    first_separator := strpos(source_detail, ' → ');
+    IF first_separator = 0 THEN RETURN source_detail; END IF;
+    controlled_first := left(source_detail, first_separator - 1);
+    remainder := substr(source_detail, first_separator + 3);
+    second_separator := strpos(remainder, ': ');
+    IF second_separator = 0 THEN RETURN source_detail; END IF;
+    controlled_second := left(remainder, second_separator - 1);
+    readable_first := CASE controlled_first
+      WHEN 'NUEVO' THEN 'Contacto inicial'
+      WHEN 'EN_CALIFICACION' THEN 'Calificación'
+      WHEN 'COTIZADO' THEN 'Cotización enviada'
+      WHEN 'EN_SEGUIMIENTO' THEN 'Seguimiento'
+      WHEN 'PERDIDO' THEN 'Cerrado sin venta'
+      WHEN 'SENA_VALIDADA' THEN 'Seña validada'
+      ELSE NULL
+    END;
+    readable_second := CASE controlled_second
+      WHEN 'NUEVO' THEN 'Contacto inicial'
+      WHEN 'EN_CALIFICACION' THEN 'Calificación'
+      WHEN 'COTIZADO' THEN 'Cotización enviada'
+      WHEN 'EN_SEGUIMIENTO' THEN 'Seguimiento'
+      WHEN 'PERDIDO' THEN 'Cerrado sin venta'
+      WHEN 'SENA_VALIDADA' THEN 'Seña validada'
+      ELSE NULL
+    END;
+    RETURN CASE
+      WHEN readable_first IS NULL OR readable_second IS NULL THEN source_detail
+      ELSE readable_first || ' → ' || readable_second || substr(remainder, second_separator)
+    END;
+  END IF;
+
+  RETURN source_detail;
+END $$;
+
 DO $$
 DECLARE
   activity jsonb;
@@ -24,7 +95,9 @@ BEGIN
     IF jsonb_typeof(activity) <> 'object'
       OR coalesce(char_length(activity->>'actorId'), 0) NOT BETWEEN 1 AND 160
       OR coalesce(char_length(activity->>'correlationId'), 0) NOT BETWEEN 1 AND 200
-      OR coalesce(char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1015
+      OR coalesce(char_length(pg_temp.sportex_timeline_readable_detail(
+        activity->>'type', activity->>'detail'
+      )), 0) NOT BETWEEN 1 AND 1015
       OR (activity ? 'evidenceMessageId'
           AND activity->>'evidenceMessageId' IS NOT NULL
           AND char_length(activity->>'evidenceMessageId') NOT BETWEEN 1 AND 200)
@@ -112,22 +185,9 @@ SELECT
     WHEN 'ORDER_CREATED' THEN 'Cliente y pedido creados'
     WHEN 'PRODUCTION_RELEASED' THEN 'Pedido entregado a producción'
   END,
-  CASE
-    WHEN activity.value->>'type' = 'OPPORTUNITY_CREATED'
-      THEN 'Ya forma parte del seguimiento comercial.'
-    ELSE replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
-      activity.value->>'detail',
-      'EN_CALIFICACION', 'Calificación'),
-      'SIN_RESPUESTA', 'Sin respuesta'),
-      'NO_CONTINUA', 'No continúa'),
-      'SENA_VALIDADA', 'Seña validada'),
-      'EN_SEGUIMIENTO', 'Seguimiento'),
-      'COTIZADO', 'Cotización enviada'),
-      'PERDIDO', 'Cerrado sin venta'),
-      'SIN_CAMBIOS', 'Sin cambios'),
-      'AVANZO', 'Avanzó'),
-      'NUEVO', 'Contacto inicial')
-  END,
+  pg_temp.sportex_timeline_readable_detail(
+    activity.value->>'type', activity.value->>'detail'
+  ),
   (activity.value->>'occurredAt')::timestamptz
 FROM public.sportex_staging_commercial_opportunities opportunity
 CROSS JOIN LATERAL jsonb_array_elements(opportunity.activity_data) AS activity(value)

@@ -13,6 +13,11 @@ import type { CommercialWorkspaceItem } from "../src/domain/commercial-models.js
 import { createCommercialDemoSeed } from "../src/fixtures/commercial-demo-seed.js";
 
 const tenantId = "11111111-1111-4111-8111-111111111111";
+const technicalTokens = "NUEVO|EN_CALIFICACION|COTIZADO|EN_SEGUIMIENTO|PERDIDO|SENA_VALIDADA|SIN_CAMBIOS|AVANZO|SIN_RESPUESTA|NO_CONTINUA|";
+
+function maximumTechnicalTokenNote(): string {
+  return technicalTokens.repeat(Math.ceil(999 / technicalTokens.length)).slice(0, 999) + "Z";
+}
 
 function fixture(): CommercialWorkspaceItem {
   const item = createCommercialDemoSeed(tenantId)[0];
@@ -52,12 +57,13 @@ test("event identity and readable detail stay inside the database contract", () 
     type: "STAGE_CHANGED" as const,
     correlationId: "á".repeat(200),
     evidenceMessageId: "e".repeat(200),
-    detail: "NUEVO ".repeat(300),
+    detail: `NUEVO → EN_CALIFICACION: Motivo libre ${technicalTokens}`,
   };
   const event = projectOperationalEvents({ ...item, activity: [activity] })[0]!;
   assert.match(operationalEventId(activity), /^activity:[0-9a-f]{32}$/u);
   assert.equal(event.id.length, 41);
-  assert.equal(event.detail.length, MAX_OPERATIONAL_DETAIL_LENGTH);
+  assert.equal(event.detail, `Contacto inicial → Calificación: Motivo libre ${technicalTokens}`);
+  assert.ok(event.detail.length <= MAX_OPERATIONAL_DETAIL_LENGTH);
 });
 
 test("persisted and source events merge by deterministic identity without losing either side", () => {
@@ -106,7 +112,7 @@ test("assistant is representable only as passive event data and cannot become a 
 
 test("maximum follow-up note remains complete in the readable timeline detail", () => {
   const item = fixture();
-  const note = "n".repeat(1_000);
+  const note = maximumTechnicalTokenNote();
   item.activity.push({
     type: "FOLLOW_UP_RECORDED",
     occurredAt: "2026-08-15T17:00:00.000Z",
@@ -121,4 +127,34 @@ test("maximum follow-up note remains complete in the readable timeline detail", 
   const projected = projectOperationalEvents(item).find((entry) => entry.correlationId === "follow-up-max-note");
   assert.equal(projected?.detail, `Sin respuesta: ${note}`);
   assert.equal(projected?.detail.length, MAX_OPERATIONAL_DETAIL_LENGTH);
+});
+
+test("humanization never replaces technical tokens inside free text", () => {
+  const item = fixture();
+  const freeText = `Motivo ${technicalTokens}`;
+  item.activity.push({
+    type: "STAGE_CHANGED",
+    occurredAt: "2026-08-15T18:00:00.000Z",
+    actorId: "operator-stage-reason",
+    actorKind: "HUMAN",
+    origin: "OPERATOR",
+    correlationId: "stage-free-text",
+    evidenceMessageId: null,
+    detail: `NUEVO → COTIZADO: ${freeText}`,
+  }, {
+    type: "NEXT_ACTION_UPDATED",
+    occurredAt: "2026-08-15T18:01:00.000Z",
+    actorId: "operator-next-action",
+    actorKind: "HUMAN",
+    origin: "OPERATOR",
+    correlationId: "next-action-free-text",
+    evidenceMessageId: null,
+    detail: freeText,
+  });
+  const events = projectOperationalEvents(item);
+  assert.equal(
+    events.find((entry) => entry.correlationId === "stage-free-text")?.detail,
+    `Contacto inicial → Cotización enviada: ${freeText}`,
+  );
+  assert.equal(events.find((entry) => entry.correlationId === "next-action-free-text")?.detail, freeText);
 });

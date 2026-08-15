@@ -222,7 +222,8 @@ duplica la transición ni los eventos.
 - `POST /v1/local/commercial/workspace/:itemId/follow-ups`: registra una nota interna; no crea un mensaje ni efecto externo.
   La nota canónica admite hasta 1000 caracteres y se conserva completa. El
   `detail` derivado admite hasta 1015 para incluir el prefijo de resultado más
-  largo sin truncar la nota.
+  largo sin truncar la nota. La humanización solo traduce el `outcome`
+  estructural anterior a `: `; nunca sustituye tokens dentro de la nota.
 - `POST /v1/local/commercial/workspace/:itemId/release-to-production`: exige `production.release`, `expectedVersion`, `Idempotency-Key` y `confirmation=ENTREGAR_A_PRODUCCION`; actualiza el Pedido canónico y su proyección local.
 - `POST /v1/local/commercial-demo/reset`: exige `confirmation=RESTAURAR_DATOS_FICTICIOS` y repone los 18 fixtures del tenant.
 

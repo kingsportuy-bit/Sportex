@@ -37,6 +37,7 @@ PREFLIGHT_CORRELATION_201=PASS
 PREFLIGHT_INVALID_TIMESTAMP=PASS
 REUP_EVENTS=5
 REUP_MAX_NOTE_RECONSTRUCTED=true
+REUP_FREE_TEXT_TOKENS_PRESERVED=true
 SPORTEX_TIMELINE_POSTGRES_HARNESS=PASS
 ```
 
@@ -45,3 +46,8 @@ crea PostgreSQL 16 temporal, aplica `001..005`, ejecuta servicio, readiness,
 degradación y RLS; baja `005`, inyecta y rechaza cada fuente inválida, vuelve a
 aplicar `005` y prueba la reconstrucción exacta de la nota máxima. El contenedor
 se elimina siempre y no usa secretos ni datos reales.
+
+La nota de 1000 caracteres contiene repetidos todos los tokens de etapa y
+resultado. El detalle reconstruido cambia únicamente `SIN_RESPUESTA` antes del
+primer `: ` y conserva literalmente el resto; el harness compara la proyección
+contra la actividad fuente.

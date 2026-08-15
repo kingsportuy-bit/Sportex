@@ -18,6 +18,11 @@ import { AppError } from "../src/shared/errors.js";
 const tenantA = "11111111-1111-4111-8111-111111111111";
 const tenantB = "22222222-2222-4222-8222-222222222222";
 const actor = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+const technicalTokenProbe = "NUEVO|EN_CALIFICACION|COTIZADO|EN_SEGUIMIENTO|PERDIDO|SENA_VALIDADA|SIN_CAMBIOS|AVANZO|SIN_RESPUESTA|NO_CONTINUA|";
+
+function maximumTechnicalTokenNote(): string {
+  return technicalTokenProbe.repeat(Math.ceil(999 / technicalTokenProbe.length)).slice(0, 999) + "Z";
+}
 
 const context = (tenantId = tenantA, capabilities: ActorContext["capabilities"] = [
   "commercial.read",
@@ -155,7 +160,7 @@ test("local API exposes the fictional replay and its visible workspace projectio
     true,
   );
 
-  const maximumNote = "n".repeat(1_000);
+  const maximumNote = maximumTechnicalTokenNote();
   const followed = await app.inject({
     method: "POST",
     url: `/v1/local/commercial/workspace/${listed.json().data[0].id}/follow-ups`,

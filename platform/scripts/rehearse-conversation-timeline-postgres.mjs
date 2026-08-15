@@ -145,14 +145,31 @@ try {
   const reupEvents = scalar("SELECT count(*) FROM public.sportex_staging_conversation_timeline_events;");
   const reconstructedMaximum = scalar(`
     SELECT count(*)
-    FROM public.sportex_staging_conversation_timeline_events
-    WHERE event_type = 'FOLLOW_UP_RECORDED'
-      AND char_length(detail) = 1015
-      AND left(detail, 15) = 'Sin respuesta: ';
+    FROM public.sportex_staging_conversation_timeline_events timeline
+    JOIN public.sportex_staging_commercial_opportunities opportunity
+      ON opportunity.tenant_id = timeline.tenant_id
+     AND opportunity.conversation_id = timeline.conversation_id
+    CROSS JOIN LATERAL jsonb_array_elements(opportunity.activity_data) activity(value)
+    WHERE timeline.event_type = 'FOLLOW_UP_RECORDED'
+      AND activity.value->>'type' = 'FOLLOW_UP_RECORDED'
+      AND activity.value->>'correlationId' = timeline.correlation_id
+      AND char_length(timeline.detail) = 1015
+      AND timeline.detail = 'Sin respuesta: ' || substr(activity.value->>'detail', 16)
+      AND strpos(timeline.detail, 'NUEVO') > 0
+      AND strpos(timeline.detail, 'EN_CALIFICACION') > 0
+      AND strpos(timeline.detail, 'COTIZADO') > 0
+      AND strpos(timeline.detail, 'EN_SEGUIMIENTO') > 0
+      AND strpos(timeline.detail, 'PERDIDO') > 0
+      AND strpos(timeline.detail, 'SENA_VALIDADA') > 0
+      AND strpos(timeline.detail, 'SIN_CAMBIOS') > 0
+      AND strpos(timeline.detail, 'AVANZO') > 0
+      AND strpos(timeline.detail, 'SIN_RESPUESTA') > 0
+      AND strpos(timeline.detail, 'NO_CONTINUA') > 0;
   `);
   assert.equal(reconstructedMaximum, "1");
   console.log(`REUP_EVENTS=${reupEvents}`);
   console.log("REUP_MAX_NOTE_RECONSTRUCTED=true");
+  console.log("REUP_FREE_TEXT_TOKENS_PRESERVED=true");
   console.log("SPORTEX_TIMELINE_POSTGRES_HARNESS=PASS");
 } finally {
   if (started) run("docker", ["stop", container], { allowFailure: true });

@@ -18,13 +18,16 @@ const eventLabels: Record<CommercialOperationalEventType, string> = {
   PRODUCTION_RELEASED: "Pedido entregado a producción",
 };
 
-const readableTerms: Record<string, string> = {
+const readableStages: Record<string, string> = {
   NUEVO: "Contacto inicial",
   EN_CALIFICACION: "Calificación",
   COTIZADO: "Cotización enviada",
   EN_SEGUIMIENTO: "Seguimiento",
   PERDIDO: "Cerrado sin venta",
   SENA_VALIDADA: "Seña validada",
+};
+
+const readableFollowUpOutcomes: Record<string, string> = {
   SIN_CAMBIOS: "Sin cambios",
   AVANZO: "Avanzó",
   SIN_RESPUESTA: "Sin respuesta",
@@ -37,10 +40,28 @@ export const MAX_OPERATIONAL_DETAIL_LENGTH = 1_015;
 
 export function readableOperationalDetail(type: CommercialOperationalEventType, value: string): string {
   if (type === "OPPORTUNITY_CREATED") return "Ya forma parte del seguimiento comercial.";
-  return Object.entries(readableTerms).reduce(
-    (detail, [technical, readable]) => detail.replaceAll(technical, readable),
-    value,
-  ).slice(0, MAX_OPERATIONAL_DETAIL_LENGTH);
+  if (type === "FOLLOW_UP_RECORDED") {
+    const separator = value.indexOf(": ");
+    if (separator < 0) return value;
+    const outcome = value.slice(0, separator);
+    const readableOutcome = readableFollowUpOutcomes[outcome];
+    return readableOutcome ? `${readableOutcome}${value.slice(separator)}` : value;
+  }
+  if (type === "STAGE_CHANGED") {
+    const arrow = value.indexOf(" → ");
+    if (arrow < 0) return value;
+    const remainder = value.slice(arrow + 3);
+    const separator = remainder.indexOf(": ");
+    if (separator < 0) return value;
+    const previous = value.slice(0, arrow);
+    const next = remainder.slice(0, separator);
+    const readablePrevious = readableStages[previous];
+    const readableNext = readableStages[next];
+    return readablePrevious && readableNext
+      ? `${readablePrevious} → ${readableNext}${remainder.slice(separator)}`
+      : value;
+  }
+  return value;
 }
 
 export const PASSIVE_ASSISTANT_CONTRACT = Object.freeze({

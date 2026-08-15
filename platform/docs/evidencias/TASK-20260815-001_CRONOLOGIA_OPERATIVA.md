@@ -21,6 +21,9 @@ job, worker, propuesta, activación o salida automática de IA.
 - ID acotado `activity:<md5>` calculado con el mismo contrato de longitudes en
   TypeScript y SQL. La nota canónica admite 1000 caracteres y el detalle
   derivado 1015, por lo que el prefijo más largo no provoca pérdida.
+- Humanización type-aware: seguimiento traduce solo el resultado anterior a
+  `: `; etapa solo `previous/next`; motivo, nota y otros textos libres quedan
+  byte-for-byte. La función temporal del backfill replica esa estructura.
 - Migración `005` con preflight de array, nulls, longitudes y timestamps,
   backfill, RLS, privilegios mínimos y down que no toca mensajes.
 - `/ready` verifica workspace comercial y tabla `005` aun con flag visual OFF.
@@ -31,7 +34,7 @@ job, worker, propuesta, activación o salida automática de IA.
 ## Pruebas automatizadas
 
 - TypeScript y build: PASS.
-- Core: 51/51 PASS.
+- Core: 52/52 PASS.
 - Documentación/workflow: PASS.
 - SQL estático: 17 tablas, RLS, preflight y rollback: PASS.
 - `git diff --check`: PASS.
@@ -53,6 +56,7 @@ RLS_APP_TENANT_A_OWN=2
 RLS_APP_TENANT_A_CROSS=0
 RLS_APP_TENANT_B_OWN=1
 REUP_MAX_NOTE_RECONSTRUCTED=true
+REUP_FREE_TEXT_TOKENS_PRESERVED=true
 SPORTEX_TIMELINE_POSTGRES_HARNESS=PASS
 ```
 
@@ -72,13 +76,15 @@ propios y 0 de B; con tenant B observó 1 propio. El transcript completo está e
 - Preflight con correlación de 201 caracteres: rechazado.
 - Preflight con fecha imposible: rechazado como timestamp inválido.
 - Tras restaurar las fuentes válidas, re-up/backfill: 5 eventos.
-- La nota máxima fue reconstruida con 1015 caracteres y prefijo legible exacto.
+- La nota máxima repite todos los tokens técnicos y fue reconstruida con 1015
+  caracteres: prefijo legible exacto y nota literal sin sustituciones.
 - El contenedor temporal se verificó y eliminó.
 
 ## Navegador desktop y mobile
 
-El E2E usa Chrome headless mediante `playwright-core`, activa el flag desde la
-demo local y genera capturas ignoradas por Git en
+`npm run test:e2e:timeline` es autocontenido: compila, comprueba que 8091 esté
+libre, levanta una demo ficticia aislada, ejecuta Chrome headless y siempre
+detiene el servidor y elimina su JSON temporal. Genera capturas ignoradas en
 `.sportex-local/e2e-conversation-timeline/`.
 
 - Desktop 1280×480 y mobile 390×844 se ensayan en claro y oscuro.
@@ -87,13 +93,15 @@ demo local y genera capturas ignoradas por Git en
 - Scroll, compositor, borrador, posición y retorno desde Detalles se preservan.
 - Texto secundario de evento: 10 px mínimo medido; 2 eventos visibles.
 - Se generan capturas antes y después del cierre para las cuatro combinaciones.
+- Resultado final: `SPORTEX_TIMELINE_E2E_SELF_CONTAINED=PASS` y puerto 8091
+  libre después del ensayo.
 
 ## Límites y efectos externos
 
 - No se modificaron reglas comerciales, Delta ADS, Meta ni estados reales.
 - No hubo push, deploy, migración remota ni mensaje real.
-- `fca96c2` y `c22a714` permanecen como candidatos rechazados y no deben
-  promoverse.
+- `fca96c2`, `c22a714` y `e455915` permanecen como candidatos rechazados y no
+  deben promoverse.
 
 ## Promoción y rollback preparados
 
