@@ -29,8 +29,12 @@ button { cursor: pointer; }
 .brand-lockup strong, .brand-lockup small { display: block; }
 .brand-lockup strong { font-size: 17px; line-height: 1; }
 .brand-lockup small { font-size: 8px; margin-top: 5px; letter-spacing: .28em; opacity: .66; }
-.delta-logo-frame { width: 42px; height: 42px; display: grid; place-items: center; overflow: hidden; flex: 0 0 42px; }
-.delta-logo { display: block; width: 42px; height: 42px; object-fit: contain; transform: scale(3.2); }
+.brand-lockup--sportex { width: fit-content; display: grid; gap: 4px; align-items: start; }
+.sportex-logo-frame { position: relative; width: 174px; height: 25px; display: block; overflow: hidden; flex: 0 0 auto; }
+.sportex-logo { position: absolute; top: -36px; left: -29px; display: block; width: 225px; max-width: none; height: auto; mix-blend-mode: screen; }
+.sportex-logo-frame--login { width: 236px; height: 32px; }
+.sportex-logo-frame--login .sportex-logo { top: -50px; left: -40px; width: 307px; }
+.brand-product-label { color: #aab4ac; font: 700 8px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .28em; }
 .brand-lockup--light { color: white; }
 .login-thesis { max-width: 760px; position: relative; z-index: 1; }
 .eyebrow, .section-code { font: 700 11px/1 "Arial Narrow", "Segoe UI", sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--blue); }

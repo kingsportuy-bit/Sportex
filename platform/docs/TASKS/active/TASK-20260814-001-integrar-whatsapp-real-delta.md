@@ -120,6 +120,7 @@ DELTA define reglas y valida negocio.
 - `docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md`;
 - `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md`;
 - `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`;
+- `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`;
 - evidencia focal nueva por cada gate;
 - manifiesto, migración, rollback y observación cuando corresponda.
 
@@ -378,3 +379,18 @@ DELTA define reglas y valida negocio.
   conectado PASS. La revision autenticada de Fito queda como siguiente accion,
   no como condicion retroactiva del deploy tecnico.
 - Evidencia: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`.
+
+### 2026-08-14 — identidad visual SPORTEX
+
+- Fito definio que SPORTEX es la unica marca visual del sistema. Delta Sport
+  permanece solamente como nombre de la empresa/tenant y contenido operativo.
+- Se reutilizo sin redibujar el archivo entregado `logo-sportex.png`; la copia
+  servida por el frontend conserva SHA256
+  `9b413b59d4c47d3d170cd1e119cbe6ba12f8a46de51b188d143aa7323bcf10b8`.
+- Login y sidebar usan el wordmark SPORTEX horizontal. El encuadre y el modo de
+  mezcla eliminan visualmente el rectangulo negro sin alterar el archivo fuente.
+- El asset `frontend/assets/delta-logo.png` fue retirado y no quedan referencias
+  `delta-logo` ni `/assets/delta` en el frontend.
+- Browser local oscuro PASS: logo legible, sin caja negra, tenant subordinado y
+  navegacion sin desplazamiento. Falta versionar y promover el candidato exacto.
+- Evidencia: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.

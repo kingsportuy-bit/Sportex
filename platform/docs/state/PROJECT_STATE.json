@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito valida la bandeja autenticada en sportex.codexa.uy y prueba el primer mensaje manual que elija."
+    "nextAction": "Formar y promover el candidato de identidad SPORTEX; Delta queda solo como nombre de tenant."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_CONTINUITY_CANDIDATE_PRODUCTIVE_ACTIVE",
+    "status": "GATE_5_PRODUCTIVE_ACTIVE_IDENTITY_CANDIDATE_LOCAL",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -82,7 +82,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45",
-    "workingTreeState": "TASK-20260814-001_1CC2C96_DEPLOYED_DOCS_PENDING_COMMIT",
+    "workingTreeState": "TASK-20260814-001_SPORTEX_IDENTITY_LOCAL_PENDING_COMMIT",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -146,12 +146,25 @@
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
-    "path": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md",
-    "summary": "Continuidad WhatsApp/UI desplegada en PILOTO_DELTA sobre 1cc2c96; verificacion tecnica y login visual PASS, revision autenticada de Fito pendiente.",
+    "path": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
+    "summary": "Identidad local corregida: SPORTEX es la unica marca visual y el logo de Delta fue retirado; produccion permanece en 1cc2c96 hasta promocion.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se reemplazo el logo Delta por el wordmark SPORTEX en login/sidebar y se retiro fisicamente el asset Delta.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/assets/sportex-logo.png",
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"],
+      "decisions": ["SPORTEX es la unica marca visual; Delta Sport es solamente el tenant operativo."]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",

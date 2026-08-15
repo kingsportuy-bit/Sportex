@@ -58,8 +58,8 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
-- Fuente: `docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md`.
-- Continuidad WhatsApp/UI desplegada en PILOTO_DELTA sobre 1cc2c96; verificacion tecnica y login visual PASS, revision autenticada de Fito pendiente.
+- Fuente: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
+- Identidad local corregida: SPORTEX es la unica marca visual y el logo de Delta fue retirado; produccion permanece en 1cc2c96 hasta promocion.
 
 ## Riesgos
 
