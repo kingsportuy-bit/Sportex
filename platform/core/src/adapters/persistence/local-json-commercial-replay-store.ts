@@ -151,6 +151,10 @@ export class LocalJsonCommercialReplayStore implements CommercialReplayStore {
     await this.queue;
   }
 
+  async checkReady(): Promise<void> {
+    await this.load();
+  }
+
   private async load(): Promise<CommercialReplayState> {
     if (this.state) return this.state;
     let raw: string;

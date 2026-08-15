@@ -31,8 +31,10 @@ infraestructura y resuelva los nombres tecnicos heredados de STAGING.
 3. Ejecutar `release-governance-guard.ps1` con tarea, commit, scope y GO.
 4. Crear bundle desde Git y registrar SHA256/digest.
 5. Tomar backup o checkpoint necesario.
-6. Aplicar migraciones compatibles y verificables, si fueron autorizadas.
-7. Desplegar el artefacto exacto.
+6. Aplicar primero las migraciones compatibles y verificables, si fueron
+   autorizadas, y comprobarlas con el rol de aplicación.
+7. Desplegar el artefacto exacto solo cuando `/ready` del candidato pueda
+   verificar todas sus tablas; un flag visual apagado no reemplaza este orden.
 8. Observar servicios, logs, rutas, version y dependencias.
 9. Ejecutar smoke tecnico y recorrido de negocio acordado.
 10. Detener o revertir si se cumple un criterio de corte.
@@ -49,6 +51,11 @@ usan datos de otras marcas para validar Delta.
 Cada deployment identifica version anterior, datos afectados, comando o
 procedimiento de retorno y comprobacion posterior. Si una migracion no es
 reversible, debe existir backup restaurable y criterio de no retorno aprobado.
+
+Para migraciones aditivas usadas por el nuevo código, el rollback vuelve
+primero a la imagen anterior y verifica su `/ready`. El `down` se considera
+después, en un gate separado, y nunca precede al rollback de imagen ni elimina
+mensajes o la fuente desde la cual una proyección puede reconstruirse.
 
 ## PRODUCCION_COMERCIAL
 

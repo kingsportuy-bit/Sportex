@@ -76,7 +76,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
-    "workingTreeState": "TASK-20260815-001_CLOSED_LOCAL_CANDIDATE_PENDING",
+    "workingTreeState": "TASK-20260815-001_CORRECTED_LOCAL_REVIEW_PENDING",
     "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
@@ -95,7 +95,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "note": "Cronologia operativa local certificada: 48/48, PostgreSQL up/down/re-up, RLS, build y UI PASS; sin IA ejecutable ni efectos remotos."
+    "note": "Correccion NO-GO: 50/50, PostgreSQL degradado/up/down/re-up, RLS con rol app, E2E desktop/mobile, build y UI PASS; sin efectos remotos."
   },
   "deployments": {
     "status": "PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL",
@@ -141,7 +141,7 @@
     "taskId": "TASK-20260815-001",
     "date": "2026-08-15",
     "path": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "summary": "Cronologia operativa separada de mensajes certificada localmente, con migracion reversible y compatibilidad pasiva del asistente apagada.",
+    "summary": "NO-GO corregido: proyeccion desacoplada y reconstruible, migration-first/readiness, RLS app y E2E responsive certificados localmente.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
@@ -149,12 +149,15 @@
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
-      "summary": "Se implemento y certifico localmente la cronologia operativa WhatsApp, separada de mensajes y preparada para un asistente futuro no ejecutable.",
+      "summary": "Se corrigio el NO-GO de cronologia: mutacion principal inmune a la proyeccion, migration-first, RLS app y E2E responsive certificados localmente.",
       "documents": [
         "core/src/domain/commercial-timeline.ts",
         "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
+        "core/src/adapters/persistence/postgres-commercial-replay-store.ts",
+        "scripts/e2e-conversation-timeline-browser.mjs",
         "frontend/app.js",
-        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md"
+        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md",
+        "docs/evidencias/TASK-20260815-001_POSTGRES_TRANSCRIPT.md"
       ],
       "evidence": ["docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md"],
       "decisions": ["SPORTEX-DEC-011"]
@@ -504,7 +507,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Publicar el candidato exacto y preparar el paquete de promocion solo tras el GO propietario exigido por el guard.",
+    "Someter el nuevo candidato local de TASK-20260815-001 a segunda revisión antes de publicarlo o promoverlo.",
     "Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]

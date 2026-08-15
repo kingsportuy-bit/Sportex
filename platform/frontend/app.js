@@ -909,10 +909,34 @@ function renderProcessOverview(item) {
   return card;
 }
 
+function renderWhatsAppDetailPreservingChatState(item, focusMenu = false) {
+  const composer = $(".whatsapp-composer-input");
+  const draft = composer?.value ?? "";
+  const restoreComposerFocus = document.activeElement === composer;
+  const conversation = $(".whatsapp-chat-pane .lead-conversation");
+  const previousScrollTop = conversation?.scrollTop ?? 0;
+  const distanceFromBottom = conversation
+    ? conversation.scrollHeight - conversation.scrollTop - conversation.clientHeight
+    : 0;
+  $("#whatsapp-workspace")?.classList.toggle("is-contact-details-open", state.whatsappDetailsOpen);
+  renderWhatsAppDetail(item);
+  const refreshedComposer = $(".whatsapp-composer-input");
+  if (refreshedComposer) {
+    refreshedComposer.value = draft;
+    if (restoreComposerFocus) refreshedComposer.focus({ preventScroll: true });
+  }
+  const refreshedConversation = $(".whatsapp-chat-pane .lead-conversation");
+  if (refreshedConversation) {
+    refreshedConversation.scrollTop = distanceFromBottom < 80
+      ? refreshedConversation.scrollHeight
+      : previousScrollTop;
+  }
+  if (focusMenu) $(".whatsapp-chat-menu")?.focus({ preventScroll: true });
+}
+
 function openWhatsAppDetails(item) {
   state.whatsappDetailsOpen = true;
-  $("#whatsapp-workspace")?.classList.add("is-contact-details-open");
-  renderWhatsAppDetail(item);
+  renderWhatsAppDetailPreservingChatState(item);
 }
 
 function renderOrderConversion(item) {
@@ -1042,9 +1066,7 @@ function renderWhatsAppInlineDetails(item) {
   close.setAttribute("aria-label", "Cerrar detalles");
   close.addEventListener("click", () => {
     state.whatsappDetailsOpen = false;
-    $("#whatsapp-workspace")?.classList.remove("is-contact-details-open");
-    renderWhatsAppDetail(item);
-    $(".whatsapp-chat-menu")?.focus({ preventScroll: true });
+    renderWhatsAppDetailPreservingChatState(item, true);
   });
   header.append(identity, close);
   const body = element("div", "whatsapp-inline-details-body");

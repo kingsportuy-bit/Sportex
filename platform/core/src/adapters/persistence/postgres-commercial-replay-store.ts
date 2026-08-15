@@ -14,6 +14,7 @@ import type {
 } from "../../domain/commercial-models.js";
 import {
   buildConversationTimeline,
+  mergeOperationalEvents,
   projectOperationalEvents,
   readableOperationalDetail,
 } from "../../domain/commercial-timeline.js";
@@ -30,6 +31,31 @@ interface CommercialTables {
   opportunities: string;
   timelineEvents: string;
   idempotency: string;
+}
+
+export interface TimelineProjectionFailure {
+  operation: "read" | "write";
+  tenantId: string;
+  conversationId: string;
+  errorCode: string;
+}
+
+type TimelineProjectionFailureObserver = (failure: TimelineProjectionFailure) => void;
+
+function errorCode(error: unknown): string {
+  if (error && typeof error === "object" && "code" in error) return String(error.code);
+  return "timeline_projection_failed";
+}
+
+function observeFailure(
+  observer: TimelineProjectionFailureObserver,
+  failure: TimelineProjectionFailure,
+): void {
+  try {
+    observer(failure);
+  } catch {
+    // Observability is intentionally non-authoritative for the main mutation.
+  }
 }
 
 function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): CommercialTables {
@@ -57,6 +83,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     private readonly client: PoolClient,
     private readonly tenantId: string,
     private readonly tables: CommercialTables,
+    private readonly onTimelineProjectionFailure: TimelineProjectionFailureObserver,
   ) {}
 
   async findIdempotency(key: string): Promise<CommercialReplayIdempotency | null> {
@@ -188,17 +215,30 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       throw conflict("commercial_version_conflict", "Commercial workspace version changed");
     }
 
-    for (const event of projectOperationalEvents(item)) {
-      await this.client.query(
-        `INSERT INTO ${this.tables.timelineEvents}
-         (event_id, tenant_id, conversation_id, event_type, actor_kind, actor_ref,
-          origin, correlation_id, evidence_message_id, label, detail, occurred_at, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,now())
-         ON CONFLICT (tenant_id, event_id) DO NOTHING`,
-        [event.id, item.tenantId, item.conversation.id, event.eventType,
-          event.actor.kind, event.actor.ref, event.origin, event.correlationId,
-          event.evidenceMessageId, event.label, event.detail, event.occurredAt],
-      );
+    await this.client.query("SAVEPOINT sportex_timeline_write");
+    try {
+      for (const event of projectOperationalEvents(item)) {
+        await this.client.query(
+          `INSERT INTO ${this.tables.timelineEvents}
+           (event_id, tenant_id, conversation_id, event_type, actor_kind, actor_ref,
+            origin, correlation_id, evidence_message_id, label, detail, occurred_at, created_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,now())
+           ON CONFLICT (tenant_id, event_id) DO NOTHING`,
+          [event.id, item.tenantId, item.conversation.id, event.eventType,
+            event.actor.kind, event.actor.ref, event.origin, event.correlationId,
+            event.evidenceMessageId, event.label, event.detail, event.occurredAt],
+        );
+      }
+      await this.client.query("RELEASE SAVEPOINT sportex_timeline_write");
+    } catch (error) {
+      await this.client.query("ROLLBACK TO SAVEPOINT sportex_timeline_write");
+      await this.client.query("RELEASE SAVEPOINT sportex_timeline_write");
+      observeFailure(this.onTimelineProjectionFailure, {
+        operation: "write",
+        tenantId: item.tenantId,
+        conversationId: item.conversation.id,
+        errorCode: errorCode(error),
+      });
     }
   }
 
@@ -210,9 +250,12 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
        ORDER BY opportunity.updated_at DESC, opportunity.id`,
       [this.tenantId],
     );
-    const items = await Promise.all(result.rows.map((row) =>
-      this.findById(String((row as Record<string, unknown>).workspace_id))));
-    return items.filter((item): item is CommercialWorkspaceItem => item !== null);
+    const items: CommercialWorkspaceItem[] = [];
+    for (const row of result.rows) {
+      const item = await this.findById(String((row as Record<string, unknown>).workspace_id));
+      if (item) items.push(item);
+    }
+    return items;
   }
 
   async replaceTenant(_items: CommercialWorkspaceItem[]): Promise<void> {
@@ -283,19 +326,26 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       activity: jsonValue<CommercialActivity[]>(row.activity_data),
       fixtureVersion: null,
     };
-    return { ...item, timeline: buildConversationTimeline(item, timelineEvents) };
+    const sourceEvents = projectOperationalEvents(item);
+    const operationalEvents = timelineEvents
+      ? mergeOperationalEvents(sourceEvents, timelineEvents)
+      : sourceEvents;
+    return { ...item, timeline: buildConversationTimeline(item, operationalEvents) };
   }
 
-  private async timelineEvents(conversationId: string): Promise<CommercialTimelineOperationalEvent[]> {
-    const result = await this.client.query(
-      `SELECT event_id, event_type, actor_kind, actor_ref, origin, correlation_id,
-              evidence_message_id, label, detail, occurred_at
-       FROM ${this.tables.timelineEvents}
-       WHERE tenant_id = $1 AND conversation_id = $2
-       ORDER BY occurred_at, event_id`,
-      [this.tenantId, conversationId],
-    );
-    return result.rows.map((candidate) => {
+  private async timelineEvents(conversationId: string): Promise<CommercialTimelineOperationalEvent[] | null> {
+    await this.client.query("SAVEPOINT sportex_timeline_read");
+    try {
+      const result = await this.client.query(
+        `SELECT event_id, event_type, actor_kind, actor_ref, origin, correlation_id,
+                evidence_message_id, label, detail, occurred_at
+         FROM ${this.tables.timelineEvents}
+         WHERE tenant_id = $1 AND conversation_id = $2
+         ORDER BY occurred_at, event_id`,
+        [this.tenantId, conversationId],
+      );
+      await this.client.query("RELEASE SAVEPOINT sportex_timeline_read");
+      return result.rows.map((candidate) => {
       const row = candidate as Record<string, unknown>;
       return {
         kind: "OPERATIONAL_EVENT",
@@ -314,8 +364,19 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
           String(row.event_type) as CommercialTimelineOperationalEvent["eventType"],
           String(row.detail),
         ),
-      };
-    });
+        };
+      });
+    } catch (error) {
+      await this.client.query("ROLLBACK TO SAVEPOINT sportex_timeline_read");
+      await this.client.query("RELEASE SAVEPOINT sportex_timeline_read");
+      observeFailure(this.onTimelineProjectionFailure, {
+        operation: "read",
+        tenantId: this.tenantId,
+        conversationId,
+        errorCode: errorCode(error),
+      });
+      return null;
+    }
   }
 
   private async messages(conversationId: string): Promise<NormalizedConversationMessage[]> {
@@ -354,7 +415,10 @@ export class PostgresCommercialReplayStore implements CommercialReplayStore {
   private readonly pool: Pool;
   private readonly tables: CommercialTables;
 
-  constructor(private readonly config: SportexConfig) {
+  constructor(
+    private readonly config: SportexConfig,
+    private readonly onTimelineProjectionFailure: TimelineProjectionFailureObserver = () => undefined,
+  ) {
     if (!config.databaseUrl) throw new Error("database_url_required");
     this.pool = new Pool({ connectionString: config.databaseUrl, max: 10 });
     this.tables = tablesForPrefix(config.tablePrefix);
@@ -370,11 +434,45 @@ export class PostgresCommercialReplayStore implements CommercialReplayStore {
       if (this.config.databaseRole) await client.query(`SET LOCAL ROLE ${this.config.databaseRole}`);
       await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
       await client.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [`commercial:${tenantId}`]);
-      const result = await operation(new PostgresCommercialTransaction(client, tenantId, this.tables));
+      const result = await operation(new PostgresCommercialTransaction(
+        client,
+        tenantId,
+        this.tables,
+        this.onTimelineProjectionFailure,
+      ));
       await client.query("COMMIT");
       return result;
     } catch (error) {
       await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async checkReady(): Promise<void> {
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      if (this.config.databaseRole) await client.query(`SET LOCAL ROLE ${this.config.databaseRole}`);
+      await client.query("SELECT set_config('app.tenant_id', $1, true)", ["00000000-0000-4000-8000-000000000000"]);
+      await client.query(
+        `SELECT opportunity.workspace_id
+         FROM ${this.tables.opportunities} opportunity
+         JOIN ${this.tables.conversations} conversation
+           ON conversation.tenant_id = opportunity.tenant_id
+          AND conversation.id = opportunity.conversation_id
+         LIMIT 0`,
+      );
+      await client.query(
+        `SELECT event_id, tenant_id, conversation_id, event_type, actor_kind, origin,
+                correlation_id, evidence_message_id, label, detail, occurred_at
+         FROM ${this.tables.timelineEvents}
+         LIMIT 0`,
+      );
+      await client.query("ROLLBACK");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
       throw error;
     } finally {
       client.release();

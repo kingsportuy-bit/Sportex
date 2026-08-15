@@ -96,6 +96,9 @@ El worker relee el estado del pedido y la autorización antes de enviar.
 - El mensaje conserva identidad, contenido, dirección y receipt del proveedor.
 - Un hito del Core se proyecta como evento operativo separado y nunca se
   inserta en la tabla de mensajes ni se envía a WhatsApp.
+- La escritura derivada usa una frontera recuperable: si falla, la mutación
+  principal y `activity_data` confirman igual; el fallo queda observable y la
+  cronología se reconstruye desde esa fuente.
 - La API puede combinarlos en una cronología de lectura con orden estable.
 - Deduplicación, reintentos y webhooks técnicos permanecen en observabilidad,
   no como eventos visibles para el operador.

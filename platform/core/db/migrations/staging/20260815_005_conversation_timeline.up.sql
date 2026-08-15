@@ -1,5 +1,47 @@
 BEGIN;
 
+DO $$
+DECLARE
+  activity jsonb;
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM public.sportex_staging_commercial_opportunities
+    WHERE activity_data IS NULL OR jsonb_typeof(activity_data) <> 'array'
+  ) THEN
+    RAISE EXCEPTION 'timeline_preflight_activity_data_not_array';
+  END IF;
+
+  FOR activity IN
+    SELECT entry.value
+    FROM public.sportex_staging_commercial_opportunities opportunity
+    CROSS JOIN LATERAL jsonb_array_elements(opportunity.activity_data) AS entry(value)
+    WHERE entry.value->>'type' IN (
+      'OPPORTUNITY_CREATED', 'STAGE_CHANGED', 'NEXT_ACTION_UPDATED',
+      'FOLLOW_UP_RECORDED', 'ORDER_CREATED', 'PRODUCTION_RELEASED'
+    )
+  LOOP
+    IF jsonb_typeof(activity) <> 'object'
+      OR coalesce(char_length(activity->>'actorId'), 0) NOT BETWEEN 1 AND 160
+      OR coalesce(char_length(activity->>'correlationId'), 0) NOT BETWEEN 1 AND 200
+      OR coalesce(char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1000
+      OR (activity ? 'evidenceMessageId'
+          AND activity->>'evidenceMessageId' IS NOT NULL
+          AND char_length(activity->>'evidenceMessageId') NOT BETWEEN 1 AND 200)
+      OR coalesce(activity->>'occurredAt', '') !~
+        '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}'
+    THEN
+      RAISE EXCEPTION 'timeline_preflight_legacy_contract_invalid';
+    END IF;
+
+    BEGIN
+      PERFORM (activity->>'occurredAt')::timestamptz;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE EXCEPTION 'timeline_preflight_legacy_timestamp_invalid';
+    END;
+  END LOOP;
+END $$;
+
 CREATE TABLE public.sportex_staging_conversation_timeline_events (
   event_id text NOT NULL CHECK (char_length(event_id) BETWEEN 12 AND 640),
   tenant_id uuid NOT NULL REFERENCES public.sportex_staging_tenants(id),
@@ -37,13 +79,13 @@ INSERT INTO public.sportex_staging_conversation_timeline_events
   (event_id, tenant_id, conversation_id, event_type, actor_kind, actor_ref,
    origin, correlation_id, evidence_message_id, label, detail, occurred_at)
 SELECT
-  concat(
-    'activity:',
-    activity.value->>'correlationId', ':',
-    activity.value->>'type', ':',
-    activity.value->>'occurredAt', ':',
+  'activity:' || md5(concat(
+    octet_length(activity.value->>'correlationId'), ':', activity.value->>'correlationId', '|',
+    octet_length(activity.value->>'type'), ':', activity.value->>'type', '|',
+    octet_length(activity.value->>'occurredAt'), ':', activity.value->>'occurredAt', '|',
+    octet_length(coalesce(activity.value->>'evidenceMessageId', 'none')), ':',
     coalesce(activity.value->>'evidenceMessageId', 'none')
-  ),
+  )),
   opportunity.tenant_id,
   opportunity.conversation_id,
   activity.value->>'type',

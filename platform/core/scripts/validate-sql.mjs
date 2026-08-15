@@ -30,6 +30,8 @@ const upMigrations = readMigrations(".up.sql");
 const downMigrations = readMigrations(".down.sql");
 const up = upMigrations.map((file) => file.content).join("\n");
 const down = downMigrations.map((file) => file.content).join("\n");
+const timelineUp = upMigrations.find((file) => file.name.startsWith("20260815_005"))?.content ?? "";
+const timelineDown = downMigrations.find((file) => file.name.startsWith("20260815_005"))?.content ?? "";
 
 const requiredTables = [
   "tenants",
@@ -81,6 +83,18 @@ if (!up.includes("pg_advisory_xact_lock") && !fs.readFileSync(path.join(root, "s
   failures.push("idempotency advisory lock missing");
 }
 if (/eyJ[a-zA-Z0-9_-]{20,}/u.test(`${up}\n${down}`)) failures.push("JWT-like secret found in SQL");
+for (const token of [
+  "timeline_preflight_activity_data_not_array",
+  "timeline_preflight_legacy_contract_invalid",
+  "timeline_preflight_legacy_timestamp_invalid",
+  "char_length(activity->>'detail'), 0) NOT BETWEEN 1 AND 1000",
+  "'activity:' || md5(concat(",
+]) {
+  if (!timelineUp.includes(token)) failures.push(`timeline migration missing ${token}`);
+}
+if (timelineDown.includes("sportex_staging_commercial_messages")) {
+  failures.push("timeline rollback must not touch commercial messages");
+}
 for (const file of [...upMigrations, ...downMigrations]) {
   if (!/^BEGIN;/mu.test(file.content) || !/COMMIT;\s*$/u.test(file.content)) {
     failures.push(`${file.name} is not transactional`);

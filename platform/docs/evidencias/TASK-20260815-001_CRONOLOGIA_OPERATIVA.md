@@ -1,81 +1,97 @@
 # Evidencia — cronología operativa WhatsApp
 
-Fecha: 2026-08-15  
-Task: `TASK-20260815-001`  
-Entorno ejecutado: `DESARROLLO_LOCAL`  
+Fecha: 2026-08-15
+Task: `TASK-20260815-001`
+Entorno ejecutado: `DESARROLLO_LOCAL`
 Destino preparado: `PILOTO_DELTA`
 
-## Resultado
+## Resultado corregido después del NO-GO
 
-SPORTEX puede proyectar en una misma cronología los mensajes de WhatsApp y los
-hitos operativos ya aceptados por el Core, manteniéndolos como clases distintas.
-Los mensajes conservan sus burbujas; los hitos aparecen como separadores
-compactos con lenguaje operativo. La presentación está protegida por
-`SPORTEX_CONVERSATION_TIMELINE_ENABLED`, apagado por defecto.
+Mensajes WhatsApp y eventos operativos son clases distintas. La cronología es
+derivada y reconstruible: un fallo de lectura o escritura de su tabla se aísla
+con savepoint, se registra sin contenido sensible y no revierte conversación,
+mensaje, oportunidad ni `activity_data`. Al leer se fusionan fuente y
+proyección por ID determinista, por lo que un evento fuente no desaparece.
 
-El contrato admite `actorKind=ASSISTANT` y `origin=ASSISTANT` solo como datos
-pasivos. No se agregó proveedor, prompt, job, worker, propuesta, endpoint de
-activación ni salida automática de IA.
+`ASSISTANT` sigue siendo solo actor/origen pasivo. No existe proveedor, prompt,
+job, worker, propuesta, activación o salida automática de IA.
 
 ## Corte técnico
 
-- Modelo discriminado `MESSAGE | OPERATIONAL_EVENT`.
-- Proyección determinista desde las actividades existentes del Core.
-- Persistencia tenant-aware en
-  `sportex_staging_conversation_timeline_events`.
-- Migración aditiva `20260815_005_conversation_timeline` con backfill, RLS,
-  grants mínimos y down que no toca mensajes.
-- API retrocompatible: `messages` se conserva y `timeline` es adicional.
-- UI WhatsApp-first: burbujas y compositor no cambian; los eventos se
-  intercalan como información interna.
+- ID acotado `activity:<md5>` calculado con el mismo contrato de longitudes en
+  TypeScript y SQL; detalle visible limitado a 1000 caracteres.
+- Migración `005` con preflight de array, nulls, longitudes y timestamps,
+  backfill, RLS, privilegios mínimos y down que no toca mensajes.
+- `/ready` verifica workspace comercial y tabla `005` aun con flag visual OFF.
+- Stack start-first usa healthcheck `/ready`; la migración debe preceder imagen.
+- Rollback vuelve primero a la imagen anterior; el down es posterior y separado.
+- UI preserva borrador y posición de lectura al abrir/cerrar Detalles.
 
 ## Pruebas automatizadas
 
-- TypeScript: PASS.
-- Core: 48/48 PASS.
-- SQL: PASS, 17 tablas esperadas, RLS forzado y rollback presente.
-- Build: PASS.
+- TypeScript y build: PASS.
+- Core: 50/50 PASS.
+- Documentación/workflow: PASS.
+- SQL estático: 17 tablas, RLS, preflight y rollback: PASS.
 - `git diff --check`: PASS.
-- Casos focales: separación de tipos, reproyección sin duplicados,
-  compatibilidad pasiva del actor asistente y flag opt-in.
+- E2E reproducible: `npm run test:e2e:timeline`.
 
-## Ensayo PostgreSQL real local
+## PostgreSQL 16 real local
 
-Se ejecutaron las migraciones `001` a `005` en PostgreSQL 16 temporal con dos
-tenants ficticios.
+Se aplicaron `001` a `005` sobre un contenedor temporal y dos tenants
+ficticios. El rehearsal produjo:
 
-- Rehearsal comercial: PASS.
-- Journal, outbox e idempotencia: PASS.
-- Cronología antes del down: 4 entradas; mensajes: 3.
-- Después del down: los 3 mensajes permanecieron.
-- Después del re-up/backfill: 4 entradas recuperadas.
-- Aislamiento RLS: tenant A vio 2 eventos y tenant B vio 1.
-- El contenedor temporal fue detenido y eliminado después de verificarlo.
+```text
+SPORTEX_COMMERCIAL_POSTGRES_REHEARSAL=PASS
+TIMELINE_DEGRADED_MAIN_MUTATION_PRESERVED=true
+TIMELINE_PROJECTION_FAILURES=read,write
+RLS_APP_TENANT_A_OWN=2
+RLS_APP_TENANT_A_CROSS=0
+RLS_APP_TENANT_B_OWN=1
+```
 
-## Prueba visual local
+La prueba renombró temporalmente solo la tabla derivada: `/ready` falló, una
+mutación de seguimiento confirmó versión 3 y guardó su actividad fuente, y la
+lectura degradada reconstruyó el evento. La tabla se restauró y `/ready` volvió
+a PASS.
 
-En navegador de escritorio, el chat seleccionado mostró cuatro burbujas
-WhatsApp y dos eventos operativos separados, con texto simple, compositor y
-panel de detalles disponibles. El DOM accesible confirmó que los eventos no
-usan nombres técnicos. La revisión mobile previa del mismo corte visual mostró
-los separadores legibles y el compositor conservado; el flag agregado después
-solo decide si se usa `timeline` o el fallback existente de `messages`.
+El rol real `sportex_staging_app`, con `app.tenant_id` de A, observó 2 eventos
+propios y 0 de B; con tenant B observó 1 propio. El transcript completo está en
+`TASK-20260815-001_POSTGRES_TRANSCRIPT.md`.
 
-## Pruebas negativas y límites
+## Migración, rollback y límites legacy
 
-- No existe una ruta nueva para activar un asistente.
-- No existe runtime, proveedor, prompt, job o worker de IA.
-- Un evento con actor futuro `ASSISTANT` no puede convertirse en una burbuja.
-- No se modificaron reglas comerciales, campañas, Meta/ADS ni estados Delta.
-- No se desplegó, migró ni envió un mensaje real en esta task.
+- Mensajes antes del down: 3; después del down: 3.
+- Preflight con actor nulo: rechazado antes de crear tabla.
+- Preflight con correlación de 201 caracteres: rechazado.
+- Preflight con fecha imposible: rechazado como timestamp inválido.
+- Tras restaurar las fuentes válidas, re-up/backfill: 5 eventos.
+- El contenedor temporal se verificó y eliminó.
+
+## Navegador desktop y mobile
+
+El E2E usa Chrome headless mediante `playwright-core`, activa el flag desde la
+demo local y genera capturas ignoradas por Git en
+`.sportex-local/e2e-conversation-timeline/`.
+
+- Desktop 1280×480: scroll real, eventos intercalados, Detalles y compositor
+  visibles juntos, borrador y posición preservados.
+- Mobile 390×844: chat, eventos y compositor legibles; Detalles cubre la
+  superficie del chat, cierra correctamente y devuelve el mismo borrador.
+- Texto secundario de evento: 10 px mínimo medido; 2 eventos visibles.
+- Capturas: `desktop-1280x480.png`, `mobile-390x844-details.png` y
+  `mobile-390x844.png`.
+
+## Límites y efectos externos
+
+- No se modificaron reglas comerciales, Delta ADS, Meta ni estados reales.
+- No hubo push, deploy, migración remota ni mensaje real.
+- `fca96c2` permanece como candidato rechazado y no debe promoverse.
 
 ## Promoción y rollback preparados
 
-La promoción requiere un candidato publicado exacto, backup verificado,
-restore ensayado, migración `005`, flag de presentación en `true` y un GO
-propietario que coincida exactamente con el guard. Hasta entonces la capacidad
-permanece local y apagada por defecto.
-
-Rollback de runtime: `sportex-staging:3c8c9da25ba1fae3`. El rollback de
-presentación es apagar el flag. El down de `005` elimina solo la proyección
-derivada; nunca mensajes, journal, outbox ni actividades fuente.
+La promoción futura exige nuevo candidato publicado y revisado, backup/restore,
+migración `005`, smoke con rol app, `/ready=200` y GO exacto. El rollback de
+runtime es `sportex-staging:3c8c9da25ba1fae3`; se vuelve primero a esa imagen y
+se conserva la tabla aditiva. El flag OFF solo oculta UI, no reemplaza la
+migración ni el readiness.

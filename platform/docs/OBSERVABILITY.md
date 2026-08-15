@@ -82,6 +82,8 @@ Todo job o notificación debe terminar en:
 - pedidos próximos a fecha límite sin avance;
 - diferencia anormal entre costo estimado y real.
 - runtime cuyo digest no coincide con el manifiesto;
+- proyección de cronología degradada en lectura o escritura, conservando
+  tenant, conversación, operación y código de error sin contenido del mensaje;
 - Supabase, Core o workers sin readiness;
 - swap agotada, disco crítico o carga sostenida sin margen de rollback.
 

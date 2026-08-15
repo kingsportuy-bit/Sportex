@@ -98,6 +98,27 @@ con un asistente futuro que permanece sin camino ejecutable.
 - La eventual promoción queda detrás de candidato publicado, backup/restore y
   GO propietario exacto.
 
+### 2026-08-15 - reabierta por NO-GO de revisión
+
+- El candidato `fca96c2` no se publica ni promueve.
+- Se corrige la frontera transaccional para que la cronología derivada nunca
+  revierta la mutación principal ni pierda su evento fuente.
+- Se agrega preflight migration-first/readiness, compatibilidad legacy,
+  observabilidad, E2E reproducible y aislamiento RLS con rol de aplicación.
+
+### 2026-08-15 - correcciones de revisión validadas
+
+- Savepoints y fusión fuente/proyección demuestran que un fallo timeline no
+  revierte la mutación principal ni oculta su evento fuente.
+- `/ready`, healthcheck y protocolo exigen migración `005` antes de imagen;
+  rollback vuelve a la imagen anterior antes de considerar down.
+- PostgreSQL 16: degradación, límites legacy, up/down/re-up y RLS directo con
+  rol app PASS.
+- E2E Chrome reproducible desktop/mobile: scroll, compositor, borrador,
+  Detalles y texto mínimo de 10 px PASS.
+- Core 50/50, TypeScript, SQL, build, documentación y diff PASS.
+- No hubo publicación, despliegue, migración remota ni mensajes reales.
+
 ## decisiones
 
 - Mensajes y eventos permanecen separados en persistencia y presentación.

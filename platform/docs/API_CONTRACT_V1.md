@@ -49,7 +49,9 @@ Confirma proceso vivo y release. No prueba dependencias.
 
 ### `GET /ready`
 
-Confirma repositorio y Supabase Auth requeridos.
+Confirma repositorio, Supabase Auth y, cuando el store es PostgreSQL, la
+proyección comercial y la tabla `conversation_timeline_events`. El flag visual
+apagado no omite esta dependencia: código `005` sin migración devuelve `503`.
 
 ## Clientes
 

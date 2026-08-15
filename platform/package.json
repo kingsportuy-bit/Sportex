@@ -29,6 +29,10 @@
     "build": "npm --workspace @sportex/core run build",
     "validate-sql": "npm --workspace @sportex/core run validate-sql",
     "validate": "npm run scan:text && npm run test:workflow && npm run validate-docs && npm run check && npm test && npm run validate-sql && npm run build",
-    "test:e2e:staging": "node scripts/e2e-staging.mjs"
+    "test:e2e:staging": "node scripts/e2e-staging.mjs",
+    "test:e2e:timeline": "node scripts/e2e-conversation-timeline-browser.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.55.0"
   }
 }

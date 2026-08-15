@@ -41,6 +41,12 @@ services:
       - sportex_private
       - supabase_staging
     read_only: true
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     tmpfs:
       - /tmp:size=16m,mode=1777
     cap_drop:
@@ -75,7 +81,7 @@ services:
         - traefik.http.routers.sportex-staging.tls=true
         - traefik.http.routers.sportex-staging.tls.certresolver=letsencryptresolver
         - traefik.http.services.sportex-staging.loadbalancer.server.port=8080
-        - traefik.http.services.sportex-staging.loadbalancer.healthcheck.path=/health
+        - traefik.http.services.sportex-staging.loadbalancer.healthcheck.path=/ready
         - traefik.http.services.sportex-staging.loadbalancer.healthcheck.interval=20s
 
 networks:

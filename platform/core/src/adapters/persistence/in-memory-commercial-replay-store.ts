@@ -102,6 +102,10 @@ export class InMemoryCommercialReplayStore implements CommercialReplayStore {
     return structuredClone(this.state);
   }
 
+  async checkReady(): Promise<void> {
+    return Promise.resolve();
+  }
+
   async close(): Promise<void> {
     return Promise.resolve();
   }

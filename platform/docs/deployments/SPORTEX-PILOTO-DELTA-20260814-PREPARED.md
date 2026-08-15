@@ -87,3 +87,16 @@ restore verificado.
 El envio manual desde SPORTEX esta implementado pero no autorizado. Su canary
 requiere otro GO con destinatario controlado, texto visible, outbound `true`
 solo durante la prueba y verificacion de `SENT/DELIVERED` sin duplicados.
+
+## Addendum TASK-20260815-001 — cronología operativa
+
+- Estado: candidato corregido local pendiente de segunda revisión; no publicado.
+- Migración requerida antes de la imagen: `20260815_005_conversation_timeline`.
+- Preflight: backup/restore, legado válido, rol app y RLS cross-tenant.
+- Smoke migration-first: tabla `005`, workspace comercial y `/ready=200` antes
+  de aceptar tráfico; el flag visual `OFF` no oculta la dependencia.
+- Activación propuesta: flag visual `true` solo después del smoke.
+- Rollback inmediato de imagen: `sportex-staging:3c8c9da25ba1fae3`.
+- Orden de rollback: volver primero a esa imagen y verificarla; conservar la
+  tabla aditiva. Un eventual `down` posterior necesita otro gate y nunca toca
+  mensajes, journal, outbox ni `activity_data`.

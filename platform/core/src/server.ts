@@ -42,7 +42,15 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     && options.config.devAuthEnabled
     && (options.config.environment === "development" || options.config.environment === "test");
   const commercialStore = options.config.storeDriver === "postgres"
-    ? new PostgresCommercialReplayStore(options.config)
+    ? new PostgresCommercialReplayStore(options.config, (failure) => {
+      app.log.warn({
+        component: "conversation_timeline_projection",
+        operation: failure.operation,
+        tenantId: failure.tenantId,
+        conversationId: failure.conversationId,
+        errorCode: failure.errorCode,
+      }, "Conversation timeline projection degraded; source activity remains authoritative");
+    })
     : localCommercialReplayEnabled
       ? options.config.commercialDemoFile
       ? new LocalJsonCommercialReplayStore(options.config.commercialDemoFile)
@@ -162,6 +170,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
     try {
       await Promise.all([
         options.store.checkReady(),
+        commercialStore?.checkReady() ?? Promise.resolve(),
         checkAuthReady(options.config, authFetch),
       ]);
       return {

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type {
   CommercialActivity,
   CommercialOperationalEventType,
@@ -35,7 +36,7 @@ export function readableOperationalDetail(type: CommercialOperationalEventType, 
   return Object.entries(readableTerms).reduce(
     (detail, [technical, readable]) => detail.replaceAll(technical, readable),
     value,
-  );
+  ).slice(0, 1_000);
 }
 
 export const PASSIVE_ASSISTANT_CONTRACT = Object.freeze({
@@ -56,13 +57,13 @@ function origin(activity: CommercialActivity): CommercialTimelineOrigin {
 }
 
 export function operationalEventId(activity: CommercialActivity): string {
-  return [
-    "activity",
+  const identity = [
     activity.correlationId,
     activity.type,
     activity.occurredAt,
     activity.evidenceMessageId ?? "none",
-  ].join(":");
+  ].map((value) => `${Buffer.byteLength(value, "utf8")}:${value}`).join("|");
+  return `activity:${createHash("md5").update(identity).digest("hex")}`;
 }
 
 export function projectOperationalEvents(item: CommercialWorkspaceItem): CommercialTimelineOperationalEvent[] {
@@ -100,6 +101,15 @@ export function buildConversationTimeline(
     left.occurredAt.localeCompare(right.occurredAt)
       || (left.kind === right.kind ? 0 : left.kind === "MESSAGE" ? -1 : 1)
       || left.id.localeCompare(right.id));
+}
+
+export function mergeOperationalEvents(
+  sourceEvents: CommercialTimelineOperationalEvent[],
+  persistedEvents: CommercialTimelineOperationalEvent[],
+): CommercialTimelineOperationalEvent[] {
+  const merged = new Map(sourceEvents.map((event) => [event.id, event]));
+  for (const event of persistedEvents) merged.set(event.id, event);
+  return [...merged.values()];
 }
 
 export function withConversationTimeline(

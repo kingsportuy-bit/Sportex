@@ -19,6 +19,7 @@ export interface CommercialReplayStore {
     tenantId: string,
     operation: (transaction: CommercialReplayTransaction) => Promise<T>,
   ): Promise<T>;
+  checkReady(): Promise<void>;
   close(): Promise<void>;
 }
 
