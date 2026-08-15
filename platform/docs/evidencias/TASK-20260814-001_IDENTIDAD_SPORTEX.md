@@ -97,3 +97,26 @@ del servicio quedo respaldada en el VPS antes del despliegue.
   `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`.
 - Este checkpoint no desplego, no migro datos y no envio mensajes. El runtime
   productivo permanece en `c375e58cfc19f894623a9a4cf8caa9a43723b395`.
+
+## Favicon desplegado en PILOTO_DELTA
+
+- GO exacto recibido:
+  `GO SPORTEX TASK-20260814-001 3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf PILOTO_DELTA`.
+- Guard de release PASS contra el commit publicado en origin.
+- Bundle inmutable SHA256:
+  `74ce9116042f0c6d75416ad4600844cdfd6a1460918946e4aebdb5b57ce50632`.
+- Imagen: `sportex-staging:3c8c9da25ba1fae3`.
+- Image ID:
+  `sha256:c4490a80809ea55df5c4a4814d4102d0a3381b7fb94e4f6f7a793f4bc7e356da`.
+- La especificacion previa del servicio se respaldo en el VPS con SHA256
+  `49b772870cfc19523c3cbd59119d86769e6fedec44470a3fe4d596ff8e4f7da9`.
+- Swarm convergio `1/1`; `/health` reporta el commit exacto y `/ready`
+  confirma PostgreSQL y Supabase.
+- PNG e ICO productivos coinciden con los hashes locales, responden con tipo de
+  imagen y el PNG conserva `512x512`, RGBA, alpha y un unico RGB `#DCFF52`.
+- El HTML productivo declara ICO, PNG y Apple touch icon. Browser productivo
+  PASS: titulo SPORTEX, wordmark visible y las tres referencias presentes.
+- Evolution conserva ingreso y outbound manual activos. No hubo migraciones,
+  cambios de datos ni mensajes durante este corte; logs iniciales con cero
+  coincidencias `error|fatal|unhandled`.
+- Rollback inmediato: `sportex-staging:c375e58cfc19f894`.

@@ -29,6 +29,10 @@
 - Imagen transparente: `sportex-staging:c375e58cfc19f894`
 - Image ID transparente: `sha256:6dcd081e23201d89c9a25d0637cdb2b0a7637e59c73bd694e8152e93493161ec`
 - Rollback inmediato de transparencia: `sportex-staging:a7ceb9b73d53777b`
+- Candidato de favicon desplegado: `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`
+- Imagen de favicon: `sportex-staging:3c8c9da25ba1fae3`
+- Image ID de favicon: `sha256:c4490a80809ea55df5c4a4814d4102d0a3381b7fb94e4f6f7a793f4bc7e356da`
+- Rollback inmediato de favicon: `sportex-staging:c375e58cfc19f894`
 
 ## Orden exacto propuesto
 

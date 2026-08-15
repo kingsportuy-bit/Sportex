@@ -429,3 +429,15 @@ DELTA define reglas y valida negocio.
 - Candidato exacto: `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`.
 - No hubo deploy, migraciones, datos reales ni mensajes. Para verlo en
   `sportex.codexa.uy` falta promocionar este candidato con un GO remoto exacto.
+
+### 2026-08-15 - favicon SPORTEX desplegado
+
+- Fito otorgo el GO exacto para `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`
+  en `PILOTO_DELTA`; el guard verifico origin, scope y bundle inmutable.
+- La imagen `sportex-staging:3c8c9da25ba1fae3` fue construida desde Git y
+  Swarm convergio `1/1` conservando la configuracion vigente.
+- Health, readiness, release, hashes PNG/ICO, transparencia, color y browser
+  productivo PASS.
+- Evolution mantiene ingreso y envio manual activos. No hubo migraciones,
+  cambios de datos ni mensajes; logs iniciales sin errores.
+- Rollback: `sportex-staging:c375e58cfc19f894`.
