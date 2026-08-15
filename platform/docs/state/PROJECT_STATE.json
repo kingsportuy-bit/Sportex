@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-08-15",
-  "updatedBy": "TASK-20260815-001",
+  "updatedBy": "TASK-20260815-002",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -13,16 +13,15 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "operation",
-  "objective": "Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en mensajes y dejar compatibilidad pasiva para un asistente futuro apagado.",
+  "mode": "documentation",
+  "objective": "Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados comerciales.",
   "scope": {
     "allowed": [
-      "Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas.",
-      "Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato.",
-      "Preparar gates, rollback y manifiesto para la conexión real posterior."
+      "Registrar el estado real del piloto y el criterio de verificacion de transiciones comerciales.",
+      "Conservar cronologia, mensajes y runtime 72e0fc2 sin cambios."
     ],
     "prohibited": [
-      "Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial."
+      "No implementar, desplegar, migrar, enviar mensajes ni cambiar estados reales en este checkpoint."
     ]
   },
   "currentTask": null,
@@ -138,14 +137,25 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260815-001",
+    "taskId": "TASK-20260815-002",
     "date": "2026-08-15",
-    "path": "docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md",
-    "summary": "Release 72e0fc2: migracion 005-first y operacion PASS sin mensajes.",
+    "path": "docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md",
+    "summary": "Cambiar etapas o estados desde WhatsApp queda pendiente de verificacion; cero cambios remotos.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260815-002",
+      "summary": "Se registro que las transiciones comerciales desde WhatsApp no estan soportadas ni verificadas como capacidad del piloto actual.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260815-002-registrar-pendiente-transiciones-comerciales.md",
+        "docs/state/PROJECT_STATE.json"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md"],
+      "decisions": ["No presentar una capacidad como disponible antes de verificar persistencia, permisos y auditoria de punta a punta."]
+    },
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
@@ -509,19 +519,21 @@
     "note": "Runtime publico 72e0fc2 sano; cronologia operativa activa, 005 aplicada, continuidad WhatsApp y Evolution open; rollback image-first 3c8c9da listo."
   },
   "productValidation": {
-    "status": "LOCAL_UI_CONCEPT_ACCEPTED",
-    "lastReviewedAt": "2026-08-14",
+    "status": "PENDIENTE_VERIFICACION_TRANSICIONES_COMERCIALES",
+    "lastReviewedAt": "2026-08-15",
     "reviewedBy": "Fito",
-    "taskId": "TASK-20260803-005",
-    "note": "Fito aceptó el concepto visual WhatsApp primero y pidió iterar con etapas configurables y detalle de contacto/proceso. La conexión real mantiene un GO distinto."
+    "taskId": "TASK-20260815-002",
+    "note": "La cronologia esta desplegada; cambiar etapas o estados desde WhatsApp no se considera soportado hasta validar el recorrido completo."
   },
   "blockers": [],
   "risks": [
+    "Cambiar etapas o estados comerciales desde WhatsApp todavia no esta verificado ni debe prometerse al operador.",
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
     "El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.",
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
+    "Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.",
     "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
     "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."

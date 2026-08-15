@@ -10,7 +10,7 @@ Actualizado: 2026-08-15.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `documentation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-08-15.
 
 ## Objetivo actual
 
-Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en mensajes y dejar compatibilidad pasiva para un asistente futuro apagado.
+Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados comerciales.
 
 ## Alcance actual
 
-- Permitido: Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas. | Reutilizar Core, UI, contratos, migraciones y tests existentes cuando cumplan su contrato. | Preparar gates, rollback y manifiesto para la conexión real posterior.
-- Prohibido: Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial.
+- Permitido: Registrar el estado real del piloto y el criterio de verificacion de transiciones comerciales. | Conservar cronologia, mensajes y runtime 72e0fc2 sin cambios.
+- Prohibido: No implementar, desplegar, migrar, enviar mensajes ni cambiar estados reales en este checkpoint.
 
 ## Decisiones vigentes
 
@@ -57,13 +57,14 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260815-001`.
+- Tarea: `TASK-20260815-002`.
 - Fecha: `2026-08-15`.
-- Fuente: `docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md`.
-- Release 72e0fc2: migracion 005-first y operacion PASS sin mensajes.
+- Fuente: `docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md`.
+- Cambiar etapas o estados desde WhatsApp queda pendiente de verificacion; cero cambios remotos.
 
 ## Riesgos
 
+- Cambiar etapas o estados comerciales desde WhatsApp todavia no esta verificado ni debe prometerse al operador.
 - 4 vulnerabilidades altas siguen en TASK-20260801-002.
 - El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.
 - Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
@@ -74,6 +75,7 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 
 ## Siguientes acciones
 
+- Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.
 - Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
 - Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.
