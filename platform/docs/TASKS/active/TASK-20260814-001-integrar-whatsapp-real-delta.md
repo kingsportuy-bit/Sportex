@@ -392,5 +392,11 @@ DELTA define reglas y valida negocio.
 - El asset `frontend/assets/delta-logo.png` fue retirado y no quedan referencias
   `delta-logo` ni `/assets/delta` en el frontend.
 - Browser local oscuro PASS: logo legible, sin caja negra, tenant subordinado y
-  navegacion sin desplazamiento. Falta versionar y promover el candidato exacto.
+  navegacion sin desplazamiento.
+- El candidato `a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9` fue promovido al piloto
+  productivo como `sportex-staging:a7ceb9b73d53777b`; Swarm 1/1, health,
+  readiness, asset y browser productivo PASS.
+- El HTML productivo no referencia `delta-logo`; Delta Sport permanece como
+  tenant operativo. No hubo migraciones, cambios de datos ni mensajes.
+- Rollback inmediato: `sportex-staging:1cc2c96fe8f8e0f`.
 - Evidencia: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.

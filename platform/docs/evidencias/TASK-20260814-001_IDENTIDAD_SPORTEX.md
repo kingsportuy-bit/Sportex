@@ -2,7 +2,7 @@
 
 Fecha: 2026-08-14
 Task: `TASK-20260814-001`
-Entorno validado inicialmente: desarrollo local
+Entornos validados: desarrollo local y `PILOTO_DELTA` productivo
 
 ## Decision aplicada
 
@@ -29,7 +29,23 @@ como nombre del negocio o tenant, pero su logo no forma parte del sistema.
 - El logo tiene texto alternativo `SPORTEX` y no duplica una marca escrita al
   lado de la imagen.
 
-## Pendiente
+## Validacion productiva
 
-Ejecutar validacion completa, formar commit exacto y promoverlo al piloto
-productivo bajo la regla temporal production-first de SPORTEX.
+- Commit exacto: `a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9`.
+- Imagen: `sportex-staging:a7ceb9b73d53777b`.
+- Image ID: `sha256:0a83a6d730afb1e126e78e68fb1928d9c97e64f2ec3e16dbcbdd55785246fe13`.
+- URL: `https://sportex.codexa.uy`.
+- Swarm convergio 1/1; `/health` y `/ready` PASS con release exacto.
+- HTML productivo referencia `sportex-logo.png` y no referencia `delta-logo`.
+- El asset SPORTEX responde `image/png`; la ruta historica Delta devuelve el
+  fallback HTML y no una imagen.
+- Browser productivo PASS: wordmark SPORTEX visible, sin logo Delta y sin
+  desplazamiento del login.
+- Evolution conserva ingreso y outbound manual activos. No hubo mensajes,
+  migraciones ni cambios de datos durante este corte visual.
+- Logs iniciales: cero coincidencias `error|fatal|unhandled`.
+
+## Rollback
+
+Artefacto anterior: `sportex-staging:1cc2c96fe8f8e0f`. La especificacion previa
+del servicio quedo respaldada en el VPS antes del despliegue.

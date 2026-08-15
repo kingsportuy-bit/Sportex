@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Formar y promover el candidato de identidad SPORTEX; Delta queda solo como nombre de tenant."
+    "nextAction": "Usar el piloto productivo con identidad SPORTEX y validar la experiencia autenticada; Delta queda solo como nombre de tenant."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_PRODUCTIVE_ACTIVE_IDENTITY_CANDIDATE_LOCAL",
+    "status": "GATE_5_PRODUCTIVE_ACTIVE_SPORTEX_IDENTITY",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -81,8 +81,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45",
-    "workingTreeState": "TASK-20260814-001_SPORTEX_IDENTITY_LOCAL_PENDING_COMMIT",
+    "headAtLastEvidence": "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9",
+    "workingTreeState": "TASK-20260814-001_SPORTEX_IDENTITY_PRODUCTIVE_DOCUMENTED",
     "lastVerifiedAt": "2026-08-14"
   },
   "migrations": {
@@ -100,22 +100,22 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md",
-    "note": "Candidato local: typecheck y 44/44 PASS; continuidad inbound/outbound, refresco de chat, formularios y paleta corregidos. Runtime publico permanece en f6a9277 hasta GO exacto."
+    "evidence": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
+    "note": "Identidad SPORTEX: typecheck, 44/44, build, SQL, docs y browser PASS; runtime productivo a7ceb9b verificado."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_1CC2C96_PUBLIC_OPERATIONAL",
+    "status": "PILOTO_DELTA_A7CEB9B_SPORTEX_IDENTITY_OPERATIONAL",
     "lastVerifiedAt": "2026-08-14",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45"],
-    "note": "sportex_staging_core 1/1 en 1cc2c96; health/readiness, login visual y assets focales PASS. Evolution ingreso/outbound manual activos; rollback f6a9277."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45", "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9"],
+    "note": "sportex_staging_core 1/1 en a7ceb9b; health/readiness, logo SPORTEX y browser productivo PASS. Evolution ingreso/outbound manual activos; rollback 1cc2c96."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_CANDIDATE_F6A9277_VERIFIED",
-      "lastVerifiedAt": "2026-08-03",
+      "status": "REMOTE_CANDIDATE_A7CEB9B_VERIFIED",
+      "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "Rama publicada con candidato funcional 1cc2c96; runtime publico permanece en f6a9277 hasta GO exacto."
+      "note": "Rama publicada con candidato de identidad a7ceb9b; runtime productivo coincide con el commit exacto."
     },
     {
       "name": "Supabase",
@@ -133,10 +133,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_1CC2C96_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_A7CEB9B_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-14",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 en 1cc2c96, dominio productivo, red privada Evolution y rollback f6a9277 disponible."
+      "note": "sportex_staging_core 1/1 en a7ceb9b, dominio productivo, red privada Evolution y rollback 1cc2c96 disponible."
     }
   ],
   "sensitiveData": {
@@ -147,7 +147,7 @@
     "taskId": "TASK-20260814-001",
     "date": "2026-08-14",
     "path": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
-    "summary": "Identidad local corregida: SPORTEX es la unica marca visual y el logo de Delta fue retirado; produccion permanece en 1cc2c96 hasta promocion.",
+    "summary": "Identidad SPORTEX desplegada y verificada en el piloto productivo; Delta permanece solo como tenant y su logo fue retirado.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
@@ -155,7 +155,7 @@
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",
-      "summary": "Se reemplazo el logo Delta por el wordmark SPORTEX en login/sidebar y se retiro fisicamente el asset Delta.",
+      "summary": "Se reemplazo y desplego el logo Delta por el wordmark SPORTEX en login/sidebar; el asset Delta fue retirado y el piloto productivo quedo verificado en a7ceb9b.",
       "documents": [
         "frontend/index.html",
         "frontend/styles.css",
@@ -442,9 +442,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_1CC2C96_CONTINUITY_ACTIVE",
+    "status": "PILOTO_DELTA_A7CEB9B_SPORTEX_IDENTITY_ACTIVE",
     "lastEvidenceDate": "2026-08-14",
-    "note": "Runtime publico 1cc2c96 sano; continuidad WhatsApp/UI activa, Evolution ingreso/outbound manual preservados y rollback f6a9277 listo."
+    "note": "Runtime publico a7ceb9b sano; identidad SPORTEX, continuidad WhatsApp/UI y Evolution ingreso/outbound manual preservados; rollback 1cc2c96 listo."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",

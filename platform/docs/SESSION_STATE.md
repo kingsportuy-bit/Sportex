@@ -50,8 +50,8 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-14`.
-- Despliegues: `PILOTO_DELTA_1CC2C96_PUBLIC_OPERATIONAL`; registros 4.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_F6A9277_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_1CC2C96_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_A7CEB9B_SPORTEX_IDENTITY_OPERATIONAL`; registros 5.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_A7CEB9B_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_A7CEB9B_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -59,7 +59,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-14`.
 - Fuente: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
-- Identidad local corregida: SPORTEX es la unica marca visual y el logo de Delta fue retirado; produccion permanece en 1cc2c96 hasta promocion.
+- Identidad SPORTEX desplegada y verificada en el piloto productivo; Delta permanece solo como tenant y su logo fue retirado.
 
 ## Riesgos
 
