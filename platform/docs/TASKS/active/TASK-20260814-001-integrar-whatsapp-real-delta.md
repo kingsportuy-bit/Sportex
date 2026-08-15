@@ -410,5 +410,9 @@ DELTA define reglas y valida negocio.
 - Validacion de imagen: `1916x821`, esquina alpha `0`, centro alpha `255` y
   SHA256 `d726c53c6537f34911e6c8be46a5a9e8d551eba4247d818c7091a2151b82b628`.
 - Browser local oscuro PASS: logo visible, limpio y con el mismo encuadre.
-- Pendiente: versionar el candidato exacto y promoverlo a `PILOTO_DELTA` con
-  rollback al runtime `a7ceb9b`.
+- El candidato exacto `c375e58cfc19f894623a9a4cf8caa9a43723b395` fue
+  promovido como `sportex-staging:c375e58cfc19f894` y Swarm convergio 1/1.
+- Health, readiness, hash/alpha del asset y browser productivo PASS; Evolution
+  mantuvo ingreso y outbound manual activos.
+- No hubo mensajes, migraciones ni cambios de datos. Rollback:
+  `sportex-staging:a7ceb9b73d53777b`.

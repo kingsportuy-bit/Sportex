@@ -41,6 +41,23 @@ como nombre del negocio o tenant, pero su logo no forma parte del sistema.
 - Browser local oscuro PASS: logo visible, bordes limpios y encuadre de sidebar
   sin cambios.
 
+## Transparencia desplegada
+
+- Commit exacto: `c375e58cfc19f894623a9a4cf8caa9a43723b395`.
+- Bundle SHA256:
+  `99d0f962f9d094c08317c061c6df789e120224c98ea233183c60560ac4cf242e`.
+- Imagen: `sportex-staging:c375e58cfc19f894`.
+- Image ID:
+  `sha256:6dcd081e23201d89c9a25d0637cdb2b0a7637e59c73bd694e8152e93493161ec`.
+- Swarm 1/1, `/health`, `/ready`, PostgreSQL y Supabase PASS.
+- Asset productivo coincide con SHA256 `d726c53c...`; esquina alpha `0` y
+  centro alpha `255`.
+- Browser productivo PASS: logo SPORTEX visible sin fondo ni caja negra.
+- Evolution conserva ingreso y outbound manual activos. No hubo mensajes,
+  migraciones ni cambios de datos.
+- Logs iniciales: cero coincidencias `error|fatal|unhandled`.
+- Rollback: `sportex-staging:a7ceb9b73d53777b`.
+
 ## Validacion productiva
 
 - Commit exacto: `a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9`.

@@ -50,8 +50,8 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-15`.
-- Despliegues: `PILOTO_DELTA_A7CEB9B_SPORTEX_IDENTITY_OPERATIONAL`; registros 5.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_A7CEB9B_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_A7CEB9B_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_C375E58_TRANSPARENT_LOGO_OPERATIONAL`; registros 6.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_C375E58_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_C375E58_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -59,7 +59,7 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-15`.
 - Fuente: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
-- Logo SPORTEX con transparencia real validado localmente; la fuente original queda intacta y el piloto permanece en a7ceb9b hasta promocion.
+- Logo SPORTEX con transparencia real desplegado y verificado en el piloto productivo c375e58; la fuente original queda intacta.
 
 ## Riesgos
 

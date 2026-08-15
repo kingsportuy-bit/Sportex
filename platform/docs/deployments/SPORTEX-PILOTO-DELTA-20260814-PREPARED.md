@@ -25,6 +25,10 @@
 - Imagen de identidad: `sportex-staging:a7ceb9b73d53777b`
 - Image ID de identidad: `sha256:0a83a6d730afb1e126e78e68fb1928d9c97e64f2ec3e16dbcbdd55785246fe13`
 - Rollback inmediato de identidad: `sportex-staging:1cc2c96fe8f8e0f`
+- Candidato de logo transparente desplegado: `c375e58cfc19f894623a9a4cf8caa9a43723b395`
+- Imagen transparente: `sportex-staging:c375e58cfc19f894`
+- Image ID transparente: `sha256:6dcd081e23201d89c9a25d0637cdb2b0a7637e59c73bd694e8152e93493161ec`
+- Rollback inmediato de transparencia: `sportex-staging:a7ceb9b73d53777b`
 
 ## Orden exacto propuesto
 

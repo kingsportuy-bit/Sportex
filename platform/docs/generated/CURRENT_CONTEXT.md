@@ -14,7 +14,7 @@ Actualizado: 2026-08-15.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 56933/60000 caracteres.
+- Presupuesto potencial: 57179/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 
