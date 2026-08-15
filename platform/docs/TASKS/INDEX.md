@@ -6,7 +6,7 @@ Actualizado: 2026-08-15.
 
 ## Activa
 
-- `TASK-20260814-001` | `in_progress` | Integrar WhatsApp real de Delta con SPORTEX | docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md
+- Ninguna.
 
 ## Cola
 
@@ -29,3 +29,4 @@ Actualizado: 2026-08-15.
 - `TASK-20260803-003` | `done` | Reconciliar el commit remoto verificado | docs/TASKS/closed/2026/TASK-20260803-003-reconciliar-push-remoto.md
 - `TASK-20260803-004` | `done` | Demo CRM comercial local navegable | docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md
 - `TASK-20260803-005` | `done` | Rediseñar la experiencia comercial Hoy | docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md
+- `TASK-20260814-001` | `done` | Integrar WhatsApp real de Delta con SPORTEX | docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md

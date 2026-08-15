@@ -3,8 +3,8 @@
 id: TASK-20260814-001
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: feature
 campaign: CAMP-20260803-001
 context_focus: architecture
@@ -157,6 +157,25 @@ DELTA define reglas y valida negocio.
 - El envío manual real es el último gate y requiere confirmación humana.
 
 ## registro_de_avances
+
+### 2026-08-15 - cierre honesto del puesto operativo WhatsApp
+
+- SPORTEX ya recibe y persiste mensajes reales de Delta con la UI cerrada,
+  proyecta entradas y salidas `fromMe`, reconcilia el eco de Evolution sin
+  duplicar burbujas y conserva receipts, ordering, journal, outbox y cuarentena.
+- La interfaz autenticada queda disponible en `sportex.codexa.uy`, consulta la
+  base cada dos segundos y al recuperar foco, y permite el outbound manual
+  individual ya desplegado detrás de confirmación, permiso e idempotencia.
+- El primer envío manual elegido por Fito no fue ejecutado ni inventado. Queda
+  como aceptación operativa humana y no invalida la evidencia técnica del
+  canal, porque esta task no autoriza enviar a un destinatario sin elección y
+  confirmación individual.
+- El runtime productivo exacto es `3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf`;
+  health, readiness, Swarm `1/1`, browser, hashes del frontend y regresión
+  local `44/44` están en PASS. No se ejecutó una operación remota nueva para
+  este cierre.
+- Evidencia de cierre:
+  `docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md`.
 
 ### 2026-08-14 - Piloto productivo utilizable
 

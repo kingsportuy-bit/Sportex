@@ -13,8 +13,8 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "product",
-  "objective": "Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.",
+  "mode": "quality",
+  "objective": "Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la siguiente mejora focal sin inventar un envío real.",
   "scope": {
     "allowed": [
       "Implementar y validar localmente el modelo comercial normalizado, persistencia, adaptadores simulados, proyecciones y funciones internas.",
@@ -25,15 +25,7 @@
       "Sin GO remoto exacto: integraciones reales, datos reales, mensajes, deploy, migraciones remotas, PILOTO_DELTA o producción comercial."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20260814-001",
-    "title": "Integrar WhatsApp real de Delta con SPORTEX",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
-    "workType": "feature",
-    "campaign": "CAMP-20260803-001",
-    "nextAction": "Usar sportex.codexa.uy con el favicon SPORTEX y continuar la validacion operativa de Delta."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -82,7 +74,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
-    "workingTreeState": "TASK-20260814-001_FAVICON_PRODUCTIVE_DOCUMENTED",
+    "workingTreeState": "TASK-20260814-001_CLOSED_HONESTLY",
     "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
@@ -100,8 +92,8 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
-    "note": "Favicon productivo: S exacta, PNG/ICO transparentes, 44/44, build, hashes y browser productivo PASS; runtime 3c8c9da verificado."
+    "evidence": "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md",
+    "note": "Cierre honesto del puesto operativo: 44/44, build, SQL y documentación PASS; el envío manual humano permanece pendiente y no fue inventado."
   },
   "deployments": {
     "status": "PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL",
@@ -146,12 +138,24 @@
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
     "date": "2026-08-15",
-    "path": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
-    "summary": "Favicon SPORTEX desplegado desde 3c8c9da; PNG/ICO, health, readiness y browser productivo PASS, sin migraciones ni mensajes.",
+    "path": "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md",
+    "summary": "TASK-20260814-001 cerrada con integración WhatsApp productiva verificable; el primer envío manual queda como aceptación humana sin prueba inventada.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerró honestamente la integración WhatsApp de Delta: canal, persistencia, reconciliación, polling y outbound manual están desplegados; el primer envío humano permanece pendiente.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md"],
+      "decisions": ["Una aceptación manual pendiente no autoriza inventar un envío ni mantener indefinidamente abierta una task técnicamente cumplida."]
+    },
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260814-001",
@@ -301,7 +305,7 @@
       "summary": "Se cerró el corte visual WhatsApp-first y se abrió la integración real con inventario reutilizar/adaptar/falta y gates locales/remotos.",
       "documents": [
         "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
-        "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
+        "docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md",
         "docs/state/PROJECT_STATE.json",
         "docs/DECISIONES.md",
         "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
@@ -467,9 +471,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_C375E58_TRANSPARENT_LOGO_ACTIVE",
+    "status": "PILOTO_DELTA_3C8C9DA_FAVICON_ACTIVE",
     "lastEvidenceDate": "2026-08-15",
-    "note": "Runtime publico c375e58 sano; logo SPORTEX transparente, continuidad WhatsApp/UI y Evolution ingreso/outbound manual preservados; rollback a7ceb9b listo."
+    "note": "Runtime público 3c8c9da sano; favicon, logo transparente, continuidad WhatsApp/UI y Evolution ingreso/outbound manual preservados; rollback c375e58 listo."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -485,9 +489,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Usar sportex.codexa.uy como puesto operativo de Delta.",
-    "Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.",
-    "Fito revisa la experiencia autenticada y prueba el primer mensaje manual que elija.",
+    "Abrir la siguiente task focal para cronología operativa y compatibilidad pasiva del asistente.",
+    "Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }

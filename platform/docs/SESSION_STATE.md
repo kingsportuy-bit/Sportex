@@ -10,7 +10,7 @@ Actualizado: 2026-08-15.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `product`.
+- Intencion actual: `quality`.
 
 ## Git
 
@@ -23,11 +23,11 @@ Actualizado: 2026-08-15.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260814-001`: `in_progress` (docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilitar el recorrido comercial-productivo mínimo reutilizando la base existente.
+Cerrar con evidencia honesta el puesto operativo WhatsApp de Delta y preparar la siguiente mejora focal sin inventar un envío real.
 
 ## Alcance actual
 
@@ -58,8 +58,8 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 - Tarea: `TASK-20260814-001`.
 - Fecha: `2026-08-15`.
-- Fuente: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
-- Favicon SPORTEX desplegado desde 3c8c9da; PNG/ICO, health, readiness y browser productivo PASS, sin migraciones ni mensajes.
+- Fuente: `docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md`.
+- TASK-20260814-001 cerrada con integración WhatsApp productiva verificable; el primer envío manual queda como aceptación humana sin prueba inventada.
 
 ## Riesgos
 
@@ -73,7 +73,6 @@ Conectar la interfaz WhatsApp-first aprobada al WhatsApp real de Delta y habilit
 
 ## Siguientes acciones
 
-- Usar sportex.codexa.uy como puesto operativo de Delta.
-- Observar el primer envio manual elegido por Fito y confirmar SENT o DELIVERED sin duplicado.
-- Fito revisa la experiencia autenticada y prueba el primer mensaje manual que elija.
+- Abrir la siguiente task focal para cronología operativa y compatibilidad pasiva del asistente.
+- Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.
