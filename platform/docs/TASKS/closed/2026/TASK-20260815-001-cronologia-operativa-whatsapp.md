@@ -5,9 +5,9 @@ owner: Codex
 requester: Fito
 estado: done
 lifecycle: closed
-work_type: feature
+work_type: operacion
 campaign: CAMP-20260803-001
-context_focus: architecture
+context_focus: operation
 development_guide_impact: none
 updated_at: 2026-08-15
 
@@ -67,6 +67,7 @@ con un asistente futuro que permanece sin camino ejecutable.
 ## evidencia
 
 - `docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md`.
+- `docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md`.
 
 ## rollback
 
@@ -82,6 +83,24 @@ con un asistente futuro que permanece sin camino ejecutable.
 - El primer envío manual real de Fito sigue siendo aceptación humana separada.
 
 ## registro_de_avances
+
+### 2026-08-15 - promoción PILOTO_DELTA autorizada
+
+- GO literal recibido para el commit remoto exacto
+  `72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e`.
+- Alcance operativo: bundle inmutable, backup/restore, migración 005 primero,
+  despliegue, smokes y observación sin enviar mensajes.
+- Rollback image-first a `sportex-staging:3c8c9da25ba1fae3`; tabla aditiva
+  conservada y `down` en un gate separado.
+
+### 2026-08-15 - promoción PILOTO_DELTA ejecutada
+
+- Guard, bundle, backup/restore, migración 005-first, RLS y smokes PASS.
+- Imagen `sportex-staging:72e0fc2a7abfdecd`, digest
+  `sha256:81d4d89919b94090881bff621d441257f561206fb1fc8c506fb525972ca4aeac`.
+- Cronología activada después del smoke apagado; cuatro muestras sanas, cero
+  errores y cero outbound nuevo durante la operación.
+- Evolution `DELTA` permanece `open`; no hubo bot, IA ejecutable ni mensajes.
 
 ### 2026-08-15 - historial de candidatos rechazados
 

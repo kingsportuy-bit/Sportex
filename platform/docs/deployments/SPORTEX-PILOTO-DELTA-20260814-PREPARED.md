@@ -100,3 +100,19 @@ solo durante la prueba y verificacion de `SENT/DELIVERED` sin duplicados.
 - Orden de rollback: volver primero a esa imagen y verificarla; conservar la
   tabla aditiva. Un eventual `down` posterior necesita otro gate y nunca toca
   mensajes, journal, outbox ni `activity_data`.
+
+## Resultado TASK-20260815-001 — cronología desplegada
+
+- Commit: `72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e`.
+- Bundle SHA256:
+  `f0cb3b492f1e71047b6b430e891e52ac083b8a41821b8c92df4ac177007f6f2f`.
+- Imagen: `sportex-staging:72e0fc2a7abfdecd`.
+- Image ID:
+  `sha256:81d4d89919b94090881bff621d441257f561206fb1fc8c506fb525972ca4aeac`.
+- Migración `20260815_005` aplicada antes de la imagen, con backup/restore y
+  RLS cross-tenant PASS.
+- Flag inicialmente `false`; activado en `true` solo tras readiness y lectura
+  de workspace PASS.
+- Runtime `1/1`, healthy, Evolution `DELTA=open`, cero mensajes enviados.
+- Rollback inmediato image-first:
+  `sportex-staging:3c8c9da25ba1fae3`; conservar tabla 005.

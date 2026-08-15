@@ -10,7 +10,7 @@ Actualizado: 2026-08-15.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `feature`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -49,18 +49,18 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 3; pendientes 1.
+- Migraciones: `MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 4; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-15`.
-- Despliegues: `PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL`; registros 7.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_3C8C9DA_VERIFIED` | Supabase=`PILOTO_DELTA_16_TABLAS_RLS_FORZADO` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_3C8C9DA_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL`; registros 8.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_17_TABLAS_RLS_FORZADO_TIMELINE_005` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_72E0FC2_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
 - Tarea: `TASK-20260815-001`.
 - Fecha: `2026-08-15`.
-- Fuente: `docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md`.
-- Gate documental posterior a 279cdf6: lifecycle y evidencia revalidados con SPORTEX_CLOSE=PASS, sin cambio de código.
+- Fuente: `docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md`.
+- Release 72e0fc2: migracion 005-first y operacion PASS sin mensajes.
 
 ## Riesgos
 
@@ -74,6 +74,6 @@ Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en men
 
 ## Siguientes acciones
 
-- Someter el commit documental exclusivo posterior a 279cdf6 a re-review antes de publicar o promover.
-- Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.
+- Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
+- Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

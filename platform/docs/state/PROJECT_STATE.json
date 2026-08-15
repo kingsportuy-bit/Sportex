@@ -13,7 +13,7 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "feature",
+  "mode": "operation",
   "objective": "Intercalar hitos operativos del Core en el chat WhatsApp sin convertirlos en mensajes y dejar compatibilidad pasiva para un asistente futuro apagado.",
   "scope": {
     "allowed": [
@@ -75,16 +75,16 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
-    "workingTreeState": "TASK-20260815-001_DOCUMENTAL_GATE_CLOSED_LOCAL",
+    "headAtLastEvidence": "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e",
+    "workingTreeState": "TASK-20260815-001_PILOTO_DELTA_RELEASE_CLOSED_LOCAL",
     "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS",
-    "lastVerifiedAt": "2026-08-14",
-    "executed": ["20260814_002", "20260814_003", "20260814_004"],
-    "pending": ["20260815_005"],
-    "note": "Backup y restore PASS para el runtime vigente; 16 tablas con RLS forzado. La migracion aditiva 005 fue ensayada localmente y requiere gate remoto separado."
+    "status": "MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS",
+    "lastVerifiedAt": "2026-08-15",
+    "executed": ["20260814_002", "20260814_003", "20260814_004", "20260815_005"],
+    "pending": [],
+    "note": "Backup 752e5266 y restore aislado PASS; 17 tablas con RLS forzado. Migracion 005 aplicada migration-first, 21 eventos proyectados y 146 mensajes preservados."
   },
   "tests": {
     "status": "PASS",
@@ -95,42 +95,42 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "note": "Cuarta correccion NO-GO: 52/52, humanizacion estructural TS/SQL, nota tecnica literal y E2E autocontenido PASS; sin efectos remotos."
+    "note": "52/52, PostgreSQL up/down/re-up, E2E local y release PILOTO_DELTA PASS; smokes OFF/ON, workspace 21 items/146 mensajes/21 eventos y cero outbound nuevo."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_3C8C9DA_FAVICON_OPERATIONAL",
+    "status": "PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL",
     "lastVerifiedAt": "2026-08-15",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45", "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9", "c375e58cfc19f894623a9a4cf8caa9a43723b395", "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf"],
-    "note": "sportex_staging_core 1/1 en 3c8c9da; health/readiness, PNG/ICO y browser productivo PASS. Evolution ingreso/outbound manual activos; rollback c375e58."
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45", "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9", "c375e58cfc19f894623a9a4cf8caa9a43723b395", "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf", "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e"],
+    "note": "Runtime 72e0fc2 1/1; cronologia y smokes PASS. Rollback image-first 3c8c9da."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_CANDIDATE_3C8C9DA_VERIFIED",
+      "status": "REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED",
       "lastVerifiedAt": "2026-08-15",
       "writeAuthorized": true,
-      "note": "Rama publicada con candidato de favicon 3c8c9da; runtime productivo coincide con el commit exacto."
+      "note": "Rama publicada con 72e0fc2; guard y bundle f0cb3b49 PASS y runtime coincide con el commit exacto."
     },
     {
       "name": "Supabase",
-      "status": "PILOTO_DELTA_16_TABLAS_RLS_FORZADO",
+      "status": "PILOTO_DELTA_17_TABLAS_RLS_FORZADO_TIMELINE_005",
       "lastVerifiedAt": "2026-08-15",
       "writeAuthorized": true,
-      "note": "Backup/restore y 002/003/004 PASS; tenant/membresia DELTA listos; legado intacto."
+      "note": "Backup/restore y 002/003/004/005 PASS; 17 tablas RLS forzado, rol app own=21/cross=0 y 146 mensajes preservados."
     },
     {
       "name": "Evolution API",
       "status": "DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON",
       "lastVerifiedAt": "2026-08-15",
       "writeAuthorized": true,
-      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; captura real presente; envio manual habilitado y cero mensajes enviados durante el corte."
+      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; DELTA open, envío manual preservado y cero outbound nuevo durante este release."
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_3C8C9DA_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_72E0FC2_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-15",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 en 3c8c9da, dominio productivo, red privada Evolution y rollback c375e58 disponible."
+      "note": "sportex_staging_core 1/1 healthy en 72e0fc2, cronologia true, dominio productivo y rollback 3c8c9da disponible."
     }
   ],
   "sensitiveData": {
@@ -140,12 +140,25 @@
   "latestEvidence": {
     "taskId": "TASK-20260815-001",
     "date": "2026-08-15",
-    "path": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "summary": "Gate documental posterior a 279cdf6: lifecycle y evidencia revalidados con SPORTEX_CLOSE=PASS, sin cambio de código.",
-    "environment": "DESARROLLO_LOCAL",
+    "path": "docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md",
+    "summary": "Release 72e0fc2: migracion 005-first y operacion PASS sin mensajes.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260815-001",
+      "summary": "Se desplego 72e0fc2 en PILOTO_DELTA con migracion 005-first, cronologia activa, RLS y observacion PASS; cero mensajes y rollback 3c8c9da listo.",
+      "documents": [
+        "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
+        "deploy/docker-stack.staging.yml",
+        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md",
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md"],
+      "decisions": ["Migration-first y rollback image-first; tabla 005 aditiva se conserva."]
+    },
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
@@ -491,9 +504,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_3C8C9DA_FAVICON_ACTIVE",
+    "status": "PILOTO_DELTA_72E0FC2_TIMELINE_ACTIVE",
     "lastEvidenceDate": "2026-08-15",
-    "note": "Runtime público 3c8c9da sano; favicon, logo transparente, continuidad WhatsApp/UI y Evolution ingreso/outbound manual preservados; rollback c375e58 listo."
+    "note": "Runtime publico 72e0fc2 sano; cronologia operativa activa, 005 aplicada, continuidad WhatsApp y Evolution open; rollback image-first 3c8c9da listo."
   },
   "productValidation": {
     "status": "LOCAL_UI_CONCEPT_ACCEPTED",
@@ -509,8 +522,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Someter el commit documental exclusivo posterior a 279cdf6 a re-review antes de publicar o promover.",
-    "Usar sportex.codexa.uy como puesto operativo de Delta y observar el primer envío manual cuando Fito lo elija.",
+    "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
+    "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ]
 }
