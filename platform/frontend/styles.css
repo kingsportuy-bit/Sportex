@@ -31,7 +31,7 @@ button { cursor: pointer; }
 .brand-lockup small { font-size: 8px; margin-top: 5px; letter-spacing: .28em; opacity: .66; }
 .brand-lockup--sportex { width: fit-content; display: grid; gap: 4px; align-items: start; }
 .sportex-logo-frame { position: relative; width: 174px; height: 25px; display: block; overflow: hidden; flex: 0 0 auto; }
-.sportex-logo { position: absolute; top: -36px; left: -29px; display: block; width: 225px; max-width: none; height: auto; mix-blend-mode: screen; }
+.sportex-logo { position: absolute; top: -36px; left: -29px; display: block; width: 225px; max-width: none; height: auto; }
 .sportex-logo-frame--login { width: 236px; height: 32px; }
 .sportex-logo-frame--login .sportex-logo { top: -50px; left: -40px; width: 307px; }
 .brand-product-label { color: #aab4ac; font: 700 8px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .28em; }

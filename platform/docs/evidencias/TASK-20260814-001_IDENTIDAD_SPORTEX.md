@@ -12,9 +12,10 @@ como nombre del negocio o tenant, pero su logo no forma parte del sistema.
 ## Implementacion
 
 - Fuente entregada por Fito: `logo-sportex.png`.
-- Copia frontend: `frontend/assets/sportex-logo.png`.
-- SHA256 coincidente:
+- Fuente original preservada: `logo-sportex.png`, SHA256
   `9b413b59d4c47d3d170cd1e119cbe6ba12f8a46de51b188d143aa7323bcf10b8`.
+- Asset transparente del frontend: `frontend/assets/sportex-logo.png`, SHA256
+  `d726c53c6537f34911e6c8be46a5a9e8d551eba4247d818c7091a2151b82b628`.
 - Login y sidebar usan el wordmark horizontal con encuadres proporcionales.
 - `frontend/assets/delta-logo.png` fue retirado.
 - No quedan referencias al asset o clases de logo Delta en el frontend.
@@ -28,6 +29,17 @@ como nombre del negocio o tenant, pero su logo no forma parte del sistema.
 - La barra lateral conserva ancho, navegacion y jerarquia existentes.
 - El logo tiene texto alternativo `SPORTEX` y no duplica una marca escrita al
   lado de la imagen.
+
+## Transparencia real
+
+- Se extrajo el fondo del raster conservando el wordmark original; la fuente
+  entregada por Fito no fue sobrescrita.
+- El asset final es PNG `1916x821`, `Format32bppArgb`.
+- Las esquinas tienen alpha `0` y el centro del wordmark alpha `255`.
+- El frontend retiro `mix-blend-mode: screen`; ya no depende del color del
+  fondo para esconder un rectangulo negro.
+- Browser local oscuro PASS: logo visible, bordes limpios y encuadre de sidebar
+  sin cambios.
 
 ## Validacion productiva
 

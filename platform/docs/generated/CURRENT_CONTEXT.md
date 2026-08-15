@@ -2,7 +2,7 @@
 
 > GENERADO. No editar manualmente.
 
-Actualizado: 2026-08-14.
+Actualizado: 2026-08-15.
 
 ## Trabajo
 
@@ -14,7 +14,7 @@ Actualizado: 2026-08-14.
 - Tarea: `TASK-20260814-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 56282/60000 caracteres.
+- Presupuesto potencial: 56933/60000 caracteres.
 
 ## Objetivo, alcance y riesgo
 

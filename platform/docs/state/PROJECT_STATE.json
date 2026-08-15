@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-14",
+  "updatedAt": "2026-08-15",
   "updatedBy": "TASK-20260814-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
@@ -32,7 +32,7 @@
     "path": "docs/TASKS/active/TASK-20260814-001-integrar-whatsapp-real-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Usar el piloto productivo con identidad SPORTEX y validar la experiencia autenticada; Delta queda solo como nombre de tenant."
+    "nextAction": "Versionar y promover el logo SPORTEX con transparencia real; Delta queda solo como nombre de tenant."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -44,7 +44,7 @@
   "campaignPlan": {
     "id": "CAMP-20260803-001",
     "stage": "ETAPA_1_CONEXION_OPERATIVA_CONTROLADA",
-    "status": "GATE_5_PRODUCTIVE_ACTIVE_SPORTEX_IDENTITY",
+    "status": "GATE_5_PRODUCTIVE_ACTIVE_TRANSPARENT_LOGO_LOCAL",
     "sources": [
       "DELTA/negocio/procesos/plan-entrega-sportex-delta-v1-operativa.md",
       "DELTA/negocio/procesos/campana-sportex-sistema-comercial-asistido.md",
@@ -82,8 +82,8 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9",
-    "workingTreeState": "TASK-20260814-001_SPORTEX_IDENTITY_PRODUCTIVE_DOCUMENTED",
-    "lastVerifiedAt": "2026-08-14"
+    "workingTreeState": "TASK-20260814-001_TRANSPARENT_LOGO_LOCAL_PENDING_COMMIT",
+    "lastVerifiedAt": "2026-08-15"
   },
   "migrations": {
     "status": "MIGRACIONES_002_003_004_APLICADAS_PILOTO_DELTA_PASS",
@@ -94,14 +94,14 @@
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-08-14",
+    "lastRunAt": "2026-08-15",
     "commands": [
       "npm run validate-docs",
       "npm run validate",
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
-    "note": "Identidad SPORTEX: typecheck, 44/44, build, SQL, docs y browser PASS; runtime productivo a7ceb9b verificado."
+    "note": "Logo transparente local: PNG ARGB, alpha validado y browser oscuro PASS; runtime productivo permanece en a7ceb9b hasta promocion."
   },
   "deployments": {
     "status": "PILOTO_DELTA_A7CEB9B_SPORTEX_IDENTITY_OPERATIONAL",
@@ -145,13 +145,25 @@
   },
   "latestEvidence": {
     "taskId": "TASK-20260814-001",
-    "date": "2026-08-14",
+    "date": "2026-08-15",
     "path": "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md",
-    "summary": "Identidad SPORTEX desplegada y verificada en el piloto productivo; Delta permanece solo como tenant y su logo fue retirado.",
+    "summary": "Logo SPORTEX con transparencia real validado localmente; la fuente original queda intacta y el piloto permanece en a7ceb9b hasta promocion.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se retiro el fondo del logo SPORTEX como alpha real y se elimino la dependencia de mix-blend-mode, sin alterar la fuente original.",
+      "documents": [
+        "frontend/assets/sportex-logo.png",
+        "frontend/styles.css",
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"],
+      "decisions": ["SPORTEX conserva una unica marca visual con asset transparente independiente del fondo."]
+    },
     {
       "date": "2026-08-14",
       "taskId": "TASK-20260814-001",

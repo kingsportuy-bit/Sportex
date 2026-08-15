@@ -9,7 +9,7 @@ work_type: feature
 campaign: CAMP-20260803-001
 context_focus: architecture
 development_guide_impact: none
-updated_at: 2026-08-14
+updated_at: 2026-08-15
 
 ## objetivo
 
@@ -400,3 +400,15 @@ DELTA define reglas y valida negocio.
   tenant operativo. No hubo migraciones, cambios de datos ni mensajes.
 - Rollback inmediato: `sportex-staging:1cc2c96fe8f8e0f`.
 - Evidencia: `docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md`.
+
+### 2026-08-15 - logo SPORTEX con transparencia real
+
+- Fito pidio retirar el fondo del logo. La fuente original quedo intacta y el
+  asset servido se reemplazo por un PNG ARGB con alpha real.
+- Se retiro `mix-blend-mode: screen`; la marca ya no depende de un truco CSS
+  ligado al fondo oscuro.
+- Validacion de imagen: `1916x821`, esquina alpha `0`, centro alpha `255` y
+  SHA256 `d726c53c6537f34911e6c8be46a5a9e8d551eba4247d818c7091a2151b82b628`.
+- Browser local oscuro PASS: logo visible, limpio y con el mismo encuadre.
+- Pendiente: versionar el candidato exacto y promoverlo a `PILOTO_DELTA` con
+  rollback al runtime `a7ceb9b`.
