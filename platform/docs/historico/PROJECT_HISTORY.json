@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "project": "SPORTEX",
+  "entries": [
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260815-001",
+      "summary": "Se ejecuto el gate documental posterior a 279cdf6 con cierre PASS y sin cambio de código ni acción remota.",
+      "documents": [
+        "core/src/domain/commercial-timeline.ts",
+        "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
+        "core/src/adapters/persistence/postgres-commercial-replay-store.ts",
+        "scripts/rehearse-conversation-timeline-postgres.mjs",
+        "scripts/run-e2e-conversation-timeline.mjs",
+        "scripts/e2e-conversation-timeline-browser.mjs",
+        "frontend/app.js",
+        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md",
+        "docs/evidencias/TASK-20260815-001_POSTGRES_TRANSCRIPT.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-011"
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerró honestamente la integración WhatsApp de Delta: canal, persistencia, reconciliación, polling y outbound manual están desplegados; el primer envío humano permanece pendiente.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_CIERRE_PUESTO_OPERATIVO.md"
+      ],
+      "decisions": [
+        "Una aceptación manual pendiente no autoriza inventar un envío ni mantener indefinidamente abierta una task técnicamente cumplida."
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se desplego el favicon SPORTEX con la S exacta del wordmark en verde #DCFF52; runtime 3c8c9da, PNG/ICO, health y browser productivo PASS.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/assets/sportex-favicon.png",
+        "frontend/favicon.ico",
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "decisions": [
+        "El favicon reutiliza la S exacta de SPORTEX y el verde oficial #DCFF52; rollback inmediato c375e58."
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se retiro el fondo del logo SPORTEX como alpha real, se elimino mix-blend-mode y se desplego el piloto productivo c375e58 sin alterar la fuente original.",
+      "documents": [
+        "frontend/assets/sportex-logo.png",
+        "frontend/styles.css",
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "decisions": [
+        "SPORTEX conserva una unica marca visual con asset transparente independiente del fondo."
+      ]
+    },
+    {
+      "date": "2026-08-15",
+      "taskId": "TASK-20260815-001",
+      "summary": "Se desplego 72e0fc2 en PILOTO_DELTA con migracion 005-first, cronologia activa, RLS y observacion PASS; cero mensajes y rollback 3c8c9da listo.",
+      "documents": [
+        "core/db/migrations/staging/20260815_005_conversation_timeline.up.sql",
+        "deploy/docker-stack.staging.yml",
+        "docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md",
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260815-001_PILOTO_DELTA_RELEASE.md"
+      ],
+      "decisions": [
+        "Migration-first y rollback image-first; tabla 005 aditiva se conserva."
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se reemplazo y desplego el logo Delta por el wordmark SPORTEX en login/sidebar; el asset Delta fue retirado y el piloto productivo quedo verificado en a7ceb9b.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/assets/sportex-logo.png",
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_IDENTIDAD_SPORTEX.md"
+      ],
+      "decisions": [
+        "SPORTEX es la unica marca visual; Delta Sport es solamente el tenant operativo."
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se promovio 1cc2c96 directamente al piloto productivo con continuidad WhatsApp, correcciones de formularios y paleta, sin migraciones ni mensajes.",
+      "documents": [
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md",
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI_PROD.md"
+      ],
+      "decisions": [
+        "SPORTEX opera temporalmente con validacion production-first durante PILOTO_DELTA."
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se completo localmente la continuidad visible de mensajes Evolution/Sportex, el refresco del chat y las correcciones de formularios, login y paleta.",
+      "documents": [
+        "core/src/application/real-whatsapp-outbound-service.ts",
+        "frontend/app.js",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_CONTINUIDAD_WHATSAPP_UI.md"
+      ],
+      "decisions": [
+        "Continuidad operativa solicitada por Fito dentro de TASK-20260814-001."
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se desplego el piloto pasivo, se migraron 002/003/004 con restore probado y se contuvo la incompatibilidad real de receipts en un hotfix separado.",
+      "documents": [
+        "core/src/adapters/evolution/evolution-webhook-adapter.ts",
+        "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md",
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_GATE_5_CAPTURA_PASIVA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se preparo el candidato de integracion Evolution real y se reconcilio el runtime remoto en solo lectura, sin desplegar ni enviar mensajes.",
+      "documents": [
+        "core/src/adapters/evolution/evolution-webhook-adapter.ts",
+        "core/src/http/evolution-webhook-routes.ts",
+        "frontend/app.js",
+        "deploy/docker-stack.staging.yml",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerro Gate 3B con el handoff Core-gobernado de Pedido creado a Listo para produccion, UI integrada y migracion 004 reversible.",
+      "documents": [
+        "core/src/application/core-service.ts",
+        "core/src/application/commercial-replay-service.ts",
+        "frontend/app.js",
+        "core/db/migrations/staging/20260814_004_production_release.up.sql",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "El compositor WhatsApp local envia por el outbox y transporte falsos, proyecta la salida en el mismo hilo y permanece usable con Detalles abierto.",
+      "documents": [
+        "core/src/application/local-whatsapp-simulation-service.ts",
+        "frontend/app.js",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se integró de forma idempotente la seña validada con Cliente, Pago y Pedido y se habilitó la acción dentro de Detalles de WhatsApp.",
+      "documents": [
+        "core/src/application/commercial-replay-service.ts",
+        "frontend/app.js",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260814-001",
+      "summary": "Se cerró el corte visual WhatsApp-first y se abrió la integración real con inventario reutilizar/adaptar/falta y gates locales/remotos.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260814-001_INVENTARIO_Y_PLAN.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-010"
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se compactaron las viñetas verticales y se amplió Detalles a 440px en desktop y pantalla completa sobre el chat en mobile.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "frontend/README.md",
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/biblioteca/superficies/web/README.md",
+        "docs/biblioteca/modulos/procesos/README.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-009"
+      ]
+    },
+    {
+      "date": "2026-08-13",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se implementó WhatsApp como superficie local separada y se corrigió a un concepto de mensajería primero, sin CRM permanente dentro del chat.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_WHATSAPP_PUESTO_OPERATIVO_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-009"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-005",
+      "summary": "Se registro la no aprobacion de Etapa 0 y se reconcilio DELTA-DEC-012 con un wireframe de tableros, detalles y relaciones.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-005-redisenar-experiencia-comercial-hoy.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/ROADMAP.md",
+        "docs/DECISIONES.md",
+        "docs/biblioteca/superficies/web/README.md",
+        "docs/evidencias/TASK-20260803-005_DELTA_DEC_012_WIREFRAME.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-005_DELTA_DEC_012_WIREFRAME.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-006",
+        "SPORTEX-DEC-008"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-004",
+      "summary": "Se construyo y valido una demo CRM comercial local con 18 fixtures, persistencia JSON, comandos Core, reset y QA responsive.",
+      "documents": [
+        "core/src/application/commercial-replay-service.ts",
+        "core/src/fixtures/commercial-demo-seed.ts",
+        "core/tests/commercial-replay.test.ts",
+        "frontend/app.js",
+        "docs/TASKS/closed/2026/TASK-20260803-004-demo-crm-comercial-local.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260803-004_DEMO_CRM_COMERCIAL_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-004_DEMO_CRM_COMERCIAL_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-005"
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-003",
+      "summary": "Se reconciliaron PROJECT_STATE y sus vistas con el commit remoto 66c4aad sin cambiar funcionalidad.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-003-reconciliar-push-remoto.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260803-003_PUSH_REMOTO_RECONCILIADO.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-003_PUSH_REMOTO_RECONCILIADO.md"
+      ],
+      "decisions": [
+        "Hecho Git verificado; no se agrega una decision durable."
+      ]
+    },
+    {
+      "date": "2026-08-03",
+      "taskId": "TASK-20260803-002",
+      "summary": "Se auditaron, validaron y prepararon para un commit local unico los cambios del OS y la primera vertical, sin push.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-002-versionar-os-y-primera-vertical.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-002_VERSIONADO_LOCAL.md"
+      ],
+      "decisions": [
+        "Commit local unico permitido; push retenido hasta autorizacion explicita."
+      ]
+    },
+    {
+      "date": "2026-08-02",
+      "taskId": "TASK-20260803-001",
+      "summary": "Se entrego y valido la primera vertical comercial local desde un evento ficticio de Evolution hasta etapa y proxima accion visibles.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260803-001-primera-vertical-comercial-local.md",
+        "docs/state/PROJECT_STATE.json",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260803-001_PRIMERA_VERTICAL_COMERCIAL_LOCAL.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260803-001_PRIMERA_VERTICAL_COMERCIAL_LOCAL.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-004"
+      ]
+    }
+  ],
+  "updatedAt": "2026-08-16"
+}

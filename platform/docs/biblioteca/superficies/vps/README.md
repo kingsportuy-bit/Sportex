@@ -19,4 +19,6 @@ Alojar servicios SPORTEX aislados dentro del VPS compartido con BARBEROX.
 
 ## Estado
 
-LEGADO_OPERATIVO_NO_CERTIFICADO. NUEVO_CORE_SIN_DEPLOY.
+`CERTIFICADO_PILOTO`. `sportex_staging_core` opera 1/1 healthy con imagen
+inmutable `c6b3b5b`; dominio y smokes publicos pasaron. La apertura comercial
+sigue bloqueada y el runtime debe revalidarse antes de cualquier operacion.

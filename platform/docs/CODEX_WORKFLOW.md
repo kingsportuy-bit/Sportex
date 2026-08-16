@@ -34,17 +34,21 @@ permiso operativo.
 Actualizar estado, tarea y evidencia antes de perder contexto. Tras una
 compactacion, releer las fuentes generadas; no continuar solo desde memoria.
 
+El preflight de errores usa ranking OR por defecto. `-Match All` queda
+disponible para reproducir la busqueda estricta anterior.
+
 ## Cierre
 
 El cierre debe incluir resultado, archivos, pruebas, evidencia, deuda restante,
 estado Git y siguiente paso. Ejecutar:
 
 ```powershell
-npm run workflow:close -- TASK-AAAAMMDD-NNN
+npm run workflow:close -- TASK-AAAAMMDD-NNN --profile=auto
 ```
 
-El comando regenera vistas, valida documentacion, workflow, tipos, tests, SQL,
-build, pendientes y evidencia. Solamente `SPORTEX_CLOSE=PASS` habilita declarar
-el checkpoint terminado. No ejecuta deploys ni autoriza operaciones remotas.
+El comando infiere `docs`, `local` o `pilot-release`, regenera vistas y ejecuta
+la suite proporcional. Puede escalar el perfil por archivos/tipo de tarea, pero
+nunca reducirlo. Solamente `SPORTEX_CLOSE=PASS` habilita declarar el checkpoint
+terminado. No ejecuta deploys ni autoriza operaciones remotas.
 
 Para una consulta sin cambios se usa `npm run workflow:check`.

@@ -19,6 +19,9 @@ const watched = [
   /^scripts\/sportex-workflow\.(mjs|ps1)$/u,
   /^scripts\/tests\/sportex-workflow\.test\.mjs$/u,
   /^scripts\/(release-governance-guard|new-release-bundle)\.ps1$/u,
+  /^scripts\/(library-context|error-search)\.mjs$/u,
+  /^scripts\/documentation\/compact-project-history\.mjs$/u,
+  /^scripts\/codex-preflight-errors\.ps1$/u,
 ];
 const affectsGuide = (file) => watched.some((pattern) => pattern.test(file.replaceAll('\\', '/')));
 

@@ -10,7 +10,7 @@ Actualizado: 2026-08-16.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `guidance`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-08-16.
 
 ## Objetivo actual
 
-Mantener estable el PILOTO_DELTA con imagenes y no leidos activos, sin mensajes de prueba no autorizados.
+Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes reales no autorizados.
 
 ## Alcance actual
 
-- Permitido: Crear candidato exacto, backup/restore, migrar 006, activar flags/Base64 y desplegar. | Verificar runtime, RLS, UI y cero mensajes/outbound nuevos.
-- Prohibido: No enviar mensajes reales ni tocar otros tenants, servicios, Meta o PRODUCCION_COMERCIAL.
+- Permitido: Observar la salud y continuidad documental del piloto en solo lectura. | Preparar tareas locales separadas para mejoras futuras.
+- Prohibido: No enviar mensajes reales ni mutar PILOTO_DELTA sin otra task y GO exacto.
 
 ## Decisiones vigentes
 
@@ -57,10 +57,10 @@ Mantener estable el PILOTO_DELTA con imagenes y no leidos activos, sin mensajes 
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260816-003`.
+- Tarea: `TASK-20260816-004`.
 - Fecha: `2026-08-16`.
-- Fuente: `docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md`.
-- Release y QA autenticada PASS en PILOTO_DELTA; media/unread activos y cero mensajes enviados.
+- Fuente: `docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md`.
+- Contexto guidance reducido 50,9 %, estado vivo 53,1 % al cierre y selectores/perfiles validados sin tocar runtime.
 
 ## Riesgos
 

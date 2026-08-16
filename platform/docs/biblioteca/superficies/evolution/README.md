@@ -27,7 +27,7 @@ Eventos normalizados, identificadores del proveedor y resultados verificables.
 
 ## Estado
 
-PIPELINE_SIMULADO_DURABLE_VALIDADO_LOCAL. Existen normalización, journal,
-worker, backfill, cuarentena, outbox y receipts con transporte falso. El
-adaptador real permanece `NO_INICIADO`; no hay webhook, sesión, consulta ni
-envío autorizado.
+`CERTIFICADO_PILOTO`. La instancia Delta esta abierta; el webhook privado
+procesa `MESSAGES_UPSERT/UPDATE`, el transporte manual se conserva y Base64
+esta habilitado para media sobre `c6b3b5b`. Esto no autoriza mensajes nuevos ni
+un asistente autonomo.

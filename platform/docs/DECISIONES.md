@@ -12,9 +12,9 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 
 - Fecha: 2026-08-02
 - Estado: `VIGENTE`
-- Decision: un checkpoint material exige tarea, estado, decision, evidencia,
-  pendientes y validacion local completa de documentacion, tipos, tests, SQL y
-  build antes de emitir `SPORTEX_CLOSE=PASS`.
+- Decision: un checkpoint material exige tarea, estado, decision, evidencia y
+  pendientes. La suite se elige entre `docs`, `local` y `pilot-release` segun
+  tipo de tarea y archivos; puede escalar, nunca degradar el riesgo inferido.
 - Motivo: un proyecto de software necesita probar tanto la continuidad
   documental como la ausencia de regresiones de codigo.
 - Impacto: un PASS local no certifica runtime ni concede permiso de migracion,
@@ -107,3 +107,12 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - 2026-08-16 · `VIGENTE`. WhatsApp define jerarquía, superficies y estados de
   toda la aplicación mediante tokens claro/noche con contraste estable.
 - SPORTEX y `#DCFF52` se conservan como marca y señal.
+
+## SPORTEX-DEC-013 - Contexto compacto y selectores focales
+
+- 2026-08-16 · `VIGENTE`. El estado vivo conserva como maximo cinco cambios;
+  el historial restante vive en `docs/historico/PROJECT_HISTORY.json`.
+- Biblioteca y errores se consultan con ranking OR y top acotado; una falta de
+  coincidencia se explicita y no amplia silenciosamente el contexto.
+- El router informa caracteres y tokens estimados. Ninguna optimizacion reduce
+  gates de PILOTO_DELTA ni agrega una ronda de STAGING.

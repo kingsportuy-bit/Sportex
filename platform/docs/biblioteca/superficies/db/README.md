@@ -15,4 +15,6 @@ Persistir datos de módulos con integridad, transacciones y aislamiento multiten
 
 ## Estado
 
-IMPLEMENTADO_NO_VALIDADO. Migración `sportex_staging_*` validada estáticamente; no ejecutada en Supabase.
+`CERTIFICADO_PILOTO`. Migraciones `002` a `006` aplicadas; 19 tablas declaradas
+con RLS forzado y cruce tenant cero en la ultima evidencia. El nombre tecnico
+`staging` es legado y no crea un entorno separado.

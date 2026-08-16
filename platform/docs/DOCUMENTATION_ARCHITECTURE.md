@@ -11,6 +11,8 @@ retomar SPORTEX sin reconstruir decisiones desde conversaciones sueltas.
 - `docs/state/DOCUMENT_REGISTRY.json`: clasificacion, autoridad y router.
 - `docs/DECISIONES.md`: decisiones tecnicas durables y reemplazos.
 - `docs/TASKS/{active,queued,closed}`: contratos de trabajo.
+- `docs/historico/PROJECT_HISTORY.json`: checkpoints anteriores retirados del
+  estado vivo; no gobierna trabajo nuevo.
 - `docs/SESSION_STATE.md`, `docs/TASKS/INDEX.md` y
   `docs/generated/CURRENT_CONTEXT.md`, `docs/state/CAMPAIGN_STATE.json` y
   `docs/errors/index.json`: vistas generadas; no se editan.
@@ -75,4 +77,6 @@ La documentacion esta sana cuando:
 
 El router carga solo documentos relevantes. Los presupuestos viven en
 `state/DOCUMENT_REGISTRY.json`; ampliarlos requiere una tarea documental y una
-justificacion. Historia y tareas cerradas se consultan de forma focal.
+justificacion. Reporta caracteres y tokens estimados; la estimacion usa cuatro
+caracteres por token y no se presenta como consumo real. Historia y tareas
+cerradas se consultan de forma focal.

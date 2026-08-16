@@ -58,6 +58,10 @@ cambio puede tocar varias piezas, pero cada responsabilidad conserva un owner.
 Todo modulo documenta responsabilidad, permisos, entrada, salida, persistencia,
 auditoria, efectos, workers, tests, evidencia, rollback y estado.
 
+`npm run context:library -- 5 "<consulta>"` resuelve de tres a cinco
+fichas por coincidencia OR y ranking. Si no encuentra una coincidencia lo dice
+sin ampliar silenciosamente a toda la Biblioteca.
+
 ## Calidad y cierre
 
 La validacion es proporcional: docs revisa vistas; fix reproduce; feature prueba
@@ -74,7 +78,15 @@ npm run workflow:close -- TASK-AAAAMMDD-NNN
 ```
 
 `SPORTEX_CLOSE=PASS` exige tarea/estado, evidencia, decisiones, migraciones,
-pruebas, despliegues, integraciones, pendientes y `npm run validate`.
+pruebas, despliegues, integraciones y pendientes. `--profile=auto` elige:
+
+- `docs`: anti-NUL, tests del workflow y documentacion fast;
+- `local`: validacion completa de tipos, tests, SQL y build;
+- `pilot-release`: la misma validacion completa y los contratos de release.
+
+Cambios en migraciones, deploy o release escalan a `pilot-release`; nunca se
+puede solicitar un perfil inferior. El perfil no sustituye commit remoto, GO,
+backup/rollback, smokes ni observacion de PILOTO_DELTA.
 
 Una consulta read-only cierra con `npm run workflow:check`. Ninguno de estos
 comandos concede permisos de runtime.
@@ -87,6 +99,10 @@ Biblioteca, release, deploy, evidencia o guards, declara
 
 `scripts/validate-development-guide-sync.mjs` bloquea divergencias. Los detalles
 viven en sus documentos owner; esta guia explica el mapa y no los duplica.
+
+El estado vivo conserva hasta cinco checkpoints. El resto vive en
+`docs/historico/PROJECT_HISTORY.json` y se mueve de forma idempotente con
+`npm run history:compact`.
 
 ## Glosario simple
 

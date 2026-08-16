@@ -181,6 +181,8 @@ Actualizado: ${state.updatedAt}.
 - Worktree: \`${state.git.worktree}\`.
 - Rama: \`${state.git.branch}\`.
 - Presupuesto potencial: ${potentialChars}/${budget} caracteres.
+- Tokens estimados: ${Math.ceil(potentialChars / 4)} (aproximacion de 4 caracteres por token).
+- Documentos unicos: ${uniqueSelected.length}.
 
 ## Objetivo, alcance y riesgo
 
@@ -188,7 +190,7 @@ Actualizado: ${state.updatedAt}.
 - Permitido: ${state.scope.allowed.join(' | ')}
 - Prohibido: ${state.scope.prohibited.join(' | ')}
 - Riesgos: ${state.risks.join(' | ')}
-- Proxima accion: ${state.nextActions[0]}
+- Proxima accion: ${state.currentTask?.nextAction || state.nextActions[0]}
 
 ## Regla de uso
 

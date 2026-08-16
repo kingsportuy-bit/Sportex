@@ -13,6 +13,10 @@
   `errors/index.json`.
 - Validadores: estructura, tareas, guia, links, encoding y contexto.
 - Tests propios: `scripts/tests/sportex-workflow.test.mjs`.
+- Historial compacto: `historico/PROJECT_HISTORY.json`; el estado vivo conserva
+  como maximo cinco checkpoints y se compacta con `npm run history:compact`.
+- Selectores focales: `scripts/library-context.mjs` y
+  `scripts/error-search.mjs`.
 
 ## Regla de escritura
 
@@ -25,6 +29,9 @@ alcance, entornos permitidos, rama/worktree, migraciones, pruebas, despliegues,
 integraciones externas, politica de datos sensibles, ultima evidencia, riesgos,
 pendientes y proxima accion. No guarda secretos ni reemplaza una observacion
 actual del runtime.
+
+El historial completo no se duplica en el estado vivo. `recentChanges` conserva
+hasta cinco checkpoints y `history` enlaza el archivo historico versionado.
 
 ## Regla de continuidad
 
@@ -51,8 +58,10 @@ es un atajo: requiere justificar por que no puede resolverse la duplicacion.
 ```powershell
 npm run context -- documentation
 npm run workflow:check
+npm run context:library -- 5 "whatsapp"
+npm run errors:preflight -- "guidance workflow"
 npm run workflow:sync
-npm run workflow:close -- TASK-AAAAMMDD-NNN
+npm run workflow:close -- TASK-AAAAMMDD-NNN --profile=auto
 ```
 
 Los marcadores esperados son `SPORTEX_CONTEXT=PASS`, `SPORTEX_CHECK=PASS`,

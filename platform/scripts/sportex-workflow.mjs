@@ -17,6 +17,8 @@ const allowedIntents = new Set([
   'operation', 'incident', 'product', 'quality', 'library', 'deploy',
   'runtime', 'tasks',
 ]);
+const validationProfiles = ['docs', 'local', 'pilot-release'];
+const profileRank = new Map(validationProfiles.map((profile, index) => [profile, index]));
 
 function normalize(value) {
   return String(value || '').replaceAll('\\', '/').replace(/\/$/u, '');
@@ -123,7 +125,35 @@ export function contextDocuments(root, state, intent) {
     return total + (fs.existsSync(file) ? readText(file).length : 0);
   }, 0);
   if (chars > budget) throw new Error(`presupuesto de contexto excedido para ${intent}: ${chars}/${budget}`);
-  return { documents: unique, chars, budget };
+  return {
+    documents: unique,
+    chars,
+    budget,
+    estimatedTokens: estimateTokens(chars),
+    duplicateReferences: selected.length - unique.length,
+  };
+}
+
+export function estimateTokens(chars) {
+  return Math.ceil(Number(chars || 0) / 4);
+}
+
+export function inferValidationProfile(task, changedPaths = []) {
+  const normalized = changedPaths.map((value) => normalize(value).replace(/^platform\//u, ''));
+  const pilotSensitive = normalized.some((file) => /^(deploy\/|core\/db\/migrations\/|Dockerfile$)|(^|\/)(release|deploy)-.*\.(ps1|mjs|sh)$|(^|\/)\.env/u.test(file));
+  if (pilotSensitive || task?.workType === 'operacion') return 'pilot-release';
+  const localCode = normalized.some((file) => /^(core\/(src|tests)\/|frontend\/)/u.test(file));
+  if (localCode || ['feature', 'fix'].includes(task?.workType)) return 'local';
+  return 'docs';
+}
+
+export function resolveValidationProfile(requested, inferred) {
+  const selected = requested === 'auto' || !requested ? inferred : requested;
+  if (!profileRank.has(selected)) throw new Error(`perfil de validacion desconocido: ${selected}`);
+  if (profileRank.get(selected) < profileRank.get(inferred)) {
+    throw new Error(`perfil ${selected} no puede degradar el riesgo inferido ${inferred}`);
+  }
+  return selected;
 }
 
 export function validateProject(root, { checkGenerated = true, checkGit = true } = {}) {
@@ -165,6 +195,22 @@ export function validateProject(root, { checkGenerated = true, checkGit = true }
   requireArray(state.nextActions, 'PROJECT_STATE.nextActions', failures);
   requireArray(state.decisionRefs, 'PROJECT_STATE.decisionRefs', failures);
   requireArray(state.recentChanges, 'PROJECT_STATE.recentChanges', failures);
+  if ((state.recentChanges || []).length > 5) failures.push('PROJECT_STATE.recentChanges excede 5; ejecutar npm run history:compact');
+  if (!state.history?.path || !Number.isInteger(state.history?.archivedChanges)) {
+    failures.push('PROJECT_STATE.history incompleto');
+  } else {
+    validatePath(root, state.history.path, 'PROJECT_STATE.history.path', failures);
+    try {
+      const history = readJson(absolute(root, state.history.path));
+      if (history.schemaVersion !== 1 || history.project !== 'SPORTEX' || !Array.isArray(history.entries)) {
+        failures.push('PROJECT_HISTORY: identidad, schema o entries invalidos');
+      } else if (history.entries.length !== state.history.archivedChanges) {
+        failures.push('PROJECT_HISTORY: cantidad no coincide con PROJECT_STATE.history.archivedChanges');
+      }
+    } catch (error) {
+      failures.push(error.message);
+    }
+  }
 
   const active = tasks.filter((task) => task.lifecycle === 'active');
   if (active.length > 1) failures.push(`hay ${active.length} tareas activas; maximo 1`);
@@ -262,7 +308,7 @@ export function validateProject(root, { checkGenerated = true, checkGit = true }
   return { failures: [...new Set(failures)], state, tasks };
 }
 
-export function validateClosure(state, task, root) {
+export function validateClosure(state, task, root, profile = 'local') {
   const failures = [];
   const latest = state.recentChanges?.[0];
   if (state.updatedBy !== task.id) failures.push(`PROJECT_STATE.updatedBy debe ser ${task.id}`);
@@ -271,8 +317,9 @@ export function validateClosure(state, task, root) {
   if (latest && latest.date !== task.updatedAt) failures.push(`${task.id}: fecha de recentChanges no coincide con updated_at`);
   if (state.latestEvidence?.taskId !== task.id) failures.push(`latestEvidence debe corresponder a ${task.id}`);
   if (state.latestEvidence?.path) validatePath(root, state.latestEvidence.path, 'latestEvidence', failures);
-  if (!state.tests?.commands?.includes('npm run validate') || state.tests.status !== 'PASS') {
-    failures.push('PROJECT_STATE.tests debe registrar npm run validate en PASS');
+  const expectedValidation = profile === 'docs' ? 'npm run validate:docs' : 'npm run validate';
+  if (!state.tests?.commands?.includes(expectedValidation) || state.tests.status !== 'PASS') {
+    failures.push(`PROJECT_STATE.tests debe registrar ${expectedValidation} en PASS`);
   }
   if (!state.nextActions?.length) failures.push('PROJECT_STATE.nextActions debe registrar pendientes o proxima accion');
   for (const section of ['## registro_de_avances', '## decisiones', '## deuda_restante']) {
@@ -285,19 +332,32 @@ export function validateClosure(state, task, root) {
 }
 
 export function npmValidateInvocation(platform = process.platform) {
+  return npmRunInvocation('validate', platform);
+}
+
+export function npmRunInvocation(script, platform = process.platform) {
   if (platform === 'win32') {
     return {
       file: process.env.ComSpec || 'cmd.exe',
-      args: ['/d', '/s', '/c', 'npm.cmd run validate'],
+      args: ['/d', '/s', '/c', `npm.cmd run ${script}`],
     };
   }
-  return { file: 'npm', args: ['run', 'validate'] };
+  return { file: 'npm', args: ['run', script] };
+}
+
+function changedProjectPaths(root) {
+  const lines = git(root, 'status', '--porcelain', '--', '.').split(/\r?\n/u).filter(Boolean);
+  return lines.map((line) => line.slice(3).trim().replaceAll('\\', '/'));
 }
 
 function printFailures(failures) {
   console.error('SPORTEX_WORKFLOW=FAIL');
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
+}
+
+function nextAction(state) {
+  return state.currentTask?.nextAction || state.nextActions[0];
 }
 
 export function parseWorkflowArgs(argv) {
@@ -310,6 +370,7 @@ export function parseWorkflowArgs(argv) {
       || 'guidance',
     task: argv.find((value) => value.startsWith('--task='))?.slice(7)
       || (action === 'close' ? positional[1] : null),
+    profile: argv.find((value) => value.startsWith('--profile='))?.slice(10) || 'auto',
     root: path.resolve(argv.find((value) => value.startsWith('--root='))?.slice(7) || defaultRoot),
   };
 }
@@ -333,10 +394,17 @@ function main() {
     const result = validateProject(args.root, { checkGenerated: true, checkGit: true });
     if (result.failures.length) return printFailures(result.failures);
     if (args.action === 'check') {
+      const task = result.state.currentTask
+        ? result.tasks.find((item) => item.id === result.state.currentTask.id)
+        : null;
+      let profile;
+      try { profile = resolveValidationProfile(args.profile, inferValidationProfile(task, changedProjectPaths(args.root))); }
+      catch (error) { return printFailures([error.message]); }
       console.log('SPORTEX_CHECK=PASS');
+      console.log(`VALIDATION_PROFILE=${profile}`);
       console.log(`ACTIVE_CAMPAIGN=${result.state.activeCampaign?.id || 'none'}`);
       console.log(`ACTIVE_TASK=${result.state.currentTask?.id || 'none'}`);
-      console.log(`NEXT_ACTION=${result.state.nextActions[0]}`);
+      console.log(`NEXT_ACTION=${nextAction(result.state)}`);
       return;
     }
     let selected;
@@ -354,8 +422,11 @@ function main() {
     console.log(`WORKTREE=${result.state.git.worktree}`);
     console.log(`BRANCH=${result.state.git.branch}`);
     console.log(`RISKS=${result.state.risks.join(' | ')}`);
-    console.log(`NEXT_ACTION=${result.state.nextActions[0]}`);
+    console.log(`NEXT_ACTION=${nextAction(result.state)}`);
     console.log(`CONTEXT_BUDGET=${selected.chars}/${selected.budget}`);
+    console.log(`CONTEXT_FILES=${selected.documents.length}`);
+    console.log(`CONTEXT_DUPLICATE_REFERENCES=${selected.duplicateReferences}`);
+    console.log(`CONTEXT_ESTIMATED_TOKENS=${selected.estimatedTokens}`);
     console.log('READ:');
     for (const document of selected.documents) console.log(`- ${document.path}`);
     return;
@@ -367,11 +438,14 @@ function main() {
     if (before.failures.length) return printFailures(before.failures);
     const task = before.tasks.find((item) => item.id === args.task);
     if (!task) return printFailures([`no existe ${args.task}`]);
-    const closureFailures = validateClosure(before.state, task, args.root);
+    let profile;
+    try { profile = resolveValidationProfile(args.profile, inferValidationProfile(task, changedProjectPaths(args.root))); }
+    catch (error) { return printFailures([error.message]); }
+    const closureFailures = validateClosure(before.state, task, args.root, profile);
     if (closureFailures.length) return printFailures(closureFailures);
     try {
       runNode(args.root, 'scripts/documentation/generate-documentation-views.mjs');
-      const npm = npmValidateInvocation();
+      const npm = npmRunInvocation(profile === 'docs' ? 'validate:docs' : 'validate');
       execFileSync(npm.file, npm.args, { cwd: args.root, stdio: 'inherit' });
       git(args.root, 'diff', '--check');
     } catch (error) {
@@ -380,10 +454,11 @@ function main() {
     const after = validateProject(args.root, { checkGenerated: true, checkGit: true });
     if (after.failures.length) return printFailures(after.failures);
     console.log('SPORTEX_CLOSE=PASS');
+    console.log(`VALIDATION_PROFILE=${profile}`);
     console.log(`RECORDED_TASK=${args.task}`);
     console.log(`ACTIVE_CAMPAIGN=${after.state.activeCampaign?.id || 'none'}`);
     console.log(`ACTIVE_TASK=${after.state.currentTask?.id || 'none'}`);
-    console.log(`NEXT_ACTION=${after.state.nextActions[0]}`);
+    console.log(`NEXT_ACTION=${nextAction(after.state)}`);
     return;
   }
 

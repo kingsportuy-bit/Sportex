@@ -14,6 +14,16 @@ Todas las fichas heredan `MODULE_COMMON_CONTRACT.md`.
 4. Leer su ficha y contratos vinculados.
 5. Actualizar la ficha si cambia responsabilidad, entrada, salida, persistencia, permisos, efectos, pruebas o evidencia.
 
+La seleccion focal se puede resolver sin cargar toda la Biblioteca:
+
+```powershell
+npm run context:library -- 5 "whatsapp imagenes no leidos"
+```
+
+El comando usa coincidencias OR con ranking, devuelve entre tres y cinco
+resultados como maximo y explicita `NO_FOCAL_MATCH` si no encuentra una ficha.
+No sustituye los contratos rectores ni demuestra estado de runtime.
+
 ## Capas
 
 - `capas/L1_ENTRADAS.md`;

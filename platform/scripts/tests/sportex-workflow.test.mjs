@@ -6,9 +6,12 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import {
   contextDocuments,
+  estimateTokens,
+  inferValidationProfile,
   npmValidateInvocation,
   parseWorkflowArgs,
   parseTaskText,
+  resolveValidationProfile,
   validateClosure,
   validateProject,
 } from '../sportex-workflow.mjs';
@@ -119,10 +122,12 @@ x
       date: '2026-08-02', taskId: 'TASK-20260802-999', summary: 'Fixture.',
       documents: [taskPath], evidence: [evidencePath], decisions: ['SPORTEX-DEC-999'],
     }],
+    history: { path: 'docs/historico/PROJECT_HISTORY.json', archivedChanges: 0, throughDate: null },
     blockers: [],
     risks: ['Fixture stale.'],
     nextActions: ['Cerrar fixture.'],
   };
+  write(root, 'docs/historico/PROJECT_HISTORY.json', `${JSON.stringify({ schemaVersion: 1, project: 'SPORTEX', entries: [] }, null, 2)}\n`);
   write(root, 'docs/state/PROJECT_STATE.json', `${JSON.stringify(state, null, 2)}\n`);
   return { root, state, taskPath, taskText };
 }
@@ -140,6 +145,16 @@ test('acepta el TASK-ID posicional del comando npm de cierre', () => {
   assert.equal(args.action, 'close');
   assert.equal(args.task, 'TASK-20260802-999');
   assert.equal(args.intent, 'guidance');
+  assert.equal(args.profile, 'auto');
+});
+
+test('estima tokens y evita degradar un perfil sensible', () => {
+  assert.equal(estimateTokens(4001), 1001);
+  assert.equal(inferValidationProfile({ workType: 'documentacion' }, ['docs/INICIAL.md']), 'docs');
+  assert.equal(inferValidationProfile({ workType: 'feature' }, ['docs/DECISIONES.md']), 'local');
+  assert.equal(inferValidationProfile({ workType: 'documentacion' }, ['core/db/migrations/staging/001.sql']), 'pilot-release');
+  assert.throws(() => resolveValidationProfile('docs', 'pilot-release'), /no puede degradar/u);
+  assert.equal(resolveValidationProfile('local', 'docs'), 'local');
 });
 
 test('ejecuta npm mediante cmd.exe en Windows y directamente en otros sistemas', () => {

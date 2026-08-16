@@ -35,3 +35,4 @@ Actualizado: 2026-08-16.
 - `TASK-20260816-001` | `done` | Normalizar experiencia visual de SPORTEX | docs/TASKS/closed/2026/TASK-20260816-001-normalizar-experiencia-visual-sportex.md
 - `TASK-20260816-002` | `done` | Incorporar imágenes y no leídos a WhatsApp | docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md
 - `TASK-20260816-003` | `done` | Promover imágenes y no leídos al piloto Delta | docs/TASKS/closed/2026/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md
+- `TASK-20260816-004` | `done` | Optimizar contexto, Biblioteca y cierre proporcional | docs/TASKS/closed/2026/TASK-20260816-004-optimizar-contexto-biblioteca-y-cierre.md

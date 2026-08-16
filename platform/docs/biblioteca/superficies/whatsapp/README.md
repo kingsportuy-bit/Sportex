@@ -26,4 +26,7 @@ Eventos normalizados y resultados verificables del proveedor.
 
 ## Estado
 
-NO_INICIADO.
+`CERTIFICADO_PILOTO`. Recepcion Evolution, persistencia cronologica, outbound
+manual con aprobacion, imagenes privadas y cursor de no leidos estan activos en
+`PILOTO_DELTA` sobre el candidato `c6b3b5b`. El primer mensaje real enviado
+desde SPORTEX sigue pendiente y no se infiere de la certificacion tecnica.

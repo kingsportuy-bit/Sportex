@@ -42,6 +42,10 @@ cuando las fuentes son coherentes y las vistas quedaron desactualizadas.
 
 La resolucion completa vive en `MODOS_DE_TRABAJO.md`.
 
+Para una busqueda focal de Biblioteca usar
+`npm run context:library -- 5 "<consulta>"`. El resultado es read-only
+y no concede permisos.
+
 ## Fuentes obligatorias
 
 1. `OPERADOR_PROYECTO.md` para autoridad y comunicacion.
@@ -84,8 +88,8 @@ observa; no se declara manualmente desde la documentacion.
 
 - Consulta read-only: `npm run workflow:check`.
 - Cambio material: actualizar tarea, estado, decisiones y evidencia; luego
-  ejecutar `npm run workflow:close -- TASK-AAAAMMDD-NNN`.
+  ejecutar `npm run workflow:close -- TASK-AAAAMMDD-NNN --profile=auto`.
 - No declarar un checkpoint terminado sin `SPORTEX_CLOSE=PASS`.
 
-El cierre ejecuta la validacion local completa de documentacion, workflow,
-tipos, tests, SQL y build. No despliega ni concede permisos remotos.
+`auto` elige `docs`, `local` o `pilot-release` y puede escalar, nunca degradar
+el riesgo inferido. Ningun perfil despliega ni concede permisos remotos.

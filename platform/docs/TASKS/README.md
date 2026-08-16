@@ -33,6 +33,9 @@
 - Cada checkpoint material debe ser la primera entrada de `recentChanges`,
   coincidir con `updatedBy` y `latestEvidence`, y cerrar con
   `SPORTEX_CLOSE=PASS`.
+- `recentChanges` conserva hasta cinco checkpoints; antes de excederlos usar
+  `npm run history:compact`. El resto queda en
+  `docs/historico/PROJECT_HISTORY.json`.
 
 ## Git y worktrees
 
@@ -44,7 +47,7 @@
 ## Cierre de checkpoint
 
 ```powershell
-npm run workflow:close -- TASK-AAAAMMDD-NNN
+npm run workflow:close -- TASK-AAAAMMDD-NNN --profile=auto
 ```
 
 La tarea puede seguir activa despues del checkpoint. Cuando el objetivo este
