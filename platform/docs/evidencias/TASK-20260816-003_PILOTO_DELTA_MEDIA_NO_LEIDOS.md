@@ -80,4 +80,3 @@ Estado: `PASS_TECNICO_PENDIENTE_QA_AUTENTICADA`
 - Restaurar `webhookBase64=false` desde el respaldo y verificar `/ready`.
 - Conservar las tablas aditivas. No ejecutar down ni restore sin un GO
   destructivo separado.
-
