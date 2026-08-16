@@ -10,6 +10,8 @@ import type {
   CommercialReplayIdempotency,
   CommercialTimelineOperationalEvent,
   CommercialWorkspaceItem,
+  CommercialMediaAsset,
+  CommercialConversationReadState,
   NormalizedConversationMessage,
 } from "../../domain/commercial-models.js";
 import {
@@ -31,6 +33,8 @@ interface CommercialTables {
   opportunities: string;
   timelineEvents: string;
   idempotency: string;
+  mediaAssets: string;
+  readStates: string;
 }
 
 export interface TimelineProjectionFailure {
@@ -66,6 +70,8 @@ function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): CommercialTables
     opportunities: `${prefix}commercial_opportunities`,
     timelineEvents: `${prefix}conversation_timeline_events`,
     idempotency: `${prefix}idempotency`,
+    mediaAssets: `${prefix}whatsapp_media_assets`,
+    readStates: `${prefix}conversation_read_states`,
   };
 }
 
@@ -132,6 +138,62 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     return this.findOne("conversation.provider_conversation_ref = $2", [this.tenantId, providerConversationRef]);
   }
 
+  async findMedia(assetId: string): Promise<CommercialMediaAsset | null> {
+    const result = await this.client.query(
+      `SELECT id, mime_type, file_name, size_bytes, sha256, data, created_at, fixture_only
+       FROM ${this.tables.mediaAssets} WHERE tenant_id = $1 AND id = $2`,
+      [this.tenantId, assetId],
+    );
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    if (!row) return null;
+    const data = row.data;
+    return {
+      id: String(row.id), tenantId: this.tenantId,
+      mimeType: String(row.mime_type) as CommercialMediaAsset["mimeType"],
+      fileName: String(row.file_name), sizeBytes: Number(row.size_bytes), sha256: String(row.sha256),
+      dataBase64: Buffer.isBuffer(data) ? data.toString("base64") : Buffer.from(String(data)).toString("base64"),
+      createdAt: iso(row.created_at), fixtureOnly: Boolean(row.fixture_only),
+    };
+  }
+
+  async saveMedia(asset: CommercialMediaAsset): Promise<void> {
+    this.assertTenant(asset.tenantId);
+    const result = await this.client.query(
+      `INSERT INTO ${this.tables.mediaAssets}
+       (id, tenant_id, mime_type, file_name, size_bytes, sha256, data, created_at, fixture_only)
+       VALUES ($1,$2,$3,$4,$5,$6,decode($7,'base64'),$8,$9)
+       ON CONFLICT (tenant_id, id) DO UPDATE SET id = EXCLUDED.id RETURNING sha256`,
+      [asset.id, asset.tenantId, asset.mimeType, asset.fileName, asset.sizeBytes, asset.sha256,
+        asset.dataBase64, asset.createdAt, asset.fixtureOnly],
+    );
+    if (String((result.rows[0] as Record<string, unknown>).sha256) !== asset.sha256) {
+      throw conflict("commercial_media_conflict", "Media asset identifier was reused with different content");
+    }
+  }
+
+  async findReadState(actorId: string, conversationId: string): Promise<CommercialConversationReadState | null> {
+    const result = await this.client.query(
+      `SELECT last_read_message_id, last_read_at FROM ${this.tables.readStates}
+       WHERE tenant_id = $1 AND actor_id = $2 AND conversation_id = $3`,
+      [this.tenantId, actorId, conversationId],
+    );
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    return row ? { tenantId: this.tenantId, actorId, conversationId,
+      lastReadMessageId: String(row.last_read_message_id), lastReadAt: iso(row.last_read_at) } : null;
+  }
+
+  async saveReadState(state: CommercialConversationReadState): Promise<void> {
+    this.assertTenant(state.tenantId);
+    await this.client.query(
+      `INSERT INTO ${this.tables.readStates}
+       (tenant_id, actor_id, conversation_id, last_read_message_id, last_read_at)
+       VALUES ($1,$2,$3,$4,$5)
+       ON CONFLICT (tenant_id, actor_id, conversation_id) DO UPDATE SET
+         last_read_message_id = EXCLUDED.last_read_message_id, last_read_at = EXCLUDED.last_read_at`,
+      [state.tenantId, state.actorId, state.conversationId, state.lastReadMessageId, state.lastReadAt],
+    );
+  }
+
   async save(item: CommercialWorkspaceItem): Promise<void> {
     this.assertTenant(item.tenantId);
     this.assertTenant(item.contact.tenantId);
@@ -174,8 +236,8 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         `INSERT INTO ${this.tables.messages}
          (id, tenant_id, conversation_id, provider, provider_instance, provider_message_id,
           direction, content_type, body_text, evidence_ref, occurred_at, received_at,
-          source_kind, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$12)
+          source_kind, media_asset_id, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$12)
          ON CONFLICT (tenant_id, provider, provider_instance, provider_message_id) DO UPDATE SET
            direction = EXCLUDED.direction,
            body_text = EXCLUDED.body_text,
@@ -185,7 +247,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         [message.id, item.tenantId, item.conversation.id, message.provider,
           item.conversation.providerInstance, message.providerMessageId, message.direction,
           message.contentType, message.text, message.evidenceRef, message.occurredAt,
-          message.receivedAt, message.sourceKind ?? "FIXTURE"],
+          message.receivedAt, message.sourceKind ?? "FIXTURE", message.media?.assetId ?? null],
       );
     }
 
@@ -382,28 +444,34 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
   private async messages(conversationId: string): Promise<NormalizedConversationMessage[]> {
     const result = await this.client.query(
       `SELECT id, provider_message_id, direction, content_type, body_text, evidence_ref,
-              occurred_at, received_at, source_kind
+              occurred_at, received_at, source_kind, media_asset_id
        FROM ${this.tables.messages}
        WHERE tenant_id = $1 AND conversation_id = $2
        ORDER BY occurred_at, id`,
       [this.tenantId, conversationId],
     );
-    return result.rows.map((candidate) => {
+    const messages: NormalizedConversationMessage[] = [];
+    for (const candidate of result.rows) {
       const row = candidate as Record<string, unknown>;
-      return {
+      const contentType = String(row.content_type) as NormalizedConversationMessage["contentType"];
+      const asset = row.media_asset_id ? await this.findMedia(String(row.media_asset_id)) : null;
+      messages.push({
         id: String(row.id),
         provider: "EVOLUTION",
         providerMessageId: String(row.provider_message_id),
         direction: String(row.direction) as NormalizedConversationMessage["direction"],
         occurredAt: iso(row.occurred_at),
         receivedAt: iso(row.received_at),
-        contentType: "TEXT",
+        contentType,
         text: String(row.body_text),
+        media: asset ? { assetId: asset.id, mimeType: asset.mimeType, fileName: asset.fileName,
+          sizeBytes: asset.sizeBytes, width: null, height: null } : null,
         evidenceRef: String(row.evidence_ref),
         sourceKind: String(row.source_kind) as NonNullable<NormalizedConversationMessage["sourceKind"]>,
         fixtureOnly: String(row.source_kind) === "FIXTURE",
-      };
-    });
+      });
+    }
+    return messages;
   }
 
   private assertTenant(tenantId: string): void {

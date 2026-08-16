@@ -8,6 +8,7 @@ import { AppError } from "../shared/errors.js";
 import type { RealWhatsAppOutboundService } from "../application/real-whatsapp-outbound-service.js";
 import { z } from "zod";
 import { idempotencyKey } from "./context.js";
+import { normalizeWhatsAppImage } from "../domain/whatsapp-image.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
 
@@ -89,6 +90,29 @@ export async function registerEvolutionWebhookRoutes(
       confirmation: z.literal("ENVIAR_A_WHATSAPP"),
     }).strict().parse(request.body);
     const result = await outbound.send(context, params.itemId, body.text, idempotencyKey(request));
+    return reply.code(result.duplicate ? 200 : 201).send({
+      data: result.record,
+      meta: { correlationId: context.correlationId, replayed: result.duplicate },
+    });
+  });
+
+  app.post("/v1/integrations/evolution/workspace/:itemId/images", async (request, reply) => {
+    if (!config.whatsappMediaEnabled) throw new AppError("whatsapp_media_disabled", 404, "WhatsApp media is disabled");
+    if (!outbound) throw new AppError("evolution_outbound_disabled", 409, "Evolution outbound is disabled");
+    const context = await resolveContext(request);
+    if (context.tenantId !== config.deltaTenantId) {
+      throw new AppError("evolution_tenant_forbidden", 403, "Evolution integration is not available for this tenant");
+    }
+    const params = z.object({ itemId: z.string().trim().min(3).max(120) }).strict().parse(request.params);
+    const body = z.object({
+      caption: z.string().trim().max(4_000).default(""),
+      mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+      fileName: z.string().trim().min(1).max(160),
+      dataBase64: z.string().min(8).max(7_100_000),
+      confirmation: z.literal("ENVIAR_IMAGEN_A_WHATSAPP"),
+    }).strict().parse(request.body);
+    const image = normalizeWhatsAppImage(body);
+    const result = await outbound.sendImage(context, params.itemId, body.caption, image, idempotencyKey(request));
     return reply.code(result.duplicate ? 200 : 201).send({
       data: result.record,
       meta: { correlationId: context.correlationId, replayed: result.duplicate },

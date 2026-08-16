@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -110,6 +111,31 @@ test("provider message and request key are idempotent while tenants remain isola
     service.list(context(tenantA, [])),
     isAppError("permission_denied"),
   );
+});
+
+test("image bytes stay private and unread state advances per actor and conversation", async () => {
+  const store = new InMemoryCommercialReplayStore();
+  const service = new CommercialReplayService(store, () => new Date("2026-08-16T18:00:00.000Z"));
+  const dataBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+  const bytes = Buffer.from(dataBase64, "base64");
+  const created = await service.replay(context(), "image-inbound", {
+    ...fixture("image", { conversation: "image" }),
+    data: { ...fixture("image", { conversation: "image" }).data, message: { imageMessage: {
+      caption: "Referencia del diseño", mimetype: "image/png", fileName: "referencia.png",
+      fileLength: bytes.length, fileSha256: createHash("sha256").update(bytes).digest("hex"),
+      dataBase64,
+    } } },
+  });
+  let listed = await service.list(context());
+  assert.equal(listed[0]?.conversation.unreadCount, 1);
+  assert.equal(listed[0]?.conversation.messages[0]?.contentType, "IMAGE");
+  assert.equal("dataBase64" in (listed[0]?.conversation.messages[0]?.media ?? {}), false);
+  const asset = await service.media(context(), created.data.conversation.messages[0]!.id);
+  assert.match(asset.dataBase64, /^iVBOR/u);
+  await service.markConversationRead(context(), created.data.id);
+  listed = await service.list(context());
+  assert.equal(listed[0]?.conversation.unreadCount, 0);
+  await assert.rejects(() => service.media(context(tenantB), created.data.conversation.messages[0]!.id), isAppError("commercial_media_not_found"));
 });
 
 const localConfig: SportexConfig = {

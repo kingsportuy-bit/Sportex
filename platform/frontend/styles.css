@@ -752,10 +752,14 @@ button { cursor: pointer; }
 .whatsapp-master-head > div span { min-width: 24px; padding: 4px 7px; border-radius: 999px; background: #edf0eb; color: var(--muted); font-size: 9px; text-align: center; }
 .whatsapp-search { text-transform: none; letter-spacing: 0; }
 .whatsapp-search input { min-height: 39px; padding: 9px 11px; border-radius: 8px; background: var(--paper); font-size: 11px; }
+.whatsapp-unread-filter { width: fit-content; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: 10px; font-weight: 750; }
+.whatsapp-unread-filter:hover, .whatsapp-unread-filter.is-active { border-color: var(--blue); background: var(--selected-bg); color: var(--selected-text); }
 .whatsapp-list { min-height: 0; overflow-y: auto; }
 .whatsapp-row { width: 100%; min-height: 94px; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 11px; align-items: start; padding: 13px; border: 0; border-bottom: 1px solid #e6e9e3; background: white; color: var(--ink); text-align: left; }
 .whatsapp-row:hover { background: #f7f9f5; }
 .whatsapp-row.is-selected { background: #edf3ff; box-shadow: inset 3px 0 var(--blue); }
+.whatsapp-row.is-unread .whatsapp-row-head strong, .whatsapp-row.is-unread .whatsapp-preview { color: var(--ink); font-weight: 800; }
+.whatsapp-unread-badge { min-width: 18px; height: 18px; display: grid; place-items: center; margin-left: auto; padding: 0 5px; border-radius: 999px; background: #22a06b; color: white; font-size: 9px; font-weight: 900; }
 .whatsapp-avatar { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #b9c0ba; border-radius: 50%; background: var(--paper); color: var(--ink-soft); font-size: 11px; font-weight: 800; }
 .whatsapp-avatar--detail { width: 40px; height: 40px; flex: 0 0 auto; border-color: #b8c8ef; background: #eaf0ff; color: #1f4db8; }
 .whatsapp-row-copy { min-width: 0; display: grid; gap: 4px; }
@@ -797,6 +801,14 @@ button { cursor: pointer; }
 .whatsapp-operational-copy small { overflow: hidden; color: var(--muted); font-size: 10px; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
 .whatsapp-operational-event time { color: var(--muted); font-size: 9px; white-space: nowrap; }
 .whatsapp-composer { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr) 42px; gap: 9px; align-items: end; padding: 12px 14px; border-top: 1px solid var(--line); background: var(--paper); }
+.whatsapp-image-preview { grid-column: 1 / -1; min-width: 0; display: grid; grid-template-columns: 54px minmax(0, 1fr) 30px; gap: 10px; align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: 11px; }
+.whatsapp-image-preview img { width: 54px; height: 54px; border-radius: 7px; object-fit: cover; }
+.whatsapp-image-preview span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.whatsapp-image-remove { width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--surface-strong); color: var(--ink); font-size: 18px; }
+.whatsapp-image-message { width: min(320px, 72vw); margin: 4px 0; display: grid; gap: 6px; }
+.whatsapp-image-message img { width: 100%; max-height: 360px; border-radius: 7px; object-fit: cover; }
+.whatsapp-image-message figcaption { font-size: 12px; line-height: 1.4; }
+.whatsapp-image-loading { min-height: 110px; display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 7px; color: var(--muted); font-size: 10px; }
 .whatsapp-composer-icon, .whatsapp-send { width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #657068; font-size: 24px; }
 .whatsapp-send { width: 42px; height: 42px; background: var(--blue); color: white; font-size: 18px; }
 .whatsapp-composer button:disabled { opacity: .46; cursor: default; }
@@ -1242,6 +1254,148 @@ button { cursor: pointer; }
     padding: 2px 4px;
     font-size: 7px;
   }
+}
+
+/* TASK-20260816-001 · WhatsApp como sistema visual transversal. */
+:root {
+  --surface-canvas: #f4f6f2;
+  --surface-panel: #ffffff;
+  --surface-raised: #f8faf7;
+  --surface-input: #ffffff;
+  --surface-hover: #f0f4ee;
+  --surface-selected: color-mix(in srgb, var(--signal) 14%, var(--surface-panel));
+  --surface-disabled: #edf0eb;
+  --text-on-strong: #ffffff;
+  --focus-ring: color-mix(in srgb, var(--signal) 44%, transparent);
+  --selected-edge: var(--signal);
+  --interactive-shadow: 0 8px 24px rgb(24 34 28 / 8%);
+  --paper: var(--surface-panel);
+  --canvas: var(--surface-canvas);
+}
+
+:root[data-theme="dark"] {
+  --surface-canvas: #0e1310;
+  --surface-panel: #171d19;
+  --surface-raised: #1d241f;
+  --surface-input: #252d27;
+  --surface-hover: #202821;
+  --surface-selected: color-mix(in srgb, var(--signal) 12%, #171d19);
+  --surface-disabled: #242b26;
+  --text-on-strong: #edf3ee;
+  --focus-ring: color-mix(in srgb, var(--signal) 38%, transparent);
+  --interactive-shadow: 0 10px 30px rgb(0 0 0 / 28%);
+}
+
+body,
+.app-shell,
+.workspace,
+.content { background: var(--surface-canvas); color: var(--ink); }
+
+.topbar,
+.production-track,
+.today-board,
+.lead-master,
+.lead-detail,
+.detail-card,
+.commercial-card,
+.ledger,
+.crm-filterbar,
+.crm-workspace,
+.lead-focus-head,
+.lead-work-pane,
+.draft-area,
+.lead-mobile-tabs,
+.candidate-panel,
+.settings-reset,
+.results-panel,
+.module-card,
+.candidate-row,
+.sync-state,
+.whatsapp-workspace,
+.whatsapp-master,
+.whatsapp-detail,
+.whatsapp-row,
+.sheet-actions,
+.message-quote,
+.confirmation-check,
+.segmented span,
+dialog { background: var(--surface-panel); color: var(--ink); }
+
+input,
+select,
+textarea,
+.whatsapp-composer-input { background: var(--surface-input); color: var(--ink); border-color: var(--line); }
+
+.today-row,
+.ledger-row,
+.lead-row,
+.whatsapp-row,
+.stage-station,
+.today-metrics button,
+.nav-item,
+.button,
+.whatsapp-chat-menu { transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease; }
+
+.today-row:hover,
+.ledger-row:hover,
+.lead-row:hover,
+.whatsapp-row:hover,
+.stage-station:hover,
+.button--quiet:hover,
+.whatsapp-chat-menu:hover { background: var(--surface-hover); color: var(--ink); }
+
+.lead-row.is-selected,
+.whatsapp-row.is-selected,
+.stage-station.is-filtered,
+.today-metrics button.is-selected,
+.today-metrics button:hover {
+  background: var(--surface-selected);
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--selected-edge) 58%, var(--line));
+  box-shadow: inset 3px 0 var(--selected-edge), var(--interactive-shadow);
+}
+
+.button:disabled,
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled { cursor: not-allowed; opacity: .58; }
+
+:where(button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--selected-edge);
+  outline-offset: 2px;
+  border-color: var(--selected-edge);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.message-row.is-client { background: var(--surface-input); color: var(--ink); }
+.whatsapp-chat-head,
+.whatsapp-master-head,
+.whatsapp-composer,
+.whatsapp-local-note { background: var(--surface-raised); color: var(--ink); }
+.whatsapp-search input { background: var(--surface-input); }
+
+:root[data-theme="dark"] .lead-row:hover,
+:root[data-theme="dark"] .lead-row.is-selected,
+:root[data-theme="dark"] .ledger-row:hover,
+:root[data-theme="dark"] .stage-station:hover,
+:root[data-theme="dark"] .stage-station.is-filtered,
+:root[data-theme="dark"] .today-row:hover,
+:root[data-theme="dark"] .today-metrics button:hover,
+:root[data-theme="dark"] .today-metrics button.is-selected,
+:root[data-theme="dark"] .whatsapp-row:hover,
+:root[data-theme="dark"] .whatsapp-row.is-selected { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .today-row,
+  .ledger-row,
+  .lead-row,
+  .whatsapp-row,
+  .stage-station,
+  .today-metrics button,
+  .nav-item,
+  .button,
+  .whatsapp-chat-menu { transition: none; }
 }
 
 /* Voz SPORTEX: tipografía condensada, grande y frontal sobre la forma mínima. */
@@ -1975,4 +2129,43 @@ button { cursor: pointer; }
     max-height: 80px;
     font-size: 9px;
   }
+}
+
+/* Superficies fuertes y burbujas conservan contraste al invertir el tema. */
+:root {
+  --surface-strong: #18221c;
+  --surface-strong-muted: #aab4ac;
+  --surface-outbound: #edf3ff;
+  --text-outbound: #18221c;
+}
+
+:root[data-theme="dark"] {
+  --surface-strong: #101612;
+  --surface-strong-muted: #9aa69e;
+  --surface-outbound: color-mix(in srgb, var(--signal) 17%, #171d19);
+  --text-outbound: #edf3ee;
+}
+
+.sidebar,
+.lead-master-head,
+.lead-detail-head,
+.sheet-head,
+.metrics-strip,
+.evidence-rail,
+.creative-preview,
+.production-track .is-active {
+  background: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+
+.lead-master-head small,
+.lead-master-head span,
+.lead-detail-head p,
+.sheet-head p,
+.metrics-strip span { color: var(--surface-strong-muted); }
+
+.message-row.is-delta,
+:root[data-theme="dark"] .message-row.is-delta {
+  background: var(--surface-outbound);
+  color: var(--text-outbound);
 }

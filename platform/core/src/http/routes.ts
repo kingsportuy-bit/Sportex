@@ -8,6 +8,7 @@ import { CoreService } from "../application/core-service.js";
 import { LocalWhatsAppSimulationService } from "../application/local-whatsapp-simulation-service.js";
 import { idempotencyKey } from "./context.js";
 import { AppError } from "../shared/errors.js";
+import { normalizeWhatsAppImage } from "../domain/whatsapp-image.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
 
@@ -119,6 +120,15 @@ const simulatedOutboundSchema = z.object({
   text: z.string().trim().min(1).max(4_000),
 }).strict();
 
+const whatsappImageSchema = z.object({
+  caption: z.string().trim().max(4_000).default(""),
+  mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  fileName: z.string().trim().min(1).max(160),
+  dataBase64: z.string().min(8).max(7_100_000),
+}).strict();
+
+const messageParamsSchema = z.object({ messageId: z.string().trim().min(3).max(160) }).strict();
+
 export async function registerRoutes(
   app: FastifyInstance,
   service: CoreService,
@@ -136,6 +146,8 @@ export async function registerRoutes(
       release: config.release ?? "local",
       commercialWorkspaceEnabled: commercialService !== null,
       conversationTimelineEnabled: Boolean(config.conversationTimelineEnabled),
+      whatsappMediaEnabled: Boolean(config.whatsappMediaEnabled),
+      whatsappUnreadEnabled: Boolean(config.whatsappUnreadEnabled),
       localCommercialReplayEnabled,
       localCommercialPersistenceEnabled: localCommercialReplayEnabled && Boolean(config.commercialDemoFile),
       localWhatsAppSimulationEnabled: localWhatsAppSimulation !== null,
@@ -227,6 +239,24 @@ export async function registerRoutes(
       const context = await resolveContext(request);
       const items = await commercialService.list(context);
       return { data: items, meta: { correlationId: context.correlationId } };
+    });
+
+    app.post("/v1/commercial/workspace/:itemId/read", async (request) => {
+      if (!config.whatsappUnreadEnabled) throw new AppError("whatsapp_unread_disabled", 404, "WhatsApp unread state is disabled");
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const item = await commercialService.markConversationRead(context, params.itemId);
+      return { data: item, meta: { correlationId: context.correlationId } };
+    });
+
+    app.get("/v1/commercial/messages/:messageId/media", async (request, reply) => {
+      if (!config.whatsappMediaEnabled) throw new AppError("whatsapp_media_disabled", 404, "WhatsApp media is disabled");
+      const context = await resolveContext(request);
+      const params = messageParamsSchema.parse(request.params);
+      const asset = await commercialService.media(context, params.messageId);
+      reply.header("content-type", asset.mimeType);
+      reply.header("content-disposition", `inline; filename="${asset.fileName.replace(/["\\]/gu, "-")}"`);
+      return reply.send(Buffer.from(asset.dataBase64, "base64"));
     });
 
     app.patch("/v1/commercial/workspace/:itemId/stage", async (request) => {
@@ -339,6 +369,18 @@ export async function registerRoutes(
           params.itemId,
           input.text,
           idempotencyKey(request),
+        );
+        return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+      });
+
+      app.post("/v1/local/whatsapp-simulated/workspace/:itemId/images", async (request, reply) => {
+        if (!config.whatsappMediaEnabled) throw new AppError("whatsapp_media_disabled", 404, "WhatsApp media is disabled");
+        const context = await resolveContext(request);
+        const params = commercialItemParamsSchema.parse(request.params);
+        const input = whatsappImageSchema.parse(request.body);
+        const image = normalizeWhatsAppImage(input);
+        const item = await localWhatsAppSimulation.sendImage(
+          context, params.itemId, input.caption, image, idempotencyKey(request),
         );
         return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
       });

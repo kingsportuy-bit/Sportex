@@ -1,6 +1,7 @@
 import type { CommercialWorkspaceItem } from "../domain/commercial-models.js";
 import type { ActorContext } from "../domain/models.js";
 import type { SimulatedEvolutionEvent } from "../domain/whatsapp-transport-models.js";
+import type { WhatsAppImagePayload } from "../domain/whatsapp-transport-models.js";
 import {
   FakeEvolutionOutboundTransport,
   InMemoryEvolutionJournal,
@@ -48,6 +49,26 @@ export class LocalWhatsAppSimulationService {
     text: string,
     idempotencyKey: string,
   ): Promise<CommercialWorkspaceItem> {
+    return this.sendContent(context, itemId, text, null, idempotencyKey);
+  }
+
+  async sendImage(
+    context: ActorContext,
+    itemId: string,
+    caption: string,
+    image: WhatsAppImagePayload,
+    idempotencyKey: string,
+  ): Promise<CommercialWorkspaceItem> {
+    return this.sendContent(context, itemId, caption, image, idempotencyKey);
+  }
+
+  private async sendContent(
+    context: ActorContext,
+    itemId: string,
+    text: string,
+    image: WhatsAppImagePayload | null,
+    idempotencyKey: string,
+  ): Promise<CommercialWorkspaceItem> {
     requireCapability(context, "commercial.manage");
     const item = await this.requiredItem(context, itemId);
     const command = {
@@ -55,6 +76,7 @@ export class LocalWhatsAppSimulationService {
       conversationRef: item.conversation.providerConversationRef,
       destinationRef: item.contact.providerContactRef,
       text,
+      image,
       idempotencyKey,
       correlationId: context.correlationId,
       confirmedBy: context.actorId,
@@ -78,7 +100,18 @@ export class LocalWhatsAppSimulationService {
         },
         pushName: "Delta ficticio",
         messageTimestamp: record.updatedAt,
-        message: { conversation: record.text },
+        message: record.image ? {
+          imageMessage: {
+            caption: record.text,
+            mimetype: record.image.mimeType,
+            fileName: record.image.fileName,
+            fileLength: record.image.sizeBytes,
+            fileSha256: record.image.sha256,
+            dataBase64: record.image.dataBase64,
+            ...(record.image.width ? { width: record.image.width } : {}),
+            ...(record.image.height ? { height: record.image.height } : {}),
+          },
+        } : { conversation: record.text },
       },
     });
     return this.requiredItem(context, itemId);

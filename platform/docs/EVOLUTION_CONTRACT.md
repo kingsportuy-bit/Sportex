@@ -93,3 +93,10 @@ instancia y no habilita mensajes reales.
 - el outbox exige confirmación humana y nace detrás de kill switch;
 - receipts no pueden hacer retroceder un estado ya confirmado;
 - las migraciones `20260814_002` y `20260814_003` tienen RLS y rollback local ensayado.
+
+## Imagen manual
+
+Con `SPORTEX_WHATSAPP_MEDIA_ENABLED=true`, `imageMessage` acepta JPEG, PNG o
+WebP Base64 de hasta 5 MB, valida firma real y checksum, y guarda bytes privados
+por tenant. La salida usa `sendMedia`, preview, confirmacion humana, outbox e
+idempotencia. La bandera queda apagada por defecto y no habilita IA.

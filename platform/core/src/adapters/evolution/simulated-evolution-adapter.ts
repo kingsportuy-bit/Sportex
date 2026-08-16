@@ -12,6 +12,7 @@ import type {
   WhatsAppIngressJournal,
   WhatsAppOutboundStore,
 } from "../../ports/whatsapp-transport-store.js";
+import { normalizeWhatsAppImage } from "../../domain/whatsapp-image.js";
 
 function assertIso(value: string, label: string): void {
   if (!Number.isFinite(Date.parse(value))) throw new Error(`${label}_invalid`);
@@ -48,6 +49,7 @@ export class SimulatedEvolutionAdapter {
         contentType: "RECEIPT",
         contentRef: `fixture:receipt:${event.data.key.id}`,
         text: null,
+        image: null,
         source: "SIMULATED_LIVE",
         correlationId: event.eventId,
         contractVersion: 1,
@@ -60,6 +62,14 @@ export class SimulatedEvolutionAdapter {
 
     this.assertMessage(event);
     const external = event.data.contextInfo?.externalAdReply;
+    const rawImage = event.data.message.imageMessage;
+    const image = rawImage ? normalizeWhatsAppImage({
+      mimeType: rawImage.mimetype,
+      fileName: rawImage.fileName,
+      dataBase64: rawImage.dataBase64,
+      ...(rawImage.width ? { width: rawImage.width } : {}),
+      ...(rawImage.height ? { height: rawImage.height } : {}),
+    }) : null;
     return {
       eventId: event.eventId,
       providerEventId: event.eventId,
@@ -73,9 +83,10 @@ export class SimulatedEvolutionAdapter {
       senderRef: event.data.key.fromMe ? "delta-ficticio" : event.data.key.remoteJid,
       conversationRef: event.data.key.remoteJid,
       direction: event.data.key.fromMe ? "DELTA" : "CLIENTE",
-      contentType: "TEXT",
+      contentType: image ? "IMAGE" : "TEXT",
       contentRef: `fixture:message:${event.data.key.id}`,
-      text: event.data.message.conversation.trim(),
+      text: image ? rawImage?.caption?.trim() || null : event.data.message.conversation?.trim() ?? null,
+      image,
       source: event.source,
       correlationId: event.eventId,
       contractVersion: 1,
@@ -94,8 +105,9 @@ export class SimulatedEvolutionAdapter {
     assertFixtureRef(event.data.key.id, "msg-ficticio-", "provider_message_id");
     assertFixtureRef(event.data.key.remoteJid, "contacto-ficticio-", "conversation_ref");
     assertIso(event.data.messageTimestamp, "occurred_at");
-    const text = event.data.message.conversation.trim();
-    if (!text || text.length > 4_000) throw new Error("message_text_invalid");
+    const text = event.data.message.conversation?.trim();
+    if (text && text.length > 4_000) throw new Error("message_text_invalid");
+    if (!text && !event.data.message.imageMessage) throw new Error("message_content_invalid");
   }
 }
 
@@ -194,7 +206,8 @@ export class InMemoryWhatsAppOutboundStore implements WhatsAppOutboundStore {
     const key = `${record.tenantId}:${record.idempotencyKey}`;
     const existing = this.records.get(key);
     if (existing) {
-      if (existing.destinationRef !== record.destinationRef || existing.text !== record.text) {
+      if (existing.destinationRef !== record.destinationRef || existing.text !== record.text
+        || (existing.image?.sha256 ?? null) !== (record.image?.sha256 ?? null)) {
         throw new Error("whatsapp_outbound_idempotency_conflict");
       }
       return { duplicate: true, record: structuredClone(existing) };

@@ -111,6 +111,13 @@ El worker relee el estado del pedido y la autorización antes de enviar.
   corte vigente solo puede representarse como dato histórico: no existe camino
   autónomo ejecutable.
 
+## Imagen y lectura
+
+`IMAGE` conserva caption y metadatos en el mensaje; los bytes viven en un asset
+privado. El no leido es un cursor por actor/conversacion sobre entradas del
+cliente: listar o enviar no lo mueve; abrir el chat si. Receipt `READ` no cambia
+ese cursor.
+
 ## Integración directa
 
 Evolution API entrega webhooks directamente al adaptador del Core. Los mensajes salientes se ejecutan desde workers del Core mediante outbox. SPORTEX no utiliza n8n.

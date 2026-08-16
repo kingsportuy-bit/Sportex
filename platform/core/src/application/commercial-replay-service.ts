@@ -5,6 +5,7 @@ import type {
   ConvertCommercialOpportunityInput,
   CommercialReplayIdempotency,
   CommercialWorkspaceItem,
+  CommercialMediaAsset,
   EvolutionReplayEvent,
   NormalizedConversationMessage,
   RecordCommercialFollowUpInput,
@@ -23,6 +24,7 @@ import { requireCapability } from "../shared/authorization.js";
 import { requestHash } from "../shared/canonical-json.js";
 import { AppError, conflict, notFound } from "../shared/errors.js";
 import { CoreService } from "./core-service.js";
+import { normalizeWhatsAppImage } from "../domain/whatsapp-image.js";
 
 type Clock = () => Date;
 type IdFactory = () => string;
@@ -99,7 +101,9 @@ export class CommercialReplayService {
       const now = input.receivedAt
         ? new Date(input.receivedAt).toISOString()
         : this.clock().toISOString();
-      const message = this.normalizeMessage(input, now, fixtureOnly);
+      const normalized = this.normalizeMessage(input, now, fixtureOnly, context.tenantId);
+      const message = normalized.message;
+      if (normalized.asset) await transaction.saveMedia(normalized.asset);
       const existing = await transaction.findByProviderConversationRef(input.data.key.remoteJid);
       if (!existing && message.direction === "DELTA") {
         throw conflict(
@@ -121,7 +125,48 @@ export class CommercialReplayService {
     requireCapability(context, "commercial.read");
     return this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
-      return (await transaction.list()).map((item) => item.timeline ? item : withConversationTimeline(item));
+      const items = await transaction.list();
+      return Promise.all(items.map(async (item) => {
+        const readState = await transaction.findReadState(context.actorId, item.conversation.id);
+        const unreadCount = this.unreadCount(item, readState?.lastReadMessageId ?? null);
+        const view = { ...item, conversation: { ...item.conversation, unreadCount } };
+        return view.timeline ? view : withConversationTimeline(view);
+      }));
+    });
+  }
+
+  async markConversationRead(context: ActorContext, itemId: string): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.read");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const item = await this.requiredItem(transaction, itemId);
+      const latestInbound = [...item.conversation.messages].reverse().find((message) => message.direction === "CLIENTE");
+      if (latestInbound) {
+        await transaction.saveReadState({
+          tenantId: context.tenantId,
+          actorId: context.actorId,
+          conversationId: item.conversation.id,
+          lastReadMessageId: latestInbound.id,
+          lastReadAt: this.clock().toISOString(),
+        });
+      }
+      return withConversationTimeline({
+        ...item,
+        conversation: { ...item.conversation, unreadCount: 0 },
+      });
+    });
+  }
+
+  async media(context: ActorContext, messageId: string): Promise<CommercialMediaAsset> {
+    requireCapability(context, "commercial.read");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const item = (await transaction.list()).find((candidate) =>
+        candidate.conversation.messages.some((message) => message.id === messageId));
+      const message = item?.conversation.messages.find((candidate) => candidate.id === messageId);
+      if (!message?.media) throw notFound("commercial_media_not_found", "WhatsApp image was not found");
+      const asset = await transaction.findMedia(message.media.assetId);
+      if (!asset) throw notFound("commercial_media_not_found", "WhatsApp image was not found");
+      return asset;
     });
   }
 
@@ -653,20 +698,43 @@ export class CommercialReplayService {
     input: EvolutionReplayEvent,
     receivedAt: string,
     fixtureOnly: boolean,
-  ): NormalizedConversationMessage {
-    return {
+    tenantId: string,
+  ): { message: NormalizedConversationMessage; asset: CommercialMediaAsset | null } {
+    const image = input.data.message.imageMessage;
+    const assetId = image ? this.idFactory() : null;
+    const message: NormalizedConversationMessage = {
       id: this.idFactory(),
       provider: "EVOLUTION",
       providerMessageId: input.data.key.id.trim(),
       direction: input.data.key.fromMe ? "DELTA" : "CLIENTE",
       occurredAt: new Date(input.data.messageTimestamp).toISOString(),
       receivedAt,
-      contentType: "TEXT",
-      text: input.data.message.conversation.trim(),
+      contentType: image ? "IMAGE" : "TEXT",
+      text: image?.caption?.trim() ?? input.data.message.conversation?.trim() ?? "",
+      media: image && assetId ? {
+        assetId,
+        mimeType: image.mimetype,
+        fileName: image.fileName,
+        sizeBytes: image.fileLength,
+        width: image.width ?? null,
+        height: image.height ?? null,
+      } : null,
       evidenceRef: `${fixtureOnly ? "fixture" : "evolution"}:${input.data.key.id.trim()}`,
       sourceKind: input.sourceKind ?? "FIXTURE",
       fixtureOnly,
     };
+    const asset: CommercialMediaAsset | null = image && assetId ? {
+      id: assetId,
+      tenantId,
+      mimeType: image.mimetype,
+      fileName: image.fileName,
+      sizeBytes: image.fileLength,
+      sha256: image.fileSha256,
+      dataBase64: image.dataBase64,
+      createdAt: receivedAt,
+      fixtureOnly,
+    } : null;
+    return { message, asset };
   }
 
   private attribution(input: EvolutionReplayEvent, evidenceMessageId: string): CommercialAttribution {
@@ -710,9 +778,7 @@ export class CommercialReplayService {
     if (!/^msg-ficticio-[a-z0-9-]{1,80}$/u.test(input.data.key.id)) {
       throw new AppError("fixture_only", 400, "Only fictional message IDs are accepted");
     }
-    if (!input.data.message.conversation.trim()) {
-      throw new AppError("invalid_payload", 400, "Message text is required");
-    }
+    this.validateMessageContent(input);
     if (Number.isNaN(Date.parse(input.data.messageTimestamp))) {
       throw new AppError("invalid_payload", 400, "messageTimestamp must be an ISO date");
     }
@@ -738,9 +804,7 @@ export class CommercialReplayService {
     if (!input.data.key.id.trim() || input.data.key.id.length > 160) {
       throw new AppError("evolution_message_id_invalid", 400, "Evolution message ID is invalid");
     }
-    if (!input.data.message.conversation.trim()) {
-      throw new AppError("invalid_payload", 400, "Message text is required");
-    }
+    this.validateMessageContent(input);
     if (Number.isNaN(Date.parse(input.data.messageTimestamp))) {
       throw new AppError("invalid_payload", 400, "messageTimestamp must be an ISO date");
     }
@@ -752,6 +816,37 @@ export class CommercialReplayService {
   private validateIdempotencyKey(key: string): void {
     if (!key.trim()) throw new AppError("idempotency_key_required", 400, "Idempotency-Key is required");
     if (key.length > 200) throw new AppError("idempotency_key_invalid", 400, "Idempotency-Key is too long");
+  }
+
+  private validateMessageContent(input: EvolutionReplayEvent): void {
+    const text = input.data.message.conversation?.trim();
+    const image = input.data.message.imageMessage;
+    if (!text && !image) throw new AppError("invalid_payload", 400, "Message content is required");
+    if (image) {
+      if (!image.dataBase64 || image.fileLength <= 0 || image.fileLength > 5 * 1024 * 1024) {
+        throw new AppError("whatsapp_image_invalid", 400, "WhatsApp image is invalid");
+      }
+      if (!/^[a-f0-9]{64}$/u.test(image.fileSha256)) {
+        throw new AppError("whatsapp_image_invalid", 400, "WhatsApp image checksum is invalid");
+      }
+      try {
+        const normalized = normalizeWhatsAppImage({
+          mimeType: image.mimetype, fileName: image.fileName, dataBase64: image.dataBase64,
+          ...(image.width ? { width: image.width } : {}), ...(image.height ? { height: image.height } : {}),
+        });
+        if (normalized.sha256 !== image.fileSha256 || normalized.sizeBytes !== image.fileLength) {
+          throw new Error("whatsapp_image_integrity_invalid");
+        }
+      } catch {
+        throw new AppError("whatsapp_image_invalid", 400, "WhatsApp image integrity is invalid");
+      }
+    }
+  }
+
+  private unreadCount(item: CommercialWorkspaceItem, lastReadMessageId: string | null): number {
+    const messages = item.conversation.messages;
+    const cursor = lastReadMessageId ? messages.findIndex((message) => message.id === lastReadMessageId) : -1;
+    return messages.slice(cursor + 1).filter((message) => message.direction === "CLIENTE").length;
   }
 
   private async remember(

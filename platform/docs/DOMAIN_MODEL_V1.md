@@ -242,6 +242,10 @@ pertenecen a tenant y conversación, y conservan actor, origen, correlación y
 evidencia. `ASSISTANT` es un actor/origen válido para compatibilidad futura;
 representarlo no crea un comando, job, propuesta, outbox ni efecto externo.
 
+`CommercialMediaAsset` pertenece a un tenant y guarda bytes, MIME, tamano y
+checksum; el mensaje expone solo su referencia. `ConversationReadState` usa la
+clave tenant+actor+conversacion y apunta al ultimo mensaje entrante visto.
+
 ## Tablas transitorias preparadas en julio de 2026
 
 - `sportex_staging_tenants`;

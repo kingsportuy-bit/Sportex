@@ -1,4 +1,6 @@
 import type {
+  CommercialConversationReadState,
+  CommercialMediaAsset,
   CommercialReplayIdempotency,
   CommercialWorkspaceItem,
 } from "../domain/commercial-models.js";
@@ -9,6 +11,10 @@ export interface CommercialReplayTransaction {
   findById(id: string): Promise<CommercialWorkspaceItem | null>;
   findByProviderMessageId(providerMessageId: string): Promise<CommercialWorkspaceItem | null>;
   findByProviderConversationRef(providerConversationRef: string): Promise<CommercialWorkspaceItem | null>;
+  findMedia(assetId: string): Promise<CommercialMediaAsset | null>;
+  saveMedia(asset: CommercialMediaAsset): Promise<void>;
+  findReadState(actorId: string, conversationId: string): Promise<CommercialConversationReadState | null>;
+  saveReadState(state: CommercialConversationReadState): Promise<void>;
   save(item: CommercialWorkspaceItem): Promise<void>;
   list(): Promise<CommercialWorkspaceItem[]>;
   replaceTenant(items: CommercialWorkspaceItem[]): Promise<void>;
@@ -24,11 +30,13 @@ export interface CommercialReplayStore {
 }
 
 export interface CommercialReplayState {
-  schemaVersion: 1;
+  schemaVersion: 2;
   items: CommercialWorkspaceItem[];
   idempotency: CommercialReplayIdempotency[];
+  mediaAssets: CommercialMediaAsset[];
+  readStates: CommercialConversationReadState[];
 }
 
 export function emptyCommercialReplayState(): CommercialReplayState {
-  return { schemaVersion: 1, items: [], idempotency: [] };
+  return { schemaVersion: 2, items: [], idempotency: [], mediaAssets: [], readStates: [] };
 }

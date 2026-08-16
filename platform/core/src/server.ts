@@ -81,6 +81,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
         tenantId: options.config.deltaTenantId,
         actorId: options.config.evolutionActorId,
         instance: options.config.evolutionInstance,
+        mediaEnabled: Boolean(options.config.whatsappMediaEnabled),
       }),
       realWhatsAppStore!,
       commercialService,

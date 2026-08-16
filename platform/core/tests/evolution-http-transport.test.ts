@@ -55,3 +55,21 @@ test("Evolution transport rejects an ambiguous destination before network access
   await assert.rejects(() => transport.send({ ...command, destinationRef: "123@lid" }), /evolution_destination_invalid/u);
   assert.equal(called, false);
 });
+
+test("Evolution transport sends an image through sendMedia with the confirmed caption", async () => {
+  let capturedUrl = "";
+  let captured: RequestInit | undefined;
+  const transport = new EvolutionHttpTransport("https://evolution.example.test", "DELTA", "secret-api-key", async (input, init) => {
+    capturedUrl = String(input); captured = init;
+    return new Response(JSON.stringify({ key: { id: "3A-IMAGE" } }), { status: 201 });
+  });
+  await transport.send({ ...command, text: "Frente de la camiseta", image: {
+    mimeType: "image/png", fileName: "diseno.png", sizeBytes: 8, sha256: "a".repeat(64),
+    dataBase64: "iVBORw0KGgo=", width: 1, height: 1,
+  } });
+  assert.equal(capturedUrl, "https://evolution.example.test/message/sendMedia/DELTA");
+  assert.deepEqual(JSON.parse(String(captured?.body)), {
+    number: "59899123456", mediatype: "image", mimetype: "image/png",
+    caption: "Frente de la camiseta", media: "iVBORw0KGgo=", fileName: "diseno.png",
+  });
+});

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-15",
-  "updatedBy": "TASK-20260815-002",
+  "updatedAt": "2026-08-16",
+  "updatedBy": "TASK-20260816-003",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -13,18 +13,26 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "documentation",
-  "objective": "Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados comerciales.",
+  "mode": "operation",
+  "objective": "Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.",
   "scope": {
     "allowed": [
-      "Registrar el estado real del piloto y el criterio de verificacion de transiciones comerciales.",
-      "Conservar cronologia, mensajes y runtime 72e0fc2 sin cambios."
+      "Crear candidato exacto, backup/restore, migrar 006, activar flags/Base64 y desplegar.",
+      "Verificar runtime, RLS, UI y cero mensajes/outbound nuevos."
     ],
     "prohibited": [
-      "No implementar, desplegar, migrar, enviar mensajes ni cambiar estados reales en este checkpoint."
+      "No enviar mensajes reales ni tocar otros tenants, servicios, Meta o PRODUCCION_COMERCIAL."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260816-003",
+    "title": "Promover imágenes y no leídos al piloto Delta",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Preparar y publicar el candidato exacto; ejecutar release guard antes de mutar PILOTO_DELTA."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -82,19 +90,19 @@
     "status": "MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS",
     "lastVerifiedAt": "2026-08-15",
     "executed": ["20260814_002", "20260814_003", "20260814_004", "20260815_005"],
-    "pending": [],
-    "note": "Backup 752e5266 y restore aislado PASS; 17 tablas con RLS forzado. Migracion 005 aplicada migration-first, 21 eventos proyectados y 146 mensajes preservados."
+    "pending": ["20260816_006"],
+    "note": "Runtime conserva 17 tablas con RLS forzado. La migracion aditiva 006 esta validada estaticamente pero no aplicada; requiere GO y backup/rollback."
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-08-15",
+    "lastRunAt": "2026-08-16",
     "commands": [
       "npm run validate-docs",
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260815-001_CRONOLOGIA_OPERATIVA.md",
-    "note": "52/52, PostgreSQL up/down/re-up, E2E local y release PILOTO_DELTA PASS; smokes OFF/ON, workspace 21 items/146 mensajes/21 eventos y cero outbound nuevo."
+    "evidence": "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md",
+    "note": "55/55, SQL 19 tablas declaradas, build y QA local claro/noche desktop/mobile PASS; imagen y lectura persistieron reinicio."
   },
   "deployments": {
     "status": "PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL",
@@ -137,14 +145,41 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260815-002",
-    "date": "2026-08-15",
-    "path": "docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md",
-    "summary": "Cambiar etapas o estados desde WhatsApp queda pendiente de verificacion; cero cambios remotos.",
-    "environment": "PILOTO_DELTA",
+    "taskId": "TASK-20260816-002",
+    "date": "2026-08-16",
+    "path": "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md",
+    "summary": "Imagenes manuales y no leidos convencionales validados localmente; runtime intacto.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-16",
+      "taskId": "TASK-20260816-002",
+      "summary": "Se implementaron imagenes privadas manuales y lectura por operador con flags apagadas por defecto; QA local y reinicio PASS sin efectos externos.",
+      "documents": [
+        "core/src/domain/whatsapp-image.ts",
+        "core/db/migrations/staging/20260816_006_whatsapp_media_unread.up.sql",
+        "frontend/app.js",
+        "docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md",
+        "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md"],
+      "decisions": ["SPORTEX-DEC-011"]
+    },
+    {
+      "date": "2026-08-16",
+      "taskId": "TASK-20260816-001",
+      "summary": "UI normalizada con tokens WhatsApp; contraste e interacción PASS.",
+      "documents": [
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260816-001-normalizar-experiencia-visual-sportex.md",
+        "docs/evidencias/TASK-20260816-001_NORMALIZACION_VISUAL.md",
+        "docs/DECISIONES.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260816-001_NORMALIZACION_VISUAL.md"],
+      "decisions": ["SPORTEX-DEC-012"]
+    },
     {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-002",
@@ -492,25 +527,6 @@
       "decisions": [
         "SPORTEX-DEC-004"
       ]
-    },
-    {
-      "date": "2026-08-02",
-      "taskId": "TASK-20260802-001",
-      "summary": "Se instalo y valido el workflow automatico de contexto, tareas, estado, vistas y cierre de SPORTEX sin iniciar la campaña comercial.",
-      "documents": [
-        "AGENTS.md",
-        "docs/TASKS/closed/2026/TASK-20260802-001-automatizar-contexto-tareas-cierre.md",
-        "docs/state/PROJECT_STATE.json",
-        "docs/evidencias/TASK-20260802-001_WORKFLOW_DOCUMENTAL.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260802-001_WORKFLOW_DOCUMENTAL.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-001",
-        "SPORTEX-DEC-002",
-        "SPORTEX-DEC-003"
-      ]
     }
   ],
   "runtimeTruth": {
@@ -533,6 +549,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
+    "Preparar y publicar el candidato exacto de TASK-20260816-003; ejecutar release guard antes de mutar PILOTO_DELTA.",
+    "Pedir GO separado para backup, migracion 006, flags y configuracion Base64 de Evolution antes de activar imagenes/no leidos en PILOTO_DELTA.",
     "Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.",
     "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
     "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",

@@ -8,14 +8,11 @@ el proyecto no dependa de la memoria de Fito, Codex ni una conversacion.
 
 ## Organigrama del sistema de desarrollo
 
-Fito y DELTA definen producto y autorizaciones; SPORTEX convierte ese alcance en estado, tarea, contratos, codigo, pruebas, release y evidencia.
-
 ## Arquitectura por responsabilidades
 
-1. INICIAL.md y el workflow resuelven contexto y estado canonico.
-2. La tarea y Biblioteca delimitan owner, contratos y codigo.
-3. Git y tests identifican y prueban el cambio.
-4. Release, runtime y evidencia demuestran lo entregado sin sustituirse entre si.
+Fito y DELTA definen producto y permisos. INICIAL/workflow resuelven contexto;
+tarea y Biblioteca delimitan owners; Git/tests prueban el cambio; runtime y
+evidencia demuestran lo activo.
 
 ## Flujo normal
 
@@ -38,18 +35,9 @@ Fito decide negocio, prioridad y operacion real. La tarea y el contrato owner de
 
 ## Tareas y continuidad
 
-- Una sola tarea activa.
-- Cola corta y ordenada.
-- Cada tarea declara `work_type`, `context_focus`, `campaign` e impacto sobre
-  esta guia.
-- Cerrar exige evidencia, deuda restante y estado actualizado.
-- Una tarea bloqueada se mueve a cola; no queda fingiendo actividad.
-- Un objetivo grande puede usar una campana, pero cada cambio sigue teniendo
-  su propia tarea y alcance.
-- Cada hilo material registra un checkpoint en la tarea, el estado canonico,
-  decisiones y evidencia antes del cierre.
-- Una campaña se abre en `PROJECT_STATE.json`; su vista es
-  `CAMPAIGN_STATE.json`. Activa: `nextCampaign: null`.
+Hay una sola tarea activa y una cola corta. Cada tarea declara tipo, foco,
+campana e impacto sobre esta guia; su cierre registra evidencia, deuda, estado y
+checkpoint. Una campana agrupa objetivos sin reemplazar tareas acotadas.
 
 ## Entornos
 
@@ -72,14 +60,9 @@ auditoria, efectos, workers, tests, evidencia, rollback y estado.
 
 ## Calidad y cierre
 
-La validacion debe ser proporcional al riesgo:
-
-- documentacion: generados, enlaces, estructura, semantica y Git;
-- fix: reproduccion que falla antes y pasa despues;
-- feature: contrato, unitarias, integracion, permisos y regresion;
-- datos: migracion, aislamiento, backup y rollback;
-- mensajeria: idempotencia, allowlist/alcance y no duplicacion;
-- release: commit remoto, scope, artefacto, permiso y observacion.
+La validacion es proporcional: docs revisa vistas; fix reproduce; feature prueba
+contrato/permisos; datos exige aislamiento/rollback; mensajeria idempotencia; y
+release commit, artefacto, permiso y observacion.
 
 `IMPLEMENTADO_NO_VALIDADO` es un estado valido. `CERTIFICADO_PILOTO` exige
 evidencia real. `OPERATIVO_COMERCIAL` exige ademas el gate de mercado.
@@ -90,11 +73,8 @@ evidencia real. `OPERATIVO_COMERCIAL` exige ademas el gate de mercado.
 npm run workflow:close -- TASK-AAAAMMDD-NNN
 ```
 
-Antes de emitir `SPORTEX_CLOSE=PASS`, el workflow exige coincidencia de tarea y
-estado, cambio reciente, decision y evidencia, estado explicito de migraciones,
-pruebas, despliegues, integraciones y datos sensibles, pendientes y proxima
-accion. Luego regenera las vistas y ejecuta `npm run validate`, que cubre scan,
-tests del workflow, documentacion, TypeScript, tests del Core, SQL y build.
+`SPORTEX_CLOSE=PASS` exige tarea/estado, evidencia, decisiones, migraciones,
+pruebas, despliegues, integraciones, pendientes y `npm run validate`.
 
 Una consulta read-only cierra con `npm run workflow:check`. Ninguno de estos
 comandos concede permisos de runtime.
@@ -110,8 +90,16 @@ viven en sus documentos owner; esta guia explica el mapa y no los duplica.
 
 ## Glosario simple
 
-Contrato: regla estable. Task: cambio acotado. Gate: condicion bloqueante. Evidencia: prueba reproducible. Piloto: uso real restringido previo al mercado.
+Contrato: regla estable. Gate: condicion bloqueante. Evidencia: prueba reproducible.
 
 ### Demos locales persistentes
 
 Su cierre debe probar semilla ficticia, aislamiento tenant, reinicio del proceso, reset controlado y QA visual responsive. La persistencia local nunca se presenta como base real, migracion, integracion o certificacion de piloto.
+
+### WhatsApp manual
+
+Imagenes y estado no leido son contratos operativos separados de IA. Los bytes
+son privados por tenant, el estado de lectura es por actor y conversacion, y
+todo envio conserva previsualizacion, confirmacion humana e idempotencia.
+En PILOTO_DELTA se promueven migracion primero, imagen despues y flags al final;
+el cambio de Base64 conserva webhook/eventos previos y no autoriza mensajes.

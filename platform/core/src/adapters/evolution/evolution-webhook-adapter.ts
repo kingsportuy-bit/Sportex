@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { NormalizedWhatsAppIngress, WhatsAppDeliveryStatus } from "../../domain/whatsapp-transport-models.js";
+import { normalizeWhatsAppImage } from "../../domain/whatsapp-image.js";
 
 type JsonObject = Record<string, unknown>;
 
@@ -42,12 +43,38 @@ function contactJid(key: JsonObject): string {
   return candidate;
 }
 
-function messageText(message: JsonObject): { text: string; contextInfo: JsonObject | null } {
+function messageContent(message: JsonObject, data: JsonObject): {
+  contentType: "TEXT" | "IMAGE";
+  text: string;
+  contextInfo: JsonObject | null;
+  image: NormalizedWhatsAppIngress["image"];
+} {
   const direct = optionalString(message.conversation, 4_000);
-  if (direct) return { text: direct, contextInfo: null };
+  if (direct) return { contentType: "TEXT", text: direct, contextInfo: null, image: null };
   const extended = optionalObject(message.extendedTextMessage);
   const extendedText = extended ? optionalString(extended.text, 4_000) : null;
-  if (extendedText) return { text: extendedText, contextInfo: optionalObject(extended?.contextInfo) };
+  if (extendedText) return { contentType: "TEXT", text: extendedText, contextInfo: optionalObject(extended?.contextInfo), image: null };
+  const imageMessage = optionalObject(message.imageMessage);
+  if (imageMessage) {
+    const base64 = optionalString(data.base64, 7_500_000)
+      ?? optionalString(message.base64, 7_500_000)
+      ?? optionalString(imageMessage.base64, 7_500_000)
+      ?? optionalString(imageMessage.dataBase64, 7_500_000);
+    if (!base64) throw new Error("evolution_image_base64_required");
+    const image = normalizeWhatsAppImage({
+      mimeType: requiredString(imageMessage.mimetype, "evolution_image_mimetype", 80),
+      fileName: optionalString(imageMessage.fileName, 160),
+      dataBase64: base64,
+      width: typeof imageMessage.width === "number" ? imageMessage.width : null,
+      height: typeof imageMessage.height === "number" ? imageMessage.height : null,
+    });
+    return {
+      contentType: "IMAGE",
+      text: optionalString(imageMessage.caption, 4_000) ?? "",
+      contextInfo: optionalObject(imageMessage.contextInfo),
+      image,
+    };
+  }
   throw new Error("evolution_message_type_out_of_scope");
 }
 
@@ -91,6 +118,7 @@ export interface EvolutionWebhookAdapterOptions {
   instance: string;
   actorId: string;
   clock?: () => Date;
+  mediaEnabled?: boolean;
 }
 
 export class EvolutionWebhookAdapter {
@@ -132,6 +160,7 @@ export class EvolutionWebhookAdapter {
         fromMe: true,
         contentType: "RECEIPT",
         text: null,
+        image: null,
         metadata: { providerMessageId: messageId, deliveryStatus: status },
       });
     }
@@ -142,7 +171,10 @@ export class EvolutionWebhookAdapter {
     const remoteJid = contactJid(key);
     const fromMe = key.fromMe === true;
     const message = object(data.message, "evolution_message");
-    const extracted = messageText(message);
+    const extracted = messageContent(message, data);
+    if (extracted.contentType === "IMAGE" && !this.options.mediaEnabled) {
+      throw new Error("evolution_image_disabled");
+    }
     const occurredAt = isoTimestamp(data.messageTimestamp, "evolution_message_timestamp");
     const providerEventId = `messages.upsert:${instance}:${messageId}`;
     const pushName = optionalString(data.pushName, 120) ?? "Contacto de WhatsApp";
@@ -153,8 +185,9 @@ export class EvolutionWebhookAdapter {
       receivedAt,
       remoteJid,
       fromMe,
-      contentType: "TEXT",
+      contentType: extracted.contentType,
       text: extracted.text,
+      image: extracted.image,
       metadata: {
         providerMessageId: messageId,
         pushName,
@@ -170,8 +203,9 @@ export class EvolutionWebhookAdapter {
     receivedAt: string;
     remoteJid: string;
     fromMe: boolean;
-    contentType: "TEXT" | "RECEIPT";
+    contentType: "TEXT" | "IMAGE" | "RECEIPT";
     text: string | null;
+    image: NormalizedWhatsAppIngress["image"];
     metadata: Record<string, string>;
   }): NormalizedWhatsAppIngress {
     return {
@@ -190,6 +224,7 @@ export class EvolutionWebhookAdapter {
       contentType: input.contentType,
       contentRef: `evolution:${input.contentType.toLowerCase()}:${input.metadata.providerMessageId}`,
       text: input.text,
+      image: input.image,
       source: "LIVE",
       correlationId: input.eventId,
       contractVersion: 1,

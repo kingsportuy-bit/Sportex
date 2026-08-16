@@ -54,6 +54,8 @@ const state = {
   whatsappDetailsOpen: false,
   mobileWhatsappTab: "chat",
   whatsappStage: "ALL",
+  whatsappUnreadOnly: false,
+  pendingWhatsappImage: null,
   currentView: "today",
   todayFilter: "all",
   mobileLeadTab: "chat",
@@ -156,6 +158,7 @@ function commercialSnapshot(items) {
     item.id,
     item.opportunity.version,
     item.conversation.lastActivityAt,
+    item.conversation.unreadCount || 0,
     item.conversation.messages.at(-1)?.providerMessageId || "",
     item.timeline?.at(-1)?.id || "",
   ]));
@@ -262,6 +265,44 @@ async function loadSession() {
   $("#logout-button").hidden = state.localDemo;
   if (state.session.passwordChangeRequired) openPasswordDialog(true);
   $("#today-date").textContent = todayLabel();
+}
+
+async function authenticatedFetch(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  if (state.localDemo) {
+    headers.set("x-sportex-tenant-id", localIdentity.tenantId);
+    headers.set("x-sportex-actor-id", localIdentity.actorId);
+    headers.set("x-sportex-capabilities", localIdentity.capabilities.join(","));
+  }
+  if (state.token) headers.set("authorization", `Bearer ${state.token}`);
+  return fetch(path, { ...options, headers });
+}
+
+function appendMessageContent(row, message) {
+  if (message.contentType !== "IMAGE" || !message.media) {
+    row.append(element("p", "", message.text));
+    return;
+  }
+  const figure = element("figure", "whatsapp-image-message is-loading");
+  const image = element("img");
+  image.alt = message.text || `Imagen: ${message.media.fileName}`;
+  const caption = message.text ? element("figcaption", "", message.text) : null;
+  figure.append(image, element("span", "whatsapp-image-loading", "Cargando imagen…"));
+  if (caption) figure.append(caption);
+  row.append(figure);
+  void authenticatedFetch(`/v1/commercial/messages/${encodeURIComponent(message.id)}/media`)
+    .then(async (response) => {
+      if (!response.ok) throw new Error("media_load_failed");
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        image.src = String(reader.result);
+        figure.classList.remove("is-loading");
+        figure.querySelector(".whatsapp-image-loading")?.remove();
+      }, { once: true });
+      reader.readAsDataURL(blob);
+    })
+    .catch(() => { figure.querySelector(".whatsapp-image-loading").textContent = "No se pudo mostrar la imagen"; });
 }
 
 async function loadData() {
@@ -789,11 +830,9 @@ function renderConversation(item) {
   const timeline = element("div", "conversation-timeline");
   for (const message of item.conversation.messages) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
-    row.append(
-      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
-      element("p", "", message.text),
-      element("time", "", shortDateTime(message.occurredAt)),
-    );
+    row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
+    appendMessageContent(row, message);
+    row.append(element("time", "", shortDateTime(message.occurredAt)));
     timeline.append(row);
   }
   card.append(note, timeline);
@@ -1254,6 +1293,7 @@ function filteredWhatsApp() {
   return [...state.commercial]
     .filter((item) => {
       if (state.whatsappStage !== "ALL" && item.opportunity.stage !== state.whatsappStage) return false;
+      if (state.config?.whatsappUnreadEnabled && state.whatsappUnreadOnly && !(item.conversation.unreadCount > 0)) return false;
       if (!search) return true;
       const lastMessage = item.conversation.messages.at(-1)?.text || "";
       return normalizedSearch([
@@ -1318,7 +1358,8 @@ function renderWhatsAppList(items) {
   for (const item of items) {
     const selected = item.id === state.selectedCommercialId;
     const latest = item.conversation.messages.at(-1);
-    const button = element("button", `whatsapp-row${selected ? " is-selected" : ""}`);
+    const unread = state.config?.whatsappUnreadEnabled ? item.conversation.unreadCount || 0 : 0;
+    const button = element("button", `whatsapp-row${selected ? " is-selected" : ""}${unread ? " is-unread" : ""}`);
     button.type = "button";
     button.setAttribute("aria-pressed", String(selected));
     const avatar = element("span", "whatsapp-avatar", initials(item.conversation.contactName));
@@ -1328,10 +1369,13 @@ function renderWhatsAppList(items) {
       element("strong", "", item.conversation.contactName),
       element("time", "", latest ? shortDateTime(latest.occurredAt) : ""),
     );
+    if (unread) head.append(element("span", "whatsapp-unread-badge", String(unread)));
     copy.append(
       head,
       element("span", "whatsapp-team", item.lead.teamName || "Equipo por confirmar"),
-      element("span", "whatsapp-preview", latest?.text || "Sin mensajes"),
+      element("span", "whatsapp-preview", latest?.contentType === "IMAGE"
+        ? `📷 Imagen${latest.text ? ` · ${latest.text}` : ""}`
+        : latest?.text || "Sin mensajes"),
     );
     button.append(avatar, copy);
     button.addEventListener("click", () => {
@@ -1339,6 +1383,7 @@ function renderWhatsAppList(items) {
       state.mobileWhatsappDetailOpen = true;
       state.mobileWhatsappTab = "chat";
       state.draftResource = null;
+      if (unread) void markWhatsAppRead(item.id);
       renderWhatsApp();
       $("#whatsapp-detail").focus({ preventScroll: true });
     });
@@ -1346,19 +1391,39 @@ function renderWhatsAppList(items) {
   }
 }
 
+async function markWhatsAppRead(itemId) {
+  const item = state.commercial.find((candidate) => candidate.id === itemId);
+  if (!item || !(item.conversation.unreadCount > 0)) return;
+  item.conversation.unreadCount = 0;
+  renderWhatsApp();
+  try {
+    await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}/read`, { method: "POST" });
+    await loadData();
+    state.selectedCommercialId = itemId;
+    renderWhatsApp();
+  } catch (error) {
+    await loadData().catch(() => undefined);
+    renderWhatsApp();
+    toast(friendlyError(error), "error");
+  }
+}
+
 function renderWhatsAppComposer(item) {
   const composer = element("section", "whatsapp-composer");
   const attach = element("button", "whatsapp-composer-icon", "+");
   attach.type = "button";
-  attach.disabled = true;
-  attach.title = "Los adjuntos se habilitarán al conectar WhatsApp";
+  const sendingEnabled = state.localWhatsappSimulation || state.realWhatsappOutbound;
+  attach.disabled = !sendingEnabled || !state.config?.whatsappMediaEnabled;
+  attach.title = "Adjuntar imagen JPEG, PNG o WebP (máx. 5 MB)";
   attach.setAttribute("aria-label", "Adjuntar");
+  const fileInput = element("input", "sr-only");
+  fileInput.type = "file";
+  fileInput.accept = "image/jpeg,image/png,image/webp";
   const input = element("textarea", "whatsapp-composer-input");
   input.rows = 1;
   input.placeholder = "Escribí un mensaje";
   const send = element("button", "whatsapp-send", "➤");
   send.type = "button";
-  const sendingEnabled = state.localWhatsappSimulation || state.realWhatsappOutbound;
   send.disabled = !sendingEnabled;
   send.title = state.localWhatsappSimulation
     ? "Enviar dentro de la simulación local"
@@ -1373,32 +1438,64 @@ function renderWhatsAppComposer(item) {
   );
   const submit = async () => {
     const text = input.value.trim();
-    if (!text || send.disabled || !sendingEnabled) return;
+    const pendingImage = state.pendingWhatsappImage;
+    if ((!text && !pendingImage) || send.disabled || !sendingEnabled) return;
     setButtonBusy(send, true, "…");
     try {
-      const path = state.localWhatsappSimulation
-        ? `/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`
-        : `/v1/integrations/evolution/workspace/${encodeURIComponent(item.id)}/messages`;
+      const path = pendingImage
+        ? state.localWhatsappSimulation
+          ? `/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/images`
+          : `/v1/integrations/evolution/workspace/${encodeURIComponent(item.id)}/images`
+        : state.localWhatsappSimulation
+          ? `/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`
+          : `/v1/integrations/evolution/workspace/${encodeURIComponent(item.id)}/messages`;
+      const body = pendingImage ? {
+        caption: text,
+        mimeType: pendingImage.mimeType,
+        fileName: pendingImage.fileName,
+        dataBase64: pendingImage.dataBase64,
+        ...(state.localWhatsappSimulation ? {} : { confirmation: "ENVIAR_IMAGEN_A_WHATSAPP" }),
+      } : state.localWhatsappSimulation ? { text } : { text, confirmation: "ENVIAR_A_WHATSAPP" };
       await api(path, {
         method: "POST",
-        headers: { "idempotency-key": `whatsapp-message-${crypto.randomUUID()}` },
-        body: JSON.stringify(state.localWhatsappSimulation
-          ? { text }
-          : { text, confirmation: "ENVIAR_A_WHATSAPP" }),
+        headers: { "idempotency-key": `whatsapp-${pendingImage ? "image" : "message"}-${crypto.randomUUID()}` },
+        body: JSON.stringify(body),
       });
       input.value = "";
+      state.pendingWhatsappImage = null;
       await loadData();
       state.selectedCommercialId = item.id;
       renderWhatsApp();
       toast(state.localWhatsappSimulation
-        ? "Mensaje agregado a la conversación simulada."
-        : "Mensaje enviado por WhatsApp.");
+        ? `${pendingImage ? "Imagen" : "Mensaje"} agregado a la conversación simulada.`
+        : `${pendingImage ? "Imagen" : "Mensaje"} enviado por WhatsApp.`);
     } catch (error) {
       toast(friendlyError(error), "error");
     } finally {
       setButtonBusy(send, false, "");
     }
   };
+  attach.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      toast("Elegí una imagen JPEG, PNG o WebP de hasta 5 MB.", "error");
+      fileInput.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      state.pendingWhatsappImage = {
+        mimeType: file.type,
+        fileName: file.name,
+        dataBase64: String(reader.result).split(",")[1] || "",
+        preview: String(reader.result),
+      };
+      renderWhatsAppDetailPreservingChatState(item);
+    }, { once: true });
+    reader.readAsDataURL(file);
+  });
   send.addEventListener("click", submit);
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -1406,7 +1503,22 @@ function renderWhatsAppComposer(item) {
       void submit();
     }
   });
-  composer.append(attach, input, send, note);
+  if (state.pendingWhatsappImage) {
+    const preview = element("div", "whatsapp-image-preview");
+    const thumbnail = element("img");
+    thumbnail.src = state.pendingWhatsappImage.preview;
+    thumbnail.alt = "Vista previa de la imagen a enviar";
+    const remove = element("button", "whatsapp-image-remove", "×");
+    remove.type = "button";
+    remove.setAttribute("aria-label", "Quitar imagen");
+    remove.addEventListener("click", () => {
+      state.pendingWhatsappImage = null;
+      renderWhatsAppDetailPreservingChatState(item);
+    });
+    preview.append(thumbnail, element("span", "", state.pendingWhatsappImage.fileName), remove);
+    composer.append(preview);
+  }
+  composer.append(attach, fileInput, input, send, note);
   return composer;
 }
 
@@ -1464,11 +1576,9 @@ function renderWhatsAppChatPane(item) {
     }
     const message = entry.message;
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
-    row.append(
-      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
-      element("p", "", message.text),
-      element("time", "", shortDateTime(message.occurredAt)),
-    );
+    row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
+    appendMessageContent(row, message);
+    row.append(element("time", "", shortDateTime(message.occurredAt)));
     conversation.append(row);
   }
   pane.append(header, conversation, renderWhatsAppComposer(item));
@@ -1503,7 +1613,15 @@ function renderWhatsApp() {
   if (!items.some((item) => item.id === state.selectedCommercialId)) {
     state.selectedCommercialId = items[0]?.id ?? null;
   }
-  $("#whatsapp-count-nav").textContent = String(state.commercial.length);
+  const totalUnread = state.config?.whatsappUnreadEnabled
+    ? state.commercial.reduce((sum, item) => sum + (item.conversation.unreadCount || 0), 0)
+    : 0;
+  $("#whatsapp-count-nav").textContent = String(totalUnread || state.commercial.length);
+  $("#whatsapp-count-nav").classList.toggle("has-unread", totalUnread > 0);
+  const unreadFilter = $("#whatsapp-unread-filter");
+  if (unreadFilter) unreadFilter.hidden = !state.config?.whatsappUnreadEnabled;
+  unreadFilter?.setAttribute("aria-pressed", String(state.whatsappUnreadOnly));
+  unreadFilter?.classList.toggle("is-active", state.whatsappUnreadOnly);
   renderWhatsAppStages();
   renderWhatsAppList(items);
   renderWhatsAppDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
@@ -2307,6 +2425,12 @@ $$('[data-open-order], #new-order-button').forEach((button) => button.addEventLi
 $("#clear-filters").addEventListener("click", clearCommercialFilters);
 $("#whatsapp-search").addEventListener("input", () => {
   state.mobileWhatsappDetailOpen = false;
+  renderWhatsApp();
+});
+$("#whatsapp-unread-filter").addEventListener("click", () => {
+  state.whatsappUnreadOnly = !state.whatsappUnreadOnly;
+  state.mobileWhatsappDetailOpen = false;
+  state.selectedCommercialId = null;
   renderWhatsApp();
 });
 $("#reset-demo-button").addEventListener("click", openResetDemoDialog);

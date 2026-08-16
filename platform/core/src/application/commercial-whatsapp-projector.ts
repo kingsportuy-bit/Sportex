@@ -12,7 +12,8 @@ export class CommercialWhatsAppProjector {
 
   async project(envelope: NormalizedWhatsAppIngress): Promise<CommercialReplayResult | null> {
     if (envelope.contentType === "RECEIPT") return null;
-    if (!envelope.text) throw new Error("whatsapp_text_missing");
+    if (envelope.contentType === "TEXT" && !envelope.text) throw new Error("whatsapp_text_missing");
+    if (envelope.contentType === "IMAGE" && !envelope.image) throw new Error("whatsapp_image_missing");
     const providerMessageId = envelope.metadata.providerMessageId;
     if (!providerMessageId) throw new Error("provider_message_id_missing");
 
@@ -45,7 +46,18 @@ export class CommercialWhatsAppProjector {
         },
         pushName: envelope.metadata.pushName ?? "Contacto ficticio",
         messageTimestamp: envelope.occurredAt,
-        message: { conversation: envelope.text },
+        message: envelope.contentType === "IMAGE" && envelope.image ? {
+          imageMessage: {
+            caption: envelope.text ?? "",
+            mimetype: envelope.image.mimeType,
+            fileName: envelope.image.fileName,
+            fileLength: envelope.image.sizeBytes,
+            fileSha256: envelope.image.sha256,
+            dataBase64: envelope.image.dataBase64,
+            ...(envelope.image.width ? { width: envelope.image.width } : {}),
+            ...(envelope.image.height ? { height: envelope.image.height } : {}),
+          },
+        } : { conversation: envelope.text ?? "" },
         ...(externalAdReply ? { contextInfo: { externalAdReply } } : {}),
       },
     };

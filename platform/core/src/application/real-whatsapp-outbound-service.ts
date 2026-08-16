@@ -1,7 +1,7 @@
 import type { CommercialReplayService } from "./commercial-replay-service.js";
 import type { EvolutionHttpTransport } from "../adapters/evolution/evolution-http-transport.js";
 import type { ActorContext } from "../domain/models.js";
-import type { WhatsAppOutboundRecord } from "../domain/whatsapp-transport-models.js";
+import type { WhatsAppImagePayload, WhatsAppOutboundRecord } from "../domain/whatsapp-transport-models.js";
 import type { WhatsAppOutboundStore } from "../ports/whatsapp-transport-store.js";
 import type { EvolutionReplayEvent } from "../domain/commercial-models.js";
 import { requireCapability } from "../shared/authorization.js";
@@ -21,17 +21,38 @@ export class RealWhatsAppOutboundService {
     text: string,
     idempotencyKey: string,
   ): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }> {
+    return this.sendContent(context, itemId, text, null, idempotencyKey);
+  }
+
+  async sendImage(
+    context: ActorContext,
+    itemId: string,
+    caption: string,
+    image: WhatsAppImagePayload,
+    idempotencyKey: string,
+  ): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }> {
+    return this.sendContent(context, itemId, caption, image, idempotencyKey);
+  }
+
+  private async sendContent(
+    context: ActorContext,
+    itemId: string,
+    text: string,
+    image: WhatsAppImagePayload | null,
+    idempotencyKey: string,
+  ): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }> {
     requireCapability(context, "commercial.manage");
     const item = (await this.commercial.list(context)).find((candidate) => candidate.id === itemId);
     if (!item) throw notFound("commercial_workspace_not_found", "Commercial workspace item was not found");
     const normalizedText = text.trim();
-    if (!normalizedText) throw new Error("outbound_text_required");
+    if (!normalizedText && !image) throw new Error("outbound_content_required");
     const now = this.clock().toISOString();
     const command = {
       tenantId: context.tenantId,
       conversationRef: item.conversation.providerConversationRef,
       destinationRef: item.contact.providerContactRef,
       text: normalizedText,
+      image,
       idempotencyKey,
       correlationId: context.correlationId,
       confirmedBy: context.actorId,
@@ -88,7 +109,18 @@ export class RealWhatsAppOutboundService {
         },
         pushName: "Delta",
         messageTimestamp: sent.updatedAt,
-        message: { conversation: sent.text },
+        message: sent.image ? {
+          imageMessage: {
+            caption: sent.text,
+            mimetype: sent.image.mimeType,
+            fileName: sent.image.fileName,
+            fileLength: sent.image.sizeBytes,
+            fileSha256: sent.image.sha256,
+            dataBase64: sent.image.dataBase64,
+            ...(sent.image.width ? { width: sent.image.width } : {}),
+            ...(sent.image.height ? { height: sent.image.height } : {}),
+          },
+        } : { conversation: sent.text },
       },
     };
     await this.commercial.replayTrustedEvolution(

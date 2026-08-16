@@ -42,6 +42,17 @@ function rowToOutbound(row: Record<string, unknown>): WhatsAppOutboundRecord {
     conversationRef: String(row.conversation_ref),
     destinationRef: String(row.destination_ref),
     text: String(row.body_text),
+    image: row.media_sha256 ? {
+      mimeType: String(row.media_mime_type) as NonNullable<WhatsAppOutboundRecord["image"]>["mimeType"],
+      fileName: String(row.media_file_name),
+      sizeBytes: Number(row.media_size_bytes),
+      sha256: String(row.media_sha256),
+      dataBase64: Buffer.isBuffer(row.media_data)
+        ? row.media_data.toString("base64")
+        : Buffer.from(String(row.media_data)).toString("base64"),
+      width: row.media_width ? Number(row.media_width) : null,
+      height: row.media_height ? Number(row.media_height) : null,
+    } : null,
     idempotencyKey: String(row.idempotency_key),
     correlationId: String(row.correlation_id),
     confirmedBy: String(row.confirmed_by),
@@ -148,14 +159,19 @@ export class PostgresWhatsAppTransportStore implements WhatsAppIngressJournal, W
         `INSERT INTO ${this.tables.outbound}
          (tenant_id, idempotency_key, conversation_ref, destination_ref, body_text,
           correlation_id, confirmed_by, provider_message_id, delivery_status, attempts,
+          media_mime_type, media_file_name, media_size_bytes, media_sha256, media_data, media_width, media_height,
           created_at, updated_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,
+                 CASE WHEN $15::text IS NULL THEN NULL ELSE decode($15,'base64') END,$16,$17,$18,$19)
          ON CONFLICT (tenant_id, idempotency_key) DO NOTHING
          RETURNING *`,
         [record.tenantId, record.idempotencyKey, record.conversationRef,
           record.destinationRef, record.text, record.correlationId, record.confirmedBy,
-          record.providerMessageId, record.status, record.attempts, record.createdAt,
-          record.updatedAt],
+          record.providerMessageId, record.status, record.attempts,
+          record.image?.mimeType ?? null, record.image?.fileName ?? null,
+          record.image?.sizeBytes ?? null, record.image?.sha256 ?? null,
+          record.image?.dataBase64 ?? null, record.image?.width ?? null, record.image?.height ?? null,
+          record.createdAt, record.updatedAt],
       );
       if (inserted.rowCount === 1) {
         return { duplicate: false, record: rowToOutbound(inserted.rows[0] as Record<string, unknown>) };
@@ -168,7 +184,8 @@ export class PostgresWhatsAppTransportStore implements WhatsAppIngressJournal, W
       const row = existing.rows[0] as Record<string, unknown> | undefined;
       if (!row) throw new Error("whatsapp_outbound_idempotency_orphaned");
       const current = rowToOutbound(row);
-      if (current.destinationRef !== record.destinationRef || current.text !== record.text) {
+      if (current.destinationRef !== record.destinationRef || current.text !== record.text
+        || (current.image?.sha256 ?? null) !== (record.image?.sha256 ?? null)) {
         throw new Error("whatsapp_outbound_idempotency_conflict");
       }
       return { duplicate: true, record: current };

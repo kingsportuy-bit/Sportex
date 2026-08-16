@@ -98,3 +98,12 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   solo los reúne para lectura y la UI conserva burbujas y separadores.
 - `ASSISTANT` es dato pasivo, sin ejecución. Ocultar la cronología no toca
   mensajes ni fuentes del Core.
+- Imagenes manuales son assets privados tenant-aware; lectura es un cursor por
+  actor/conversacion separado de receipts. Ambas capacidades quedan apagadas
+  por defecto y no introducen IA.
+
+## SPORTEX-DEC-012 - WhatsApp define el sistema visual transversal
+
+- 2026-08-16 · `VIGENTE`. WhatsApp define jerarquía, superficies y estados de
+  toda la aplicación mediante tokens claro/noche con contraste estable.
+- SPORTEX y `#DCFF52` se conservan como marca y señal.

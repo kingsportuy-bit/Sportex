@@ -28,12 +28,20 @@ export class EvolutionHttpTransport {
 
   async send(command: WhatsAppOutboundCommand): Promise<WhatsAppOutboundRecord> {
     if (!command.confirmedBy.trim()) throw new Error("outbound_human_confirmation_required");
+    const image = command.image ?? null;
     const response = await this.http(
-      `${this.baseUrl}/message/sendText/${encodeURIComponent(this.instance)}`,
+      `${this.baseUrl}/message/${image ? "sendMedia" : "sendText"}/${encodeURIComponent(this.instance)}`,
       {
         method: "POST",
         headers: { apikey: this.apiKey, "content-type": "application/json" },
-        body: JSON.stringify({ number: destinationNumber(command.destinationRef), text: command.text }),
+        body: JSON.stringify(image ? {
+          number: destinationNumber(command.destinationRef),
+          mediatype: "image",
+          mimetype: image.mimeType,
+          caption: command.text,
+          media: image.dataBase64,
+          fileName: image.fileName,
+        } : { number: destinationNumber(command.destinationRef), text: command.text }),
         signal: AbortSignal.timeout(10_000),
       },
     );

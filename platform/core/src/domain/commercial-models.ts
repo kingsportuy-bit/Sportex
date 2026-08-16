@@ -37,7 +37,17 @@ export interface EvolutionReplayEvent {
     pushName: string;
     messageTimestamp: string;
     message: {
-      conversation: string;
+      conversation?: string;
+      imageMessage?: {
+        caption?: string;
+        mimetype: "image/jpeg" | "image/png" | "image/webp";
+        fileName: string;
+        fileLength: number;
+        fileSha256: string;
+        width?: number;
+        height?: number;
+        dataBase64: string;
+      };
     };
     contextInfo?: {
       externalAdReply?: {
@@ -57,8 +67,16 @@ export interface NormalizedConversationMessage {
   direction: CommercialMessageDirection;
   occurredAt: string;
   receivedAt: string;
-  contentType: "TEXT";
+  contentType: "TEXT" | "IMAGE";
   text: string;
+  media: {
+    assetId: string;
+    mimeType: "image/jpeg" | "image/png" | "image/webp";
+    fileName: string;
+    sizeBytes: number;
+    width: number | null;
+    height: number | null;
+  } | null;
   evidenceRef: string;
   sourceKind?: "FIXTURE" | "BACKFILL" | "LIVE";
   fixtureOnly: boolean;
@@ -113,6 +131,27 @@ export interface CommercialConversation {
   firstContactAt: string;
   lastActivityAt: string;
   fixtureOnly: boolean;
+  unreadCount?: number;
+}
+
+export interface CommercialMediaAsset {
+  id: string;
+  tenantId: string;
+  mimeType: "image/jpeg" | "image/png" | "image/webp";
+  fileName: string;
+  sizeBytes: number;
+  sha256: string;
+  dataBase64: string;
+  createdAt: string;
+  fixtureOnly: boolean;
+}
+
+export interface CommercialConversationReadState {
+  tenantId: string;
+  actorId: string;
+  conversationId: string;
+  lastReadMessageId: string;
+  lastReadAt: string;
 }
 
 export interface CommercialSizeBreakdown {

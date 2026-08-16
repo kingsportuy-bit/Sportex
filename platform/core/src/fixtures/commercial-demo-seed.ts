@@ -167,6 +167,7 @@ function messages(spec: DemoSpec, index: number, baseAt: Date): NormalizedConver
       receivedAt: occurredAt,
       contentType: "TEXT",
       text,
+      media: null,
       evidenceRef: `fixture:commercial-demo-v1:${suffix}`,
       fixtureOnly: true,
     };

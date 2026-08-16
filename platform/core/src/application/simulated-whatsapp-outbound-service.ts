@@ -20,7 +20,7 @@ export class SimulatedWhatsAppOutboundService {
 
   async enqueue(command: WhatsAppOutboundCommand): Promise<{ duplicate: boolean; record: WhatsAppOutboundRecord }> {
     if (!command.confirmedBy.trim()) throw new Error("outbound_human_confirmation_required");
-    if (!command.text.trim()) throw new Error("outbound_text_required");
+    if (!command.text.trim() && !command.image) throw new Error("outbound_content_required");
     const now = this.clock().toISOString();
     return this.store.enqueue({
       ...structuredClone(command),
@@ -43,6 +43,7 @@ export class SimulatedWhatsAppOutboundService {
           conversationRef: pending.conversationRef,
           destinationRef: pending.destinationRef,
           text: pending.text,
+          image: pending.image ?? null,
           idempotencyKey: pending.idempotencyKey,
           correlationId: pending.correlationId,
           confirmedBy: pending.confirmedBy,

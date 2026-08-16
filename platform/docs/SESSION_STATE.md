@@ -2,7 +2,7 @@
 
 > GENERADO desde `docs/state/PROJECT_STATE.json`. No editar manualmente.
 
-Actualizado: 2026-08-15.
+Actualizado: 2026-08-16.
 
 ## Entorno de trabajo
 
@@ -10,7 +10,7 @@ Actualizado: 2026-08-15.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `documentation`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-08-15.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20260816-003`: `in_progress` (docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md).
 
 ## Objetivo actual
 
-Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados comerciales.
+Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
 
 ## Alcance actual
 
-- Permitido: Registrar el estado real del piloto y el criterio de verificacion de transiciones comerciales. | Conservar cronologia, mensajes y runtime 72e0fc2 sin cambios.
-- Prohibido: No implementar, desplegar, migrar, enviar mensajes ni cambiar estados reales en este checkpoint.
+- Permitido: Crear candidato exacto, backup/restore, migrar 006, activar flags/Base64 y desplegar. | Verificar runtime, RLS, UI y cero mensajes/outbound nuevos.
+- Prohibido: No enviar mensajes reales ni tocar otros tenants, servicios, Meta o PRODUCCION_COMERCIAL.
 
 ## Decisiones vigentes
 
@@ -49,18 +49,18 @@ Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 4; pendientes 0.
-- Pruebas: `PASS`; ultima ejecucion `2026-08-15`.
+- Migraciones: `MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 4; pendientes 1.
+- Pruebas: `PASS`; ultima ejecucion `2026-08-16`.
 - Despliegues: `PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL`; registros 8.
 - Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_17_TABLAS_RLS_FORZADO_TIMELINE_005` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_72E0FC2_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260815-002`.
-- Fecha: `2026-08-15`.
-- Fuente: `docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md`.
-- Cambiar etapas o estados desde WhatsApp queda pendiente de verificacion; cero cambios remotos.
+- Tarea: `TASK-20260816-002`.
+- Fecha: `2026-08-16`.
+- Fuente: `docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md`.
+- Imagenes manuales y no leidos convencionales validados localmente; runtime intacto.
 
 ## Riesgos
 
@@ -75,6 +75,8 @@ Verificar antes de prometer que el panel WhatsApp puede cambiar etapas o estados
 
 ## Siguientes acciones
 
+- Preparar y publicar el candidato exacto de TASK-20260816-003; ejecutar release guard antes de mutar PILOTO_DELTA.
+- Pedir GO separado para backup, migracion 006, flags y configuracion Base64 de Evolution antes de activar imagenes/no leidos en PILOTO_DELTA.
 - Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.
 - Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
 - Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.

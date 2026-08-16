@@ -2,11 +2,11 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-08-15.
+Actualizado: 2026-08-16.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260816-003` | `in_progress` | Promover imágenes y no leídos al piloto Delta | docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md
 
 ## Cola
 
@@ -32,3 +32,5 @@ Actualizado: 2026-08-15.
 - `TASK-20260814-001` | `done` | Integrar WhatsApp real de Delta con SPORTEX | docs/TASKS/closed/2026/TASK-20260814-001-integrar-whatsapp-real-delta.md
 - `TASK-20260815-001` | `done` | Incorporar cronología operativa al chat WhatsApp | docs/TASKS/closed/2026/TASK-20260815-001-cronologia-operativa-whatsapp.md
 - `TASK-20260815-002` | `done` | Registrar pendiente de transiciones comerciales | docs/TASKS/closed/2026/TASK-20260815-002-registrar-pendiente-transiciones-comerciales.md
+- `TASK-20260816-001` | `done` | Normalizar experiencia visual de SPORTEX | docs/TASKS/closed/2026/TASK-20260816-001-normalizar-experiencia-visual-sportex.md
+- `TASK-20260816-002` | `done` | Incorporar imágenes y no leídos a WhatsApp | docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md

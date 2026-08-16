@@ -75,6 +75,8 @@ La IA puede detectar una posible seña, pero no certificarla. La certificación 
 - análisis de archivos cuando se implemente;
 - checksum y versión;
 - no ejecutar contenido subido.
+- imagenes WhatsApp: JPEG/PNG/WebP, firma real, maximo 5 MB, checksum, bytes
+  privados con RLS y descarga autenticada; nunca URL publica permanente.
 
 ## Secretos
 

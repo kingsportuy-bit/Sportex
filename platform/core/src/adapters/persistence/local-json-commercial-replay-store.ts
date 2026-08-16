@@ -1,6 +1,8 @@
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import type {
+  CommercialConversationReadState,
+  CommercialMediaAsset,
   CommercialReplayIdempotency,
   CommercialWorkspaceItem,
 } from "../../domain/commercial-models.js";
@@ -14,7 +16,7 @@ import { emptyCommercialReplayState } from "../../ports/commercial-replay-store.
 function assertState(value: unknown): asserts value is CommercialReplayState {
   if (!value || typeof value !== "object") throw new Error("commercial_demo_file_invalid");
   const candidate = value as Partial<CommercialReplayState>;
-  if (candidate.schemaVersion !== 1 || !Array.isArray(candidate.items) || !Array.isArray(candidate.idempotency)) {
+  if (![1, 2].includes(Number(candidate.schemaVersion)) || !Array.isArray(candidate.items) || !Array.isArray(candidate.idempotency)) {
     throw new Error("commercial_demo_file_invalid");
   }
   const invalidItem = candidate.items.some((item) =>
@@ -29,6 +31,9 @@ function assertState(value: unknown): asserts value is CommercialReplayState {
 function hydrateLegacyContacts(state: CommercialReplayState): CommercialReplayState {
   return {
     ...state,
+    schemaVersion: 2,
+    mediaAssets: Array.isArray(state.mediaAssets) ? state.mediaAssets : [],
+    readStates: Array.isArray(state.readStates) ? state.readStates : [],
     items: state.items.map((item) => {
       if (item.contact) return item;
       return {
@@ -87,6 +92,30 @@ class JsonCommercialReplayTransaction implements CommercialReplayTransaction {
     ) ?? null;
   }
 
+  async findMedia(assetId: string): Promise<CommercialMediaAsset | null> {
+    return this.state.mediaAssets.find((asset) => asset.tenantId === this.tenantId && asset.id === assetId) ?? null;
+  }
+
+  async saveMedia(asset: CommercialMediaAsset): Promise<void> {
+    if (asset.tenantId !== this.tenantId) throw new Error("commercial_store_tenant_mismatch");
+    if (!this.state.mediaAssets.some((candidate) => candidate.tenantId === this.tenantId && candidate.id === asset.id)) {
+      this.state.mediaAssets.push(structuredClone(asset));
+    }
+  }
+
+  async findReadState(actorId: string, conversationId: string): Promise<CommercialConversationReadState | null> {
+    return this.state.readStates.find((state) => state.tenantId === this.tenantId
+      && state.actorId === actorId && state.conversationId === conversationId) ?? null;
+  }
+
+  async saveReadState(state: CommercialConversationReadState): Promise<void> {
+    if (state.tenantId !== this.tenantId) throw new Error("commercial_store_tenant_mismatch");
+    const index = this.state.readStates.findIndex((candidate) => candidate.tenantId === this.tenantId
+      && candidate.actorId === state.actorId && candidate.conversationId === state.conversationId);
+    if (index === -1) this.state.readStates.push(structuredClone(state));
+    else this.state.readStates[index] = structuredClone(state);
+  }
+
   async save(item: CommercialWorkspaceItem): Promise<void> {
     if (item.tenantId !== this.tenantId) throw new Error("commercial_store_tenant_mismatch");
     const index = this.state.items.findIndex(
@@ -113,6 +142,8 @@ class JsonCommercialReplayTransaction implements CommercialReplayTransaction {
     this.state.idempotency = this.state.idempotency.filter(
       (record) => record.tenantId !== this.tenantId,
     );
+    this.state.mediaAssets = this.state.mediaAssets.filter((asset) => asset.tenantId !== this.tenantId);
+    this.state.readStates = this.state.readStates.filter((state) => state.tenantId !== this.tenantId);
   }
 }
 

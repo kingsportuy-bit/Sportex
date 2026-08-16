@@ -228,3 +228,9 @@ duplica la transición ni los eventos.
 - `POST /v1/local/commercial-demo/reset`: exige `confirmation=RESTAURAR_DATOS_FICTICIOS` y repone los 18 fixtures del tenant.
 
 `GET /v1/public-config` incluye `localCommercialPersistenceEnabled`. El JSON local no es una API de datos reales ni persistencia candidata para piloto.
+
+### WhatsApp manual con imagen y no leidos
+
+- `POST /v1/commercial/workspace/:itemId/read` marca la conversacion leida para el actor autenticado.
+- `GET /v1/commercial/messages/:messageId/media` entrega bytes privados del tenant.
+- `POST .../workspace/:itemId/images` acepta caption, MIME, nombre y Base64; en Evolution exige `confirmation=ENVIAR_IMAGEN_A_WHATSAPP` e `Idempotency-Key`.

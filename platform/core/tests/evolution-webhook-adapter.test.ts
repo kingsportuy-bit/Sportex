@@ -37,6 +37,18 @@ test("real Evolution adapter normalizes a DELTA message without trusting tenant 
   assert.equal(envelope.metadata.providerMessageId, "3A123456789");
 });
 
+test("real Evolution adapter accepts a private image only behind the media flag", () => {
+  const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+  const payload = liveMessage({ message: { imageMessage: {
+    mimetype: "image/png", fileName: "muestra.png", caption: "Diseño frontal", dataBase64: png,
+  } } });
+  assert.throws(() => new EvolutionWebhookAdapter({ tenantId, actorId, instance: "DELTA", clock }).normalize(payload), /evolution_image_disabled/u);
+  const envelope = new EvolutionWebhookAdapter({ tenantId, actorId, instance: "DELTA", clock, mediaEnabled: true }).normalize(payload);
+  assert.equal(envelope.contentType, "IMAGE");
+  assert.equal(envelope.image?.mimeType, "image/png");
+  assert.equal(envelope.text, "Diseño frontal");
+});
+
 test("real Evolution adapter resolves LID only with a phone alternate and rejects groups or another instance", () => {
   const adapter = new EvolutionWebhookAdapter({ tenantId, actorId, instance: "DELTA", clock });
   const resolved = adapter.normalize(liveMessage({
