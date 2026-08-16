@@ -3,8 +3,8 @@
 id: TASK-20260816-003
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: deploy
@@ -66,9 +66,8 @@ Base64, sin enviar mensajes reales.
 
 ## deuda_restante
 
-- Ejecución remota y observación técnica completas con PASS.
-- Pendiente QA productiva autenticada claro/noche y desktop/mobile; el navegador
-  espera el clic de ingreso de Fito con credenciales autocompletadas.
+- El canary real de imagen entrante/saliente requiere otro GO y destinatario
+  controlado; no forma parte de esta task.
 - El primer mensaje real sigue fuera de esta task.
 
 ## registro_de_avances
@@ -87,8 +86,17 @@ Base64, sin enviar mensajes reales.
   activo preservando el resto del webhook.
 - Runtime `1/1`, healthy, `DELTA=open`, tres muestras sin errores y cero
   outbound nuevo; el outbox permaneció vacío.
-- Login productivo oscuro PASS sin blancos ni overflow. QA autenticada queda
-  retenida hasta que Fito confirme el ingreso en la pestaña visible.
+- Login productivo oscuro PASS sin blancos ni overflow; Fito confirmó luego el
+  ingreso para completar la QA autenticada.
+
+### 2026-08-16 - cierre visual autenticado
+
+- Fito confirmó el ingreso y se validó WhatsApp en claro/noche a 1440x900 y
+  390x844 sin overflow ni contraste ilegible.
+- Abrir una conversación redujo no leídos de 158 a 145 y persistió tras recarga;
+  se creó un único read state.
+- Adjunto visible y habilitado; no se escribió, adjuntó ni envió contenido.
+- Health/ready `200`, servicio `1/1`, cero errores, outbound 4 y outbox 0.
 
 ## decisiones
 

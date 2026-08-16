@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.",
+  "objective": "Mantener estable el PILOTO_DELTA con imagenes y no leidos activos, sin mensajes de prueba no autorizados.",
   "scope": {
     "allowed": [
       "Crear candidato exacto, backup/restore, migrar 006, activar flags/Base64 y desplegar.",
@@ -24,15 +24,7 @@
       "No enviar mensajes reales ni tocar otros tenants, servicios, Meta o PRODUCCION_COMERCIAL."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20260816-003",
-    "title": "Promover imágenes y no leídos al piloto Delta",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito debe confirmar el ingreso en la pestaña productiva; completar QA autenticada claro/noche y desktop/mobile sin enviar mensajes."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -83,7 +75,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "c6b3b5b07c63704ab260f41b793f0a5449705262",
-    "workingTreeState": "TASK-20260816-003_REMOTE_TECHNICAL_PASS_VISUAL_PENDING",
+    "workingTreeState": "TASK-20260816-003_PILOTO_DELTA_RELEASE_CLOSED",
     "lastVerifiedAt": "2026-08-16"
   },
   "migrations": {
@@ -102,7 +94,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md",
-    "note": "55/55, SQL 19 tablas declaradas, build y QA local claro/noche desktop/mobile PASS; imagen y lectura persistieron reinicio."
+    "note": "55/55, SQL 19 tablas, build y QA local PASS; QA productiva autenticada claro/noche desktop/mobile y persistencia de lectura PASS."
   },
   "deployments": {
     "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_PASS",
@@ -148,7 +140,7 @@
     "taskId": "TASK-20260816-003",
     "date": "2026-08-16",
     "path": "docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md",
-    "summary": "Release tecnico PASS en PILOTO_DELTA; QA autenticada productiva pendiente del ingreso humano.",
+    "summary": "Release y QA autenticada PASS en PILOTO_DELTA; media/unread activos y cero mensajes enviados.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
@@ -156,7 +148,7 @@
     {
       "date": "2026-08-16",
       "taskId": "TASK-20260816-003",
-      "summary": "Se desplego c6b3b5b con migracion 006-first, backup/restore, Evolution Base64 y flags media/unread; cero outbound nuevo. QA autenticada pendiente.",
+      "summary": "Se desplego c6b3b5b con migracion 006-first, backup/restore, Evolution Base64 y flags media/unread; QA autenticada PASS y cero outbound nuevo.",
       "documents": [
         "core/db/migrations/staging/20260816_006_whatsapp_media_unread.up.sql",
         "deploy/docker-stack.staging.yml",
@@ -543,9 +535,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_ACTIVE",
+    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_CERTIFIED",
     "lastEvidenceDate": "2026-08-16",
-    "note": "Runtime publico c6b3b5b sano; 006 aplicada, media/unread y Evolution Base64 activos, cero outbound nuevo; QA autenticada pendiente."
+    "note": "Runtime publico c6b3b5b sano; 006 aplicada, media/unread y Evolution Base64 activos, QA autenticada PASS y cero outbound nuevo."
   },
   "productValidation": {
     "status": "PENDIENTE_VERIFICACION_TRANSICIONES_COMERCIALES",
@@ -562,7 +554,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito debe hacer clic en Entrar a SPORTEX en la pestaña productiva visible; luego completar QA autenticada claro/noche y desktop/mobile sin adjuntar ni enviar.",
+    "Mantener el piloto observado; cualquier canary real de imagen o primer envio requiere otro GO con destinatario controlado.",
     "Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.",
     "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
     "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",

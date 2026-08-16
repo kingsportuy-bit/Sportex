@@ -130,5 +130,5 @@ solo durante la prueba y verificacion de `SENT/DELIVERED` sin duplicados.
 - Cero mensajes enviados, outbound conservado en 4 y outbox en 0.
 - Rollback inmediato image-first: `sportex-staging:72e0fc2a7abfdecd`, flags y
   Base64 a `false`; conservar tablas 006.
-- Certificación técnica PASS. Aceptación gráfica autenticada pendiente del
-  ingreso humano a la sesión productiva.
+- Certificación técnica y QA gráfica autenticada PASS en claro/noche y
+  desktop/mobile; no se enviaron ni adjuntaron mensajes.

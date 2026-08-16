@@ -6,7 +6,7 @@ Actualizado: 2026-08-16.
 
 ## Activa
 
-- `TASK-20260816-003` | `in_progress` | Promover imágenes y no leídos al piloto Delta | docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md
+- Ninguna.
 
 ## Cola
 
@@ -34,3 +34,4 @@ Actualizado: 2026-08-16.
 - `TASK-20260815-002` | `done` | Registrar pendiente de transiciones comerciales | docs/TASKS/closed/2026/TASK-20260815-002-registrar-pendiente-transiciones-comerciales.md
 - `TASK-20260816-001` | `done` | Normalizar experiencia visual de SPORTEX | docs/TASKS/closed/2026/TASK-20260816-001-normalizar-experiencia-visual-sportex.md
 - `TASK-20260816-002` | `done` | Incorporar imágenes y no leídos a WhatsApp | docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md
+- `TASK-20260816-003` | `done` | Promover imágenes y no leídos al piloto Delta | docs/TASKS/closed/2026/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md

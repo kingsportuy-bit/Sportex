@@ -23,11 +23,11 @@ Actualizado: 2026-08-16.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260816-003`: `in_progress` (docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
+Mantener estable el PILOTO_DELTA con imagenes y no leidos activos, sin mensajes de prueba no autorizados.
 
 ## Alcance actual
 
@@ -60,7 +60,7 @@ Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
 - Tarea: `TASK-20260816-003`.
 - Fecha: `2026-08-16`.
 - Fuente: `docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md`.
-- Release tecnico PASS en PILOTO_DELTA; QA autenticada productiva pendiente del ingreso humano.
+- Release y QA autenticada PASS en PILOTO_DELTA; media/unread activos y cero mensajes enviados.
 
 ## Riesgos
 
@@ -75,7 +75,7 @@ Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
 
 ## Siguientes acciones
 
-- Fito debe hacer clic en Entrar a SPORTEX en la pestaña productiva visible; luego completar QA autenticada claro/noche y desktop/mobile sin adjuntar ni enviar.
+- Mantener el piloto observado; cualquier canary real de imagen o primer envio requiere otro GO con destinatario controlado.
 - Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.
 - Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
 - Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.

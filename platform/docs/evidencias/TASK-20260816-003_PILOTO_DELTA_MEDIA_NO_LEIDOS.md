@@ -4,7 +4,7 @@ Fecha: 2026-08-16
 Task: `TASK-20260816-003`
 Destino: `PILOTO_DELTA`
 URL: `https://sportex.codexa.uy`
-Estado: `PASS_TECNICO_PENDIENTE_QA_AUTENTICADA`
+Estado: `PASS`
 
 ## Autorización y candidato
 
@@ -67,12 +67,20 @@ Estado: `PASS_TECNICO_PENDIENTE_QA_AUTENTICADA`
 
 - Login productivo en noche: fondo grafito, texto legible, cero bloques blancos
   y cero overflow horizontal a 1280x720.
-- La sesión autenticada quedó cerrada tras el deploy. El navegador conserva las
-  credenciales autocompletadas, pero el clic de ingreso requiere intervención
-  de Fito por la política de seguridad del navegador.
-- Queda pendiente certificar gráficamente WhatsApp autenticado en claro/noche y
-  desktop/mobile. La implementación ya tiene PASS local de esas cuatro vistas;
-  no se presenta como aceptación productiva hasta completar el acceso.
+- Fito confirmó el ingreso y se verificó la sesión productiva autenticada.
+- WhatsApp desktop 1440x900 claro/noche: 24 conversaciones, badges visibles,
+  compositor manual, adjunto habilitado, cero overflow y cero blanco ilegible.
+- Hover de `No leídos`: contraste y cambio de estado visibles en modo claro.
+- WhatsApp mobile 390x844 claro/noche: lista, chat, retorno a Chats, compositor
+  y adjunto accesibles; cero overflow, blanco sobre blanco o fondo blanco en
+  noche.
+- Se abrió una conversación con 13 no leídos: el total bajó de 158 a 145, el
+  badge desapareció y el estado persistió tras recargar. La base registró un
+  único read state.
+- No se escribió texto, no se adjuntó un archivo y no se pulsó enviar.
+- La recepción/envío real de una imagen no se ejercitó por la prohibición de
+  mensajes reales; contrato, flags, endpoint privado y PASS local cubren esa
+  capacidad hasta un canary separado.
 
 ## Rollback
 
