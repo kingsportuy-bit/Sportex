@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md",
     "workType": "operacion",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Preparar y publicar el candidato exacto; ejecutar release guard antes de mutar PILOTO_DELTA."
+    "nextAction": "Fito debe confirmar el ingreso en la pestaña productiva; completar QA autenticada claro/noche y desktop/mobile sin enviar mensajes."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -82,16 +82,16 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e",
-    "workingTreeState": "TASK-20260815-001_PILOTO_DELTA_RELEASE_CLOSED_LOCAL",
-    "lastVerifiedAt": "2026-08-15"
+    "headAtLastEvidence": "c6b3b5b07c63704ab260f41b793f0a5449705262",
+    "workingTreeState": "TASK-20260816-003_REMOTE_TECHNICAL_PASS_VISUAL_PENDING",
+    "lastVerifiedAt": "2026-08-16"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS",
-    "lastVerifiedAt": "2026-08-15",
-    "executed": ["20260814_002", "20260814_003", "20260814_004", "20260815_005"],
-    "pending": ["20260816_006"],
-    "note": "Runtime conserva 17 tablas con RLS forzado. La migracion aditiva 006 esta validada estaticamente pero no aplicada; requiere GO y backup/rollback."
+    "status": "MIGRACIONES_002_003_004_005_006_APLICADAS_PILOTO_DELTA_PASS",
+    "lastVerifiedAt": "2026-08-16",
+    "executed": ["20260814_002", "20260814_003", "20260814_004", "20260815_005", "20260816_006"],
+    "pending": [],
+    "note": "Backup/restore aislado y migracion 006 migration-first PASS; 19 tablas con RLS forzado. Rollback conserva las tablas aditivas."
   },
   "tests": {
     "status": "PASS",
@@ -105,10 +105,10 @@
     "note": "55/55, SQL 19 tablas declaradas, build y QA local claro/noche desktop/mobile PASS; imagen y lectura persistieron reinicio."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL",
-    "lastVerifiedAt": "2026-08-15",
-    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45", "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9", "c375e58cfc19f894623a9a4cf8caa9a43723b395", "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf", "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e"],
-    "note": "Runtime 72e0fc2 1/1; cronologia y smokes PASS. Rollback image-first 3c8c9da."
+    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_PASS",
+    "lastVerifiedAt": "2026-08-16",
+    "records": ["34c9664607e9e0483f5a1dfb6164c7b572b676cb", "d871d2eea627d6a65b7721feaa6a53d0c1c0e487", "f6a92770b2539975216e81f96fcffc00b4afcb03", "1cc2c96fe8f8e0f8215ce5a804dd1ad775982c45", "a7ceb9b73d53777b7c3a5a5beda9d84f794fe8f9", "c375e58cfc19f894623a9a4cf8caa9a43723b395", "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf", "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e", "c6b3b5b07c63704ab260f41b793f0a5449705262"],
+    "note": "Runtime c6b3b5b 1/1 healthy; media/unread y Base64 activos. Cero outbound nuevo. Rollback image-first 72e0fc2."
   },
   "externalIntegrations": [
     {
@@ -120,24 +120,24 @@
     },
     {
       "name": "Supabase",
-      "status": "PILOTO_DELTA_17_TABLAS_RLS_FORZADO_TIMELINE_005",
-      "lastVerifiedAt": "2026-08-15",
+      "status": "PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006",
+      "lastVerifiedAt": "2026-08-16",
       "writeAuthorized": true,
-      "note": "Backup/restore y 002/003/004/005 PASS; 17 tablas RLS forzado, rol app own=21/cross=0 y 146 mensajes preservados."
+      "note": "Backup/restore y 006 PASS; 19 tablas RLS forzado, acceso runtime y cruce tenant cero en tablas nuevas."
     },
     {
       "name": "Evolution API",
-      "status": "DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON",
-      "lastVerifiedAt": "2026-08-15",
+      "status": "DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON",
+      "lastVerifiedAt": "2026-08-16",
       "writeAuthorized": true,
-      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE; DELTA open, envío manual preservado y cero outbound nuevo durante este release."
+      "note": "Webhook privado activo para MESSAGES_UPSERT/UPDATE con Base64; URL, headers y eventos preservados, DELTA open y cero outbound nuevo."
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_72E0FC2_PUBLIC_HEALTHY",
-      "lastVerifiedAt": "2026-08-15",
+      "status": "PILOTO_DELTA_RUNTIME_C6B3B5B_PUBLIC_HEALTHY",
+      "lastVerifiedAt": "2026-08-16",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 72e0fc2, cronologia true, dominio productivo y rollback 3c8c9da disponible."
+      "note": "sportex_staging_core 1/1 healthy en c6b3b5b; media/unread true, tres muestras sin errores y rollback 72e0fc2 disponible."
     }
   ],
   "sensitiveData": {
@@ -145,14 +145,27 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260816-002",
+    "taskId": "TASK-20260816-003",
     "date": "2026-08-16",
-    "path": "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md",
-    "summary": "Imagenes manuales y no leidos convencionales validados localmente; runtime intacto.",
-    "environment": "DESARROLLO_LOCAL",
+    "path": "docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md",
+    "summary": "Release tecnico PASS en PILOTO_DELTA; QA autenticada productiva pendiente del ingreso humano.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-16",
+      "taskId": "TASK-20260816-003",
+      "summary": "Se desplego c6b3b5b con migracion 006-first, backup/restore, Evolution Base64 y flags media/unread; cero outbound nuevo. QA autenticada pendiente.",
+      "documents": [
+        "core/db/migrations/staging/20260816_006_whatsapp_media_unread.up.sql",
+        "deploy/docker-stack.staging.yml",
+        "docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md",
+        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
+      ],
+      "evidence": ["docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md"],
+      "decisions": ["Migration-first y rollback image-first; tablas 006 aditivas se conservan."]
+    },
     {
       "date": "2026-08-16",
       "taskId": "TASK-20260816-002",
@@ -530,9 +543,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_72E0FC2_TIMELINE_ACTIVE",
-    "lastEvidenceDate": "2026-08-15",
-    "note": "Runtime publico 72e0fc2 sano; cronologia operativa activa, 005 aplicada, continuidad WhatsApp y Evolution open; rollback image-first 3c8c9da listo."
+    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_ACTIVE",
+    "lastEvidenceDate": "2026-08-16",
+    "note": "Runtime publico c6b3b5b sano; 006 aplicada, media/unread y Evolution Base64 activos, cero outbound nuevo; QA autenticada pendiente."
   },
   "productValidation": {
     "status": "PENDIENTE_VERIFICACION_TRANSICIONES_COMERCIALES",
@@ -549,8 +562,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Preparar y publicar el candidato exacto de TASK-20260816-003; ejecutar release guard antes de mutar PILOTO_DELTA.",
-    "Pedir GO separado para backup, migracion 006, flags y configuracion Base64 de Evolution antes de activar imagenes/no leidos en PILOTO_DELTA.",
+    "Fito debe hacer clic en Entrar a SPORTEX en la pestaña productiva visible; luego completar QA autenticada claro/noche y desktop/mobile sin adjuntar ni enviar.",
     "Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.",
     "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
     "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",

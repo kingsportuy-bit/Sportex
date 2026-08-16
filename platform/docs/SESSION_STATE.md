@@ -17,7 +17,7 @@ Actualizado: 2026-08-16.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
 - Remote: `https://github.com/kingsportuy-bit/Sportex.git`.
-- Verificado: `2026-08-15`.
+- Verificado: `2026-08-16`.
 
 ## Campaña y tarea
 
@@ -49,18 +49,18 @@ Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_005_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 4; pendientes 1.
+- Migraciones: `MIGRACIONES_002_003_004_005_006_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 5; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-16`.
-- Despliegues: `PILOTO_DELTA_72E0FC2_TIMELINE_OPERATIONAL`; registros 8.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_17_TABLAS_RLS_FORZADO_TIMELINE_005` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_72E0FC2_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_PASS`; registros 9.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_C6B3B5B_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260816-002`.
+- Tarea: `TASK-20260816-003`.
 - Fecha: `2026-08-16`.
-- Fuente: `docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md`.
-- Imagenes manuales y no leidos convencionales validados localmente; runtime intacto.
+- Fuente: `docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md`.
+- Release tecnico PASS en PILOTO_DELTA; QA autenticada productiva pendiente del ingreso humano.
 
 ## Riesgos
 
@@ -75,8 +75,7 @@ Promover imagenes y no leidos al PILOTO_DELTA sin mensajes reales.
 
 ## Siguientes acciones
 
-- Preparar y publicar el candidato exacto de TASK-20260816-003; ejecutar release guard antes de mutar PILOTO_DELTA.
-- Pedir GO separado para backup, migracion 006, flags y configuracion Base64 de Evolution antes de activar imagenes/no leidos en PILOTO_DELTA.
+- Fito debe hacer clic en Entrar a SPORTEX en la pestaña productiva visible; luego completar QA autenticada claro/noche y desktop/mobile sin adjuntar ni enviar.
 - Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.
 - Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
 - Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.

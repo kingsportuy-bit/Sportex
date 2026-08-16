@@ -66,7 +66,9 @@ Base64, sin enviar mensajes reales.
 
 ## deuda_restante
 
-- Pendiente completar ejecución y observación del release.
+- Ejecución remota y observación técnica completas con PASS.
+- Pendiente QA productiva autenticada claro/noche y desktop/mobile; el navegador
+  espera el clic de ingreso de Fito con credenciales autocompletadas.
 - El primer mensaje real sigue fuera de esta task.
 
 ## registro_de_avances
@@ -76,6 +78,17 @@ Base64, sin enviar mensajes reales.
 - Fito autorizó el alcance remoto exacto sin mensajes reales.
 - Runtime previo observado en `72e0fc2a7abfdecd`, 1/1.
 - El release guard exige publicar primero el commit exacto.
+
+### 2026-08-16 - release técnico
+
+- Backup `d3fc73ff...` restaurado y migración 006 ensayada de 17 a 19 tablas.
+- Migración real aplicada antes de la imagen; 19/19 tablas con RLS forzado.
+- Imagen `sportex-staging:c6b3b5b07c63704`, flags activas y Evolution Base64
+  activo preservando el resto del webhook.
+- Runtime `1/1`, healthy, `DELTA=open`, tres muestras sin errores y cero
+  outbound nuevo; el outbox permaneció vacío.
+- Login productivo oscuro PASS sin blancos ni overflow. QA autenticada queda
+  retenida hasta que Fito confirme el ingreso en la pestaña visible.
 
 ## decisiones
 

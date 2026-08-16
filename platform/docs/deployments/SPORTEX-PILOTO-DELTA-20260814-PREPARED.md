@@ -116,3 +116,19 @@ solo durante la prueba y verificacion de `SENT/DELIVERED` sin duplicados.
 - Runtime `1/1`, healthy, Evolution `DELTA=open`, cero mensajes enviados.
 - Rollback inmediato image-first:
   `sportex-staging:3c8c9da25ba1fae3`; conservar tabla 005.
+
+## Resultado técnico TASK-20260816-003 — media y no leídos
+
+- Commit: `c6b3b5b07c63704ab260f41b793f0a5449705262`.
+- Imagen: `sportex-staging:c6b3b5b07c63704`.
+- Image ID:
+  `sha256:62efc4bf66953cd8ed3f0e11ab67e25ca8403c7142d10ad8a4705a441d2a8c02`.
+- Migración `20260816_006` aplicada migration-first con backup, restore aislado
+  y 19/19 tablas RLS forzado PASS.
+- Evolution `DELTA=open`, Base64 activo y configuración restante preservada.
+- Flags media/unread activas después de readiness; runtime `1/1` healthy.
+- Cero mensajes enviados, outbound conservado en 4 y outbox en 0.
+- Rollback inmediato image-first: `sportex-staging:72e0fc2a7abfdecd`, flags y
+  Base64 a `false`; conservar tablas 006.
+- Certificación técnica PASS. Aceptación gráfica autenticada pendiente del
+  ingreso humano a la sesión productiva.
