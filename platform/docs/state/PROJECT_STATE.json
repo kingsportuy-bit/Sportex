@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-08-16",
-  "updatedBy": "TASK-20260816-004",
+  "updatedBy": "TASK-20260817-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -13,18 +13,26 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "guidance",
-  "objective": "Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes reales no autorizados.",
+  "mode": "feature",
+  "objective": "Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsApp, Leads, Pedidos y Clientes, sin mensajes reales no autorizados.",
   "scope": {
     "allowed": [
-      "Observar la salud y continuidad documental del piloto en solo lectura.",
-      "Preparar tareas locales separadas para mejoras futuras."
+      "Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001.",
+      "Preparar el candidato y la evidencia de despliegue para PILOTO_DELTA."
     ],
     "prohibited": [
-      "No enviar mensajes reales ni mutar PILOTO_DELTA sin otra task y GO exacto."
+      "No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260817-001",
+    "title": "Puesto operativo Delta desde SPORTEX",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+    "workType": "feature",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Completar boceto vigente, tablero de Leads, candidato y validación de PILOTO_DELTA sin outbound."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -55,7 +63,8 @@
     "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
     "DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.",
     "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.",
-    "SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado."
+    "SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado.",
+    "SPORTEX-DEC-014: el corte operativo de Delta conserva módulos y capas separadas; Leads y Pedidos son tableros derivados del Core."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -68,7 +77,8 @@
     "SPORTEX-DEC-008",
     "SPORTEX-DEC-009",
     "SPORTEX-DEC-011",
-    "SPORTEX-DEC-013"
+    "SPORTEX-DEC-013",
+    "SPORTEX-DEC-014"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
@@ -263,16 +273,14 @@
   },
   "blockers": [],
   "risks": [
-    "Cambiar etapas o estados comerciales desde WhatsApp todavia no esta verificado ni debe prometerse al operador.",
+    "Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas.",
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
     "El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.",
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Mantener el piloto observado; cualquier canary real de imagen o primer envio requiere otro GO con destinatario controlado.",
-    "Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.",
-    "Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.",
-    "Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.",
+    "Implementar y validar TASK-20260817-001 por capas, con tableros de Leads y Pedidos como proyecciones del Core.",
+    "Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],
   "history": {

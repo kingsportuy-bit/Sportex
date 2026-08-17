@@ -47,6 +47,7 @@ const state = {
   session: null,
   clients: [],
   orders: [],
+  ordersView: "board",
   commercial: [],
   selectedCommercialId: null,
   mobileDetailOpen: false,
@@ -92,6 +93,7 @@ const messages = {
   commercial_conversion_conflict: "Esta oportunidad ya fue convertida con otros datos de pago.",
   commercial_order_required: "Primero hay que crear y vincular el pedido.",
   order_version_conflict: "El pedido cambió en otra acción. Recargamos su estado más reciente.",
+  order_stage_transition_invalid: "Ese movimiento de pedido no está permitido desde su etapa actual.",
   production_release_confirmation_required: "Confirmá la entrega antes de continuar.",
 };
 
@@ -112,8 +114,19 @@ const localIdentity = {
 };
 
 const orderStatusLabels = {
-  intake_pending: "Ingreso pendiente",
+  intake_pending: "Ingreso",
+  design_pending: "Boceto",
   production_ready: "Listo para producción",
+  in_production: "En producción",
+  completed: "Finalizado",
+};
+
+const orderTransitions = {
+  intake_pending: ["design_pending"],
+  design_pending: ["intake_pending", "production_ready"],
+  production_ready: ["design_pending", "in_production"],
+  in_production: ["production_ready", "completed"],
+  completed: [],
 };
 
 function friendlyError(error) {
@@ -385,41 +398,70 @@ function cell(text, className = "") {
 function renderOrders() {
   const list = $("#orders-list");
   list.replaceChildren();
+  list.className = state.ordersView === "board" ? "orders-board" : "orders-sheet";
   const clients = new Map(state.clients.map((client) => [client.id, client]));
 
-  for (const order of [...state.orders].reverse()) {
-    const client = clients.get(order.clientId);
-    const row = document.createElement("article");
-    row.className = "ledger-row";
+  $$("[data-orders-view]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.ordersView === state.ordersView));
+  });
 
-    const orderCell = document.createElement("span");
-    orderCell.className = "primary";
-    orderCell.textContent = order.orderNumber;
+  if (state.ordersView === "sheet") {
+    const table = document.createElement("table");
+    table.innerHTML = "<thead><tr><th>Pedido</th><th>Equipo</th><th>Cliente</th><th>Producto</th><th>Etapa</th><th>Total</th><th></th></tr></thead>";
+    const body = document.createElement("tbody");
+    for (const order of state.orders) {
+      const client = clients.get(order.clientId);
+      const row = document.createElement("tr");
+      row.append(
+        cell(order.orderNumber), cell(order.teamName), cell(client?.displayName || "Sin cliente"),
+        cell(order.details?.product || "Por definir"), cell(orderStatusLabels[order.status]),
+        cell(money(order.quotedTotalCents, order.currency)),
+      );
+      const actions = document.createElement("td");
+      const edit = element("button", "button button--quiet", "Abrir");
+      edit.type = "button";
+      edit.addEventListener("click", () => openOrderDetails(order));
+      actions.append(edit);
+      row.append(actions);
+      body.append(row);
+    }
+    table.append(body);
+    list.append(table);
+  } else {
 
-    const teamCell = document.createElement("span");
-    const team = document.createElement("b");
-    team.textContent = order.teamName;
-    const clientName = document.createElement("small");
-    clientName.className = "secondary";
-    clientName.textContent = client?.displayName || "Cliente";
-    teamCell.append(team, clientName);
-
-    const statusCell = document.createElement("span");
-    const chip = document.createElement("i");
-    chip.className = `status-chip status-chip--${order.status}`;
-    chip.textContent = orderStatusLabels[order.status] ?? order.status;
-    statusCell.append(chip);
-
-    row.append(
-      orderCell,
-      teamCell,
-      cell(money(order.quotedTotalCents, order.currency)),
-      cell(money(order.depositCents, order.currency)),
-      cell(money(order.balanceCents, order.currency), "primary"),
-      statusCell,
-      cell(shortDate(order.createdAt)),
-    );
-    list.append(row);
+  for (const status of Object.keys(orderStatusLabels)) {
+    const column = element("section", "order-column");
+    const columnOrders = state.orders.filter((order) => order.status === status);
+    const head = element("header", "order-column-head");
+    head.append(element("span", "", orderStatusLabels[status]), element("strong", "", String(columnOrders.length)));
+    const cards = element("div", "order-card-stack");
+    for (const order of columnOrders) {
+      const client = clients.get(order.clientId);
+      const card = element("article", "order-card");
+      card.dataset.status = order.status;
+      card.append(
+        element("span", "order-card-number", order.orderNumber),
+        element("strong", "", order.teamName),
+        element("small", "", client?.displayName || "Cliente por confirmar"),
+        element("span", "order-card-money", money(order.quotedTotalCents, order.currency)),
+      );
+      const actions = element("div", "order-card-actions");
+      const detailsButton = element("button", "button button--quiet", "Editar datos");
+      detailsButton.type = "button";
+      detailsButton.addEventListener("click", () => openOrderDetails(order));
+      actions.append(detailsButton);
+      for (const next of orderTransitions[order.status] ?? []) {
+        const action = element("button", "button button--quiet", `Mover a ${orderStatusLabels[next]}`);
+        action.type = "button";
+        action.addEventListener("click", () => void moveOrderStage(order, next, action));
+        actions.append(action);
+      }
+      if (actions.childElementCount) card.append(actions);
+      cards.append(card);
+    }
+    column.append(head, cards);
+    list.append(column);
+  }
   }
 
   $("#orders-empty").hidden = state.orders.length > 0;
@@ -454,6 +496,96 @@ function renderOrders() {
       row.append(text, button);
       candidates.append(row);
     }
+  }
+}
+
+async function moveOrderStage(order, status, button) {
+  setButtonBusy(button, true, "Guardando…");
+  try {
+    const response = await api(`/v1/orders/${encodeURIComponent(order.id)}/stage`, {
+      method: "PATCH",
+      headers: { "idempotency-key": crypto.randomUUID() },
+      body: JSON.stringify({ status, expectedVersion: order.version, reason: "Movimiento desde el tablero de pedidos" }),
+    });
+    const index = state.orders.findIndex((candidate) => candidate.id === response.data.id);
+    if (index >= 0) state.orders[index] = response.data;
+    renderOrders();
+    toast(`Pedido movido a ${orderStatusLabels[status]}.`);
+  } catch (error) {
+    if (error instanceof UiError && error.code === "order_version_conflict") await loadData();
+    toast(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
+function openOrderDetails(order) {
+  const dialog = element("dialog", "sheet-dialog order-details-dialog");
+  const form = element("form");
+  const details = order.details || { product: null, quantity: null, colors: [], sizes: null, notes: null };
+  const header = element("header", "sheet-head");
+  const title = element("div");
+  title.append(element("span", "section-code", `PEDIDO / ${order.orderNumber}`), element("h2", "", order.teamName));
+  const close = element("button", "icon-button", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", "Cerrar datos del pedido");
+  close.addEventListener("click", () => dialog.close());
+  header.append(title, close);
+
+  const grid = element("div", "form-grid");
+  const product = element("input"); product.value = details.product || ""; product.maxLength = 120;
+  const quantity = element("input"); quantity.type = "number"; quantity.min = "1"; quantity.value = details.quantity || "";
+  const colors = element("input"); colors.value = details.colors.join(", "); colors.maxLength = 720;
+  const sizes = element("textarea"); sizes.value = details.sizes || ""; sizes.maxLength = 1000;
+  const notes = element("textarea"); notes.value = details.notes || ""; notes.maxLength = 2000;
+  const block = element("fieldset", "form-block form-block--wide");
+  block.append(
+    element("legend", "", "Datos del pedido"),
+    fieldLabel("Producto", product),
+    fieldLabel("Cantidad", quantity),
+    fieldLabel("Colores (separados por coma)", colors),
+    fieldLabel("Talles", sizes),
+    fieldLabel("Notas", notes),
+  );
+  grid.append(block);
+  const error = element("p", "form-error"); error.setAttribute("role", "alert");
+  const save = element("button", "button button--primary", "Guardar datos"); save.type = "submit";
+  const footer = element("footer", "sheet-actions"); footer.append(element("span", "", "Los cambios quedan en el historial del pedido."), save);
+  form.append(header, grid, error, footer);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void saveOrderDetails(order, {
+      product: product.value.trim() || null,
+      quantity: quantity.value ? Number(quantity.value) : null,
+      colors: colors.value.split(",").map((color) => color.trim()).filter(Boolean),
+      sizes: sizes.value.trim() || null,
+      notes: notes.value.trim() || null,
+    }, save, error, dialog);
+  });
+  dialog.append(form);
+  dialog.addEventListener("close", () => dialog.remove(), { once: true });
+  document.body.append(dialog);
+  dialog.showModal();
+}
+
+async function saveOrderDetails(order, details, button, error, dialog) {
+  error.textContent = "";
+  setButtonBusy(button, true, "Guardando…");
+  try {
+    const response = await api(`/v1/orders/${encodeURIComponent(order.id)}/details`, {
+      method: "PATCH",
+      headers: { "idempotency-key": crypto.randomUUID() },
+      body: JSON.stringify({ expectedVersion: order.version, details }),
+    });
+    const index = state.orders.findIndex((candidate) => candidate.id === response.data.id);
+    if (index >= 0) state.orders[index] = response.data;
+    dialog.close();
+    renderOrders();
+    toast("Datos del pedido guardados.");
+  } catch (caught) {
+    error.textContent = friendlyError(caught);
+  } finally {
+    setButtonBusy(button, false, "");
   }
 }
 
@@ -979,8 +1111,7 @@ function openWhatsAppDetails(item) {
 }
 
 function renderOrderConversion(item) {
-  if (!state.localDemo) return null;
-  if (item.opportunity.stage !== "SENA_VALIDADA") return null;
+  if (!["COTIZADO", "EN_SEGUIMIENTO", "SENA_VALIDADA"].includes(item.opportunity.stage)) return null;
   const card = detailCard("PEDIDO / CORE", item.opportunity.coreConversion ? "Pedido vinculado" : "Crear pedido");
   if (item.opportunity.coreConversion) {
     const conversion = item.opportunity.coreConversion;
@@ -993,7 +1124,7 @@ function renderOrderConversion(item) {
       fact("Estado", productionReleased ? "Listo para producción" : "Pedido creado"),
     );
     card.append(grid);
-    if (!productionReleased) {
+    if (state.localDemo && !productionReleased) {
       const release = element("button", "button button--primary button--full", "Entregar a producción");
       release.type = "button";
       const error = element("p", "form-error");
@@ -1006,9 +1137,7 @@ function renderOrderConversion(item) {
         error,
         release,
       );
-    } else {
-      card.append(element("p", "command-help", `Entregado ${shortDateTime(conversion.productionReleasedAt)}. La primera etapa productiva se definirá en el módulo Procesos.`));
-    }
+    } else card.append(element("p", "command-help", "El pedido ya está vinculado. Gestioná su avance y finalización desde Pedidos."));
     return card;
   }
 
@@ -1025,12 +1154,12 @@ function renderOrderConversion(item) {
   amount.placeholder = "Importe en pesos";
   const error = element("p", "form-error");
   error.setAttribute("role", "alert");
-  const button = element("button", "button button--primary button--full", "Crear cliente y pedido");
+  const button = element("button", "button button--primary button--full", "Certificar seña y crear pedido");
   button.type = "submit";
   form.append(
     fieldLabel("Referencia del comprobante", reference),
     fieldLabel("Seña en pesos", amount),
-    element("p", "command-help", `Total cotizado: ${money(item.opportunity.quote?.totalCents ?? 0)}. La operación es idempotente.`),
+    element("p", "command-help", `Total cotizado: ${money(item.opportunity.quote?.totalCents ?? 0)}. Al confirmar, se crea un único cliente y pedido con la información ya cargada.`),
     error,
     button,
   );
@@ -1047,7 +1176,8 @@ async function convertCommercialToOrder(item, evidenceReference, amountPesos, bu
   errorNode.textContent = "";
   setButtonBusy(button, true, "Creando…");
   try {
-    await api(`/v1/local/commercial/workspace/${encodeURIComponent(item.id)}/convert-to-order`, {
+    const base = state.localDemo ? "/v1/local/commercial" : "/v1/commercial";
+    await api(`${base}/workspace/${encodeURIComponent(item.id)}/convert-to-order`, {
       method: "POST",
       body: JSON.stringify({
         evidenceReference: evidenceReference.trim(),
@@ -1117,6 +1247,7 @@ function renderWhatsAppInlineDetails(item) {
     ...(conversion ? [conversion] : []),
     renderOrigin(item),
     renderHistory(item),
+    renderCommands(item),
   );
   panel.append(header, body);
   return panel;
@@ -1816,7 +1947,8 @@ async function runCommercialMutation(button, busyLabel, operation, successMessag
   try {
     const response = await operation();
     replaceCommercialItem(response.data);
-    renderCommercial();
+    if (state.currentView === "whatsapp") renderWhatsApp();
+    else renderCommercial();
     toast(successMessage);
   } catch (error) {
     if (error instanceof UiError && error.code === "commercial_version_conflict") await loadData();
@@ -1986,8 +2118,8 @@ function renderModule(name) {
     const active = state.commercial.filter((item) => item.opportunity.stage !== "PERDIDO").length;
     const deposits = state.commercial.filter((item) => item.opportunity.stage === "SENA_VALIDADA").length;
     metrics.append(
-      moduleCard("Conversaciones", String(state.commercial.length), "Muestra ficticia"),
-      moduleCard("Activas", String(active), "Sin las perdidas"),
+      moduleCard("Conversaciones", String(state.commercial.length), state.localDemo ? "Muestra local" : "Conversaciones atribuidas"),
+      moduleCard("Activas", String(active), "Sin las pérdidas"),
       moduleCard("Origen exacto", String(exact.length), `${unknown} desconocidas`),
       moduleCard("Seña validada", String(deposits), "Aún sin pedido vinculado"),
     );
@@ -2042,6 +2174,18 @@ function renderModule(name) {
       moduleCard("Medias Sur", "Medias por color y cantidad.", "Ficticio · sin pedidos"),
     );
     content.append(grid);
+    return;
+  }
+
+  if (!state.localDemo) {
+    $("#module-description").textContent = "Capacidades habilitadas para este release del Piloto Delta.";
+    const pilotGrid = element("div", "module-grid");
+    pilotGrid.append(
+      moduleCard("Entorno", "Piloto Delta", "Datos y permisos del tenant activo"),
+      moduleCard("WhatsApp", state.config?.evolutionIngressEnabled ? "Recepción habilitada" : "Recepción no habilitada", state.config?.whatsappUnreadEnabled ? "No leídos disponibles" : "Estado no informado en esta pantalla"),
+      moduleCard("Operación", "Leads y pedidos gestionados desde SPORTEX", "Sin afirmar estado de servicios externos"),
+    );
+    content.append(pilotGrid);
     return;
   }
 
@@ -2417,6 +2561,10 @@ $("#login-form").addEventListener("submit", async (event) => {
 });
 
 $$('[data-open-order], #new-order-button').forEach((button) => button.addEventListener("click", openOrderDialog));
+$$('[data-orders-view]').forEach((button) => button.addEventListener("click", () => {
+  state.ordersView = button.dataset.ordersView;
+  renderOrders();
+}));
 [$("#lead-search"), $("#stage-filter"), $("#product-filter"), $("#attribution-filter")]
   .forEach((control) => control.addEventListener("input", () => {
     state.mobileDetailOpen = false;

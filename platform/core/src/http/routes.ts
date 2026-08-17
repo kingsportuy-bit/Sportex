@@ -44,6 +44,23 @@ const releaseOrderToProductionSchema = z.object({
   confirmation: z.literal("ENTREGAR_A_PRODUCCION"),
 }).strict();
 
+const moveOrderStageSchema = z.object({
+  status: z.enum(["intake_pending", "design_pending", "production_ready", "in_production", "completed"]),
+  expectedVersion: z.number().int().positive(),
+  reason: z.string().trim().min(2).max(500).optional(),
+}).strict();
+
+const updateOrderDetailsSchema = z.object({
+  expectedVersion: z.number().int().positive(),
+  details: z.object({
+    product: z.string().trim().min(2).max(120).nullable(),
+    quantity: z.number().int().positive().max(100_000).nullable(),
+    colors: z.array(z.string().trim().min(2).max(60)).max(12),
+    sizes: z.string().trim().min(2).max(1_000).nullable(),
+    notes: z.string().trim().min(2).max(2_000).nullable(),
+  }).strict(),
+}).strict();
+
 const evolutionReplaySchema = z.object({
   event: z.literal("messages.upsert"),
   instance: z.literal("LOCAL_FIXTURE"),
@@ -234,6 +251,35 @@ export async function registerRoutes(
     };
   });
 
+  app.patch("/v1/orders/:orderId/stage", async (request) => {
+    const context = await resolveContext(request);
+    const params = orderParamsSchema.parse(request.params);
+    const input = moveOrderStageSchema.parse(request.body);
+    const result = await service.moveOrderStage(context, params.orderId, idempotencyKey(request), {
+      status: input.status,
+      expectedVersion: input.expectedVersion,
+      ...(input.reason ? { reason: input.reason } : {}),
+    });
+    return {
+      data: result.data,
+      meta: { correlationId: context.correlationId, replayed: result.replayed },
+    };
+  });
+
+  app.patch("/v1/orders/:orderId/details", async (request) => {
+    const context = await resolveContext(request);
+    const params = orderParamsSchema.parse(request.params);
+    const input = updateOrderDetailsSchema.parse(request.body);
+    const result = await service.updateOrderDetails(context, params.orderId, idempotencyKey(request), {
+      expectedVersion: input.expectedVersion,
+      details: input.details,
+    });
+    return {
+      data: result.data,
+      meta: { correlationId: context.correlationId, replayed: result.replayed },
+    };
+  });
+
   if (commercialService) {
     app.get("/v1/commercial/workspace", async (request) => {
       const context = await resolveContext(request);
@@ -287,6 +333,14 @@ export async function registerRoutes(
       const params = commercialItemParamsSchema.parse(request.params);
       const input = recordCommercialFollowUpSchema.parse(request.body);
       const item = await commercialService.recordFollowUp(context, params.itemId, input);
+      return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
+    });
+
+    app.post("/v1/commercial/workspace/:itemId/convert-to-order", async (request, reply) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      const input = convertCommercialOpportunitySchema.parse(request.body);
+      const item = await commercialService.convertValidatedOpportunity(context, params.itemId, input);
       return reply.code(201).send({ data: item, meta: { correlationId: context.correlationId } });
     });
   }

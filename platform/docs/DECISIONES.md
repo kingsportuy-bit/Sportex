@@ -116,3 +116,17 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   coincidencia se explicita y no amplia silenciosamente el contexto.
 - El router informa caracteres y tokens estimados. Ninguna optimizacion reduce
   gates de PILOTO_DELTA ni agrega una ronda de STAGING.
+
+## SPORTEX-DEC-014 - Puesto operativo mínimo de Delta
+
+- 2026-08-16 · `VIGENTE`. El próximo corte deja a Delta operar desde
+  SPORTEX, no una demostración aislada: WhatsApp, Leads, Clientes y Pedidos
+  forman una experiencia continua.
+- Los tableros y tarjetas son proyecciones: el Core conserva las transiciones,
+  permisos, versión, auditoría e idempotencia. El frontend nunca decide una
+  regla ni escribe la base directamente.
+- El origen de un contacto es `META_EXACTO` cuando el mensaje trae referencia
+  verificable del anuncio, o `DESCONOCIDO` cuando no la trae; no se infiere.
+- El flujo mínimo de pedido es `INGRESO -> BOCETO -> LISTO_PARA_PRODUCCION ->
+  EN_PRODUCCION -> FINALIZADO`. Cada transición debe estar autorizada,
+  persistida y auditada. El diseño conserva versiones y una sola vigente.

@@ -192,11 +192,11 @@ export interface CommercialQuoteSummary {
 }
 
 export interface CommercialDepositValidation {
-  kind: "FIXTURE_MANUAL";
+  kind: "FIXTURE_MANUAL" | "CERTIFIED_PAYMENT";
   note: string;
   validatedAt: string;
   validatedBy: string;
-  fixtureOnly: true;
+  fixtureOnly: boolean;
 }
 
 export interface CommercialCoreConversion {

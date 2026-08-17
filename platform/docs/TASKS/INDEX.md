@@ -6,7 +6,7 @@ Actualizado: 2026-08-16.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260817-001` | `in_progress` | Puesto operativo Delta desde SPORTEX | docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md
 
 ## Cola
 

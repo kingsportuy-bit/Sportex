@@ -131,9 +131,32 @@ input:focus, select:focus, button:focus-visible { border-color: var(--blue); box
 .evidence-spool span:nth-child(3) { left: 8px; bottom: 35px; }
 .empty-actions { display: grid; gap: 10px; min-width: 235px; }
 .ledger { background: var(--paper); border: 1px solid var(--line); }
+.order-board-shell { overflow-x: auto; border: 1px solid var(--line); background: var(--paper); }
+.orders-view-switch { display: flex; justify-content: flex-end; gap: 6px; margin: 14px 0 8px; }
+.orders-view-switch [aria-pressed="true"] { background: var(--surface-strong); color: var(--text-on-strong); }
+.orders-sheet { min-width: 860px; }
+.orders-sheet table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.orders-sheet th { padding: 12px 14px; text-align: left; background: var(--surface-strong); color: var(--text-on-strong); font: 800 9px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .07em; text-transform: uppercase; }
+.orders-sheet td { padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.orders-sheet tbody tr:hover { background: color-mix(in srgb, var(--blue) 7%, transparent); }
+.orders-board { display: grid; grid-template-columns: repeat(5, minmax(218px, 1fr)); min-width: 1090px; align-items: start; }
+.order-column { min-height: 320px; border-right: 1px solid var(--line); }
+.order-column:last-child { border-right: 0; }
+.order-column-head { display: flex; justify-content: space-between; align-items: center; padding: 13px 14px; border-bottom: 1px solid var(--line); font: 800 9px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .07em; text-transform: uppercase; }
+.order-column-head strong { display: grid; min-width: 23px; height: 23px; place-items: center; border-radius: 999px; background: color-mix(in srgb, var(--blue) 14%, transparent); color: var(--ink); }
+.order-card-stack { display: grid; gap: 10px; padding: 10px; }
+.order-card { display: grid; gap: 7px; padding: 13px; border: 1px solid var(--line); border-top: 4px solid var(--blue); background: var(--paper); box-shadow: 0 8px 18px rgb(12 24 17 / 7%); }
+.order-card[data-status="design_pending"] { border-top-color: #8a5cff; }
+.order-card[data-status="production_ready"] { border-top-color: var(--signal); }
+.order-card[data-status="in_production"] { border-top-color: #f2a93b; }
+.order-card[data-status="completed"] { border-top-color: #3d9b68; }
+.order-card-number { color: var(--muted); font: 800 9px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .07em; }
+.order-card small { color: var(--muted); }
+.order-card-money { font-weight: 800; }
+.order-card-actions { display: grid; gap: 6px; margin-top: 4px; }
 .ledger-head, .ledger-row { display: grid; grid-template-columns: 1.05fr 1.7fr repeat(3, .85fr) 1fr .8fr; align-items: center; }
 .ledger--clients .ledger-head, .ledger--clients .ledger-row { grid-template-columns: 1.2fr 1.2fr 1fr .7fr; }
-.ledger-head { min-height: 44px; background: #dfe1da; border-bottom: 1px solid var(--line); font: 700 9px/1 monospace; text-transform: uppercase; letter-spacing: .1em; }
+.ledger-head { min-height: 44px; background: var(--surface-strong); color: var(--text-on-strong); border-bottom: 1px solid var(--line); font: 700 9px/1 monospace; text-transform: uppercase; letter-spacing: .1em; }
 .ledger-head span, .ledger-row > span { padding: 0 15px; }
 .ledger-row { min-height: 68px; border-bottom: 1px solid var(--line); font-size: 13px; }
 .ledger-row:last-child { border-bottom: 0; }
@@ -168,7 +191,7 @@ dialog::backdrop { background: rgb(17 19 17 / 66%); backdrop-filter: blur(3px); 
 .segmented label { display: block; }
 .segmented input { position: absolute; opacity: 0; pointer-events: none; }
 .segmented span { display: block; padding: 11px 15px; border: 1px solid var(--line); background: white; }
-.segmented input:checked + span { background: var(--ink); color: white; border-color: var(--ink); }
+.segmented input:checked + span { background: var(--surface-strong); color: var(--text-on-strong); border-color: var(--surface-strong); }
 .three-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 .sheet-dialog > form > .form-error { padding: 0 30px; }
 .sheet-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 20px 30px; border-top: 1px solid var(--line); background: white; }
@@ -610,7 +633,7 @@ button { cursor: pointer; }
 .lead-detail-empty { min-height: 100%; }
 
 .lead-sheet-dialog { width: min(980px, calc(100vw - 28px)); max-height: calc(100vh - 28px); border-radius: 12px; overflow: auto; }
-.lead-sheet-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: start; gap: 20px; padding: 18px 20px; background: var(--ink); color: white; }
+.lead-sheet-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: start; gap: 20px; padding: 18px 20px; background: var(--surface-strong); color: var(--text-on-strong); }
 .lead-sheet-head h2 { margin: 5px 0; font: 750 28px/1 "Bahnschrift SemiCondensed", "Segoe UI", sans-serif; }
 .lead-sheet-head p { margin: 0; color: #bdc6be; font-size: 11px; }
 .lead-sheet-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
@@ -634,7 +657,7 @@ button { cursor: pointer; }
 .result-row { display: flex; justify-content: space-between; gap: 20px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 11px; }
 .result-row span { color: var(--muted); }
 .creative-module-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.creative-module-card { min-height: 230px; display: grid; align-content: end; gap: 8px; padding: 20px; border-top: 8px solid var(--creative-color); border-radius: 8px; background: var(--ink); color: white; }
+.creative-module-card { min-height: 230px; display: grid; align-content: end; gap: 8px; padding: 20px; border-top: 8px solid var(--creative-color); border-radius: 8px; background: var(--surface-strong); color: var(--text-on-strong); }
 .creative-module-card > span, .creative-module-card small { color: var(--creative-color); font-size: 9px; font-weight: 800; }
 .creative-module-card h2 { margin: 0; font: 750 24px/1 "Bahnschrift SemiCondensed", "Segoe UI", sans-serif; }
 .creative-module-card p { margin: 0; color: #c8d0c9; font-size: 11px; line-height: 1.45; }
@@ -900,7 +923,10 @@ button { cursor: pointer; }
 :root[data-theme="dark"] .candidate-row,
 :root[data-theme="dark"] .commercial-card,
 :root[data-theme="dark"] .message-quote,
-:root[data-theme="dark"] .sync-state { background: var(--paper); color: var(--ink); }
+  :root[data-theme="dark"] .sync-state { background: var(--paper); color: var(--ink); }
+:root[data-theme="dark"] .order-board-shell,
+:root[data-theme="dark"] .order-column,
+:root[data-theme="dark"] .order-card { background: var(--paper); color: var(--ink); }
 :root[data-theme="dark"] .fact-chips span { background: #263b2d; color: #91d0a8; }
 :root[data-theme="dark"] .work-action { background: #1b2740; }
 :root[data-theme="dark"] .work-suggestion { background: #1a201c; }

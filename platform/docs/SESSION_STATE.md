@@ -10,7 +10,7 @@ Actualizado: 2026-08-16.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `guidance`.
+- Intencion actual: `feature`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-08-16.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20260817-001`: `in_progress` (docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md).
 
 ## Objetivo actual
 
-Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes reales no autorizados.
+Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsApp, Leads, Pedidos y Clientes, sin mensajes reales no autorizados.
 
 ## Alcance actual
 
-- Permitido: Observar la salud y continuidad documental del piloto en solo lectura. | Preparar tareas locales separadas para mejoras futuras.
-- Prohibido: No enviar mensajes reales ni mutar PILOTO_DELTA sin otra task y GO exacto.
+- Permitido: Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001. | Preparar el candidato y la evidencia de despliegue para PILOTO_DELTA.
+- Prohibido: No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001.
 
 ## Decisiones vigentes
 
@@ -46,6 +46,7 @@ Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes rea
 - DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.
 - SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.
 - SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado.
+- SPORTEX-DEC-014: el corte operativo de Delta conserva módulos y capas separadas; Leads y Pedidos son tableros derivados del Core.
 
 ## Estado operativo registrado
 
@@ -64,7 +65,7 @@ Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes rea
 
 ## Riesgos
 
-- Cambiar etapas o estados comerciales desde WhatsApp todavia no esta verificado ni debe prometerse al operador.
+- Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas.
 - 4 vulnerabilidades altas siguen en TASK-20260801-002.
 - El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.
 - Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
@@ -75,8 +76,6 @@ Mantener estable el PILOTO_DELTA con media y no leidos activos, sin mensajes rea
 
 ## Siguientes acciones
 
-- Mantener el piloto observado; cualquier canary real de imagen o primer envio requiere otro GO con destinatario controlado.
-- Verificar sin asumir soporte el recorrido chat -> detalle -> cambio de etapa -> persistencia -> auditoria; si falta, abrir una feature separada.
-- Usar sportex.codexa.uy y validar visualmente la cronologia con la sesion autenticada de Fito, sin convertir eventos en mensajes.
-- Observar el primer envio manual solo cuando Fito lo elija; este release no envio mensajes.
+- Implementar y validar TASK-20260817-001 por capas, con tableros de Leads y Pedidos como proyecciones del Core.
+- Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

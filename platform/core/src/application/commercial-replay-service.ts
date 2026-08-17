@@ -347,7 +347,10 @@ export class CommercialReplayService {
         return item;
       }
       this.requireVersion(item, input.expectedVersion);
-      if (item.opportunity.stage !== "SENA_VALIDADA" || !item.opportunity.depositValidation) {
+      const convertibleStage = item.opportunity.stage === "SENA_VALIDADA"
+        || item.opportunity.stage === "COTIZADO"
+        || item.opportunity.stage === "EN_SEGUIMIENTO";
+      if (!convertibleStage) {
         throw conflict("commercial_deposit_not_validated", "The opportunity requires a validated deposit");
       }
       if (!item.opportunity.quote || !item.lead.teamName) {
@@ -377,6 +380,15 @@ export class CommercialReplayService {
       teamName,
       quotedTotalCents: quote.totalCents,
       currency: quote.currency,
+      details: {
+        product: snapshot.lead.productType === "CAMISETAS" ? "Camisetas" : snapshot.lead.productType === "EQUIPO_COMPLETO" ? "Equipo completo" : null,
+        quantity: snapshot.lead.quantity,
+        colors: snapshot.lead.colors,
+        sizes: snapshot.lead.sizeBreakdown.length
+          ? snapshot.lead.sizeBreakdown.map((entry) => `${entry.size}: ${entry.quantity}`).join(", ")
+          : null,
+        notes: snapshot.lead.personalization.length ? `Personalización: ${snapshot.lead.personalization.join(", ")}` : null,
+      },
     });
 
     return this.store.transaction(context.tenantId, async (transaction) => {
@@ -404,12 +416,32 @@ export class CommercialReplayService {
         ...current,
         opportunity: {
           ...current.opportunity,
+          stage: "SENA_VALIDADA",
+          allowedStageTransitions: allowedCommercialStageTransitions("SENA_VALIDADA"),
+          depositValidation: {
+            kind: "CERTIFIED_PAYMENT",
+            note: `Seña certificada con referencia ${input.evidenceReference.trim()}.`,
+            validatedAt: convertedAt,
+            validatedBy: context.actorId,
+            fixtureOnly: false,
+          },
           coreConversion: conversion,
           nextAction: "Preparar el pedido para producción",
           nextActionDueAt: null,
           nextActionStatus: "PENDIENTE",
           version: current.opportunity.version + 1,
           updatedAt: convertedAt,
+          stageHistory: current.opportunity.stage === "SENA_VALIDADA" ? current.opportunity.stageHistory : [
+            ...current.opportunity.stageHistory,
+            {
+              id: this.idFactory(),
+              from: current.opportunity.stage,
+              to: "SENA_VALIDADA",
+              reason: "Seña certificada y pedido creado desde SPORTEX",
+              actorId: context.actorId,
+              occurredAt: convertedAt,
+            },
+          ],
         },
         activity: [...current.activity, {
           type: "ORDER_CREATED",

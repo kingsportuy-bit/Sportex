@@ -7,6 +7,8 @@ import type {
   Currency,
   IdempotencyRecord,
   Order,
+  OrderDetails,
+  OrderStatus,
   OutboxEvent,
 } from "../domain/models.js";
 import type { CoreStore, CoreTransaction } from "../ports/core-store.js";
@@ -38,12 +40,32 @@ export interface CreateOrderInput {
   teamName: string;
   quotedTotalCents: number;
   currency: Currency;
+  details?: OrderDetails;
 }
 
 export interface ReleaseOrderToProductionInput {
   expectedVersion: number;
   confirmation: "ENTREGAR_A_PRODUCCION";
 }
+
+export interface MoveOrderStageInput {
+  status: OrderStatus;
+  expectedVersion: number;
+  reason?: string;
+}
+
+export interface UpdateOrderDetailsInput {
+  details: OrderDetails;
+  expectedVersion: number;
+}
+
+const orderTransitions: Record<OrderStatus, OrderStatus[]> = {
+  intake_pending: ["design_pending"],
+  design_pending: ["intake_pending", "production_ready"],
+  production_ready: ["design_pending", "in_production"],
+  in_production: ["production_ready", "completed"],
+  completed: [],
+};
 
 type Clock = () => Date;
 type IdFactory = () => string;
@@ -176,6 +198,7 @@ export class CoreService {
         depositCents: payment.amountCents,
         balanceCents: input.quotedTotalCents - payment.amountCents,
         currency: input.currency,
+        details: this.normalizeOrderDetails(input.details),
         version: 1,
         createdAt: now,
         updatedAt: now,
@@ -273,6 +296,100 @@ export class CoreService {
     });
   }
 
+  async moveOrderStage(
+    context: ActorContext,
+    orderId: string,
+    idempotencyKey: string,
+    input: MoveOrderStageInput,
+  ): Promise<CommandResult<Order>> {
+    requireCapability(context, "production.release");
+    return this.idempotent(context, "orders.move_stage", idempotencyKey, input, async (transaction, now) => {
+      const current = await transaction.findOrderById(orderId);
+      if (!current) throw notFound("order_not_found", "Order not found");
+      if (current.status === input.status) return current;
+      if (current.version !== input.expectedVersion) {
+        throw conflict("order_version_conflict", "Order version changed", {
+          expectedVersion: input.expectedVersion,
+          currentVersion: current.version,
+        });
+      }
+      if (!orderTransitions[current.status].includes(input.status)) {
+        throw conflict("order_stage_transition_invalid", "Order stage transition is not allowed", {
+          from: current.status,
+          to: input.status,
+        });
+      }
+      const updated: Order = {
+        ...current,
+        status: input.status,
+        version: current.version + 1,
+        updatedAt: now,
+      };
+      await transaction.updateOrder(updated, current.version);
+      const reason = input.reason?.trim().slice(0, 500) || "Cambio manual desde SPORTEX";
+      await transaction.appendAudit(
+        this.audit(context, "order.stage_changed", "order", updated.id, {
+          orderNumber: updated.orderNumber,
+          previousStatus: current.status,
+          status: updated.status,
+          reason,
+        }, now),
+      );
+      await transaction.enqueueOutbox({
+        id: this.idFactory(),
+        tenantId: context.tenantId,
+        eventType: "order.stage_changed",
+        aggregateType: "order",
+        aggregateId: updated.id,
+        payload: { orderId: updated.id, orderNumber: updated.orderNumber, previousStatus: current.status, status: updated.status },
+        correlationId: context.correlationId,
+        status: "pending",
+        attempts: 0,
+        availableAt: now,
+        createdAt: now,
+      });
+      return updated;
+    });
+  }
+
+  async updateOrderDetails(
+    context: ActorContext,
+    orderId: string,
+    idempotencyKey: string,
+    input: UpdateOrderDetailsInput,
+  ): Promise<CommandResult<Order>> {
+    requireCapability(context, "production.release");
+    return this.idempotent(context, "orders.update_details", idempotencyKey, input, async (transaction, now) => {
+      const current = await transaction.findOrderById(orderId);
+      if (!current) throw notFound("order_not_found", "Order not found");
+      if (current.version !== input.expectedVersion) {
+        throw conflict("order_version_conflict", "Order version changed", {
+          expectedVersion: input.expectedVersion,
+          currentVersion: current.version,
+        });
+      }
+      const details = this.normalizeOrderDetails(input.details);
+      const updated: Order = { ...current, details, version: current.version + 1, updatedAt: now };
+      await transaction.updateOrder(updated, current.version);
+      await transaction.appendAudit(this.audit(context, "order.details_updated", "order", updated.id, {
+        orderNumber: updated.orderNumber,
+        fields: Object.entries(details).filter(([, value]) => Array.isArray(value) ? value.length : value !== null).map(([key]) => key),
+      }, now));
+      return updated;
+    });
+  }
+
+  private normalizeOrderDetails(details?: OrderDetails): OrderDetails {
+    if (!details) return { product: null, quantity: null, colors: [], sizes: null, notes: null };
+    return {
+      product: details.product ? this.text(details.product, "product", 2, 120) : null,
+      quantity: details.quantity === null ? null : this.positiveInteger(details.quantity, "quantity"),
+      colors: details.colors.map((color) => this.text(color, "color", 2, 60)).slice(0, 12),
+      sizes: details.sizes ? this.text(details.sizes, "sizes", 2, 1_000) : null,
+      notes: details.notes ? this.text(details.notes, "notes", 2, 2_000) : null,
+    };
+  }
+
   private async idempotent<T>(
     context: ActorContext,
     scope: string,
@@ -360,5 +477,12 @@ export class CoreService {
     if (!Number.isSafeInteger(value) || value <= 0 || value > 1_000_000_000) {
       throw new AppError("invalid_payload", 400, `Invalid ${field}`, { field });
     }
+  }
+
+  private positiveInteger(value: number, field: string): number {
+    if (!Number.isSafeInteger(value) || value < 1 || value > 100_000) {
+      throw new AppError("invalid_payload", 400, `Invalid ${field}`, { field });
+    }
+    return value;
   }
 }

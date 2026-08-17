@@ -190,7 +190,7 @@
           </section>
 
           <section id="orders-view" class="view-section" hidden>
-            <header class="page-intro"><div><span class="page-kicker">Operación</span><h1>Pedidos</h1></div><p>Pedidos creados por el Core y oportunidades que todavía requieren conversión.</p></header>
+            <header class="page-intro"><div><span class="page-kicker">Operación</span><h1>Pedidos</h1></div><p>Mové cada pedido por su etapa. El Core valida cada cambio y conserva su historial.</p></header>
 
             <div class="metrics-strip">
               <article><span>Pedidos abiertos</span><strong id="metric-orders">0</strong></article>
@@ -199,11 +199,13 @@
               <article><span>Saldo pendiente</span><strong id="metric-balance">$ 0</strong></article>
             </div>
 
-            <div class="ledger">
-              <div class="ledger-head">
-                <span>Pedido</span><span>Equipo / cliente</span><span>Precio</span><span>Seña</span><span>Saldo</span><span>Estado</span><span>Fecha</span>
-              </div>
-              <div id="orders-list" class="ledger-body"></div>
+            <div class="orders-view-switch" role="group" aria-label="Vista de pedidos">
+              <button class="button button--quiet" data-orders-view="board" type="button" aria-pressed="true">Tablero</button>
+              <button class="button button--quiet" data-orders-view="sheet" type="button" aria-pressed="false">Planilla</button>
+            </div>
+
+            <div class="order-board-shell">
+              <div id="orders-list" class="orders-board"></div>
               <div id="orders-empty" class="empty-state">
                 <span class="empty-number">00</span>
                 <div><strong>Todavía no hay pedidos</strong><p>Registrá la primera venta cuando la seña esté confirmada.</p></div>

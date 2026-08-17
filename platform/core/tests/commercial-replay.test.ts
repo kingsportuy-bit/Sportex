@@ -441,6 +441,8 @@ test("validated deposit converts once into Core client, payment and order", asyn
   assert.equal(coreStore.snapshot().clients.length, 1);
   assert.equal(coreStore.snapshot().payments.length, 1);
   assert.equal(coreStore.snapshot().orders.length, 1);
+  assert.equal(coreStore.snapshot().orders[0]?.details.quantity, target.lead.quantity);
+  assert.deepEqual(coreStore.snapshot().orders[0]?.details.colors, target.lead.colors);
   assert.equal(coreStore.snapshot().outboxEvents.length, 1);
 
   await assert.rejects(
@@ -453,7 +455,7 @@ test("validated deposit converts once into Core client, payment and order", asyn
   );
 });
 
-test("commercial conversion fails closed before a validated deposit", async () => {
+test("commercial conversion requires a quoted opportunity before certifying the deposit", async () => {
   const commercialStore = new InMemoryCommercialReplayStore();
   const coreStore = new InMemoryCoreStore();
   const core = new CoreService(coreStore);
@@ -471,7 +473,7 @@ test("commercial conversion fails closed before a validated deposit", async () =
     "payments.certify",
     "orders.create",
   ]);
-  const target = (await service.list(manager)).find((item) => item.opportunity.stage === "COTIZADO");
+  const target = (await service.list(manager)).find((item) => item.opportunity.stage === "NUEVO");
   assert.ok(target);
 
   await assert.rejects(

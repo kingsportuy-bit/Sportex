@@ -9,7 +9,20 @@ export type Capability =
   | "orders.read"
   | "production.release";
 
-export type OrderStatus = "intake_pending" | "production_ready";
+export type OrderStatus =
+  | "intake_pending"
+  | "design_pending"
+  | "production_ready"
+  | "in_production"
+  | "completed";
+
+export interface OrderDetails {
+  product: string | null;
+  quantity: number | null;
+  colors: string[];
+  sizes: string | null;
+  notes: string | null;
+}
 
 export interface ActorContext {
   tenantId: string;
@@ -68,6 +81,7 @@ export interface Order {
   depositCents: number;
   balanceCents: number;
   currency: Currency;
+  details: OrderDetails;
   version: number;
   createdAt: string;
   updatedAt: string;

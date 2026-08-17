@@ -8,6 +8,7 @@ import type {
   IdempotencyRecord,
   Membership,
   Order,
+  OrderDetails,
   OrderStatus,
   OutboxEvent,
 } from "../../domain/models.js";
@@ -74,6 +75,7 @@ function rowToPayment(row: Record<string, unknown>): CertifiedPayment {
 }
 
 function rowToOrder(row: Record<string, unknown>): Order {
+  const details = (row.details ?? {}) as Partial<OrderDetails>;
   return {
     id: String(row.id),
     tenantId: String(row.tenant_id),
@@ -86,6 +88,13 @@ function rowToOrder(row: Record<string, unknown>): Order {
     depositCents: Number(row.deposit_cents),
     balanceCents: Number(row.quoted_total_cents) - Number(row.deposit_cents),
     currency: String(row.currency) as Currency,
+    details: {
+      product: typeof details.product === "string" ? details.product : null,
+      quantity: typeof details.quantity === "number" ? details.quantity : null,
+      colors: Array.isArray(details.colors) ? details.colors.filter((color): color is string => typeof color === "string") : [],
+      sizes: typeof details.sizes === "string" ? details.sizes : null,
+      notes: typeof details.notes === "string" ? details.notes : null,
+    },
     version: Number(row.version),
     createdAt: iso(row.created_at),
     updatedAt: iso(row.updated_at),
@@ -272,20 +281,20 @@ class PostgresTransaction implements CoreTransaction {
     await this.client.query(
       `INSERT INTO ${this.tables.orders}
        (id, tenant_id, order_number, client_id, certified_payment_id, team_name, status,
-        quoted_total_cents, deposit_cents, currency, version, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        quoted_total_cents, deposit_cents, currency, details, version, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb, $12, $13, $14)`,
       [order.id, order.tenantId, order.orderNumber, order.clientId, order.certifiedPaymentId,
-        order.teamName, order.status, order.quotedTotalCents, order.depositCents, order.currency,
-        order.version, order.createdAt, order.updatedAt],
+         order.teamName, order.status, order.quotedTotalCents, order.depositCents, order.currency, JSON.stringify(order.details),
+         order.version, order.createdAt, order.updatedAt],
     );
   }
 
   async updateOrder(order: Order, expectedVersion: number): Promise<void> {
     const result = await this.client.query(
       `UPDATE ${this.tables.orders}
-       SET status = $3, version = $4, updated_at = $5
-       WHERE tenant_id = $1 AND id = $2 AND version = $6`,
-      [this.tenantId, order.id, order.status, order.version, order.updatedAt, expectedVersion],
+       SET status = $3, details = $4::jsonb, version = $5, updated_at = $6
+       WHERE tenant_id = $1 AND id = $2 AND version = $7`,
+      [this.tenantId, order.id, order.status, JSON.stringify(order.details), order.version, order.updatedAt, expectedVersion],
     );
     if (result.rowCount !== 1) {
       throw conflict("order_version_conflict", "Order version changed");
