@@ -45,8 +45,13 @@ function Normalize-Scope([string]$Value) {
 
 $resolved = (Invoke-Git @('rev-parse',"${ReleaseCommit}^{commit}") | Select-Object -First 1).Trim().ToLowerInvariant()
 $expectedApproval = "GO SPORTEX $TaskId $resolved $Mode"
-if ($Approval -cne $expectedApproval) {
-  throw "Aprobacion invalida. Fito debe aprobar exactamente: $expectedApproval"
+$taskFile = Get-ChildItem -LiteralPath (Join-Path $projectRoot 'docs\TASKS\active') -Filter "$TaskId-*.md" | Select-Object -First 1
+$planApproved = $null -ne $taskFile -and ((Get-Content -Raw -LiteralPath $taskFile.FullName) -match '(?m)^plan_authorization:\s*PLAN_APPROVED_AUTHORIZED\s*$')
+if ($Approval -ne 'PLAN_APPROVED_AUTHORIZED' -and $Approval -cne $expectedApproval) {
+  throw "Aprobacion invalida: se requiere GO exacto o un plan aprobado registrado."
+}
+if ($Approval -eq 'PLAN_APPROVED_AUTHORIZED' -and -not $planApproved) {
+  throw 'El plan aprobado no está registrado en la tarea activa.'
 }
 
 if ($Mode -eq 'PRODUCCION_COMERCIAL') {

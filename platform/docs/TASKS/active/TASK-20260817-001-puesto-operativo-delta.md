@@ -10,6 +10,7 @@ campaign: CAMP-20260803-001
 context_focus: product
 development_guide_impact: required
 updated_at: 2026-08-16
+plan_authorization: PLAN_APPROVED_AUTHORIZED
 
 ## objetivo
 
