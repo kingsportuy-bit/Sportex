@@ -68,6 +68,10 @@ conserva auditoría.
 - Certificación real de seña, producción detallada, entregas, postventa y
   procesos configurables completos permanecen fuera de este corte.
 
+## registro_de_avances
+
+- 2026-08-17: candidato publicado y runbook reutilizable de promoción creado.
+
 ## decisiones
 
 - El origen inicial admite solo atribución exacta de Ads o `DESCONOCIDO`.
