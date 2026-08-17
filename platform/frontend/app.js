@@ -749,7 +749,10 @@ function renderToday() {
   $("#today-overdue-count").textContent = String(counts.overdue);
   $("#today-waiting-count").textContent = String(counts.waiting);
   $("#today-action-count").textContent = String(counts.all);
-  $("#today-count-nav").textContent = String(counts.response + counts.overdue);
+  // La vista "Hoy" puede mantenerse fuera de la navegación sin dejar el
+  // refresco comercial atado a un contador que ya no se muestra.
+  const todayNavCount = $("#today-count-nav");
+  if (todayNavCount) todayNavCount.textContent = String(counts.response + counts.overdue);
 
   const labels = {
     all: "Todo lo abierto",
