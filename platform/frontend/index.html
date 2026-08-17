@@ -68,22 +68,10 @@
 
         <nav class="side-nav" aria-label="Navegación principal">
           <span class="nav-group-label">Operación</span>
-          <button class="nav-item is-active" data-view="today"><span>Hoy</span><b id="today-count-nav">0</b></button>
-          <button class="nav-item" data-view="whatsapp"><span>WhatsApp</span><b id="whatsapp-count-nav">0</b></button>
+          <button class="nav-item is-active" data-view="whatsapp"><span>WhatsApp</span><b id="whatsapp-count-nav">0</b></button>
           <button class="nav-item" data-view="leads"><span>Leads</span><b id="commercial-count-nav">0</b></button>
           <button class="nav-item" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
           <button class="nav-item" data-view="clients"><span>Clientes</span><b id="clients-count-nav">0</b></button>
-
-          <span class="nav-group-label">Marketing</span>
-          <button class="nav-item" data-view="ads"><span>Anuncios</span></button>
-          <button class="nav-item" data-view="creatives"><span>Creativos</span></button>
-          <button class="nav-item" data-view="results"><span>Resultados</span></button>
-
-          <span class="nav-group-label">Administración</span>
-          <button class="nav-item" data-view="catalog"><span>Productos, precios y talles</span></button>
-          <button class="nav-item" data-view="playbooks"><span>Procesos y respuestas rápidas</span></button>
-          <button class="nav-item" data-view="suppliers"><span>Proveedores</span></button>
-          <button class="nav-item" data-view="settings"><span>Configuración</span></button>
         </nav>
 
         <div class="sidebar-foot">
@@ -116,7 +104,7 @@
         </header>
 
         <main class="content">
-          <section id="today-view" class="view-section">
+          <section id="today-view" class="view-section" hidden>
             <header class="page-intro">
               <div><span id="today-date" class="page-kicker">Hoy</span><h1>Hoy</h1></div>
               <p>Lo que necesita una decisión, ordenado por urgencia y próximo paso.</p>
@@ -212,7 +200,7 @@
                 <button class="button button--outline" data-open-order type="button">Registrar venta</button>
               </div>
             </div>
-            <section class="candidate-panel"><header><span class="page-kicker">Todavía no son pedidos</span><h2>Señas ficticias para revisar</h2></header><div id="order-candidates" class="candidate-list"></div></section>
+            <section class="candidate-panel"><header><span class="page-kicker">Pendientes</span><h2>Señas por revisar</h2></header><div id="order-candidates" class="candidate-list"></div></section>
           </section>
 
           <section id="clients-view" class="view-section" hidden>
@@ -228,10 +216,6 @@
             <section class="candidate-panel"><header><span class="page-kicker">Conversión pendiente</span><h2>Contactos con seña validada</h2></header><div id="client-candidates" class="candidate-list"></div></section>
           </section>
 
-          <section id="module-view" class="view-section" hidden>
-            <header class="page-intro"><div><span id="module-kicker" class="page-kicker">Módulo</span><h1 id="module-title">Resultados</h1></div><p id="module-description"></p></header>
-            <div id="module-content" class="module-content"></div>
-          </section>
         </main>
       </div>
     </div>

@@ -57,7 +57,7 @@ const state = {
   whatsappStage: "ALL",
   whatsappUnreadOnly: false,
   pendingWhatsappImage: null,
-  currentView: "today",
+  currentView: "whatsapp",
   todayFilter: "all",
   mobileLeadTab: "chat",
   draftResource: null,
@@ -2223,9 +2223,8 @@ function switchView(name) {
   $("#commercial-view").hidden = name !== "leads";
   $("#orders-view").hidden = name !== "orders";
   $("#clients-view").hidden = name !== "clients";
-  const isModule = ["ads", "creatives", "results", "catalog", "playbooks", "suppliers", "settings"].includes(name);
-  $("#module-view").hidden = !isModule;
-  $("#local-demo-actions").hidden = !state.localDemo || name !== "settings";
+  const isModule = false;
+  $("#local-demo-actions").hidden = true;
   $("#new-order-button").hidden = state.localDemo || name !== "orders";
   const meta = viewMeta[name] || ["SPORTEX", name];
   $("#topbar-kicker").textContent = meta[0];
@@ -2234,7 +2233,6 @@ function switchView(name) {
   if (name === "today") renderToday();
   if (name === "whatsapp") renderWhatsApp();
   if (name === "leads") renderCommercial();
-  if (isModule) renderModule(name);
   closeMobileMenu();
   window.scrollTo({ top: 0, behavior: "auto" });
 }
@@ -2516,7 +2514,7 @@ async function initialize() {
       : "LOCAL · MEMORIA";
     try {
       await bootstrapAuthenticated();
-      switchView("today");
+      switchView("whatsapp");
     } catch (error) {
       $("#login-error").textContent = friendlyError(error);
     }

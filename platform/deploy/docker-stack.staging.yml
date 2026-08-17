@@ -78,7 +78,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.docker.network=barberox_staging_net
-        - traefik.http.routers.sportex-staging.rule=Host(`sportex-staging.codexa.uy`)
+        - traefik.http.routers.sportex-staging.rule=Host(`sportex.codexa.uy`)
         - traefik.http.routers.sportex-staging.entrypoints=websecure
         - traefik.http.routers.sportex-staging.tls=true
         - traefik.http.routers.sportex-staging.tls.certresolver=letsencryptresolver
