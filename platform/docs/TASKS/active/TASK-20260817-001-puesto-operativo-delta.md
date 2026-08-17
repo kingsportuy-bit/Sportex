@@ -70,7 +70,7 @@ conserva auditoría.
 
 ## registro_de_avances
 
-- 2026-08-17: candidato y runbook publicados.
+- 2026-08-17.
 
 ## decisiones
 
