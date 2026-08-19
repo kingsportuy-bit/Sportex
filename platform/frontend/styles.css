@@ -2406,3 +2406,66 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 .button--primary,
 .whatsapp-send,
 :root[data-theme="dark"] .whatsapp-inline-details-close { color: #18221c; }
+
+/* Prueba de lectura: las etapas guían desde arriba, antes de abrir el chat. */
+#whatsapp-view {
+  height: calc(100vh - 114px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  padding-left: 0;
+}
+#whatsapp-view .whatsapp-workspace { height: auto; min-height: 0; }
+#whatsapp-view .whatsapp-stage-rail,
+#whatsapp-view .whatsapp-stage-rail:hover,
+#whatsapp-view .whatsapp-stage-rail:has(.whatsapp-stage-tab:focus-visible) {
+  position: static;
+  width: auto;
+  min-height: 55px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  padding: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 0;
+  background: #101612;
+  box-shadow: none;
+}
+#whatsapp-view .whatsapp-stage-tab,
+#whatsapp-view .whatsapp-stage-tab:hover,
+#whatsapp-view .whatsapp-stage-tab:focus-visible,
+#whatsapp-view .whatsapp-stage-tab.is-active,
+#whatsapp-view .whatsapp-stage-tab.is-active:hover,
+#whatsapp-view .whatsapp-stage-tab.is-active:focus-visible,
+#whatsapp-view .whatsapp-stage-tab:not(.is-active) {
+  width: auto;
+  min-width: max-content;
+  min-height: 39px;
+  padding: 9px 10px;
+  border-radius: 7px;
+}
+#whatsapp-view .whatsapp-stage-tab.is-active,
+#whatsapp-view .whatsapp-stage-tab.is-active:hover,
+#whatsapp-view .whatsapp-stage-tab.is-active:focus-visible { box-shadow: inset 3px 0 var(--signal); }
+#whatsapp-view .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-rail:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:focus-visible .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab .whatsapp-stage-name {
+  font-size: 12px;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+@media (max-width: 720px) {
+  #whatsapp-view { height: calc(100vh - 90px); gap: 6px; }
+  #whatsapp-view .whatsapp-workspace { height: auto; min-height: 0; }
+  #whatsapp-view .whatsapp-stage-rail,
+  #whatsapp-view .whatsapp-stage-rail:hover,
+  #whatsapp-view .whatsapp-stage-rail:has(.whatsapp-stage-tab:focus-visible) {
+    min-height: 51px;
+    padding: 6px 8px;
+  }
+  #whatsapp-view .whatsapp-master { padding-left: 0; }
+}
