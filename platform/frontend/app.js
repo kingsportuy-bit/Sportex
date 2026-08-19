@@ -95,6 +95,11 @@ const messages = {
   commercial_order_required: "Primero hay que crear y vincular el pedido.",
   order_version_conflict: "El pedido cambió en otra acción. Recargamos su estado más reciente.",
   order_stage_transition_invalid: "Ese movimiento de pedido no está permitido desde su etapa actual.",
+  order_stage_not_configured: "Esa etapa ya no está configurada para los pedidos.",
+  commercial_stage_not_configured: "Esa etapa ya no está configurada para los leads.",
+  stage_definition_in_use: "Antes mové las tarjetas de esta columna a otra etapa.",
+  stage_definition_required: "Tiene que quedar al menos una columna activa.",
+  stage_definition_reassignment_required: "Elegí a qué columna pasar las tarjetas antes de eliminarla.",
   production_release_confirmation_required: "Confirmá la entrega antes de continuar.",
 };
 
@@ -285,6 +290,37 @@ async function loadSession() {
   $("#today-date").textContent = todayLabel();
 }
 
+function replaceCommercialItem(item) {
+  if (!item?.id) return;
+  state.commercial = state.commercial.map((candidate) => candidate.id === item.id ? item : candidate);
+  state.commercialSnapshot = commercialSnapshot(state.commercial);
+}
+
+function optimisticWhatsappMessage(item, text, pendingImage) {
+  const now = new Date().toISOString();
+  const message = {
+    id: `pending-${crypto.randomUUID()}`,
+    provider: "SPORTEX",
+    providerMessageId: `pending-${crypto.randomUUID()}`,
+    direction: "DELTA",
+    occurredAt: now,
+    receivedAt: now,
+    contentType: pendingImage ? "IMAGE" : "TEXT",
+    text,
+    media: pendingImage ? { assetId: "pending", mimeType: pendingImage.mimeType, fileName: pendingImage.fileName, sizeBytes: 0, width: null, height: null } : null,
+    evidenceRef: "pending",
+    sourceKind: "MANUAL",
+    fixtureOnly: false,
+    pending: true,
+  };
+  const optimistic = {
+    ...item,
+    conversation: { ...item.conversation, messages: [...item.conversation.messages, message], lastActivityAt: now },
+  };
+  replaceCommercialItem(optimistic);
+  return optimistic;
+}
+
 async function authenticatedFetch(path, options = {}) {
   const headers = new Headers(options.headers || {});
   if (state.localDemo) {
@@ -299,6 +335,10 @@ async function authenticatedFetch(path, options = {}) {
 function appendMessageContent(row, message) {
   if (message.contentType !== "IMAGE" || !message.media) {
     row.append(element("p", "", message.text));
+    return;
+  }
+  if (message.pending) {
+    row.append(element("p", "", "Enviando imagen…"));
     return;
   }
   const figure = element("figure", "whatsapp-image-message is-loading");
@@ -1037,7 +1077,7 @@ function renderConversation(item) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
     appendMessageContent(row, message);
-    row.append(element("time", "", shortDateTime(message.occurredAt)));
+    row.append(element("time", "", message.pending ? "Enviando…" : shortDateTime(message.occurredAt)));
     timeline.append(row);
   }
   card.append(note, timeline);
@@ -1651,6 +1691,10 @@ function renderWhatsAppComposer(item) {
     const text = input.value.trim();
     const pendingImage = state.pendingWhatsappImage;
     if ((!text && !pendingImage) || send.disabled || !sendingEnabled) return;
+    const optimistic = optimisticWhatsappMessage(item, text, pendingImage);
+    input.value = "";
+    state.pendingWhatsappImage = null;
+    renderWhatsAppDetailPreservingChatState(optimistic, true);
     setButtonBusy(send, true, "…");
     try {
       const path = pendingImage
@@ -1667,20 +1711,17 @@ function renderWhatsAppComposer(item) {
         dataBase64: pendingImage.dataBase64,
         ...(state.localWhatsappSimulation ? {} : { confirmation: "ENVIAR_IMAGEN_A_WHATSAPP" }),
       } : state.localWhatsappSimulation ? { text } : { text, confirmation: "ENVIAR_A_WHATSAPP" };
-      await api(path, {
+      const result = await api(path, {
         method: "POST",
         headers: { "idempotency-key": `whatsapp-${pendingImage ? "image" : "message"}-${crypto.randomUUID()}` },
         body: JSON.stringify(body),
       });
-      input.value = "";
-      state.pendingWhatsappImage = null;
-      await loadData();
+      replaceCommercialItem(result.data);
       state.selectedCommercialId = item.id;
-      renderWhatsApp();
-      toast(state.localWhatsappSimulation
-        ? `${pendingImage ? "Imagen" : "Mensaje"} agregado a la conversación simulada.`
-        : `${pendingImage ? "Imagen" : "Mensaje"} enviado por WhatsApp.`);
+      renderWhatsAppDetailPreservingChatState(result.data, true);
     } catch (error) {
+      replaceCommercialItem(item);
+      renderWhatsAppDetailPreservingChatState(item, true);
       toast(friendlyError(error), "error");
     } finally {
       setButtonBusy(send, false, "");
@@ -2019,6 +2060,7 @@ function renderLeadDetail(item) {
 function replaceCommercialItem(updated) {
   const index = state.commercial.findIndex((item) => item.id === updated.id);
   if (index >= 0) state.commercial[index] = updated;
+  state.commercialSnapshot = commercialSnapshot(state.commercial);
   state.selectedCommercialId = updated.id;
 }
 
@@ -2330,34 +2372,64 @@ function openStageConfiguration(board) {
   header.append(element("div", "", board === "lead" ? "Columnas de Leads" : "Columnas de Pedidos"));
   const close = element("button", "icon-button", "×"); close.type = "button"; close.addEventListener("click", () => dialog.close()); header.append(close);
   const list = element("div", "stage-config-list");
-  const definitions = state.stageDefinitions[board];
+  const definitions = [...state.stageDefinitions[board]].sort((left, right) => left.position - right.position);
+  const refresh = async () => {
+    await loadData();
+    dialog.close();
+    openStageConfiguration(board);
+  };
   for (const definition of definitions) {
-    const row = element("label", "stage-config-row");
+    const row = element("div", "stage-config-row");
     const input = element("input"); input.value = definition.name; input.maxLength = 80;
     const save = element("button", "button button--quiet", "Guardar"); save.type = "button";
     save.addEventListener("click", async () => {
       await api(`/v1/stage-definitions/${board}/${encodeURIComponent(definition.id)}`, {
         method: "PUT", body: JSON.stringify({ name: input.value.trim(), position: definition.position, terminal: definition.terminal }),
       });
-      await loadData();
-      dialog.close();
-      if (board === "lead") renderCommercial(); else renderOrders();
+      await refresh();
     });
-    row.append(input, save); list.append(row);
+    const moveEarlier = element("button", "icon-button", "↑"); moveEarlier.type = "button"; moveEarlier.title = "Mover antes";
+    const moveLater = element("button", "icon-button", "↓"); moveLater.type = "button"; moveLater.title = "Mover después";
+    const index = definitions.indexOf(definition);
+    moveEarlier.disabled = index === 0; moveLater.disabled = index === definitions.length - 1;
+    const reorder = async (direction) => {
+      await api(`/v1/stage-definitions/${board}/${encodeURIComponent(definition.id)}/reorder`, {
+        method: "POST", body: JSON.stringify({ direction }),
+      });
+      await refresh();
+    };
+    moveEarlier.addEventListener("click", () => void reorder("earlier"));
+    moveLater.addEventListener("click", () => void reorder("later"));
+    const remove = element("button", "button button--danger", "Eliminar"); remove.type = "button";
+    remove.disabled = definitions.length <= 1;
+    remove.addEventListener("click", async () => {
+      const destination = definitions.find((candidate) => candidate.id !== definition.id);
+      if (!destination) return;
+      const confirmed = window.confirm(`Las tarjetas de “${definition.name}” pasarán a “${destination.name}”. ¿Eliminar columna?`);
+      if (!confirmed) return;
+      await api(`/v1/stage-definitions/${board}/${encodeURIComponent(definition.id)}`, {
+        method: "DELETE", body: JSON.stringify({ replacementId: destination.id }),
+      });
+      await refresh();
+    });
+    row.append(input, moveEarlier, moveLater, save, remove); list.append(row);
   }
+  const addRow = element("div", "stage-config-add");
+  const addName = element("input"); addName.placeholder = "Nombre de nueva columna"; addName.maxLength = 80;
   const add = element("button", "button button--primary", "Agregar columna");
   add.type = "button";
   add.addEventListener("click", async () => {
-    const name = window.prompt("Nombre de la nueva columna");
-    if (!name?.trim()) return;
+    const name = addName.value.trim();
+    if (name.length < 2) { addName.focus(); return; }
     const id = `CUSTOM_${crypto.randomUUID().replaceAll("-", "_").slice(0, 24).toUpperCase()}`;
     const position = Math.max(0, ...definitions.map((definition) => definition.position)) + 10;
     await api(`/v1/stage-definitions/${board}/${id}`, {
-      method: "PUT", body: JSON.stringify({ name: name.trim(), position, terminal: false }),
+      method: "PUT", body: JSON.stringify({ name, position, terminal: false }),
     });
-    await loadData(); dialog.close(); if (board === "lead") renderCommercial(); else renderOrders();
+    await refresh();
   });
-  form.append(header, list, add);
+  addRow.append(addName, add);
+  form.append(header, list, addRow);
   dialog.append(form); dialog.addEventListener("close", () => dialog.remove(), { once: true }); document.body.append(dialog); dialog.showModal();
 }
 

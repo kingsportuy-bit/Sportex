@@ -134,6 +134,10 @@ const saveStageDefinitionSchema = z.object({
   position: z.number().int().positive(),
   terminal: z.boolean(),
 }).strict();
+const deleteStageDefinitionSchema = z.object({
+  replacementId: z.string().trim().min(2).max(80),
+}).strict();
+const reorderStageDefinitionSchema = z.object({ direction: z.enum(["earlier", "later"]) }).strict();
 
 const simulatedOutboundSchema = z.object({
   text: z.string().trim().min(1).max(4_000),
@@ -168,6 +172,23 @@ export async function registerRoutes(
     const { board, id } = stageDefinitionParamsSchema.parse(request.params);
     const input = saveStageDefinitionSchema.parse(request.body);
     return { data: await service.saveStageDefinition(context, board, { id, ...input }), meta: { correlationId: context.correlationId } };
+  });
+
+  app.delete("/v1/stage-definitions/:board/:id", async (request) => {
+    const context = await resolveContext(request);
+    const { board, id } = stageDefinitionParamsSchema.parse(request.params);
+    const { replacementId } = deleteStageDefinitionSchema.parse(request.body);
+    if (board === "lead" && commercialService) {
+      await commercialService.reassignStageForConfiguration(context, id, replacementId);
+    }
+    return { data: await service.deleteStageDefinition(context, board, id, replacementId), meta: { correlationId: context.correlationId } };
+  });
+
+  app.post("/v1/stage-definitions/:board/:id/reorder", async (request) => {
+    const context = await resolveContext(request);
+    const { board, id } = stageDefinitionParamsSchema.parse(request.params);
+    const { direction } = reorderStageDefinitionSchema.parse(request.body);
+    return { data: await service.reorderStageDefinition(context, board, id, direction), meta: { correlationId: context.correlationId } };
   });
 
   app.get("/v1/public-config", async () => ({

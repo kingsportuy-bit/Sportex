@@ -176,12 +176,20 @@ export class CommercialReplayService {
     input: UpdateCommercialStageInput,
   ): Promise<CommercialWorkspaceItem> {
     requireCapability(context, "commercial.manage");
+    // Las columnas son configuración de Core. La proyección comercial sólo puede
+    // asignar una etapa que exista para esta empresa; nunca inventa ids desde UI.
+    if (this.coreService) {
+      const stages = await this.coreService.listStageDefinitions(context, "lead");
+      if (!stages.some((stage) => stage.id === input.stage)) {
+        throw conflict("commercial_stage_not_configured", "Lead stage is not configured for this company", { to: input.stage });
+      }
+    }
     return this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
       const item = await this.requiredItem(transaction, itemId);
       this.requireVersion(item, input.expectedVersion);
       if (item.opportunity.stage === input.stage) return withConversationTimeline(item);
-      const customStage = /^CUSTOM_[A-Z0-9_]{2,72}$/u.test(input.stage);
+      const customStage = !["NUEVO", "EN_CALIFICACION", "COTIZADO", "EN_SEGUIMIENTO", "SENA_VALIDADA", "PERDIDO"].includes(input.stage);
       if (!customStage && !allowedCommercialStageTransitions(item.opportunity.stage).includes(input.stage)) {
         throw conflict("commercial_stage_transition_invalid", "Commercial stage transition is not allowed", {
           from: item.opportunity.stage,
@@ -242,6 +250,47 @@ export class CommercialReplayService {
       };
       await transaction.save(updated);
       return withConversationTimeline(updated);
+    });
+  }
+
+  async reassignStageForConfiguration(
+    context: ActorContext,
+    fromStage: string,
+    toStage: string,
+  ): Promise<number> {
+    requireCapability(context, "commercial.manage");
+    if (fromStage === toStage) throw new AppError("stage_definition_reassignment_required", 409, "Choose another destination stage");
+    if (this.coreService) {
+      const stages = await this.coreService.listStageDefinitions(context, "lead");
+      if (!stages.some((stage) => stage.id === toStage)) {
+        throw conflict("commercial_stage_not_configured", "Lead stage is not configured for this company", { to: toStage });
+      }
+    }
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      const affected = (await transaction.list()).filter((item) => item.opportunity.stage === fromStage);
+      const now = this.clock().toISOString();
+      for (const item of affected) {
+        const updated: CommercialWorkspaceItem = {
+          ...item,
+          lead: { ...item.lead, status: toStage === "PERDIDO" ? "PERDIDO" : "ACTIVO" },
+          opportunity: {
+            ...item.opportunity, stage: toStage,
+            allowedStageTransitions: allowedCommercialStageTransitions(toStage),
+            version: item.opportunity.version + 1, updatedAt: now,
+            stageHistory: [...item.opportunity.stageHistory, {
+              id: this.idFactory(), from: fromStage, to: toStage,
+              reason: "Columna eliminada", actorId: context.actorId, occurredAt: now,
+            }],
+          },
+          activity: [...item.activity, {
+            type: "STAGE_CHANGED", occurredAt: now, actorId: context.actorId, actorKind: "HUMAN", origin: "OPERATOR",
+            correlationId: context.correlationId, evidenceMessageId: null, detail: `${fromStage} → ${toStage}: Columna eliminada`,
+          }],
+        };
+        await transaction.save(updated);
+      }
+      return affected.length;
     });
   }
 

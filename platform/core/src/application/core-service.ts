@@ -98,11 +98,64 @@ export class CoreService {
       if (!/^[A-Za-z0-9_-]+$/u.test(id)) throw new AppError("invalid_payload", 400, "Invalid stage id");
       const now = this.clock().toISOString();
       const existing = current.find((stage) => stage.id === id);
-      await transaction.saveStageDefinition({
+      const definition: StageDefinition = {
         id, tenantId: context.tenantId, board, name: this.text(input.name, "stageName", 2, 80),
         position: this.positiveInteger(input.position, "position"), terminal: Boolean(input.terminal),
         createdAt: existing?.createdAt ?? now, updatedAt: now,
-      });
+      };
+      await transaction.saveStageDefinition(definition);
+      await transaction.appendAudit(this.audit(context, existing ? "stage_definition.updated" : "stage_definition.created", "stage_definition", `${board}:${id}`, {
+        board, stageId: id, name: definition.name, position: definition.position, terminal: definition.terminal,
+      }, now));
+      return transaction.listStageDefinitions(board);
+    });
+  }
+
+  async deleteStageDefinition(context: ActorContext, board: StageBoardKind, id: string, replacementId?: string): Promise<StageDefinition[]> {
+    requireCapability(context, board === "lead" ? "commercial.manage" : "production.release");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = await this.ensureStageDefinitions(transaction, context.tenantId, board);
+      if (current.length <= 1) throw new AppError("stage_definition_required", 409, "At least one stage is required");
+      if (!current.some((stage) => stage.id === id)) throw notFound("stage_definition_not_found", "Stage definition not found");
+      const replacement = replacementId?.trim();
+      if (!replacement || replacement === id || !current.some((stage) => stage.id === replacement)) {
+        throw new AppError("stage_definition_reassignment_required", 409, "Choose a destination stage before deleting this column");
+      }
+      const now = this.clock().toISOString();
+      const affectedOrders = board === "order" ? (await transaction.listOrders()).filter((order) => order.status === id) : [];
+      for (const order of affectedOrders) {
+        const updated: Order = { ...order, status: replacement, version: order.version + 1, updatedAt: now };
+        await transaction.updateOrder(updated, order.version);
+        await transaction.appendAudit(this.audit(context, "order.stage_reassigned", "order", order.id, {
+          orderNumber: order.orderNumber, previousStatus: id, status: replacement, reason: "Columna eliminada",
+        }, now));
+      }
+      await transaction.deleteStageDefinition(board, id);
+      await transaction.appendAudit(this.audit(context, "stage_definition.deleted", "stage_definition", `${board}:${id}`, {
+        board, stageId: id, replacementId: replacement, reassignedOrders: affectedOrders.length,
+      }, now));
+      return transaction.listStageDefinitions(board);
+    });
+  }
+
+  async reorderStageDefinition(context: ActorContext, board: StageBoardKind, id: string, direction: "earlier" | "later"): Promise<StageDefinition[]> {
+    requireCapability(context, board === "lead" ? "commercial.manage" : "production.release");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = [...await this.ensureStageDefinitions(transaction, context.tenantId, board)].sort((left, right) => left.position - right.position);
+      const index = current.findIndex((stage) => stage.id === id);
+      if (index < 0) throw notFound("stage_definition_not_found", "Stage definition not found");
+      const other = current[direction === "earlier" ? index - 1 : index + 1];
+      if (!other) return current;
+      const stage = current[index]!;
+      const now = this.clock().toISOString();
+      // El índice único tenant+board+posición se respeta durante el intercambio.
+      const temporaryPosition = Math.max(...current.map((candidate) => candidate.position)) + 1;
+      await transaction.saveStageDefinition({ ...stage, position: temporaryPosition, updatedAt: now });
+      await transaction.saveStageDefinition({ ...other, position: stage.position, updatedAt: now });
+      await transaction.saveStageDefinition({ ...stage, position: other.position, updatedAt: now });
+      await transaction.appendAudit(this.audit(context, "stage_definition.reordered", "stage_definition", `${board}:${id}`, {
+        board, stageId: id, direction, position: other.position,
+      }, now));
       return transaction.listStageDefinitions(board);
     });
   }
@@ -353,7 +406,11 @@ export class CoreService {
           currentVersion: current.version,
         });
       }
-      const customStage = /^CUSTOM_[A-Z0-9_]{2,72}$/u.test(input.status);
+      const configuredStages = await this.ensureStageDefinitions(transaction, context.tenantId, "order");
+      if (!configuredStages.some((stage) => stage.id === input.status)) {
+        throw conflict("order_stage_not_configured", "Order stage is not configured for this company", { to: input.status });
+      }
+      const customStage = !Object.hasOwn(orderTransitions, current.status) || !Object.hasOwn(orderTransitions, input.status);
       if (!customStage && !(orderTransitions[current.status] ?? Object.keys(orderTransitions)).includes(input.status)) {
         throw conflict("order_stage_transition_invalid", "Order stage transition is not allowed", {
           from: current.status,

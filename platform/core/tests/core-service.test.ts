@@ -185,3 +185,37 @@ test("capabilities deny by default", async () => {
     isAppError("permission_denied"),
   );
 });
+
+test("tenant stage columns are configurable, reordered and safely reassign orders on deletion", async () => {
+  const store = new InMemoryCoreStore();
+  const service = new CoreService(store, () => new Date("2026-08-19T12:00:00.000Z"));
+  const actor = context(tenantA, actorA);
+  const defaults = await service.listStageDefinitions(actor, "order");
+  assert.equal(defaults[0]?.id, "intake_pending");
+
+  const configured = await service.saveStageDefinition(actor, "order", {
+    id: "CUSTOM_CONTROL", name: "Control de calidad", position: 60, terminal: false,
+  });
+  assert.equal(configured.at(-1)?.id, "CUSTOM_CONTROL");
+  const reordered = await service.reorderStageDefinition(actor, "order", "CUSTOM_CONTROL", "earlier");
+  assert.equal(reordered.find((stage) => stage.id === "CUSTOM_CONTROL")?.position, 50);
+
+  const client = (await service.createClient(actor, "stage-client", { displayName: "Cliente de etapa" })).data;
+  const payment = (await service.certifyPayment(actor, "stage-payment", {
+    clientId: client.id, evidenceReference: "stage-evidence", amountCents: 1_000, currency: "UYU",
+  })).data;
+  const order = (await service.createOrderFromCertifiedPayment(actor, "stage-order", {
+    clientId: client.id, certifiedPaymentId: payment.id, teamName: "Delta", quotedTotalCents: 1_000, currency: "UYU",
+  })).data;
+  const moved = await service.moveOrderStage(actor, order.id, "stage-move", {
+    status: "CUSTOM_CONTROL", expectedVersion: order.version,
+  });
+  assert.equal(moved.data.status, "CUSTOM_CONTROL");
+
+  await service.deleteStageDefinition(actor, "order", "CUSTOM_CONTROL", "completed");
+  assert.equal((await service.listOrders(actor))[0]?.status, "completed");
+  await assert.rejects(
+    service.moveOrderStage(actor, order.id, "unknown-stage", { status: "CUSTOM_CONTROL", expectedVersion: 3 }),
+    isAppError("order_stage_not_configured"),
+  );
+});
