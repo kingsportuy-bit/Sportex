@@ -383,13 +383,13 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
            AND (read_message.id IS NULL OR (candidate.occurred_at, candidate.id) > (read_message.occurred_at, read_message.id))
        ) unread ON true
        WHERE opportunity.tenant_id = $1
-         AND ($3::text IS NULL OR (conversation.last_activity_at, opportunity.workspace_id) < (
+         AND ($3::uuid IS NULL OR (conversation.last_activity_at, opportunity.workspace_id) < (
            SELECT candidate_conversation.last_activity_at, candidate_opportunity.workspace_id
            FROM ${this.tables.opportunities} candidate_opportunity
            JOIN ${this.tables.conversations} candidate_conversation
              ON candidate_conversation.tenant_id = candidate_opportunity.tenant_id
             AND candidate_conversation.id = candidate_opportunity.conversation_id
-           WHERE candidate_opportunity.tenant_id = $1 AND candidate_opportunity.workspace_id = $3
+           WHERE candidate_opportunity.tenant_id = $1 AND candidate_opportunity.workspace_id = $3::uuid
          ))
        ORDER BY conversation.last_activity_at DESC, opportunity.workspace_id DESC
        LIMIT $4`,

@@ -162,7 +162,7 @@ const whatsappImageSchema = z.object({
 const messageParamsSchema = z.object({ messageId: z.string().trim().min(3).max(160) }).strict();
 const conversationListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(25),
-  cursor: z.string().trim().min(3).max(160).optional(),
+  cursor: z.string().uuid().optional(),
 }).strict();
 
 export async function registerRoutes(
