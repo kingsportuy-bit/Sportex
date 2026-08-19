@@ -192,11 +192,20 @@ test("order workflow validates adjacent stages and records the final stage", asy
         colors: ["Verde", "Blanco"],
         sizes: "S 4 · M 8 · L 6",
         notes: "Boceto con escudo al frente",
+        currentSketch: {
+          messageId: "message-sketch-001",
+          assetId: "asset-sketch-001",
+          mimeType: "image/png",
+          fileName: "boceto-equipo.png",
+          width: 1600,
+          height: 900,
+        },
       },
     },
   });
   assert.equal(details.statusCode, 200);
   assert.equal(details.json().data.details.quantity, 18);
+  assert.equal(details.json().data.details.currentSketch.fileName, "boceto-equipo.png");
 
   let version = 2;
   for (const status of ["design_pending", "production_ready", "in_production", "completed"] as const) {

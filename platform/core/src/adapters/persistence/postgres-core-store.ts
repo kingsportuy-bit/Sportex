@@ -79,6 +79,16 @@ function rowToPayment(row: Record<string, unknown>): CertifiedPayment {
 
 function rowToOrder(row: Record<string, unknown>): Order {
   const details = (row.details ?? {}) as Partial<OrderDetails>;
+  const sketch = details.currentSketch;
+  const currentSketch = sketch && typeof sketch === "object"
+    && typeof sketch.messageId === "string"
+    && typeof sketch.assetId === "string"
+    && (sketch.mimeType === "image/jpeg" || sketch.mimeType === "image/png" || sketch.mimeType === "image/webp")
+    && typeof sketch.fileName === "string"
+    && (typeof sketch.width === "number" || sketch.width === null)
+    && (typeof sketch.height === "number" || sketch.height === null)
+    ? sketch
+    : null;
   return {
     id: String(row.id),
     tenantId: String(row.tenant_id),
@@ -97,6 +107,7 @@ function rowToOrder(row: Record<string, unknown>): Order {
       colors: Array.isArray(details.colors) ? details.colors.filter((color): color is string => typeof color === "string") : [],
       sizes: typeof details.sizes === "string" ? details.sizes : null,
       notes: typeof details.notes === "string" ? details.notes : null,
+      currentSketch,
     },
     version: Number(row.version),
     createdAt: iso(row.created_at),

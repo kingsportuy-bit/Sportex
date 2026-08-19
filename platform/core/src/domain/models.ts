@@ -11,12 +11,22 @@ export type Capability =
 
 export type OrderStatus = string;
 
+export interface OrderCurrentSketch {
+  messageId: string;
+  assetId: string;
+  mimeType: "image/jpeg" | "image/png" | "image/webp";
+  fileName: string;
+  width: number | null;
+  height: number | null;
+}
+
 export interface OrderDetails {
   product: string | null;
   quantity: number | null;
   colors: string[];
   sizes: string | null;
   notes: string | null;
+  currentSketch?: OrderCurrentSketch | null;
 }
 
 export interface ActorContext {

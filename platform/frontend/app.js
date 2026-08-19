@@ -156,6 +156,16 @@ function orderStageLabel(value) {
   return state.stageDefinitions.order.find((stage) => stage.id === value)?.name ?? orderStatusLabels[value] ?? value;
 }
 
+function configuredOrderStages() {
+  return state.stageDefinitions.order.length ? state.stageDefinitions.order.map((stage) => stage.id) : Object.keys(orderStatusLabels);
+}
+
+function canMoveOrderTo(order, status) {
+  return status === order.status
+    || (orderTransitions[order.status] ?? []).includes(status)
+    || (configuredOrderStages().includes(status) && !Object.hasOwn(orderStatusLabels, status));
+}
+
 const orderTransitions = {
   intake_pending: ["design_pending"],
   design_pending: ["intake_pending", "production_ready"],
@@ -352,7 +362,7 @@ async function authenticatedFetch(path, options = {}) {
   return fetch(path, { ...options, headers });
 }
 
-function appendMessageContent(row, message) {
+function appendMessageContent(row, message, item = null) {
   if (message.contentType !== "IMAGE" || !message.media) {
     row.append(element("p", "", message.text));
     return;
@@ -370,6 +380,16 @@ function appendMessageContent(row, message) {
   const caption = message.text ? element("figcaption", "", message.text) : null;
   figure.append(image, element("span", "whatsapp-image-loading", "Cargando imagen…"));
   if (caption) figure.append(caption);
+  const orderId = item?.opportunity.coreConversion?.orderId;
+  if (orderId && message.media.assetId !== "pending") {
+    const markSketch = element("button", "button button--quiet whatsapp-mark-sketch", "Usar como boceto vigente");
+    markSketch.type = "button";
+    markSketch.addEventListener("click", (event) => {
+      event.stopPropagation();
+      void markCurrentSketch(orderId, message, markSketch);
+    });
+    figure.append(markSketch);
+  }
   row.append(figure);
   void authenticatedFetch(`/v1/commercial/messages/${encodeURIComponent(message.id)}/media`)
     .then(async (response) => {
@@ -391,6 +411,53 @@ function appendMessageContent(row, message) {
       });
     })
     .catch(() => { figure.querySelector(".whatsapp-image-loading").textContent = "No se pudo mostrar la imagen"; });
+}
+
+async function markCurrentSketch(orderId, message, button) {
+  if (!message.media) return;
+  setButtonBusy(button, true, "Guardando…");
+  try {
+    let order = state.orders.find((candidate) => candidate.id === orderId);
+    if (!order) {
+      const response = await api("/v1/orders");
+      state.orders = response.data;
+      order = state.orders.find((candidate) => candidate.id === orderId);
+    }
+    if (!order) throw new UiError("El pedido vinculado ya no está disponible.", "order_not_found");
+    const details = {
+      ...order.details,
+      currentSketch: {
+        messageId: message.id,
+        assetId: message.media.assetId,
+        mimeType: message.media.mimeType,
+        fileName: message.media.fileName,
+        width: message.media.width,
+        height: message.media.height,
+      },
+    };
+    const response = await api(`/v1/orders/${encodeURIComponent(order.id)}/details`, {
+      method: "PATCH",
+      headers: { "idempotency-key": crypto.randomUUID() },
+      body: JSON.stringify({ expectedVersion: order.version, details }),
+    });
+    const index = state.orders.findIndex((candidate) => candidate.id === order.id);
+    if (index >= 0) state.orders[index] = response.data;
+    toast("Boceto vigente guardado en el pedido.");
+  } catch (error) {
+    toast(friendlyError(error), "error");
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
+async function openCurrentSketch(sketch) {
+  try {
+    const response = await authenticatedFetch(`/v1/commercial/messages/${encodeURIComponent(sketch.messageId)}/media`);
+    if (!response.ok) throw new Error("sketch_media_load_failed");
+    openWhatsAppImageViewer(await response.blob(), sketch.fileName, `Boceto vigente: ${sketch.fileName}`);
+  } catch {
+    toast("No se pudo abrir el boceto guardado.", "error");
+  }
 }
 
 function openWhatsAppImageViewer(blob, fileName, alt) {
@@ -616,7 +683,7 @@ function renderOrders() {
     list.append(table);
   } else {
 
-  const orderStages = state.stageDefinitions.order.length ? state.stageDefinitions.order.map((stage) => stage.id) : Object.keys(orderStatusLabels);
+  const orderStages = configuredOrderStages();
   for (const status of orderStages) {
     const column = element("section", "order-column");
     const columnOrders = state.orders.filter((order) => order.status === status);
@@ -628,7 +695,7 @@ function renderOrders() {
       event.preventDefault();
       const id = event.dataTransfer?.getData("text/plain");
       const order = state.orders.find((candidate) => candidate.id === id);
-      if (!order || order.status === status || (!(orderTransitions[order.status] ?? []).includes(status) && !status.startsWith("CUSTOM_"))) return;
+      if (!order || !canMoveOrderTo(order, status)) return;
       void moveOrderStage(order, status, null);
     });
     for (const order of columnOrders) {
@@ -648,7 +715,7 @@ function renderOrders() {
       detailsButton.type = "button";
       detailsButton.addEventListener("click", () => openOrderDetails(order));
       actions.append(detailsButton);
-      for (const next of orderTransitions[order.status] ?? []) {
+      for (const next of configuredOrderStages().filter((status) => status !== order.status && canMoveOrderTo(order, status))) {
         const action = element("button", "button button--quiet", `Mover a ${orderStageLabel(next)}`);
         action.type = "button";
         action.addEventListener("click", () => void moveOrderStage(order, next, action));
@@ -681,7 +748,7 @@ function renderOrders() {
       const text = element("div");
       text.append(
         element("strong", "", item.lead.teamName),
-        element("span", "", `${item.conversation.contactName} · seña ficticia validada`),
+        element("span", "", `${item.conversation.contactName} · ${state.localDemo ? "seña de ejemplo validada" : "seña validada"}`),
         element("small", "", "Todavía no existe un Pedido vinculado."),
       );
       const button = element("button", "button button--quiet", "Revisar lead");
@@ -720,7 +787,7 @@ async function moveOrderStage(order, status, button) {
 function openOrderDetails(order) {
   const dialog = element("dialog", "sheet-dialog order-details-dialog");
   const form = element("form");
-  const details = order.details || { product: null, quantity: null, colors: [], sizes: null, notes: null };
+  const details = order.details || { product: null, quantity: null, colors: [], sizes: null, notes: null, currentSketch: null };
   const header = element("header", "sheet-head");
   const title = element("div");
   title.append(element("span", "section-code", `PEDIDO / ${order.orderNumber}`), element("h2", "", order.teamName));
@@ -746,6 +813,18 @@ function openOrderDetails(order) {
     fieldLabel("Notas", notes),
   );
   grid.append(block);
+  if (details.currentSketch) {
+    const sketch = element("fieldset", "form-block form-block--wide");
+    sketch.append(
+      element("legend", "", "Boceto vigente"),
+      element("p", "", details.currentSketch.fileName),
+    );
+    const open = element("button", "button button--quiet", "Ver boceto");
+    open.type = "button";
+    open.addEventListener("click", () => void openCurrentSketch(details.currentSketch));
+    sketch.append(open);
+    grid.append(sketch);
+  }
   const error = element("p", "form-error"); error.setAttribute("role", "alert");
   const save = element("button", "button button--primary", "Guardar datos"); save.type = "submit";
   const footer = element("footer", "sheet-actions"); footer.append(element("span", "", "Los cambios quedan en el historial del pedido."), save);
@@ -758,6 +837,7 @@ function openOrderDetails(order) {
       colors: colors.value.split(",").map((color) => color.trim()).filter(Boolean),
       sizes: sizes.value.trim() || null,
       notes: notes.value.trim() || null,
+      currentSketch: details.currentSketch ?? null,
     }, save, error, dialog);
   });
   dialog.append(form);
@@ -855,6 +935,16 @@ const stageLabels = Object.fromEntries(salesProcessStages.map((stage) => [stage.
 
 function stageLabel(value) {
   return state.stageDefinitions.lead.find((stage) => stage.id === value)?.name ?? stageLabels[value] ?? value;
+}
+
+function configuredLeadStages() {
+  return state.stageDefinitions.lead.length ? state.stageDefinitions.lead.map((stage) => stage.id) : commercialStages;
+}
+
+function canMoveLeadTo(item, stage) {
+  return stage === item.opportunity.stage
+    || item.opportunity.allowedStageTransitions.includes(stage)
+    || (configuredLeadStages().includes(stage) && !commercialStages.includes(stage));
 }
 
 function productLabel(value) {
@@ -988,7 +1078,7 @@ function renderToday() {
     const identity = element("div", "today-identity");
     identity.append(
       element("strong", "", item.lead.teamName || "Equipo por confirmar"),
-      element("span", "", `${item.conversation.contactName} · ${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"}`),
+      element("span", "", `${item.conversation.contactName} · ${productLabel(item.lead.productType)} · ${item.lead.quantity ? `${item.lead.quantity} prendas` : "cantidad por confirmar"}`),
     );
     const next = element("div", "today-next");
     next.append(element("span", "", "Próxima acción"), element("strong", "", item.opportunity.nextAction));
@@ -1009,7 +1099,7 @@ function renderStageBoard(board) {
   if (!board) return;
   board.replaceChildren();
   const activeStage = $("#stage-filter").value;
-  const stages = state.stageDefinitions.lead.length ? state.stageDefinitions.lead.map((definition) => definition.id) : commercialStages;
+  const stages = configuredLeadStages();
   for (const [index, stage] of stages.entries()) {
     const count = state.commercial.filter((item) => item.opportunity.stage === stage).length;
     const button = element("button", `stage-station${activeStage === stage ? " is-filtered" : ""}`);
@@ -1055,7 +1145,7 @@ function renderLeadList(items) {
     return;
   }
 
-  const leadStages = state.stageDefinitions.lead.length ? state.stageDefinitions.lead.map((definition) => definition.id) : commercialStages;
+  const leadStages = configuredLeadStages();
   for (const stage of leadStages) {
     const column = element("section", "lead-kanban-column");
     column.dataset.stage = stage;
@@ -1068,7 +1158,7 @@ function renderLeadList(items) {
       event.preventDefault();
       const id = event.dataTransfer?.getData("text/plain");
       const item = state.commercial.find((candidate) => candidate.id === id);
-      if (!item || item.opportunity.stage === stage || (!item.opportunity.allowedStageTransitions.includes(stage) && !stage.startsWith("CUSTOM_"))) return;
+      if (!item || !canMoveLeadTo(item, stage)) return;
       void saveCommercialStage(item, stage, null);
     });
     for (const item of stageItems) {
@@ -1079,7 +1169,9 @@ function renderLeadList(items) {
       card.append(
         element("strong", "", item.lead.teamName || "Equipo por confirmar"),
         element("span", "lead-kanban-contact", item.conversation.contactName),
-        element("span", "lead-kanban-meta", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"} prendas`),
+        element("span", "lead-kanban-meta", item.lead.quantity
+          ? `${productLabel(item.lead.productType)} · ${item.lead.quantity} prendas`
+          : `${productLabel(item.lead.productType)} · cantidad por confirmar`),
         element("span", "lead-kanban-next", item.opportunity.nextAction || priority.reason),
       );
       const message = element("button", "button button--quiet lead-kanban-message", "Responder");
@@ -1145,13 +1237,13 @@ function renderBrief(item) {
     fact("Personalización", item.lead.personalization.join(" · ") || "Por confirmar"),
   );
   if (item.opportunity.quote) {
-    grid.append(fact("Cotización ficticia", `${money(item.opportunity.quote.totalCents)} · v${item.opportunity.quote.version}`));
+    grid.append(fact(state.localDemo ? "Cotización de ejemplo" : "Cotización", `${money(item.opportunity.quote.totalCents)} · v${item.opportunity.quote.version}`));
   }
   if (item.opportunity.lossReason) grid.append(fact("Motivo de pérdida", item.opportunity.lossReason));
   card.append(grid);
   if (item.opportunity.depositValidation) {
     const warning = element("p", "safety-note");
-    warning.append(element("strong", "", "SEÑA FICTICIA · "), document.createTextNode(item.opportunity.depositValidation.note));
+    warning.append(element("strong", "", state.localDemo ? "SEÑA DE EJEMPLO · " : "SEÑA VALIDADA · "), document.createTextNode(item.opportunity.depositValidation.note));
     card.append(warning);
   }
   if (item.opportunity.coreConversion) {
@@ -1186,12 +1278,14 @@ function renderQualification(item) {
 
 function renderConversation(item) {
   const card = detailCard("CONVERSACIÓN / 03", "Hilo ordenado");
-  const note = element("div", "read-only-banner", "Conversación de ejemplo · sin envío desde esta demo");
+  const note = element("div", "read-only-banner", state.localDemo
+    ? "Conversación de ejemplo · sin envío desde esta demo"
+    : "Conversación vinculada al lead.");
   const timeline = element("div", "conversation-timeline");
   for (const message of item.conversation.messages) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
-    appendMessageContent(row, message);
+    appendMessageContent(row, message, item);
     row.append(element("time", "", message.pending ? "Enviando…" : shortDateTime(message.occurredAt)));
     timeline.append(row);
   }
@@ -1233,15 +1327,15 @@ function renderOrigin(item) {
   creative.style.setProperty("--creative-accent", item.attribution.creative?.accent || "#2767ff");
   creative.append(
     element("span", "creative-format", item.attribution.creative?.format || "ANUNCIO"),
-    element("b", "", item.attribution.creative?.visualLabel || "CREATIVO FICTICIO"),
-    element("strong", "", item.attribution.creative?.title || item.attribution.adName || "Anuncio ficticio"),
+    element("b", "", item.attribution.creative?.visualLabel || (state.localDemo ? "CREATIVO DE EJEMPLO" : "ANUNCIO")),
+    element("strong", "", item.attribution.creative?.title || item.attribution.adName || "Anuncio sin identificar"),
     element("p", "", item.attribution.creative?.body || "Sin descripción del creativo."),
   );
   const metadata = element("dl", "origin-metadata");
   for (const [label, value] of [
     ["Campaña", item.attribution.campaignName],
     ["Anuncio", item.attribution.adName],
-    ["ID ficticio", item.attribution.adId],
+    ["Identificador", item.attribution.adId],
     ["Evidencia", item.attribution.evidenceMessageId],
   ]) {
     metadata.append(element("dt", "", label), element("dd", "", value || "No informado"));
@@ -1492,11 +1586,11 @@ function renderQuickStage(item) {
   const card = detailCard("ETAPA", "Mover lead");
   const form = element("form", "inline-command");
   const select = element("select");
-  for (const stage of commercialStages) {
+  for (const stage of configuredLeadStages()) {
     const option = element("option", "", stageLabel(stage));
     option.value = stage;
     option.selected = stage === item.opportunity.stage;
-    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
+    option.disabled = !canMoveLeadTo(item, stage);
     select.append(option);
   }
   const button = element("button", "button button--primary", "Cambiar etapa");
@@ -1951,7 +2045,7 @@ function renderWhatsAppChatPane(item) {
     const message = entry.message;
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
-    appendMessageContent(row, message);
+    appendMessageContent(row, message, item);
     row.append(element("time", "", shortDateTime(message.occurredAt)));
     conversation.append(row);
   }
@@ -2024,7 +2118,7 @@ function renderChatPane(item) {
   identity.append(
     element("span", "page-kicker", productLabel(item.lead.productType)),
     element("h2", "", item.lead.teamName || "Equipo por confirmar"),
-    element("p", "", `${item.conversation.contactName} · ${item.lead.quantity ?? "?"} prendas`),
+    element("p", "", `${item.conversation.contactName} · ${item.lead.quantity ? `${item.lead.quantity} prendas` : "cantidad por confirmar"}`),
   );
   const sheet = element("button", "button button--quiet", "Ficha completa");
   sheet.type = "button";
@@ -2041,7 +2135,7 @@ function renderChatPane(item) {
     );
     conversation.append(row);
   }
-  pane.append(header, conversation, renderDraftArea(item));
+  pane.append(header, conversation, renderWhatsAppComposer(item));
   return pane;
 }
 
@@ -2055,11 +2149,11 @@ function renderWorkPane(item) {
   stageSection.append(element("h3", "", "Etapa"));
   const stageForm = element("form", "inline-command");
   const stageSelect = element("select");
-  for (const stage of commercialStages) {
+  for (const stage of configuredLeadStages()) {
     const option = element("option", "", stageLabel(stage));
     option.value = stage;
     option.selected = stage === item.opportunity.stage;
-    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
+    option.disabled = !canMoveLeadTo(item, stage);
     stageSelect.append(option);
   }
   const stageButton = element("button", "button button--quiet", "Guardar");
@@ -2074,7 +2168,7 @@ function renderWorkPane(item) {
   const summary = element("section", "work-section");
   summary.append(
     element("h3", "", "Resumen"),
-    element("p", "work-summary", `${item.lead.teamName} consulta por ${item.lead.quantity ?? "?"} ${productLabel(item.lead.productType).toLowerCase()} en ${item.lead.colors.join(" y ") || "colores por confirmar"}.`),
+    element("p", "work-summary", `${item.lead.teamName || item.conversation.contactName} consulta por ${item.lead.quantity ? `${item.lead.quantity} ` : "cantidad por confirmar de "}${productLabel(item.lead.productType).toLowerCase()} en ${item.lead.colors.join(" y ") || "colores por confirmar"}.`),
   );
 
   const facts = element("section", "work-section work-facts");
@@ -2177,6 +2271,10 @@ function renderLeadDetail(item) {
   focus.dataset.mobileTab = state.mobileLeadTab;
   focus.append(renderChatPane(item), renderWorkPane(item));
   detail.append(tabs, focus);
+  window.requestAnimationFrame(() => {
+    const conversation = $("#lead-detail .lead-conversation");
+    if (conversation) conversation.scrollTop = conversation.scrollHeight;
+  });
 }
 
 function replaceCommercialItem(updated) {
@@ -2258,9 +2356,26 @@ function clearCommercialFilters() {
   renderCommercial();
 }
 
+function syncLeadStageFilter() {
+  const select = $("#stage-filter");
+  if (!select) return;
+  const selected = select.value;
+  select.replaceChildren(element("option", "", "Todas"));
+  select.firstElementChild.value = "";
+  for (const stage of configuredLeadStages()) {
+    const option = element("option", "", stageLabel(stage));
+    option.value = stage;
+    select.append(option);
+  }
+  if (configuredLeadStages().includes(selected)) select.value = selected;
+}
+
 function renderCommercial() {
   $("#commercial-count-nav").textContent = String(state.commercial.length);
-  $("#persistence-status").textContent = state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA";
+  $("#persistence-status").textContent = state.localDemo
+    ? (state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA")
+    : "PILOTO DELTA";
+  syncLeadStageFilter();
 
   const items = filteredCommercial();
   if (state.selectedCommercialId && !items.some((item) => item.id === state.selectedCommercialId)) state.selectedCommercialId = null;

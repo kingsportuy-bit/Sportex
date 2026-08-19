@@ -478,6 +478,7 @@ export class CommercialReplayService {
           ? snapshot.lead.sizeBreakdown.map((entry) => `${entry.size}: ${entry.quantity}`).join(", ")
           : null,
         notes: snapshot.lead.personalization.length ? `Personalización: ${snapshot.lead.personalization.join(", ")}` : null,
+        currentSketch: null,
       },
     });
 

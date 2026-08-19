@@ -59,6 +59,14 @@ const updateOrderDetailsSchema = z.object({
     colors: z.array(z.string().trim().min(2).max(60)).max(12),
     sizes: z.string().trim().min(2).max(1_000).nullable(),
     notes: z.string().trim().min(2).max(2_000).nullable(),
+    currentSketch: z.object({
+      messageId: z.string().trim().min(2).max(160),
+      assetId: z.string().trim().min(2).max(160),
+      mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+      fileName: z.string().trim().min(1).max(240),
+      width: z.number().int().positive().max(10_000).nullable(),
+      height: z.number().int().positive().max(10_000).nullable(),
+    }).strict().nullable().optional(),
   }).strict(),
 }).strict();
 
@@ -313,7 +321,9 @@ export async function registerRoutes(
     const input = updateOrderDetailsSchema.parse(request.body);
     const result = await service.updateOrderDetails(context, params.orderId, idempotencyKey(request), {
       expectedVersion: input.expectedVersion,
-      details: input.details,
+      details: input.details.currentSketch === undefined
+        ? (({ currentSketch: _currentSketch, ...details }) => details)(input.details)
+        : input.details,
     });
     return {
       data: result.data,

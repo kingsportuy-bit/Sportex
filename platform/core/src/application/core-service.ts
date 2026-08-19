@@ -7,6 +7,7 @@ import type {
   Currency,
   IdempotencyRecord,
   Order,
+  OrderCurrentSketch,
   OrderDetails,
   OrderStatus,
   OutboxEvent,
@@ -56,7 +57,7 @@ export interface MoveOrderStageInput {
 }
 
 export interface UpdateOrderDetailsInput {
-  details: OrderDetails;
+  details: Omit<OrderDetails, "currentSketch"> & { currentSketch?: OrderCurrentSketch | null };
   expectedVersion: number;
 }
 
@@ -466,7 +467,10 @@ export class CoreService {
           currentVersion: current.version,
         });
       }
-      const details = this.normalizeOrderDetails(input.details);
+      const details = this.normalizeOrderDetails({
+        ...input.details,
+        currentSketch: input.details.currentSketch === undefined ? current.details.currentSketch ?? null : input.details.currentSketch,
+      });
       const updated: Order = { ...current, details, version: current.version + 1, updatedAt: now };
       await transaction.updateOrder(updated, current.version);
       await transaction.appendAudit(this.audit(context, "order.details_updated", "order", updated.id, {
@@ -478,13 +482,21 @@ export class CoreService {
   }
 
   private normalizeOrderDetails(details?: OrderDetails): OrderDetails {
-    if (!details) return { product: null, quantity: null, colors: [], sizes: null, notes: null };
+    if (!details) return { product: null, quantity: null, colors: [], sizes: null, notes: null, currentSketch: null };
     return {
       product: details.product ? this.text(details.product, "product", 2, 120) : null,
       quantity: details.quantity === null ? null : this.positiveInteger(details.quantity, "quantity"),
       colors: details.colors.map((color) => this.text(color, "color", 2, 60)).slice(0, 12),
       sizes: details.sizes ? this.text(details.sizes, "sizes", 2, 1_000) : null,
       notes: details.notes ? this.text(details.notes, "notes", 2, 2_000) : null,
+      currentSketch: details.currentSketch ? {
+        messageId: this.text(details.currentSketch.messageId, "sketch_message_id", 2, 160),
+        assetId: this.text(details.currentSketch.assetId, "sketch_asset_id", 2, 160),
+        mimeType: details.currentSketch.mimeType,
+        fileName: this.text(details.currentSketch.fileName, "sketch_file_name", 1, 240),
+        width: details.currentSketch.width === null ? null : this.positiveInteger(details.currentSketch.width, "sketch_width"),
+        height: details.currentSketch.height === null ? null : this.positiveInteger(details.currentSketch.height, "sketch_height"),
+      } : null,
     };
   }
 
