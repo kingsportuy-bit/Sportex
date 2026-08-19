@@ -1,7 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
-const THEME_STORAGE_KEY = "sportex_theme";
 const VIEW_STORAGE_KEY = "sportex_last_view";
 const OPERATIONAL_VIEWS = new Set(["whatsapp", "leads", "orders", "clients"]);
 
@@ -23,38 +22,7 @@ function persistOperationalView(view) {
   }
 }
 
-function storedTheme() {
-  try {
-    const value = localStorage.getItem(THEME_STORAGE_KEY);
-    if (value === "dark" || value === "light") return value;
-  } catch {
-    // La interfaz sigue funcionando aunque el navegador bloquee el almacenamiento local.
-  }
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function applyTheme(theme) {
-  const dark = theme === "dark";
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
-  const toggle = $("#theme-toggle");
-  if (!toggle) return;
-  toggle.setAttribute("aria-pressed", String(dark));
-  toggle.setAttribute("aria-label", dark ? "Activar modo claro" : "Activar modo oscuro");
-  $("#theme-toggle-icon").textContent = dark ? "\u2600" : "\u263e";
-  $("#theme-toggle-label").textContent = dark ? "Claro" : "Oscuro";
-}
-
-function toggleTheme() {
-  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, next);
-  } catch {
-    // La preferencia se conserva durante esta vista aunque no pueda persistirse.
-  }
-  applyTheme(next);
-}
-
-applyTheme(storedTheme());
+document.documentElement.dataset.theme = "dark";
 
 const state = {
   config: null,
@@ -3173,7 +3141,6 @@ $("#order-client").addEventListener("change", syncTeamFromClient);
 $("#save-order-button").addEventListener("click", saveOrder);
 $("#logout-button").addEventListener("click", logout);
 $("#account-button").addEventListener("click", () => openPasswordDialog(false));
-$("#theme-toggle").addEventListener("click", toggleTheme);
 $("#password-save").addEventListener("click", savePassword);
 $("#password-dialog").addEventListener("cancel", (event) => {
   if (state.passwordForced) event.preventDefault();
