@@ -40,7 +40,14 @@ export interface CommercialDemoResetResult {
   fixtureVersion: "commercial-demo-v1";
 }
 
+export interface CommercialWorkspaceChange {
+  tenantId: string;
+  workspaceItemId: string;
+  revision: number;
+}
+
 export class CommercialReplayService {
+  private readonly subscribers = new Set<(change: CommercialWorkspaceChange) => void>();
   constructor(
     private readonly store: CommercialReplayStore,
     private readonly clock: Clock = () => new Date(),
@@ -48,6 +55,20 @@ export class CommercialReplayService {
     private readonly seedFactory: CommercialSeedFactory | null = null,
     private readonly coreService: CoreService | null = null,
   ) {}
+
+  subscribe(listener: (change: CommercialWorkspaceChange) => void): () => void {
+    this.subscribers.add(listener);
+    return () => this.subscribers.delete(listener);
+  }
+
+  private publish(item: CommercialWorkspaceItem): void {
+    const change: CommercialWorkspaceChange = {
+      tenantId: item.tenantId,
+      workspaceItemId: item.id,
+      revision: item.opportunity.version,
+    };
+    for (const listener of this.subscribers) listener(change);
+  }
 
   async replay(
     context: ActorContext,
@@ -118,7 +139,9 @@ export class CommercialReplayService {
       await this.remember(transaction, context.tenantId, idempotencyKey, hash, item.id);
       return { data: item, replayed: false };
     });
-    return { ...result, data: withConversationTimeline(result.data) };
+    const data = withConversationTimeline(result.data);
+    if (!result.replayed) this.publish(data);
+    return { ...result, data };
   }
 
   async list(context: ActorContext): Promise<CommercialWorkspaceItem[]> {
@@ -135,9 +158,26 @@ export class CommercialReplayService {
     });
   }
 
-  async markConversationRead(context: ActorContext, itemId: string): Promise<CommercialWorkspaceItem> {
+  async listPage(context: ActorContext, limit: number, cursor: string | null): Promise<{ items: CommercialWorkspaceItem[]; nextCursor: string | null }> {
+    requireCapability(context, "commercial.read");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new AppError("invalid_payload", 400, "Invalid conversation page size");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      return transaction.listPage(context.actorId, limit, cursor);
+    });
+  }
+
+  async get(context: ActorContext, itemId: string): Promise<CommercialWorkspaceItem> {
     requireCapability(context, "commercial.read");
     return this.store.transaction(context.tenantId, async (transaction) => {
+      await this.ensureSeeded(transaction, context.tenantId);
+      return withConversationTimeline(await this.requiredItem(transaction, itemId));
+    });
+  }
+
+  async markConversationRead(context: ActorContext, itemId: string): Promise<CommercialWorkspaceItem> {
+    requireCapability(context, "commercial.read");
+    const result = await this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
       const item = await this.requiredItem(transaction, itemId);
       const latestInbound = [...item.conversation.messages].reverse().find((message) => message.direction === "CLIENTE");
@@ -155,19 +195,17 @@ export class CommercialReplayService {
         conversation: { ...item.conversation, unreadCount: 0 },
       });
     });
+    return result;
   }
 
   async media(context: ActorContext, messageId: string): Promise<CommercialMediaAsset> {
     requireCapability(context, "commercial.read");
-    return this.store.transaction(context.tenantId, async (transaction) => {
-      const item = (await transaction.list()).find((candidate) =>
-        candidate.conversation.messages.some((message) => message.id === messageId));
-      const message = item?.conversation.messages.find((candidate) => candidate.id === messageId);
-      if (!message?.media) throw notFound("commercial_media_not_found", "WhatsApp image was not found");
-      const asset = await transaction.findMedia(message.media.assetId);
+    const result = await this.store.transaction(context.tenantId, async (transaction) => {
+      const asset = await transaction.findMediaByMessageId(messageId);
       if (!asset) throw notFound("commercial_media_not_found", "WhatsApp image was not found");
       return asset;
     });
+    return result;
   }
 
   async updateStage(
@@ -184,7 +222,7 @@ export class CommercialReplayService {
         throw conflict("commercial_stage_not_configured", "Lead stage is not configured for this company", { to: input.stage });
       }
     }
-    return this.store.transaction(context.tenantId, async (transaction) => {
+    const result = await this.store.transaction(context.tenantId, async (transaction) => {
       await this.ensureSeeded(transaction, context.tenantId);
       const item = await this.requiredItem(transaction, itemId);
       this.requireVersion(item, input.expectedVersion);
@@ -251,6 +289,8 @@ export class CommercialReplayService {
       await transaction.save(updated);
       return withConversationTimeline(updated);
     });
+    this.publish(result);
+    return result;
   }
 
   async reassignStageForConfiguration(
@@ -812,6 +852,8 @@ export class CommercialReplayService {
       fileName: image.fileName,
       sizeBytes: image.fileLength,
       sha256: image.fileSha256,
+      width: image.width ?? null,
+      height: image.height ?? null,
       dataBase64: image.dataBase64,
       createdAt: receivedAt,
       fixtureOnly,

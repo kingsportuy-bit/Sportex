@@ -49,6 +49,8 @@ const state = {
   orders: [],
   ordersView: "board",
   commercial: [],
+  commercialNextCursor: null,
+  commercialPageLoading: false,
   stageDefinitions: { lead: [], order: [] },
   selectedCommercialId: null,
   mobileDetailOpen: false,
@@ -66,6 +68,9 @@ const state = {
   passwordForced: false,
   liveRefreshTimer: null,
   liveRefreshBusy: false,
+  liveStreamAbort: null,
+  liveStreamReconnectTimer: null,
+  liveStreamDelay: 1_000,
   commercialSnapshot: "",
 };
 
@@ -290,12 +295,6 @@ async function loadSession() {
   $("#today-date").textContent = todayLabel();
 }
 
-function replaceCommercialItem(item) {
-  if (!item?.id) return;
-  state.commercial = state.commercial.map((candidate) => candidate.id === item.id ? item : candidate);
-  state.commercialSnapshot = commercialSnapshot(state.commercial);
-}
-
 function optimisticWhatsappMessage(item, text, pendingImage) {
   const now = new Date().toISOString();
   const message = {
@@ -394,16 +393,27 @@ function openWhatsAppImageViewer(blob, fileName, alt) {
   dialog.showModal();
 }
 
-async function loadData() {
-  const requests = [api("/v1/clients"), api("/v1/orders"), api("/v1/stage-definitions/lead"), api("/v1/stage-definitions/order")];
-  if (state.commercialWorkspace) requests.push(api("/v1/commercial/workspace"));
-  const [clients, orders, leadStages, orderStages, commercial] = await Promise.all(requests);
-  state.clients = clients.data;
-  state.orders = orders.data;
-  state.stageDefinitions.lead = leadStages.data ?? [];
-  state.stageDefinitions.order = orderStages.data ?? [];
-  state.commercial = commercial?.data ?? [];
-  state.commercialSnapshot = commercialSnapshot(state.commercial);
+async function loadData({ activeOnly = false } = {}) {
+  const wantsCommercial = state.commercialWorkspace && (!activeOnly || state.currentView === "whatsapp" || state.currentView === "leads");
+  const wantsOrders = !activeOnly || state.currentView === "orders";
+  const wantsClients = !activeOnly || state.currentView === "clients" || wantsOrders;
+  const requests = [];
+  if (wantsClients) requests.push(["clients", api("/v1/clients")]);
+  if (wantsOrders) requests.push(["orders", api("/v1/orders")]);
+  if (!activeOnly || state.currentView === "whatsapp" || state.currentView === "leads") requests.push(["leadStages", api("/v1/stage-definitions/lead")]);
+  if (wantsOrders) requests.push(["orderStages", api("/v1/stage-definitions/order")]);
+  if (wantsCommercial) requests.push(["commercial", api("/v1/commercial/conversations?limit=25")]);
+  const responses = await Promise.all(requests.map(async ([key, request]) => [key, await request]));
+  const loaded = Object.fromEntries(responses);
+  if (loaded.clients) state.clients = loaded.clients.data;
+  if (loaded.orders) state.orders = loaded.orders.data;
+  if (loaded.leadStages) state.stageDefinitions.lead = loaded.leadStages.data ?? [];
+  if (loaded.orderStages) state.stageDefinitions.order = loaded.orderStages.data ?? [];
+  if (loaded.commercial) {
+    state.commercial = loaded.commercial.data ?? [];
+    state.commercialSnapshot = commercialSnapshot(state.commercial);
+    state.commercialNextCursor = loaded.commercial.meta?.nextCursor ?? null;
+  }
   // La bandeja de WhatsApp empieza en reposo: el operador elige qué conversación abrir.
   if (state.selectedCommercialId && !state.commercial.some((item) => item.id === state.selectedCommercialId)) {
     state.selectedCommercialId = null;
@@ -415,15 +425,19 @@ async function loadData() {
 }
 
 async function refreshWhatsAppFromDatabase() {
-  if (state.liveRefreshBusy || !state.commercialWorkspace || state.currentView !== "whatsapp" || document.hidden) return;
+  if (!state.selectedCommercialId) return;
+  await refreshWhatsAppItem(state.selectedCommercialId);
+}
+
+async function refreshWhatsAppItem(itemId) {
+  if (state.liveRefreshBusy || !state.commercialWorkspace || document.hidden) return;
   state.liveRefreshBusy = true;
   try {
-    const response = await api("/v1/commercial/workspace");
-    const next = response.data ?? [];
-    const snapshot = commercialSnapshot(next);
-    if (snapshot === state.commercialSnapshot) return;
-
-    const selectedId = state.selectedCommercialId;
+    const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}`);
+    const updated = response.data;
+    const current = state.commercial.find((item) => item.id === itemId);
+    if (current && current.opportunity.version === updated.opportunity.version
+      && current.conversation.messages.at(-1)?.providerMessageId === updated.conversation.messages.at(-1)?.providerMessageId) return;
     const composer = $(".whatsapp-composer-input");
     const draft = composer?.value ?? "";
     const restoreFocus = document.activeElement === composer;
@@ -432,16 +446,15 @@ async function refreshWhatsAppFromDatabase() {
       ? conversation.scrollHeight - conversation.scrollTop - conversation.clientHeight
       : 0;
 
-    state.commercial = next;
-    state.commercialSnapshot = snapshot;
-    state.selectedCommercialId = selectedId && next.some((item) => item.id === selectedId)
-      ? selectedId
-      : null;
+    const index = state.commercial.findIndex((item) => item.id === itemId);
+    if (index >= 0) state.commercial[index] = updated;
+    else state.commercial.unshift(updated);
+    state.commercialSnapshot = commercialSnapshot(state.commercial);
     renderWhatsApp();
     renderToday();
 
     const refreshedComposer = $(".whatsapp-composer-input");
-    if (refreshedComposer && state.selectedCommercialId === selectedId) {
+    if (refreshedComposer && state.selectedCommercialId === itemId) {
       refreshedComposer.value = draft;
       if (restoreFocus) refreshedComposer.focus({ preventScroll: true });
     }
@@ -456,15 +469,89 @@ async function refreshWhatsAppFromDatabase() {
   }
 }
 
+async function loadNextCommercialPage() {
+  if (state.commercialPageLoading || !state.commercialNextCursor) return;
+  state.commercialPageLoading = true;
+  try {
+    const response = await api(`/v1/commercial/conversations?limit=25&cursor=${encodeURIComponent(state.commercialNextCursor)}`);
+    const known = new Set(state.commercial.map((item) => item.id));
+    state.commercial.push(...(response.data ?? []).filter((item) => !known.has(item.id)));
+    state.commercialNextCursor = response.meta?.nextCursor ?? null;
+    state.commercialSnapshot = commercialSnapshot(state.commercial);
+    renderWhatsApp();
+  } catch (error) {
+    console.warn("SPORTEX conversation page failed", error);
+  } finally {
+    state.commercialPageLoading = false;
+  }
+}
+
+async function openWhatsAppConversation(itemId) {
+  const item = state.commercial.find((candidate) => candidate.id === itemId);
+  if (!item) return;
+  state.selectedCommercialId = itemId;
+  state.mobileWhatsappDetailOpen = true;
+  state.mobileWhatsappTab = "chat";
+  state.draftResource = null;
+  renderWhatsApp();
+  try {
+    const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}`);
+    replaceCommercialItem(response.data);
+    renderWhatsAppDetailPreservingChatState(response.data, true);
+  } catch (error) {
+    toast(friendlyError(error), "error");
+  }
+}
+
 function startLiveRefresh() {
   stopLiveRefresh();
-  if (state.localDemo || !state.commercialWorkspace) return;
-  state.liveRefreshTimer = window.setInterval(() => void refreshWhatsAppFromDatabase(), 2_000);
+  if (state.localDemo || !state.commercialWorkspace || state.currentView !== "whatsapp" || document.hidden) return;
+  const controller = new AbortController();
+  state.liveStreamAbort = controller;
+  void consumeCommercialStream(controller.signal);
 }
 
 function stopLiveRefresh() {
   if (state.liveRefreshTimer) window.clearInterval(state.liveRefreshTimer);
   state.liveRefreshTimer = null;
+  if (state.liveStreamReconnectTimer) window.clearTimeout(state.liveStreamReconnectTimer);
+  state.liveStreamReconnectTimer = null;
+  state.liveStreamAbort?.abort();
+  state.liveStreamAbort = null;
+}
+
+async function consumeCommercialStream(signal) {
+  try {
+    const response = await authenticatedFetch("/v1/commercial/stream", {
+      headers: { accept: "text/event-stream" }, signal,
+    });
+    if (!response.ok || !response.body) throw new Error("stream_unavailable");
+    state.liveStreamDelay = 1_000;
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (!signal.aborted) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const events = buffer.split("\n\n");
+      buffer = events.pop() ?? "";
+      for (const event of events) {
+        const kind = /^event: ([^\n]+)/mu.exec(event)?.[1];
+        const raw = /^data: (.+)$/mu.exec(event)?.[1];
+        if (kind !== "conversation.changed" || !raw) continue;
+        const change = JSON.parse(raw);
+        if (typeof change.workspaceItemId === "string") void refreshWhatsAppItem(change.workspaceItemId);
+      }
+    }
+  } catch (error) {
+    if (!signal.aborted) console.warn("SPORTEX stream reconnecting", error);
+  }
+  if (!signal.aborted && state.currentView === "whatsapp" && !document.hidden) {
+    const delay = state.liveStreamDelay;
+    state.liveStreamDelay = Math.min(state.liveStreamDelay * 2, 30_000);
+    state.liveStreamReconnectTimer = window.setTimeout(() => startLiveRefresh(), delay);
+  }
 }
 
 function cell(text, className = "") {
@@ -887,13 +974,10 @@ function renderToday() {
     const openButton = element("button", "button button--primary", "Abrir chat");
     openButton.type = "button";
     openButton.addEventListener("click", () => {
-      state.selectedCommercialId = item.id;
       state.mobileDetailOpen = true;
-      state.mobileWhatsappDetailOpen = true;
-      state.mobileWhatsappTab = "chat";
       state.mobileLeadTab = "chat";
       switchView("whatsapp");
-      renderWhatsApp();
+      void openWhatsAppConversation(item.id);
     });
     row.append(flag, identity, next, openButton);
     list.append(row);
@@ -904,7 +988,8 @@ function renderStageBoard(board) {
   if (!board) return;
   board.replaceChildren();
   const activeStage = $("#stage-filter").value;
-  for (const [index, stage] of commercialStages.entries()) {
+  const stages = state.stageDefinitions.lead.length ? state.stageDefinitions.lead.map((definition) => definition.id) : commercialStages;
+  for (const [index, stage] of stages.entries()) {
     const count = state.commercial.filter((item) => item.opportunity.stage === stage).length;
     const button = element("button", `stage-station${activeStage === stage ? " is-filtered" : ""}`);
     button.type = "button";
@@ -981,24 +1066,33 @@ function renderLeadList(items) {
       message.addEventListener("click", (event) => {
         event.stopPropagation();
         switchView("whatsapp");
-        state.selectedCommercialId = item.id;
-        state.mobileWhatsappDetailOpen = true;
-        renderWhatsApp();
+        void openWhatsAppConversation(item.id);
       });
       card.append(message);
       card.addEventListener("dragstart", (event) => event.dataTransfer?.setData("text/plain", item.id));
-      card.addEventListener("click", () => {
-        state.selectedCommercialId = item.id;
-        state.mobileDetailOpen = true;
-        state.mobileLeadTab = "chat";
-        state.draftResource = null;
-        renderCommercial();
-        $("#lead-detail").focus({ preventScroll: true });
-      });
+      card.addEventListener("click", () => void openLeadDetail(item.id));
       cards.append(card);
     }
     column.append(header, cards);
     list.append(column);
+  }
+}
+
+async function openLeadDetail(itemId) {
+  const item = state.commercial.find((candidate) => candidate.id === itemId);
+  if (!item) return;
+  state.selectedCommercialId = item.id;
+  state.mobileDetailOpen = true;
+  state.mobileLeadTab = "chat";
+  state.draftResource = null;
+  renderCommercial();
+  try {
+    const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}`);
+    replaceCommercialItem(response.data);
+    renderCommercial();
+    $("#lead-detail").focus({ preventScroll: true });
+  } catch (error) {
+    toast(friendlyError(error), "error");
   }
 }
 
@@ -1561,7 +1655,9 @@ function renderWhatsAppStages() {
   rail.replaceChildren();
   const stages = [
     { id: "ALL", label: "Todas", shortLabel: "Todas" },
-    ...salesProcessStages,
+    ...(state.stageDefinitions.lead.length
+      ? state.stageDefinitions.lead.map((stage) => ({ id: stage.id, label: stage.name, shortLabel: stage.name }))
+      : salesProcessStages),
   ];
   for (const [index, stage] of stages.entries()) {
     const active = state.whatsappStage === stage.id;
@@ -1630,15 +1726,22 @@ function renderWhatsAppList(items) {
     );
     button.append(avatar, copy);
     button.addEventListener("click", () => {
-      state.selectedCommercialId = item.id;
-      state.mobileWhatsappDetailOpen = true;
-      state.mobileWhatsappTab = "chat";
-      state.draftResource = null;
       if (unread) void markWhatsAppRead(item.id);
-      renderWhatsApp();
-      $("#whatsapp-detail").focus({ preventScroll: true });
+      void openWhatsAppConversation(item.id);
     });
     list.append(button);
+  }
+  if (state.commercialNextCursor) {
+    const sentinel = element("div", "whatsapp-page-sentinel", "Cargando más conversaciones…");
+    list.append(sentinel);
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        void loadNextCommercialPage();
+      }, { root: list, rootMargin: "180px" });
+      observer.observe(sentinel);
+    }
   }
 }
 
@@ -1648,12 +1751,10 @@ async function markWhatsAppRead(itemId) {
   item.conversation.unreadCount = 0;
   renderWhatsApp();
   try {
-    await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}/read`, { method: "POST" });
-    await loadData();
-    state.selectedCommercialId = itemId;
+    const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}/read`, { method: "POST" });
+    replaceCommercialItem(response.data);
     renderWhatsApp();
   } catch (error) {
-    await loadData().catch(() => undefined);
     renderWhatsApp();
     toast(friendlyError(error), "error");
   }
@@ -2361,6 +2462,9 @@ function switchView(name) {
   if (name === "today") renderToday();
   if (name === "whatsapp") renderWhatsApp();
   if (name === "leads") renderCommercial();
+  void loadData({ activeOnly: true }).catch((error) => console.warn("SPORTEX view load failed", error));
+  if (name === "whatsapp") startLiveRefresh();
+  else stopLiveRefresh();
   closeMobileMenu();
   window.scrollTo({ top: 0, behavior: "auto" });
 }
@@ -2680,7 +2784,7 @@ async function logout() {
 
 async function bootstrapAuthenticated() {
   await loadSession();
-  await loadData();
+  await loadData({ activeOnly: true });
   showApp();
   startLiveRefresh();
 }
@@ -2804,7 +2908,8 @@ $("#password-dialog").addEventListener("close", () => {
   if (state.passwordForced) window.setTimeout(() => $("#password-dialog").showModal(), 0);
 });
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) void refreshWhatsAppFromDatabase();
+  if (document.hidden) stopLiveRefresh();
+  else if (state.currentView === "whatsapp") startLiveRefresh();
 });
 
 void initialize();

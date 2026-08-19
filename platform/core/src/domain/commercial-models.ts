@@ -135,6 +135,8 @@ export interface CommercialMediaAsset {
   fileName: string;
   sizeBytes: number;
   sha256: string;
+  width: number | null;
+  height: number | null;
   dataBase64: string;
   createdAt: string;
   fixtureOnly: boolean;

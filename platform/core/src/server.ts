@@ -119,7 +119,7 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
 
   app.addHook("onSend", async (_request, reply, payload) => {
     const authOrigin = options.config.authPublicUrl ? new URL(options.config.authPublicUrl).origin : "";
-    reply.header("cache-control", "no-store");
+    if (!reply.getHeader("cache-control")) reply.header("cache-control", "no-store");
     reply.header(
       "content-security-policy",
       `default-src 'self'; connect-src 'self' ${authOrigin}; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`,

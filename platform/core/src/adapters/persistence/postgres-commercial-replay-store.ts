@@ -140,7 +140,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
 
   async findMedia(assetId: string): Promise<CommercialMediaAsset | null> {
     const result = await this.client.query(
-      `SELECT id, mime_type, file_name, size_bytes, sha256, data, created_at, fixture_only
+      `SELECT id, mime_type, file_name, size_bytes, sha256, width, height, data, created_at, fixture_only
        FROM ${this.tables.mediaAssets} WHERE tenant_id = $1 AND id = $2`,
       [this.tenantId, assetId],
     );
@@ -151,6 +151,29 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
       id: String(row.id), tenantId: this.tenantId,
       mimeType: String(row.mime_type) as CommercialMediaAsset["mimeType"],
       fileName: String(row.file_name), sizeBytes: Number(row.size_bytes), sha256: String(row.sha256),
+      width: row.width === null ? null : Number(row.width), height: row.height === null ? null : Number(row.height),
+      dataBase64: Buffer.isBuffer(data) ? data.toString("base64") : Buffer.from(String(data)).toString("base64"),
+      createdAt: iso(row.created_at), fixtureOnly: Boolean(row.fixture_only),
+    };
+  }
+
+  async findMediaByMessageId(messageId: string): Promise<CommercialMediaAsset | null> {
+    const result = await this.client.query(
+      `SELECT asset.id, asset.mime_type, asset.file_name, asset.size_bytes, asset.sha256, asset.width, asset.height,
+              asset.data, asset.created_at, asset.fixture_only
+       FROM ${this.tables.messages} message
+       JOIN ${this.tables.mediaAssets} asset
+         ON asset.tenant_id = message.tenant_id AND asset.id = message.media_asset_id
+       WHERE message.tenant_id = $1 AND message.id = $2`,
+      [this.tenantId, messageId],
+    );
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    if (!row) return null;
+    const data = row.data;
+    return {
+      id: String(row.id), tenantId: this.tenantId, mimeType: String(row.mime_type) as CommercialMediaAsset["mimeType"],
+      fileName: String(row.file_name), sizeBytes: Number(row.size_bytes), sha256: String(row.sha256),
+      width: row.width === null ? null : Number(row.width), height: row.height === null ? null : Number(row.height),
       dataBase64: Buffer.isBuffer(data) ? data.toString("base64") : Buffer.from(String(data)).toString("base64"),
       createdAt: iso(row.created_at), fixtureOnly: Boolean(row.fixture_only),
     };
@@ -160,11 +183,11 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     this.assertTenant(asset.tenantId);
     const result = await this.client.query(
       `INSERT INTO ${this.tables.mediaAssets}
-       (id, tenant_id, mime_type, file_name, size_bytes, sha256, data, created_at, fixture_only)
-       VALUES ($1,$2,$3,$4,$5,$6,decode($7,'base64'),$8,$9)
+       (id, tenant_id, mime_type, file_name, size_bytes, sha256, width, height, data, created_at, fixture_only)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,decode($9,'base64'),$10,$11)
        ON CONFLICT (tenant_id, id) DO UPDATE SET id = EXCLUDED.id RETURNING sha256`,
       [asset.id, asset.tenantId, asset.mimeType, asset.fileName, asset.sizeBytes, asset.sha256,
-        asset.dataBase64, asset.createdAt, asset.fixtureOnly],
+        asset.width, asset.height, asset.dataBase64, asset.createdAt, asset.fixtureOnly],
     );
     if (String((result.rows[0] as Record<string, unknown>).sha256) !== asset.sha256) {
       throw conflict("commercial_media_conflict", "Media asset identifier was reused with different content");
@@ -320,6 +343,99 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
     return items;
   }
 
+  async listPage(actorId: string, limit: number, cursor: string | null): Promise<{ items: CommercialWorkspaceItem[]; nextCursor: string | null }> {
+    const result = await this.client.query(
+      `SELECT opportunity.workspace_id, opportunity.lead_data, opportunity.attribution_data, opportunity.workflow_data,
+              contact.id AS contact_id, contact.provider AS contact_provider, contact.provider_instance AS contact_provider_instance,
+              contact.provider_contact_ref, contact.display_name, contact.normalized_phone, contact.created_at AS contact_created_at,
+              contact.updated_at AS contact_updated_at, conversation.id AS conversation_id, conversation.channel,
+              conversation.provider AS conversation_provider, conversation.provider_instance AS conversation_provider_instance,
+              conversation.provider_conversation_ref, conversation.first_contact_at, conversation.last_activity_at,
+              latest.id AS latest_id, latest.provider_message_id AS latest_provider_message_id, latest.direction AS latest_direction,
+              latest.content_type AS latest_content_type, latest.body_text AS latest_body_text, latest.evidence_ref AS latest_evidence_ref,
+              latest.occurred_at AS latest_occurred_at, latest.received_at AS latest_received_at, latest.source_kind AS latest_source_kind,
+              latest.media_asset_id AS latest_media_asset_id, media.mime_type AS latest_media_mime_type,
+              media.file_name AS latest_media_file_name, media.size_bytes AS latest_media_size_bytes,
+              media.width AS latest_media_width, media.height AS latest_media_height,
+              COALESCE(unread.unread_count, 0) AS unread_count
+       FROM ${this.tables.opportunities} opportunity
+       JOIN ${this.tables.contacts} contact
+         ON contact.tenant_id = opportunity.tenant_id AND contact.id = opportunity.contact_id
+       JOIN ${this.tables.conversations} conversation
+         ON conversation.tenant_id = opportunity.tenant_id AND conversation.id = opportunity.conversation_id
+       LEFT JOIN ${this.tables.readStates} read_state
+         ON read_state.tenant_id = opportunity.tenant_id AND read_state.actor_id = $2 AND read_state.conversation_id = conversation.id
+       LEFT JOIN ${this.tables.messages} read_message
+         ON read_message.tenant_id = opportunity.tenant_id AND read_message.id = read_state.last_read_message_id
+       LEFT JOIN LATERAL (
+         SELECT id, provider_message_id, direction, content_type, body_text, evidence_ref, occurred_at, received_at, source_kind, media_asset_id
+         FROM ${this.tables.messages}
+         WHERE tenant_id = opportunity.tenant_id AND conversation_id = conversation.id
+         ORDER BY occurred_at DESC, id DESC LIMIT 1
+       ) latest ON true
+       LEFT JOIN ${this.tables.mediaAssets} media
+         ON media.tenant_id = opportunity.tenant_id AND media.id = latest.media_asset_id
+       LEFT JOIN LATERAL (
+         SELECT count(*)::integer AS unread_count
+         FROM ${this.tables.messages} candidate
+         WHERE candidate.tenant_id = opportunity.tenant_id AND candidate.conversation_id = conversation.id
+           AND candidate.direction = 'CLIENTE'
+           AND (read_message.id IS NULL OR (candidate.occurred_at, candidate.id) > (read_message.occurred_at, read_message.id))
+       ) unread ON true
+       WHERE opportunity.tenant_id = $1
+         AND ($3::text IS NULL OR (conversation.last_activity_at, opportunity.workspace_id) < (
+           SELECT candidate_conversation.last_activity_at, candidate_opportunity.workspace_id
+           FROM ${this.tables.opportunities} candidate_opportunity
+           JOIN ${this.tables.conversations} candidate_conversation
+             ON candidate_conversation.tenant_id = candidate_opportunity.tenant_id
+            AND candidate_conversation.id = candidate_opportunity.conversation_id
+           WHERE candidate_opportunity.tenant_id = $1 AND candidate_opportunity.workspace_id = $3
+         ))
+       ORDER BY conversation.last_activity_at DESC, opportunity.workspace_id DESC
+       LIMIT $4`,
+      [this.tenantId, actorId, cursor, limit + 1],
+    );
+    const rows = result.rows as Record<string, unknown>[];
+    const visible = rows.slice(0, limit);
+    const items = visible.map((row) => this.summaryFromRow(row));
+    return { items, nextCursor: rows.length > limit ? String(visible.at(-1)?.workspace_id ?? "") : null };
+  }
+
+  private summaryFromRow(row: Record<string, unknown>): CommercialWorkspaceItem {
+    const latest = row.latest_id ? {
+      id: String(row.latest_id), provider: "EVOLUTION" as const, providerMessageId: String(row.latest_provider_message_id),
+      direction: String(row.latest_direction) as NormalizedConversationMessage["direction"],
+      occurredAt: iso(row.latest_occurred_at), receivedAt: iso(row.latest_received_at),
+      contentType: String(row.latest_content_type) as NormalizedConversationMessage["contentType"],
+      text: String(row.latest_body_text),
+      media: row.latest_media_asset_id ? {
+        assetId: String(row.latest_media_asset_id), mimeType: String(row.latest_media_mime_type) as CommercialMediaAsset["mimeType"],
+        fileName: String(row.latest_media_file_name), sizeBytes: Number(row.latest_media_size_bytes),
+        width: row.latest_media_width === null ? null : Number(row.latest_media_width),
+        height: row.latest_media_height === null ? null : Number(row.latest_media_height),
+      } : null,
+      evidenceRef: String(row.latest_evidence_ref), sourceKind: String(row.latest_source_kind) as NonNullable<NormalizedConversationMessage["sourceKind"]>,
+      fixtureOnly: String(row.latest_source_kind) === "FIXTURE",
+    } : null;
+    const contact: CommercialContact = {
+      id: String(row.contact_id), tenantId: this.tenantId, provider: "EVOLUTION", providerInstance: String(row.contact_provider_instance),
+      providerContactRef: String(row.provider_contact_ref), displayName: String(row.display_name),
+      normalizedPhone: row.normalized_phone ? String(row.normalized_phone) : null,
+      createdAt: iso(row.contact_created_at), updatedAt: iso(row.contact_updated_at), fixtureOnly: latest?.fixtureOnly ?? false,
+    };
+    return {
+      id: String(row.workspace_id), tenantId: this.tenantId, contact,
+      conversation: {
+        id: String(row.conversation_id), tenantId: this.tenantId, contactId: contact.id, channel: "WHATSAPP", provider: "EVOLUTION",
+        providerInstance: String(row.conversation_provider_instance), providerConversationRef: String(row.provider_conversation_ref),
+        contactName: contact.displayName, messages: latest ? [latest] : [], firstContactAt: iso(row.first_contact_at),
+        lastActivityAt: iso(row.last_activity_at), fixtureOnly: latest?.fixtureOnly ?? false, unreadCount: Number(row.unread_count),
+      },
+      lead: jsonValue<CommercialLead>(row.lead_data), attribution: jsonValue<CommercialAttribution>(row.attribution_data),
+      opportunity: jsonValue<CommercialOpportunity>(row.workflow_data), activity: [], fixtureVersion: null,
+    };
+  }
+
   async replaceTenant(_items: CommercialWorkspaceItem[]): Promise<void> {
     throw new Error("commercial_postgres_replace_forbidden");
   }
@@ -465,7 +581,7 @@ class PostgresCommercialTransaction implements CommercialReplayTransaction {
         contentType,
         text: String(row.body_text),
         media: asset ? { assetId: asset.id, mimeType: asset.mimeType, fileName: asset.fileName,
-          sizeBytes: asset.sizeBytes, width: null, height: null } : null,
+          sizeBytes: asset.sizeBytes, width: asset.width, height: asset.height } : null,
         evidenceRef: String(row.evidence_ref),
         sourceKind: String(row.source_kind) as NonNullable<NormalizedConversationMessage["sourceKind"]>,
         fixtureOnly: String(row.source_kind) === "FIXTURE",

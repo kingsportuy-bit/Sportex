@@ -51,6 +51,13 @@ class MemoryCommercialReplayTransaction implements CommercialReplayTransaction {
     return this.state.mediaAssets.find((asset) => asset.tenantId === this.tenantId && asset.id === assetId) ?? null;
   }
 
+  async findMediaByMessageId(messageId: string): Promise<CommercialMediaAsset | null> {
+    const item = this.state.items.find((candidate) => candidate.tenantId === this.tenantId
+      && candidate.conversation.messages.some((message) => message.id === messageId));
+    const message = item?.conversation.messages.find((candidate) => candidate.id === messageId);
+    return message?.media ? this.findMedia(message.media.assetId) : null;
+  }
+
   async saveMedia(asset: CommercialMediaAsset): Promise<void> {
     if (asset.tenantId !== this.tenantId) throw new Error("commercial_store_tenant_mismatch");
     if (!this.state.mediaAssets.some((candidate) => candidate.tenantId === this.tenantId && candidate.id === asset.id)) {
@@ -83,6 +90,26 @@ class MemoryCommercialReplayTransaction implements CommercialReplayTransaction {
     return this.state.items
       .filter((item) => item.tenantId === this.tenantId)
       .sort((left, right) => right.conversation.lastActivityAt.localeCompare(left.conversation.lastActivityAt));
+  }
+
+  async listPage(actorId: string, limit: number, cursor: string | null): Promise<{ items: CommercialWorkspaceItem[]; nextCursor: string | null }> {
+    const items = await this.list();
+    const start = cursor ? Math.max(0, items.findIndex((item) => item.id === cursor) + 1) : 0;
+    const page = items.slice(start, start + limit).map((item) => {
+      const messages = item.conversation.messages;
+      const last = messages.at(-1);
+      const read = this.state.readStates.find((candidate) => candidate.tenantId === this.tenantId
+        && candidate.actorId === actorId && candidate.conversationId === item.conversation.id);
+      const readIndex = read ? messages.findIndex((message) => message.id === read.lastReadMessageId) : -1;
+      const { timeline: _timeline, ...summary } = item;
+      return {
+        ...summary,
+        conversation: { ...item.conversation, messages: last ? [last] : [], unreadCount: messages.slice(readIndex + 1).filter((message) => message.direction === "CLIENTE").length },
+        activity: [],
+      };
+    });
+    const last = page.at(-1);
+    return { items: page, nextCursor: items.length > start + limit && last ? last.id : null };
   }
 
   async replaceTenant(items: CommercialWorkspaceItem[]): Promise<void> {

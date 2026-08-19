@@ -2234,3 +2234,59 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   background: var(--surface-outbound);
   color: var(--text-outbound);
 }
+
+/* Índice comercial: la etapa elegida guía; el resto acompaña sin ocupar panel. */
+#whatsapp-view .whatsapp-stage-rail {
+  width: 42px;
+  padding: 8px 3px;
+  gap: 4px;
+  overflow-x: clip;
+}
+#whatsapp-view .whatsapp-stage-rail:hover,
+#whatsapp-view .whatsapp-stage-rail:has(.whatsapp-stage-tab:focus-visible) { width: 42px; box-shadow: none; }
+#whatsapp-view .whatsapp-stage-tab,
+#whatsapp-view .whatsapp-stage-tab:hover,
+#whatsapp-view .whatsapp-stage-tab:focus-visible {
+  width: 36px;
+  min-width: 36px;
+  min-height: 48px;
+  height: 48px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px 0 0 8px;
+  background: var(--paper);
+  color: var(--muted);
+  box-shadow: none;
+  transform: none;
+}
+#whatsapp-view .whatsapp-stage-tab:hover,
+#whatsapp-view .whatsapp-stage-tab:focus-visible { background: var(--surface-hover); color: var(--ink); }
+#whatsapp-view .whatsapp-stage-tab.is-active,
+#whatsapp-view .whatsapp-stage-tab.is-active:hover,
+#whatsapp-view .whatsapp-stage-tab.is-active:focus-visible {
+  width: 42px;
+  min-width: 42px;
+  min-height: 82px;
+  height: 82px;
+  border-color: var(--signal);
+  background: var(--signal);
+  color: #18221c;
+  box-shadow: inset -3px 0 rgb(24 34 28 / 20%);
+  transform: translateX(-5px);
+}
+#whatsapp-view .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-rail:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:focus-visible .whatsapp-stage-name {
+  max-height: 68px;
+  opacity: 1;
+  font: 800 7px/.95 "Bahnschrift Condensed", "Arial Narrow", sans-serif;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+#whatsapp-view .whatsapp-stage-tab:not(.is-active) .whatsapp-stage-name { max-height: 38px; font-size: 6.3px; }
+@media (max-width: 720px) {
+  #whatsapp-view .whatsapp-stage-tab:not(.is-active) { min-height: 44px; height: 44px; }
+  #whatsapp-view .whatsapp-stage-tab.is-active { min-height: 70px; height: 70px; }
+}

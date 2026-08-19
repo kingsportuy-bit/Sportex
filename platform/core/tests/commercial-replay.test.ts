@@ -186,6 +186,17 @@ test("local API exposes the fictional replay and its visible workspace projectio
     true,
   );
 
+  const page = await app.inject({
+    method: "GET",
+    url: "/v1/commercial/conversations?limit=1",
+    headers: headers("commercial-page"),
+  });
+  assert.equal(page.statusCode, 200);
+  assert.equal(page.json().data.length, 1);
+  assert.equal(page.json().data[0].conversation.messages.length, 1);
+  assert.equal(page.json().data[0].activity.length, 0);
+  assert.equal(page.json().meta.nextCursor, null);
+
   const maximumNote = maximumTechnicalTokenNote();
   const followed = await app.inject({
     method: "POST",

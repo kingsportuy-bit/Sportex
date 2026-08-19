@@ -8,6 +8,7 @@ import { CoreService } from "../application/core-service.js";
 import { LocalWhatsAppSimulationService } from "../application/local-whatsapp-simulation-service.js";
 import { idempotencyKey } from "./context.js";
 import { AppError } from "../shared/errors.js";
+import { requireCapability } from "../shared/authorization.js";
 import { normalizeWhatsAppImage } from "../domain/whatsapp-image.js";
 
 type ContextResolver = (request: FastifyRequest) => Promise<ActorContext>;
@@ -151,6 +152,10 @@ const whatsappImageSchema = z.object({
 }).strict();
 
 const messageParamsSchema = z.object({ messageId: z.string().trim().min(3).max(160) }).strict();
+const conversationListQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(25),
+  cursor: z.string().trim().min(3).max(160).optional(),
+}).strict();
 
 export async function registerRoutes(
   app: FastifyInstance,
@@ -317,10 +322,49 @@ export async function registerRoutes(
   });
 
   if (commercialService) {
+    app.get("/v1/commercial/stream", async (request, reply) => {
+      const context = await resolveContext(request);
+      requireCapability(context, "commercial.read");
+      reply.hijack();
+      reply.raw.writeHead(200, {
+        "content-type": "text/event-stream; charset=utf-8",
+        "cache-control": "no-store",
+        connection: "keep-alive",
+        "x-accel-buffering": "no",
+      });
+      const write = (event: string, data: Record<string, unknown>): void => {
+        if (!reply.raw.writableEnded) reply.raw.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+      };
+      write("ready", { cursor: "current" });
+      const unsubscribe = commercialService.subscribe((change) => {
+        if (change.tenantId === context.tenantId) {
+          write("conversation.changed", { workspaceItemId: change.workspaceItemId, revision: change.revision });
+        }
+      });
+      const heartbeat = setInterval(() => write("heartbeat", {}), 25_000);
+      request.raw.once("close", () => {
+        clearInterval(heartbeat);
+        unsubscribe();
+      });
+    });
+
     app.get("/v1/commercial/workspace", async (request) => {
       const context = await resolveContext(request);
       const items = await commercialService.list(context);
       return { data: items, meta: { correlationId: context.correlationId } };
+    });
+
+    app.get("/v1/commercial/conversations", async (request) => {
+      const context = await resolveContext(request);
+      const query = conversationListQuerySchema.parse(request.query);
+      const page = await commercialService.listPage(context, query.limit, query.cursor ?? null);
+      return { data: page.items, meta: { correlationId: context.correlationId, nextCursor: page.nextCursor } };
+    });
+
+    app.get("/v1/commercial/workspace/:itemId", async (request) => {
+      const context = await resolveContext(request);
+      const params = commercialItemParamsSchema.parse(request.params);
+      return { data: await commercialService.get(context, params.itemId), meta: { correlationId: context.correlationId } };
     });
 
     app.post("/v1/commercial/workspace/:itemId/read", async (request) => {
@@ -336,8 +380,16 @@ export async function registerRoutes(
       const context = await resolveContext(request);
       const params = messageParamsSchema.parse(request.params);
       const asset = await commercialService.media(context, params.messageId);
+      const disposition = request.query && typeof (request.query as { disposition?: unknown }).disposition === "string"
+        ? (request.query as { disposition?: string }).disposition
+        : "inline";
+      const attachment = disposition === "attachment";
+      reply.header("cache-control", "private, max-age=86400");
+      reply.header("etag", `\"${asset.sha256}\"`);
+      reply.header("content-length", String(asset.sizeBytes));
       reply.header("content-type", asset.mimeType);
-      reply.header("content-disposition", `inline; filename="${asset.fileName.replace(/["\\]/gu, "-")}"`);
+      reply.header("content-disposition", `${attachment ? "attachment" : "inline"}; filename="${asset.fileName.replace(/["\\]/gu, "-")}"`);
+      if (request.headers["if-none-match"] === `\"${asset.sha256}\"`) return reply.code(304).send();
       return reply.send(Buffer.from(asset.dataBase64, "base64"));
     });
 
