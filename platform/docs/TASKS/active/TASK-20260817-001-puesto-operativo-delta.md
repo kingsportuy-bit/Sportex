@@ -64,11 +64,10 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `23aa757`: tableros, columnas, carga focal, boceto y sesión.
-- La salida manual de Delta está habilitada por configuración del release; no
-  se emitió ningún mensaje durante construcción, despliegue o smoke.
-- Local PASS: Core 57/57, chequeos, SQL, build y QA visual.
-- Bundle, backup, 008--010, deploy `1/1`, health y ready PASS.
+- Runtime `9250d3a`: login, tableros, carga, boceto y sesión.
+- Sin mensajes de prueba; salida manual Delta habilitada.
+- PASS local 57/57, build, SQL y QA; deploy `1/1`, health, ready y consulta.
+- Incidente UUID/texto corregido: `SPX-ERR-20260819-001`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

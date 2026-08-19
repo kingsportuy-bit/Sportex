@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito prueba el recorrido autenticado normal de Delta; no usar datos ni mensajes de prueba."
+    "nextAction": "Fito reintenta login con la cuenta normal de Delta; no usar mensajes de prueba."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -85,8 +85,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "23aa757d23108a0c9f408caa7b79ba4f564a886d",
-    "workingTreeState": "TASK-20260817-001_PILOTO_DELTA_READY_FOR_AUTHENTICATED_PRODUCT_TEST",
+    "headAtLastEvidence": "9250d3ac680549b7d6cc69106da211e7a0a159b6",
+    "workingTreeState": "TASK-20260817-001_LOGIN_INCIDENT_FIXED_PILOTO_DELTA",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -115,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 23aa757: Core 57/57, TypeScript, SQL, build, QA visual local y smoke PILOTO_DELTA PASS; queda el recorrido de producto con sesión normal, sin escritura de prueba."
+    "note": "Candidato 9250d3a: Core 57/57, build, smoke y consulta paginada real PASS; queda login normal de Delta."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_23AA757_DEPLOYED_READY_FOR_AUTHENTICATED_PRODUCT_TEST",
+    "status": "PILOTO_DELTA_9250D3A_LOGIN_INCIDENT_FIXED",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -133,9 +133,10 @@
       "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf",
       "071ec7b",
       "e24cfcf2154ac5c7",
-      "23aa757d23108a0c9f408caa7b79ba4f564a886d"
+      "23aa757d23108a0c9f408caa7b79ba4f564a886d",
+      "9250d3ac680549b7d6cc69106da211e7a0a159b6"
     ],
-    "note": "Runtime 23aa757 1/1 healthy; media, no leídos, persistencia de sesión y salida manual Delta habilitados. Sin mensajes de prueba. Rollback image-first e24cfcf."
+    "note": "Runtime 9250d3a 1/1 healthy; cursor paginado corregido, salida Delta habilitada. Sin mensajes de prueba. Rollback 23aa757."
   },
   "externalIntegrations": [
     {
@@ -267,9 +268,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_23AA757_PUBLIC_HEALTHY_READY_FOR_PRODUCT_TEST",
+    "status": "PILOTO_DELTA_9250D3A_PUBLIC_HEALTHY_LOGIN_FIXED",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 23aa757 sano; 008--010 aplicadas, carga focal, media, boceto vigente y sesión persistente disponibles."
+    "note": "Runtime público 9250d3a sano; cursor de carga focal validado en lectura real."
   },
   "productValidation": {
     "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_PRODUCTO",

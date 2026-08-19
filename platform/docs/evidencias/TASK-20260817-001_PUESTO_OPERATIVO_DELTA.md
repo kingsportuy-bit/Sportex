@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: release productivo de piloto listo para prueba; recorrido autenticado de Delta pendiente
+estado: incidente de login corregido; listo para reintentar con la cuenta Delta
 updated_at: 2026-08-19
-candidate: 23aa757
+candidate: 9250d3a
 
 ## Recorrido cubierto
 
@@ -45,16 +45,19 @@ candidate: 23aa757
 
 ## Despliegue PILOTO_DELTA
 
-- Guard de release y bundle inmutable PASS para el candidato final `23aa757`.
+- Guard de release y bundle inmutable PASS para `9250d3a`.
 - Backup `pre-deploy.dump` con SHA256
   `73f376961e9b369d245469470e72186dd2b826b3d68db5669b541cc159e7d681`
   restaurado en una base aislada y luego eliminado.
 - Migraciones 008--010 aplicadas antes de la imagen. La tabla nueva mantiene
   RLS forzado y las dimensiones de media quedan disponibles; no se borraron
   datos.
-- Runtime final `sportex-staging:23aa757d23108a0c`, `1/1`, con `/health` y
-  `/ready` en PASS. El release conserva el envío manual habilitado para Delta;
-  el log posterior no mostró errores fatales ni 5xx.
+- Runtime final `sportex-staging:9250d3ac680549b7`, `1/1`, con `/health` y
+  `/ready` en PASS. El envío manual sigue habilitado para Delta.
+- Incidente de login confirmado: la primera página comercial comparaba cursor
+  de texto con `workspace_id` UUID. Se tipó y validó el cursor; la consulta de
+  primera y segunda página pasó contra PILOTO_DELTA en transacción de solo
+  lectura y no reapareció el error en los logs del release.
 - Navegador local: recargar conserva la pestaña Leads, no hay pantalla de
   carga ni scroll horizontal y el chat abre en su último mensaje. La sesión
   existente se refresca antes de mostrar login. El navegador de prueba no
@@ -64,5 +67,5 @@ candidate: 23aa757
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:e24cfcf2154ac5c7`; las migraciones se
+- Rollback inmediato: `sportex-staging:23aa757d23108a0c`; las migraciones se
   conservan por ser aditivas.

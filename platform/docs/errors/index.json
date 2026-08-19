@@ -19,6 +19,12 @@
       "title": "npm run consume opciones nombradas",
       "path": "docs/errors/entries/SPX-ERR-20260816-001-npm-run-consume-opciones-nombradas.md",
       "searchText": "# spx-err-20260816-001 - npm run consume opciones nombradas\n\n- fecha: 2026-08-16.\n- sintoma: `npm run context:library -- --limit=5 consulta` emitio `unknown cli config` y no entrego `--limit` al script en este entorno windows.\n- causa raiz: npm interpreto la opcion nombrada como configuracion propia durante el forwarding observado.\n- solucion: usar un limite posicional: `npm run context:library -- 5 \"consulta\"`.\n- prevencion/guardia: el parser acepta limite posicional entre 3 y 5 y los tests negativos rechazan valores fuera de rango.\n"
+    },
+    {
+      "id": "SPX-ERR-20260819-001",
+      "title": "Cursor paginado de conversaciones comparaba UUID con texto",
+      "path": "docs/errors/entries/SPX-ERR-20260819-001-cursor-paginado-de-conversaciones-comparaba-uuid-con-texto.md",
+      "searchText": "# spx-err-20260819-001 - cursor paginado de conversaciones comparaba uuid con texto\n\n- fecha: 2026-08-19.\n- sintoma: luego de autenticar, la carga inicial mostraba unexpected internal error.\n- causa raiz: la consulta postgresql tipaba el cursor como texto y lo comparaba con workspace_id uuid.\n- solucion: tipar el cursor como uuid en la consulta y validarlo como uuid en la ruta http.\n- prevencion/guardia: toda consulta con cursor debe conservar el tipo de la clave comparada; validar con la consulta real en modo solo lectura antes de desplegar.\r\n"
     }
   ]
 }
