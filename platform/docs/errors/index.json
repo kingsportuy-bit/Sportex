@@ -25,6 +25,12 @@
       "title": "Cursor paginado de conversaciones comparaba UUID con texto",
       "path": "docs/errors/entries/SPX-ERR-20260819-001-cursor-paginado-de-conversaciones-comparaba-uuid-con-texto.md",
       "searchText": "# spx-err-20260819-001 - cursor paginado de conversaciones comparaba uuid con texto\n\n- fecha: 2026-08-19.\n- sintoma: luego de autenticar, la carga inicial mostraba unexpected internal error.\n- causa raiz: la consulta postgresql tipaba el cursor como texto y lo comparaba con workspace_id uuid.\n- solucion: tipar el cursor como uuid en la consulta y validarlo como uuid en la ruta http.\n- prevencion/guardia: toda consulta con cursor debe conservar el tipo de la clave comparada; validar con la consulta real en modo solo lectura antes de desplegar.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20260819-002",
+      "title": "Recarga devolvía al login ante una falla no autenticada",
+      "path": "docs/errors/entries/SPX-ERR-20260819-002-recarga-devolvia-al-login-ante-una-falla-no-autenticada.md",
+      "searchText": "# spx-err-20260819-002 - recarga devolvía al login ante una falla no autenticada\n\n- fecha: 2026-08-19.\n- sintoma: al recargar, una sesión válida volvía a la pantalla de login si fallaba una carga inicial del puesto.\n- causa raiz: el arranque borraba la sesión ante cualquier error de carga, sin distinguir autenticación de datos o disponibilidad puntual.\n- solucion: validar sesión primero, mostrar el puesto y conservarla ante fallas de datos; sólo borrar cuando core confirme autenticación inválida.\n- prevencion/guardia: los flujos de arranque deben separar errores de identidad de errores de carga y probar ambos caminos.\r\n"
     }
   ]
 }

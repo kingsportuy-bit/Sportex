@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito reintenta login con la cuenta normal de Delta; no usar mensajes de prueba."
+    "nextAction": "Fito recarga con la cuenta normal de Delta; no usar mensajes de prueba."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -85,8 +85,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "9250d3ac680549b7d6cc69106da211e7a0a159b6",
-    "workingTreeState": "TASK-20260817-001_LOGIN_INCIDENT_FIXED_PILOTO_DELTA",
+    "headAtLastEvidence": "788e7cee81a4240adc12416bb6e442a9f8eeb92d",
+    "workingTreeState": "TASK-20260817-001_SESSION_RELOAD_FIXED_PILOTO_DELTA",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -115,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 9250d3a: Core 57/57, build, smoke y consulta paginada real PASS; queda login normal de Delta."
+    "note": "Candidato 788e7ce: 57/57, build y smoke PASS; queda recarga normal de Delta."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_9250D3A_LOGIN_INCIDENT_FIXED",
+    "status": "PILOTO_DELTA_788E7CE_SESSION_RELOAD_FIXED",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -134,9 +134,10 @@
       "071ec7b",
       "e24cfcf2154ac5c7",
       "23aa757d23108a0c9f408caa7b79ba4f564a886d",
-      "9250d3ac680549b7d6cc69106da211e7a0a159b6"
+      "9250d3ac680549b7d6cc69106da211e7a0a159b6",
+      "788e7cee81a4240adc12416bb6e442a9f8eeb92d"
     ],
-    "note": "Runtime 9250d3a 1/1 healthy; cursor paginado corregido, salida Delta habilitada. Sin mensajes de prueba. Rollback 23aa757."
+    "note": "Runtime 788e7ce 1/1 healthy; recarga conserva sesión. Sin mensajes de prueba. Rollback 9250d3a."
   },
   "externalIntegrations": [
     {
@@ -268,9 +269,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_9250D3A_PUBLIC_HEALTHY_LOGIN_FIXED",
+    "status": "PILOTO_DELTA_788E7CE_PUBLIC_HEALTHY_SESSION_RELOAD_FIXED",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 9250d3a sano; cursor de carga focal validado en lectura real."
+    "note": "Runtime público 788e7ce sano; la recarga no borra sesión por fallo de panel."
   },
   "productValidation": {
     "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_PRODUCTO",

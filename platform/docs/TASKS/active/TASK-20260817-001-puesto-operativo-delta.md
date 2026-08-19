@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `e24cfcf2154ac5c7` si falla smoke o QA. Las migraciones
+Revertir la imagen a `9250d3ac680549b7` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -64,10 +64,10 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `9250d3a`: login, tableros, carga, boceto y sesión.
+- Runtime `788e7ce`: recarga conserva sesión ante fallo de panel.
 - Sin mensajes de prueba; salida manual Delta habilitada.
 - PASS local 57/57, build, SQL y QA; deploy `1/1`, health, ready y consulta.
-- Incidente UUID/texto corregido: `SPX-ERR-20260819-001`.
+- Incidentes de cursor y recarga corregidos: `SPX-ERR-20260819-001/002`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones
