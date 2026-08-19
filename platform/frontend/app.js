@@ -326,11 +326,15 @@ async function loadSession() {
 
 async function refreshAccessToken() {
   if (!state.refreshToken) throw new UiError("La sesión venció.", "authentication_unavailable");
-  const response = await auth("/token?grant_type=refresh_token", {
-    method: "POST",
-    body: JSON.stringify({ refresh_token: state.refreshToken }),
-  });
-  persistSession(response);
+  try {
+    const response = await auth("/token?grant_type=refresh_token", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: state.refreshToken }),
+    });
+    persistSession(response);
+  } catch {
+    throw new UiError("La sesión venció. Volvé a ingresar.", "authentication_required");
+  }
 }
 
 function optimisticWhatsappMessage(item, text, pendingImage) {
@@ -2933,9 +2937,15 @@ async function bootstrapAuthenticated() {
     await refreshAccessToken();
     await loadSession();
   }
-  await loadData({ activeOnly: true });
   showApp();
   switchView(state.currentView, { reload: false });
+  try {
+    await loadData({ activeOnly: true });
+  } catch (error) {
+    // Una falla puntual de datos no invalida una sesión que ya fue comprobada.
+    console.warn("SPORTEX initial workspace load failed", error);
+    toast("Tu sesión sigue abierta. No pudimos actualizar este panel; reintentamos al cambiar de pestaña.", "error");
+  }
 }
 
 async function initialize() {
@@ -2975,9 +2985,18 @@ async function initialize() {
   }
   try {
     await bootstrapAuthenticated();
-  } catch {
-    clearSession();
-    showLogin();
+  } catch (error) {
+    // Sólo se descarta la sesión si Core confirmó que ya no es válida. Un 403,
+    // un corte temporal o un fallo de carga no debe mandar al operador al login.
+    if (error instanceof UiError && error.code === "authentication_required") {
+      clearSession();
+      showLogin();
+      $("#login-error").textContent = friendlyError(error);
+      return;
+    }
+    showApp();
+    switchView(state.currentView, { reload: false });
+    toast(friendlyError(error), "error");
   }
 }
 
