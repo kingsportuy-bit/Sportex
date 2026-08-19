@@ -7,6 +7,7 @@ import type {
   Order,
   OutboxEvent,
 } from "../../domain/models.js";
+import type { StageBoardKind, StageDefinition } from "../../domain/stage-configuration.js";
 import type { CoreStore, CoreTransaction } from "../../ports/core-store.js";
 
 interface MemoryState {
@@ -18,6 +19,7 @@ interface MemoryState {
   auditEvents: AuditEvent[];
   outboxEvents: OutboxEvent[];
   orderCounters: Record<string, number>;
+  stageDefinitions: StageDefinition[];
 }
 
 const emptyState = (): MemoryState => ({
@@ -29,6 +31,7 @@ const emptyState = (): MemoryState => ({
   auditEvents: [],
   outboxEvents: [],
   orderCounters: {},
+  stageDefinitions: [],
 });
 
 class MemoryTransaction implements CoreTransaction {
@@ -125,6 +128,24 @@ class MemoryTransaction implements CoreTransaction {
     return this.state.orders
       .filter((order) => order.tenantId === this.tenantId)
       .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
+  }
+
+  async listStageDefinitions(board: StageBoardKind): Promise<StageDefinition[]> {
+    return this.state.stageDefinitions
+      .filter((definition) => definition.tenantId === this.tenantId && definition.board === board)
+      .sort((left, right) => left.position - right.position || left.id.localeCompare(right.id));
+  }
+
+  async saveStageDefinition(definition: StageDefinition): Promise<void> {
+    const index = this.state.stageDefinitions.findIndex((candidate) => candidate.tenantId === this.tenantId
+      && candidate.board === definition.board && candidate.id === definition.id);
+    if (index >= 0) this.state.stageDefinitions[index] = structuredClone(definition);
+    else this.state.stageDefinitions.push(structuredClone(definition));
+  }
+
+  async deleteStageDefinition(board: StageBoardKind, id: string): Promise<void> {
+    this.state.stageDefinitions = this.state.stageDefinitions.filter((candidate) => !(candidate.tenantId === this.tenantId
+      && candidate.board === board && candidate.id === id));
   }
 
   async appendAudit(event: AuditEvent): Promise<void> {

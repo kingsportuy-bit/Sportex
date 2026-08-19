@@ -12,6 +12,7 @@ import type {
   OrderStatus,
   OutboxEvent,
 } from "../../domain/models.js";
+import type { StageBoardKind, StageDefinition } from "../../domain/stage-configuration.js";
 import type { CoreStore, CoreTransaction } from "../../ports/core-store.js";
 import { conflict } from "../../shared/errors.js";
 
@@ -25,6 +26,7 @@ interface Tables {
   idempotency: string;
   auditEvents: string;
   outbox: string;
+  stageDefinitions: string;
 }
 
 function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): Tables {
@@ -38,6 +40,7 @@ function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): Tables {
     idempotency: `${prefix}idempotency`,
     auditEvents: `${prefix}audit_events`,
     outbox: `${prefix}outbox`,
+    stageDefinitions: `${prefix}stage_definitions`,
   };
 }
 
@@ -307,6 +310,35 @@ class PostgresTransaction implements CoreTransaction {
       [this.tenantId],
     );
     return result.rows.map((row) => rowToOrder(row as Record<string, unknown>));
+  }
+
+  async listStageDefinitions(board: StageBoardKind): Promise<StageDefinition[]> {
+    const result = await this.client.query(
+      `SELECT id, tenant_id, board, name, position, terminal, created_at, updated_at
+       FROM ${this.tables.stageDefinitions}
+       WHERE tenant_id = $1 AND board = $2 ORDER BY position, id`,
+      [this.tenantId, board],
+    );
+    return result.rows.map((row) => ({
+      id: String(row.id), tenantId: String(row.tenant_id), board: String(row.board) as StageBoardKind,
+      name: String(row.name), position: Number(row.position), terminal: Boolean(row.terminal),
+      createdAt: iso(row.created_at), updatedAt: iso(row.updated_at),
+    }));
+  }
+
+  async saveStageDefinition(definition: StageDefinition): Promise<void> {
+    await this.client.query(
+      `INSERT INTO ${this.tables.stageDefinitions} (id, tenant_id, board, name, position, terminal, created_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+       ON CONFLICT (tenant_id, board, id) DO UPDATE SET name = EXCLUDED.name, position = EXCLUDED.position,
+         terminal = EXCLUDED.terminal, updated_at = EXCLUDED.updated_at`,
+      [definition.id, definition.tenantId, definition.board, definition.name, definition.position,
+        definition.terminal, definition.createdAt, definition.updatedAt],
+    );
+  }
+
+  async deleteStageDefinition(board: StageBoardKind, id: string): Promise<void> {
+    await this.client.query(`DELETE FROM ${this.tables.stageDefinitions} WHERE tenant_id = $1 AND board = $2 AND id = $3`, [this.tenantId, board, id]);
   }
 
   async appendAudit(event: AuditEvent): Promise<void> {

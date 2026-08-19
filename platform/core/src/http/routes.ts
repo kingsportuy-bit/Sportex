@@ -133,6 +133,15 @@ const resetCommercialDemoSchema = z.object({
   confirmation: z.literal("RESTAURAR_DATOS_FICTICIOS"),
 }).strict();
 
+const stageBoardSchema = z.enum(["lead", "order"]);
+const stageBoardParamsSchema = z.object({ board: stageBoardSchema }).strict();
+const stageDefinitionParamsSchema = z.object({ board: stageBoardSchema, id: z.string().trim().min(2).max(80) }).strict();
+const saveStageDefinitionSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  position: z.number().int().positive(),
+  terminal: z.boolean(),
+}).strict();
+
 const simulatedOutboundSchema = z.object({
   text: z.string().trim().min(1).max(4_000),
 }).strict();
@@ -155,6 +164,19 @@ export async function registerRoutes(
   localCommercialReplayEnabled: boolean,
   localWhatsAppSimulation: LocalWhatsAppSimulationService | null,
 ): Promise<void> {
+  app.get("/v1/stage-definitions/:board", async (request) => {
+    const context = await resolveContext(request);
+    const { board } = stageBoardParamsSchema.parse(request.params);
+    return { data: await service.listStageDefinitions(context, board), meta: { correlationId: context.correlationId } };
+  });
+
+  app.put("/v1/stage-definitions/:board/:id", async (request) => {
+    const context = await resolveContext(request);
+    const { board, id } = stageDefinitionParamsSchema.parse(request.params);
+    const input = saveStageDefinitionSchema.parse(request.body);
+    return { data: await service.saveStageDefinition(context, board, { id, ...input }), meta: { correlationId: context.correlationId } };
+  });
+
   app.get("/v1/public-config", async () => ({
     data: {
       environment: config.environment,

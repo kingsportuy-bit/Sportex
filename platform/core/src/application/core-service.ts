@@ -15,6 +15,7 @@ import type { CoreStore, CoreTransaction } from "../ports/core-store.js";
 import { requireCapability } from "../shared/authorization.js";
 import { requestHash } from "../shared/canonical-json.js";
 import { AppError, conflict, notFound } from "../shared/errors.js";
+import { defaultStageDefinitions, type StageBoardKind, type StageDefinition } from "../domain/stage-configuration.js";
 
 export interface CommandResult<T> {
   data: T;
@@ -59,6 +60,13 @@ export interface UpdateOrderDetailsInput {
   expectedVersion: number;
 }
 
+export interface SaveStageDefinitionInput {
+  id: string;
+  name: string;
+  position: number;
+  terminal: boolean;
+}
+
 const orderTransitions: Record<OrderStatus, OrderStatus[]> = {
   intake_pending: ["design_pending"],
   design_pending: ["intake_pending", "production_ready"],
@@ -76,6 +84,38 @@ export class CoreService {
     private readonly clock: Clock = () => new Date(),
     private readonly idFactory: IdFactory = randomUUID,
   ) {}
+
+  async listStageDefinitions(context: ActorContext, board: StageBoardKind): Promise<StageDefinition[]> {
+    requireCapability(context, board === "lead" ? "commercial.read" : "orders.read");
+    return this.store.transaction(context.tenantId, async (transaction) => this.ensureStageDefinitions(transaction, context.tenantId, board));
+  }
+
+  async saveStageDefinition(context: ActorContext, board: StageBoardKind, input: SaveStageDefinitionInput): Promise<StageDefinition[]> {
+    requireCapability(context, board === "lead" ? "commercial.manage" : "production.release");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = await this.ensureStageDefinitions(transaction, context.tenantId, board);
+      const id = this.text(input.id, "stageId", 2, 80);
+      if (!/^[A-Za-z0-9_-]+$/u.test(id)) throw new AppError("invalid_payload", 400, "Invalid stage id");
+      const now = this.clock().toISOString();
+      const existing = current.find((stage) => stage.id === id);
+      await transaction.saveStageDefinition({
+        id, tenantId: context.tenantId, board, name: this.text(input.name, "stageName", 2, 80),
+        position: this.positiveInteger(input.position, "position"), terminal: Boolean(input.terminal),
+        createdAt: existing?.createdAt ?? now, updatedAt: now,
+      });
+      return transaction.listStageDefinitions(board);
+    });
+  }
+
+  private async ensureStageDefinitions(transaction: CoreTransaction, tenantId: string, board: StageBoardKind): Promise<StageDefinition[]> {
+    const existing = await transaction.listStageDefinitions(board);
+    if (existing.length > 0) return existing;
+    const now = this.clock().toISOString();
+    for (const stage of defaultStageDefinitions[board]) {
+      await transaction.saveStageDefinition({ ...stage, tenantId, board, createdAt: now, updatedAt: now });
+    }
+    return transaction.listStageDefinitions(board);
+  }
 
   async createClient(
     context: ActorContext,
