@@ -122,6 +122,10 @@ const orderStatusLabels = {
   completed: "Finalizado",
 };
 
+function orderStageLabel(value) {
+  return state.stageDefinitions.order.find((stage) => stage.id === value)?.name ?? orderStatusLabels[value] ?? value;
+}
+
 const orderTransitions = {
   intake_pending: ["design_pending"],
   design_pending: ["intake_pending", "production_ready"],
@@ -449,7 +453,7 @@ function renderOrders() {
       const row = document.createElement("tr");
       row.append(
         cell(order.orderNumber), cell(order.teamName), cell(client?.displayName || "Sin cliente"),
-        cell(order.details?.product || "Por definir"), cell(orderStatusLabels[order.status]),
+        cell(order.details?.product || "Por definir"), cell(orderStageLabel(order.status)),
         cell(money(order.quotedTotalCents, order.currency)),
       );
       const actions = document.createElement("td");
@@ -468,7 +472,7 @@ function renderOrders() {
     const column = element("section", "order-column");
     const columnOrders = state.orders.filter((order) => order.status === status);
     const head = element("header", "order-column-head");
-    head.append(element("span", "", orderStatusLabels[status]), element("strong", "", String(columnOrders.length)));
+    head.append(element("span", "", orderStageLabel(status)), element("strong", "", String(columnOrders.length)));
     const cards = element("div", "order-card-stack");
     cards.addEventListener("dragover", (event) => event.preventDefault());
     cards.addEventListener("drop", (event) => {
@@ -496,7 +500,7 @@ function renderOrders() {
       detailsButton.addEventListener("click", () => openOrderDetails(order));
       actions.append(detailsButton);
       for (const next of orderTransitions[order.status] ?? []) {
-        const action = element("button", "button button--quiet", `Mover a ${orderStatusLabels[next]}`);
+        const action = element("button", "button button--quiet", `Mover a ${orderStageLabel(next)}`);
         action.type = "button";
         action.addEventListener("click", () => void moveOrderStage(order, next, action));
         actions.append(action);
@@ -555,7 +559,7 @@ async function moveOrderStage(order, status, button) {
     const index = state.orders.findIndex((candidate) => candidate.id === response.data.id);
     if (index >= 0) state.orders[index] = response.data;
     renderOrders();
-    toast(`Pedido movido a ${orderStatusLabels[status]}.`);
+    toast(`Pedido movido a ${orderStageLabel(status)}.`);
   } catch (error) {
     if (error instanceof UiError && error.code === "order_version_conflict") await loadData();
     toast(friendlyError(error), "error");
@@ -2317,6 +2321,32 @@ function switchView(name) {
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
+function openStageConfiguration(board) {
+  const dialog = element("dialog", "sheet-dialog stage-config-dialog");
+  const form = element("form");
+  const header = element("header", "sheet-head");
+  header.append(element("div", "", board === "lead" ? "Columnas de Leads" : "Columnas de Pedidos"));
+  const close = element("button", "icon-button", "×"); close.type = "button"; close.addEventListener("click", () => dialog.close()); header.append(close);
+  const list = element("div", "stage-config-list");
+  const definitions = state.stageDefinitions[board];
+  for (const definition of definitions) {
+    const row = element("label", "stage-config-row");
+    const input = element("input"); input.value = definition.name; input.maxLength = 80;
+    const save = element("button", "button button--quiet", "Guardar"); save.type = "button";
+    save.addEventListener("click", async () => {
+      await api(`/v1/stage-definitions/${board}/${encodeURIComponent(definition.id)}`, {
+        method: "PUT", body: JSON.stringify({ name: input.value.trim(), position: definition.position, terminal: definition.terminal }),
+      });
+      await loadData();
+      dialog.close();
+      if (board === "lead") renderCommercial(); else renderOrders();
+    });
+    row.append(input, save); list.append(row);
+  }
+  form.append(header, list);
+  dialog.append(form); dialog.addEventListener("close", () => dialog.remove(), { once: true }); document.body.append(dialog); dialog.showModal();
+}
+
 function clientMode() {
   return $("input[name=clientMode]:checked").value;
 }
@@ -2649,6 +2679,8 @@ $$('[data-orders-view]').forEach((button) => button.addEventListener("click", ()
     renderCommercial();
   }));
 $("#clear-filters").addEventListener("click", clearCommercialFilters);
+$("#lead-stage-config").addEventListener("click", () => openStageConfiguration("lead"));
+$("#order-stage-config").addEventListener("click", () => openStageConfiguration("order"));
 $("#whatsapp-search").addEventListener("input", () => {
   state.mobileWhatsappDetailOpen = false;
   renderWhatsApp();
