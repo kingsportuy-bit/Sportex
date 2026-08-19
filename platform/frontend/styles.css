@@ -2297,11 +2297,24 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   min-width: 42px;
   min-height: 82px;
   height: 82px;
-  border-color: var(--signal);
-  background: var(--signal);
-  color: #18221c;
-  box-shadow: inset -3px 0 rgb(24 34 28 / 20%);
+  border-color: var(--line);
+  background: var(--surface-selected);
+  color: var(--ink);
+  box-shadow: inset -3px 0 var(--signal);
   transform: translateX(-5px);
+}
+#whatsapp-view .whatsapp-stage-tab:not(.is-active) {
+  border-color: var(--line);
+  background: var(--paper);
+  color: var(--muted);
+  box-shadow: none;
+}
+#whatsapp-view .whatsapp-stage-tab:not(.is-active):hover,
+#whatsapp-view .whatsapp-stage-tab:not(.is-active):focus-visible {
+  border-color: var(--line-dark);
+  background: var(--surface-hover);
+  color: var(--ink);
+  box-shadow: none;
 }
 #whatsapp-view .whatsapp-stage-name,
 #whatsapp-view .whatsapp-stage-rail:hover .whatsapp-stage-name,
