@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Completar la QA autenticada de solo lectura del puesto Delta, sin escritura ni outbound."
+    "nextAction": "Fito prueba el recorrido autenticado normal de Delta; no usar datos ni mensajes de prueba."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -85,8 +85,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf",
-    "workingTreeState": "TASK-20260817-001_DEPLOYED_QA_AUTH_PENDING",
+    "headAtLastEvidence": "23aa757d23108a0c9f408caa7b79ba4f564a886d",
+    "workingTreeState": "TASK-20260817-001_PILOTO_DELTA_READY_FOR_AUTHENTICATED_PRODUCT_TEST",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -115,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato e6ed37e: Core 57/57, TypeScript, SQL, build, QA visual local y smoke PILOTO_DELTA PASS; falta recorrido autenticado sin escritura."
+    "note": "Candidato 23aa757: Core 57/57, TypeScript, SQL, build, QA visual local y smoke PILOTO_DELTA PASS; queda el recorrido de producto con sesión normal, sin escritura de prueba."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_E6ED37E_DEPLOYED_QA_AUTH_PENDING",
+    "status": "PILOTO_DELTA_23AA757_DEPLOYED_READY_FOR_AUTHENTICATED_PRODUCT_TEST",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -130,9 +130,12 @@
       "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
       "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e",
       "c6b3b5b07c63704ab260f41b793f0a5449705262",
-      "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf"
+      "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf",
+      "071ec7b",
+      "e24cfcf2154ac5c7",
+      "23aa757d23108a0c9f408caa7b79ba4f564a886d"
     ],
-    "note": "Runtime c6b3b5b 1/1 healthy; media/unread y Base64 activos. Cero outbound nuevo. Rollback image-first 72e0fc2."
+    "note": "Runtime 23aa757 1/1 healthy; media, no leídos, persistencia de sesión y salida manual Delta habilitados. Sin mensajes de prueba. Rollback image-first e24cfcf."
   },
   "externalIntegrations": [
     {
@@ -264,16 +267,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_E6ED37E_PUBLIC_HEALTHY_QA_AUTH_PENDING",
+    "status": "PILOTO_DELTA_23AA757_PUBLIC_HEALTHY_READY_FOR_PRODUCT_TEST",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público e6ed37e sano; 008--010 aplicadas, carga focal y media disponibles, sin outbound nuevo."
+    "note": "Runtime público 23aa757 sano; 008--010 aplicadas, carga focal, media, boceto vigente y sesión persistente disponibles."
   },
   "productValidation": {
-    "status": "DESPLEGADO_QA_AUTENTICADA_SOLO_LECTURA_PENDIENTE",
+    "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_PRODUCTO",
     "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El runtime ya valida etapa, columnas y tableros; falta el recorrido visual autenticado final sin escritura ni mensajes."
+    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; la prueba final usa la sesión normal de Delta, sin inventar datos ni mensajes."
   },
   "blockers": [],
   "risks": [

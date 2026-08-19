@@ -53,9 +53,9 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir a `c6b3b5b` si falla smoke o QA. Las migraciones son aditivas; no se
-borra información. La prueba controlada revierte por transición permitida y
-conserva auditoría.
+Revertir la imagen a `e24cfcf2154ac5c7` si falla smoke o QA. Las migraciones
+son aditivas; no se borra información. La prueba controlada revierte por
+transición permitida y conserva auditoría.
 
 ## deuda_restante
 
@@ -64,10 +64,12 @@ conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `e6ed37e`: tableros, columnas tenant-aware, carga focal y media.
-- Local PASS: Core 57/57, build, SQL y QA visual. Sin outbound.
-- Bundle, backup/restore, 008--010, deploy `1/1`, health y ready PASS.
-- Pendiente: QA autenticada de solo lectura en PILOTO_DELTA.
+- Runtime `23aa757`: tableros, columnas, carga focal, boceto y sesión.
+- La salida manual de Delta está habilitada por configuración del release; no
+  se emitió ningún mensaje durante construcción, despliegue o smoke.
+- Local PASS: Core 57/57, chequeos, SQL, build y QA visual.
+- Bundle, backup, 008--010, deploy `1/1`, health y ready PASS.
+- Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones
 

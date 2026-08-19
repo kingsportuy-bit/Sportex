@@ -14,8 +14,8 @@ Actualizado: 2026-08-19.
 - Tarea: `TASK-20260817-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 69810/70000 caracteres.
-- Tokens estimados: 17453 (aproximacion de 4 caracteres por token).
+- Presupuesto potencial: 69998/70000 caracteres.
+- Tokens estimados: 17500 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 22.
 
 ## Objetivo, alcance y riesgo
@@ -24,7 +24,7 @@ Actualizado: 2026-08-19.
 - Permitido: Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001. | Preparar el candidato y la evidencia de despliegue para PILOTO_DELTA.
 - Prohibido: No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001.
 - Riesgos: Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Completar la QA autenticada de solo lectura del puesto Delta, sin escritura ni outbound.
+- Proxima accion: Fito prueba el recorrido autenticado normal de Delta; no usar datos ni mensajes de prueba.
 
 ## Regla de uso
 

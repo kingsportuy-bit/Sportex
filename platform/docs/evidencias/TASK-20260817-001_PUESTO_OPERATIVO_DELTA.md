@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: desplegado; QA autenticada operativa pendiente
+estado: release productivo de piloto listo para prueba; recorrido autenticado de Delta pendiente
 updated_at: 2026-08-19
-candidate: e6ed37e
+candidate: 23aa757
 
 ## Recorrido cubierto
 
@@ -17,6 +17,8 @@ candidate: e6ed37e
   permiso y auditoría del Core.
 - La conversión conserva el origen `DESCONOCIDO` o `META_EXACTO` y reutiliza
   los datos conocidos al crear cliente y pedido.
+- El pedido conserva el boceto vigente elegido por el comercial, sin borrar
+  las imágenes anteriores.
 
 ## Rendimiento y medios
 
@@ -43,23 +45,24 @@ candidate: e6ed37e
 
 ## Despliegue PILOTO_DELTA
 
-- Guard de release y bundles inmutables PASS para `e96a4df` y la corrección
-  final `e6ed37e`.
+- Guard de release y bundle inmutable PASS para el candidato final `23aa757`.
 - Backup `pre-deploy.dump` con SHA256
   `73f376961e9b369d245469470e72186dd2b826b3d68db5669b541cc159e7d681`
   restaurado en una base aislada y luego eliminado.
 - Migraciones 008--010 aplicadas antes de la imagen. La tabla nueva mantiene
   RLS forzado y las dimensiones de media quedan disponibles; no se borraron
   datos.
-- Runtime final `sportex-staging:e6ed37e3b136f709`, `1/1`, con `/health` y
-  `/ready` en PASS. El log posterior no mostró polling global ni errores 5xx.
-- Navegador local: recargar conserva la pestaña Leads y evita la pantalla de
-  login. La QA final sobre datos reales queda deliberadamente de solo lectura
-  y sin envíos.
+- Runtime final `sportex-staging:23aa757d23108a0c`, `1/1`, con `/health` y
+  `/ready` en PASS. El release conserva el envío manual habilitado para Delta;
+  el log posterior no mostró errores fatales ni 5xx.
+- Navegador local: recargar conserva la pestaña Leads, no hay pantalla de
+  carga ni scroll horizontal y el chat abre en su último mensaje. La sesión
+  existente se refresca antes de mostrar login. El navegador de prueba no
+  conserva una sesión de Delta, por lo que el recorrido real queda para la
+  cuenta normal, sin inventar una autenticación ni enviar mensajes.
 
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- No se envió ningún mensaje ni se alteró Evolution o Barberox.
-- Rollback inmediato: `sportex-staging:e96a4df4f873f7bd`; las migraciones se
+- Rollback inmediato: `sportex-staging:e24cfcf2154ac5c7`; las migraciones se
   conservan por ser aditivas.
