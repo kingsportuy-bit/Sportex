@@ -41,27 +41,27 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Solo existe una tarea activa; PROJECT_STATE es canonico y las vistas son generadas.
 - PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.
 - La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.
-- PASS tecnico y aprobacion de producto son gates separados; Fito acepto el concepto WhatsApp primero y la interfaz local sigue en iteracion.
-- CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.
-- DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.
-- SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.
-- SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado.
-- SPORTEX-DEC-014: el corte operativo de Delta conserva módulos y capas separadas; Leads y Pedidos son tableros derivados del Core.
+- PASS técnico y producto son gates separados.
+- CAMP entrega la V1 por etapas.
+- Leads y Pedidos usan tableros derivados del Core.
+- WhatsApp es una superficie separada.
+- Mensajes y eventos siguen separados.
+- Leads administra; WhatsApp concentra el chat completo.
 
 ## Estado operativo registrado
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 8; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-19`.
-- Despliegues: `PILOTO_DELTA_9A570C3_SESSION_RESTORE_LOGIN_FLASH_FIXED`; registros 17.
+- Despliegues: `PILOTO_DELTA_3040659_LEADS_ADMIN_WHATSAPP_SEPARATE`; registros 18.
 - Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_C6B3B5B_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260816-004`.
-- Fecha: `2026-08-16`.
-- Fuente: `docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md`.
-- Contexto guidance reducido 50,9 %, estado vivo 53,1 % al cierre y selectores/perfiles validados sin tocar runtime.
+- Tarea: `TASK-20260817-001`.
+- Fecha: `2026-08-19`.
+- Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
+- Leads queda como tablero administrativo con ficha y respuesta rápida; WhatsApp conserva el chat completo por acción explícita. Candidato 3040659 saludable en PILOTO_DELTA.
 
 ## Riesgos
 
@@ -76,6 +76,6 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 ## Siguientes acciones
 
-- Implementar y validar TASK-20260817-001 por capas, con tableros de Leads y Pedidos como proyecciones del Core.
+- Fito valida con la sesión normal que la ficha de Leads no reemplace WhatsApp y que la respuesta rápida sea clara.
 - Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

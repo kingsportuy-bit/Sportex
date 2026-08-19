@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: recarga sin destello de acceso y caché de interfaz corregidas; listo para Delta
+estado: Leads administra sin reemplazar WhatsApp; candidato publicado y listo para prueba autenticada
 updated_at: 2026-08-19
-candidate: 9a570c3
+candidate: 3040659
 
 ## Recorrido cubierto
 
@@ -19,6 +19,10 @@ candidate: 9a570c3
   los datos conocidos al crear cliente y pedido.
 - El pedido conserva el boceto vigente elegido por el comercial, sin borrar
   las imágenes anteriores.
+- Leads conserva su tablero Kanban de administración: una tarjeta abre ficha
+  comercial con resumen, próximo paso, últimos mensajes y respuesta rápida.
+  No abre ni reemplaza WhatsApp; `Abrir WhatsApp` es una acción explícita para
+  entrar al historial y atención completos.
 
 ## Rendimiento y medios
 
@@ -44,10 +48,14 @@ candidate: 9a570c3
 - Navegador local: bandeja sin conversación seleccionada al entrar; al abrir
   chat el scroll queda abajo; Leads muestra 6 columnas y 18 tarjetas; la página
   no tiene scroll horizontal.
+- Navegador local: una tarjeta abre la ficha administrativa de Leads, con
+  últimos mensajes, respuesta rápida y enlace explícito a WhatsApp; el tablero
+  sigue con 18 tarjetas y sin scroll horizontal de página. No se envió mensaje.
 
 ## Despliegue PILOTO_DELTA
 
-- Guard de release y bundle inmutable PASS para `9a570c3`.
+- Guard de release y bundle inmutable PASS para `3040659`
+  (SHA256 `89cd1d0d6c9bd8d7a3060cd9c91479f9a16e5a430bdf403b3f6cb0747b062219`).
 - Backup `pre-deploy.dump` con SHA256
   `73f376961e9b369d245469470e72186dd2b826b3d68db5669b541cc159e7d681`
   restaurado en una base aislada y luego eliminado.
@@ -66,13 +74,18 @@ candidate: 9a570c3
   conservan caché corta. El acceso empieza con `hidden` en HTML, por lo que
   una sesión existente no lo muestra antes de que la aplicación se restaure.
 - Smoke estático público: `index.html`, `app.js` y `styles.css` responden con
-  `Cache-Control: no-store`; el índice referencia `app.js?v=session-reload-3`
+  `Cache-Control: no-store`; el índice referencia la revisión vigente de
+  `app.js`
   y empieza con el acceso oculto. Sin sesión, el navegador público muestra el
   acceso correctamente y no registra errores. El recorrido con sesión Delta
   queda para la cuenta normal, sin inventar una autenticación ni enviar mensajes.
+- Release de Leads: runtime `sportex-staging:304065966a7ef2a0`, `1/1`, con
+  `/health` y `/ready` PASS. El índice público referencia
+  `app.js?v=session-reload-4` y `styles.css?v=session-reload-4`, ambos `200`
+  y `Cache-Control: no-store`.
 
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:27e46529c4080f3a`; las migraciones se
+- Rollback inmediato: `sportex-staging:9a570c3b33ab2fcd`; las migraciones se
   conservan por ser aditivas.

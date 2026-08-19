@@ -137,3 +137,13 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   renombrar, ordenar o borrar conserva reasignación y auditoría en Core.
 - WhatsApp carga resumen y detalle por separado; sus cambios refrescan sólo el
   elemento afectado. El navegador no guarda conversaciones ni adjuntos.
+
+## SPORTEX-DEC-016 - Leads administra; WhatsApp atiende
+
+- 2026-08-19 · `VIGENTE`. `Leads` es el tablero Kanban de oportunidades; sus
+  tarjetas abren una ficha administrativa, no el chat de WhatsApp.
+- La ficha muestra el contexto comercial, el próximo paso, los últimos
+  mensajes y una respuesta breve. El historial y la atención completa siguen
+  en `WhatsApp` y se abren solamente mediante una acción explícita.
+- La respuesta breve usa el mismo comando manual y el mismo outbox del Core;
+  el frontend no decide etapas, permisos ni estados de envío.

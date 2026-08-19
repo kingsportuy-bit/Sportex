@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito recarga con la cuenta normal de Delta; no usar mensajes de prueba."
+    "nextAction": "Fito prueba Leads como tablero de administración y WhatsApp como chat completo, sin mensajes de prueba."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -59,12 +59,12 @@
     "Solo existe una tarea activa; PROJECT_STATE es canonico y las vistas son generadas.",
     "PILOTO_DELTA y PRODUCCION_COMERCIAL requieren autorizaciones independientes.",
     "La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.",
-    "PASS tecnico y aprobacion de producto son gates separados; Fito acepto el concepto WhatsApp primero y la interfaz local sigue en iteracion.",
-    "CAMP-20260803-001 entrega la V1 por etapas; la Etapa 0 aprueba navegacion y recorrido antes de codigo.",
-    "DELTA-DEC-012: Leads y Pedidos abren en tableros con detalles relacionados.",
-    "SPORTEX-DEC-009: WhatsApp es una superficie separada; el primer corte operativo une conversacion, contexto y proxima accion.",
-    "SPORTEX-DEC-011: mensajes y eventos operativos permanecen separados; el asistente futuro solo existe como contrato pasivo apagado.",
-    "SPORTEX-DEC-014: el corte operativo de Delta conserva módulos y capas separadas; Leads y Pedidos son tableros derivados del Core."
+    "PASS técnico y producto son gates separados.",
+    "CAMP entrega la V1 por etapas.",
+    "Leads y Pedidos usan tableros derivados del Core.",
+    "WhatsApp es una superficie separada.",
+    "Mensajes y eventos siguen separados.",
+    "Leads administra; WhatsApp concentra el chat completo."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -78,15 +78,17 @@
     "SPORTEX-DEC-009",
     "SPORTEX-DEC-011",
     "SPORTEX-DEC-013",
-    "SPORTEX-DEC-014"
+    "SPORTEX-DEC-014",
+    "SPORTEX-DEC-015",
+    "SPORTEX-DEC-016"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e",
-    "workingTreeState": "TASK-20260817-001_SESSION_RESTORE_LOGIN_FLASH_FIXED",
+    "headAtLastEvidence": "304065966a7ef2a0e559f3e35947b6907366ae7a",
+    "workingTreeState": "TASK-20260817-001_LEADS_ADMIN_WHATSAPP_SEPARATE",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -115,10 +117,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 9a570c3: 57/57, build, guardia de recarga, smoke y assets actuales PASS."
+    "note": "Candidato 3040659: 57/57, build, ficha administrativa local, sin scroll horizontal, smoke y assets actuales PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_9A570C3_SESSION_RESTORE_LOGIN_FLASH_FIXED",
+    "status": "PILOTO_DELTA_3040659_LEADS_ADMIN_WHATSAPP_SEPARATE",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -137,9 +139,10 @@
       "9250d3ac680549b7d6cc69106da211e7a0a159b6",
       "788e7cee81a4240adc12416bb6e442a9f8eeb92d",
       "27e46529c4080f3a3f5556e210bf73b745c763c5",
-      "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e"
+      "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e",
+      "304065966a7ef2a0e559f3e35947b6907366ae7a"
     ],
-    "note": "Runtime 9a570c3 1/1 healthy; una sesión existente no muestra acceso al recargar. Sin mensajes. Rollback 27e4652."
+    "note": "Runtime 3040659 1/1 healthy; Leads administra y WhatsApp sigue separado. Sin mensajes. Rollback 9a570c3."
   },
   "externalIntegrations": [
     {
@@ -176,14 +179,32 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260816-004",
-    "date": "2026-08-16",
-    "path": "docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md",
-    "summary": "Contexto guidance reducido 50,9 %, estado vivo 53,1 % al cierre y selectores/perfiles validados sin tocar runtime.",
-    "environment": "DOCUMENTACION",
+    "taskId": "TASK-20260817-001",
+    "date": "2026-08-19",
+    "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+    "summary": "Leads queda como tablero administrativo con ficha y respuesta rápida; WhatsApp conserva el chat completo por acción explícita. Candidato 3040659 saludable en PILOTO_DELTA.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Leads ahora administra oportunidades desde Kanban y ficha; los últimos mensajes y la respuesta rápida no reemplazan WhatsApp, que se abre explícitamente. Candidato 3040659 publicado y healthy.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-016"
+      ]
+    },
     {
       "date": "2026-08-16",
       "taskId": "TASK-20260816-004",
@@ -253,34 +274,19 @@
       "decisions": [
         "SPORTEX-DEC-012"
       ]
-    },
-    {
-      "date": "2026-08-15",
-      "taskId": "TASK-20260815-002",
-      "summary": "Se registro que las transiciones comerciales desde WhatsApp no estan soportadas ni verificadas como capacidad del piloto actual.",
-      "documents": [
-        "docs/TASKS/closed/2026/TASK-20260815-002-registrar-pendiente-transiciones-comerciales.md",
-        "docs/state/PROJECT_STATE.json"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260815-002_PENDIENTE_TRANSICIONES_COMERCIALES.md"
-      ],
-      "decisions": [
-        "No presentar una capacidad como disponible antes de verificar persistencia, permisos y auditoria de punta a punta."
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_9A570C3_PUBLIC_HEALTHY_SESSION_RESTORE_FIXED",
+    "status": "PILOTO_DELTA_3040659_PUBLIC_HEALTHY_LEADS_ADMIN_WHATSAPP_SEPARATE",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 9a570c3 sano; sesión se restaura sin mostrar el acceso."
+    "note": "Runtime público 3040659 sano; Leads administra sin reemplazar WhatsApp."
   },
   "productValidation": {
-    "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_PRODUCTO",
+    "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_LEADS_Y_WHATSAPP",
     "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; la prueba final usa la sesión normal de Delta, sin inventar datos ni mensajes."
+    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. La prueba final usa la sesión normal de Delta, sin inventar datos ni mensajes."
   },
   "blockers": [],
   "risks": [
@@ -290,7 +296,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Implementar y validar TASK-20260817-001 por capas, con tableros de Leads y Pedidos como proyecciones del Core.",
+    "Fito valida con la sesión normal que la ficha de Leads no reemplace WhatsApp y que la respuesta rápida sea clara.",
     "Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],
