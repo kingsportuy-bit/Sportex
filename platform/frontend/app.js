@@ -1862,6 +1862,18 @@ function filteredWhatsApp() {
     .sort((left, right) => right.conversation.lastActivityAt.localeCompare(left.conversation.lastActivityAt));
 }
 
+function whatsappStageIcon(stageId) {
+  return {
+    ALL: "▣",
+    NUEVO: "♙",
+    EN_CONVERSACION: "◰",
+    COTIZADO: "✎",
+    EN_SEGUIMIENTO: "⌁",
+    SENA_VALIDADA: "✓",
+    PERDIDO: "⊘",
+  }[stageId] ?? "◌";
+}
+
 function renderWhatsAppStages() {
   const rail = $("#whatsapp-stage-tabs");
   if (!rail) return;
@@ -1883,7 +1895,7 @@ function renderWhatsAppStages() {
     button.setAttribute("aria-pressed", String(active));
     button.setAttribute("aria-label", `${stage.label}: ${count} conversaciones`);
     button.append(
-      element("span", "whatsapp-stage-index", stage.id === "ALL" ? "•" : String(index).padStart(2, "0")),
+      element("span", "whatsapp-stage-index", whatsappStageIcon(stage.id)),
       element("span", "whatsapp-stage-name", stage.label),
       element("span", "whatsapp-stage-count", String(count)),
     );
