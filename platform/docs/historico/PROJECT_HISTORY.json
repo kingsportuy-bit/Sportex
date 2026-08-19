@@ -3,6 +3,24 @@
   "project": "SPORTEX",
   "entries": [
     {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Leads ahora administra oportunidades desde Kanban y ficha; los últimos mensajes y la respuesta rápida no reemplazan WhatsApp, que se abre explícitamente. Candidato 3040659 publicado y healthy.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-016"
+      ]
+    },
+    {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
       "summary": "Se ejecuto el gate documental posterior a 279cdf6 con cierre PASS y sin cambio de código ni acción remota.",
@@ -376,5 +394,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-08-16"
+  "updatedAt": "2026-08-19"
 }

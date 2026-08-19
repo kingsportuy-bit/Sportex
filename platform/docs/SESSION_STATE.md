@@ -53,8 +53,8 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 8; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-19`.
-- Despliegues: `PILOTO_DELTA_92084BA_SIGNAL_ACTIONS_CONTRAST`; registros 24.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_4F324DB_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_E845927_WHATSAPP_OPEN_AT_LATEST`; registros 25.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_E845927_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Tarea: `TASK-20260817-001`.
 - Fecha: `2026-08-19`.
 - Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- Acciones verdes con texto grafito desplegadas; sin mensajes.
+- Apertura de chat al último mensaje desplegada; sin mensajes.
 
 ## Riesgos
 
@@ -77,6 +77,6 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 ## Siguientes acciones
 
-- Fito valida con la sesión normal que la ficha de Leads no reemplace WhatsApp y que la respuesta rápida sea clara.
+- Fito valida con la sesión normal que cada chat de WhatsApp abre en el último mensaje.
 - Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

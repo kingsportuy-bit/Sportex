@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: Pestañas de WhatsApp publicadas en PILOTO_DELTA; aceptación visual humana pendiente
+estado: Apertura de chat al último mensaje publicada en PILOTO_DELTA; aceptación visual humana pendiente
 updated_at: 2026-08-19
-candidate: a7964f3
+candidate: e845927
 
 ## Recorrido cubierto
 
@@ -128,8 +128,20 @@ candidate: a7964f3
   `267e9457c219b69a047377385fdc6869100f20f7306d7a951fbae7b3fffec927` PASS.
 - Sin migraciones, datos ni mensajes. Rollback `4f324db`.
 
+## Apertura al último mensaje PILOTO_DELTA (2026-08-19)
+
+- Candidato `e845927e36d6c34f9e1c1a0fbd44216659e88333`; bundle SHA-256
+  `697d40a2d8f38ee76ca4d255480d34f9cc822438ac52cf99e4c4a54904f67ded`.
+- Al abrir una conversación, la carga inicial y la respuesta actualizada del
+  Core desplazan el historial al último mensaje. Las actualizaciones dentro de
+  un chat abierto conservan la posición que ya eligió el operador.
+- `npm run validate` PASS (57/57, tipos, SQL y build). Servicio `1/1`,
+  `/health` y `/ready` PASS; el JavaScript público contiene la corrección.
+- Sin migraciones, datos ni mensajes. Rollback inmediato:
+  `sportex-staging:d7150d7f989c3fd8`.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:2933ff227196e536`; las migraciones se
+- Rollback inmediato: `sportex-staging:d7150d7f989c3fd8`; las migraciones se
   conservan por ser aditivas.
