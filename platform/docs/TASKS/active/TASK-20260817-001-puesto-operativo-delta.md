@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:d7150d7f989c3fd8` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:e845927e36d6c34f` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -64,16 +64,15 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `9a570c3`: recargar conserva la sesión.
-- PASS local 57/57, build, SQL, QA y deploy `1/1`.
-- Corregidos cursor/recarga/deploy: `SPX-ERR-20260819-001/002/003`.
-- Leads administra; WhatsApp se abre explícitamente.
 - `92084ba` desplegado: toda acción verde usa texto grafito; `1/1`,
   health/ready/CSS PASS, sin migraciones ni mensajes. Rollback `4f324db`.
 - `e845927` desplegado: al abrir cualquier chat de WhatsApp, tanto la primera
   carga como su actualización quedan en el último mensaje. `1/1`, health,
   ready y JavaScript público PASS; sin migraciones, datos ni mensajes.
   Rollback `d7150d7`.
+- `3f29626` desplegado: pestañas de etapas arriba de WhatsApp, antes del chat.
+  `1/1`, health, ready, HTML y CSS públicos PASS; sin migraciones, datos ni
+  mensajes. Rollback `e845927`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

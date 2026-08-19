@@ -89,8 +89,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "e845927e36d6c34f9e1c1a0fbd44216659e88333",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_OPEN_AT_LATEST_DEPLOYED",
+    "headAtLastEvidence": "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_TABS_ABOVE_DEPLOYED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -119,10 +119,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato e845927: 57/57, build, apertura al último mensaje y JavaScript público PASS."
+    "note": "Candidato 3f29626: 57/57, build, pestañas superiores y HTML/CSS públicos PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_E845927_WHATSAPP_OPEN_AT_LATEST",
+    "status": "PILOTO_DELTA_3F29626_WHATSAPP_STAGE_TABS_ABOVE",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -149,9 +149,10 @@
       "f40a7c50ccaef02f0e65e0a16f981c170725b7c8",
       "4f324db0448d5345a0c723a974370027c66fa028",
       "92084ba5d10001a926fe73a38e14b2b5f36790cb",
-      "e845927e36d6c34f9e1c1a0fbd44216659e88333"
+      "e845927e36d6c34f9e1c1a0fbd44216659e88333",
+      "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0"
     ],
-    "note": "Runtime e845927 1/1 healthy; abrir chat queda en el último mensaje. Sin mensajes. Rollback d7150d7."
+    "note": "Runtime 3f29626 1/1 healthy; pestañas de etapa arriba del chat. Sin mensajes. Rollback e845927."
   },
   "externalIntegrations": [
     {
@@ -177,10 +178,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_E845927_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_3F29626_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-19",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en e845927; health, ready y JavaScript público verifican la apertura al último mensaje; rollback d7150d7 disponible."
+      "note": "sportex_staging_core 1/1 healthy en 3f29626; health, ready, HTML y CSS públicos verifican las pestañas superiores; rollback e845927 disponible."
     }
   ],
   "sensitiveData": {
@@ -191,11 +192,28 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Apertura de chat al último mensaje desplegada; sin mensajes.",
+    "summary": "Pestañas de etapa arriba de WhatsApp desplegadas; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Pestañas WhatsApp arriba del chat. 3f29626 sano; columnas configurables auditadas.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-016"
+      ]
+    },
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
@@ -261,35 +279,19 @@
       "decisions": [
         "SPORTEX-DEC-012"
       ]
-    },
-    {
-      "date": "2026-08-19",
-      "taskId": "TASK-20260817-001",
-      "summary": "Las pestañas WhatsApp conservan la caja del menú; la activa marca verde. a7964f3 desplegado y sano.",
-      "documents": [
-        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
-        "frontend/styles.css",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-012"
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_E845927_PUBLIC_HEALTHY_WHATSAPP_LATEST",
+    "status": "PILOTO_DELTA_3F29626_PUBLIC_HEALTHY_STAGE_TABS_ABOVE",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público e845927 sano; abrir una conversación queda en el último mensaje."
+    "note": "Runtime público 3f29626 sano; las pestañas de etapa están sobre WhatsApp."
   },
   "productValidation": {
     "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_OSCURO",
     "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente el oscuro fijo y las pestañas desde la sesión normal."
+    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente las pestañas superiores desde la sesión normal."
   },
   "blockers": [],
   "risks": [
@@ -299,13 +301,13 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito valida con la sesión normal que cada chat de WhatsApp abre en el último mensaje.",
+    "Fito valida con la sesión normal las pestañas superiores y la apertura de cada chat en el último mensaje.",
     "Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 22,
+    "archivedChanges": 23,
     "throughDate": "2026-08-19"
   }
 }

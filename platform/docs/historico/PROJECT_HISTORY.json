@@ -21,6 +21,22 @@
       ]
     },
     {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Las pestañas WhatsApp conservan la caja del menú; la activa marca verde. a7964f3 desplegado y sano.",
+      "documents": [
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "frontend/styles.css",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-012"
+      ]
+    },
+    {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
       "summary": "Se ejecuto el gate documental posterior a 279cdf6 con cierre PASS y sin cambio de código ni acción remota.",

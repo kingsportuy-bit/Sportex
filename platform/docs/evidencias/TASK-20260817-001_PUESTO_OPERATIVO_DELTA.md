@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: Apertura de chat al último mensaje publicada en PILOTO_DELTA; aceptación visual humana pendiente
+estado: Pestañas de etapas sobre WhatsApp publicadas en PILOTO_DELTA; aceptación visual humana pendiente
 updated_at: 2026-08-19
-candidate: e845927
+candidate: 3f29626
 
 ## Recorrido cubierto
 
@@ -140,8 +140,21 @@ candidate: e845927
 - Sin migraciones, datos ni mensajes. Rollback inmediato:
   `sportex-staging:d7150d7f989c3fd8`.
 
+## Pestañas superiores y configuración de etapas PILOTO_DELTA (2026-08-19)
+
+- Candidato `3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0`; bundle SHA-256
+  `f8e4469d9a2d95737dcbb2f891f4e6e7be5d74ec520276af181f07ea3829cd5f`.
+- Las pestañas de etapa quedan en una franja horizontal sobre WhatsApp; el chat
+  conserva todo el alto restante. HTML y CSS públicos confirman esa estructura.
+- La gestión de columnas ya está habilitada en Leads y Pedidos: editar,
+  agregar, reordenar y eliminar. Eliminar exige destino, reasigna tarjetas o
+  pedidos y audita; requiere el permiso correspondiente. No se cambió ninguna
+  columna real durante este release.
+- Servicio `1/1`, `/health` y `/ready` PASS. Sin migraciones, datos ni
+  mensajes. Rollback inmediato: `sportex-staging:e845927e36d6c34f`.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:d7150d7f989c3fd8`; las migraciones se
+- Rollback inmediato: `sportex-staging:e845927e36d6c34f`; las migraciones se
   conservan por ser aditivas.
