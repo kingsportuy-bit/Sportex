@@ -3123,6 +3123,7 @@ $$('[data-orders-view]').forEach((button) => button.addEventListener("click", ()
 $("#clear-filters").addEventListener("click", clearCommercialFilters);
 $("#lead-stage-config").addEventListener("click", () => openStageConfiguration("lead"));
 $("#order-stage-config").addEventListener("click", () => openStageConfiguration("order"));
+$("#whatsapp-stage-config").addEventListener("click", () => openStageConfiguration("lead"));
 $("#whatsapp-search").addEventListener("input", () => {
   state.mobileWhatsappDetailOpen = false;
   renderWhatsApp();
