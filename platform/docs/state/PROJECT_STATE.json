@@ -117,10 +117,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 8a83ac4: 57/57, build, pestañas laterales con bracket curvo, smoke y CSS público PASS."
+    "note": "Candidato f40a7c5: 57/57, build, pestañas con regla literal del menú, smoke y CSS público PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_8A83AC4_WHATSAPP_TABS_SIDEBAR_STYLE",
+    "status": "PILOTO_DELTA_F40A7C5_WHATSAPP_TABS_MENU_LITERAL",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -143,9 +143,10 @@
       "304065966a7ef2a0e559f3e35947b6907366ae7a",
       "2933ff227196e536cc9e44b456bf9e338fe82328",
       "a7964f3479fb47cc2925cf617abccd39783dbf56",
-      "8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c"
+      "8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c",
+      "f40a7c50ccaef02f0e65e0a16f981c170725b7c8"
     ],
-    "note": "Runtime 8a83ac4 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback a7964f3."
+    "note": "Runtime f40a7c5 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback 8a83ac4."
   },
   "externalIntegrations": [
     {
@@ -171,10 +172,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_8A83AC4_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_F40A7C5_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-19",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 8a83ac4; health, ready y CSS público coinciden con el candidato; rollback a7964f3 disponible."
+      "note": "sportex_staging_core 1/1 healthy en f40a7c5; health, ready y CSS público coinciden; rollback 8a83ac4 disponible."
     }
   ],
   "sensitiveData": {
@@ -185,11 +186,27 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas de WhatsApp con estilo lateral, texto horizontal y bracket curvo desplegadas; sin mensajes.",
+    "summary": "Pestañas WhatsApp con regla literal del menú e indicador izquierdo desplegadas; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Pestañas WhatsApp usan literalmente el menú lateral; indicador verde izquierdo. f40a7c5 sano; aceptación visual pendiente.",
+      "documents": [
+        "frontend/styles.css",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-012"
+      ]
+    },
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
@@ -257,29 +274,12 @@
       "decisions": [
         "SPORTEX-DEC-013"
       ]
-    },
-    {
-      "date": "2026-08-16",
-      "taskId": "TASK-20260816-003",
-      "summary": "Se desplego c6b3b5b con migracion 006-first, backup/restore, Evolution Base64 y flags media/unread; QA autenticada PASS y cero outbound nuevo.",
-      "documents": [
-        "core/db/migrations/staging/20260816_006_whatsapp_media_unread.up.sql",
-        "deploy/docker-stack.staging.yml",
-        "docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md",
-        "docs/deployments/SPORTEX-PILOTO-DELTA-20260814-PREPARED.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260816-003_PILOTO_DELTA_MEDIA_NO_LEIDOS.md"
-      ],
-      "decisions": [
-        "Migration-first y rollback image-first; tablas 006 aditivas se conservan."
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_8A83AC4_PUBLIC_HEALTHY_WHATSAPP_TABS_SIDEBAR_STYLE",
+    "status": "PILOTO_DELTA_F40A7C5_PUBLIC_HEALTHY_WHATSAPP_TABS_MENU_LITERAL",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 8a83ac4 sano; CSS público coincide con el candidato."
+    "note": "Runtime público f40a7c5 sano; CSS público coincide con el candidato."
   },
   "productValidation": {
     "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_DE_WHATSAPP",

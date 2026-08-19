@@ -100,12 +100,13 @@ candidate: a7964f3
 
 ## Corrección visual PILOTO_DELTA (2026-08-19)
 
-- Candidato `8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c`; bundle SHA-256
-  `5fee4902cc51f1552f05746ebfb0bf6058f7bf2faa73b194cbaa4c57a3eef1a2`.
-- Texto horizontal, hover neutro y bracket lima curvo derecho.
+- Candidato `f40a7c50ccaef02f0e65e0a16f981c170725b7c8`; bundle SHA-256
+  `e4f95317681c813287bf3b51c83fd412b10db4b6998445103bdbedc4e04c3170`.
+- Regla literal del menú: radio `7px`, hover gris, activo `#ffffff12` e
+  indicador lima `inset 3px` a la izquierda.
 - Servicio `1/1`; health/ready PASS y CSS público
-  `f4f53da5e793897b17fd22023dcc47e7d539f1b94b2af5815f3e967ad52a4fa9`.
-- Sin migraciones, datos ni mensajes. Backup remoto y rollback `a7964f3`.
+  `0574890f26fa5b7a2575df08387530b052ce7ee8461d9a3b581699448f878f82`.
+- Sin migraciones, datos ni mensajes. Backup remoto y rollback `8a83ac4`.
 - Pendiente: aceptación visual.
 
 ## Límites y rollout
