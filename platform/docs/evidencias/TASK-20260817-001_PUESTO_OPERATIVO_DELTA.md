@@ -119,6 +119,15 @@ candidate: a7964f3
   `c783e1f1867ac89bdd81559235696e731b7b60c5d0b33dc20174835b67683b80` PASS.
 - Sin migraciones, datos ni mensajes. Backup remoto y rollback `f40a7c5`.
 
+## Contraste de acciones verdes PILOTO_DELTA (2026-08-19)
+
+- Candidato `92084ba5d10001a926fe73a38e14b2b5f36790cb`; bundle SHA-256
+  `8e4ee41bf1558bb447b573c08bc9bd3125dd32fe2985da242f5fa2f537d947b1`.
+- `button--signal`, enviar WhatsApp y cerrar ficha usan `#18221c` sobre verde.
+- Servicio `1/1`, health/ready y CSS público
+  `267e9457c219b69a047377385fdc6869100f20f7306d7a951fbae7b3fffec927` PASS.
+- Sin migraciones, datos ni mensajes. Rollback `4f324db`.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
