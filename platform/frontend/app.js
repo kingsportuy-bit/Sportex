@@ -2,6 +2,26 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 const THEME_STORAGE_KEY = "sportex_theme";
+const VIEW_STORAGE_KEY = "sportex_last_view";
+const OPERATIONAL_VIEWS = new Set(["whatsapp", "leads", "orders", "clients"]);
+
+function storedOperationalView() {
+  try {
+    const view = sessionStorage.getItem(VIEW_STORAGE_KEY);
+    if (OPERATIONAL_VIEWS.has(view)) return view;
+  } catch {
+    // La app abre en WhatsApp si el navegador no permite conservar la sesión.
+  }
+  return "whatsapp";
+}
+
+function persistOperationalView(view) {
+  try {
+    sessionStorage.setItem(VIEW_STORAGE_KEY, view);
+  } catch {
+    // La navegación funciona aunque el navegador bloquee el almacenamiento de sesión.
+  }
+}
 
 function storedTheme() {
   try {
@@ -60,7 +80,7 @@ const state = {
   whatsappStage: "ALL",
   whatsappUnreadOnly: false,
   pendingWhatsappImage: null,
-  currentView: "whatsapp",
+  currentView: storedOperationalView(),
   todayFilter: "all",
   mobileLeadTab: "chat",
   draftResource: null,
@@ -270,6 +290,7 @@ function clearSession() {
   state.mobileWhatsappDetailOpen = false;
   sessionStorage.removeItem("sportex_access_token");
   sessionStorage.removeItem("sportex_refresh_token");
+  sessionStorage.removeItem(VIEW_STORAGE_KEY);
 }
 
 function showLogin() {
@@ -2436,10 +2457,12 @@ function closeMobileMenu() {
   document.body.classList.remove("menu-open");
 }
 
-function switchView(name) {
+function switchView(name, { reload = true } = {}) {
   if (name === "commercial") name = "leads";
+  if (!OPERATIONAL_VIEWS.has(name)) name = "whatsapp";
   const previousView = state.currentView;
   state.currentView = name;
+  persistOperationalView(name);
   if (name === "whatsapp" && previousView !== "whatsapp") {
     state.selectedCommercialId = null;
     state.whatsappDetailsOpen = false;
@@ -2460,7 +2483,7 @@ function switchView(name) {
   if (name === "today") renderToday();
   if (name === "whatsapp") renderWhatsApp();
   if (name === "leads") renderCommercial();
-  void loadData({ activeOnly: true }).catch((error) => console.warn("SPORTEX view load failed", error));
+  if (reload) void loadData({ activeOnly: true }).catch((error) => console.warn("SPORTEX view load failed", error));
   if (name === "whatsapp") startLiveRefresh();
   else stopLiveRefresh();
   closeMobileMenu();
@@ -2784,7 +2807,7 @@ async function bootstrapAuthenticated() {
   await loadSession();
   await loadData({ activeOnly: true });
   showApp();
-  startLiveRefresh();
+  switchView(state.currentView, { reload: false });
 }
 
 async function initialize() {
@@ -2812,7 +2835,6 @@ async function initialize() {
       : "LOCAL · MEMORIA";
     try {
       await bootstrapAuthenticated();
-      switchView("whatsapp");
     } catch (error) {
       $("#login-error").textContent = friendlyError(error);
     }
