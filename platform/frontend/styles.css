@@ -2323,3 +2323,100 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   transform: rotate(180deg);
 }
 #whatsapp-view .whatsapp-stage-tab .whatsapp-stage-name { max-height: 38px; font-size: 6.3px; }
+
+/* Etapas WhatsApp: mismo lenguaje del menú lateral, orientado hacia la lista. */
+#whatsapp-view {
+  --whatsapp-stage-gutter: 172px;
+  padding-left: var(--whatsapp-stage-gutter);
+}
+#whatsapp-view .whatsapp-stage-rail,
+#whatsapp-view .whatsapp-stage-rail:hover,
+#whatsapp-view .whatsapp-stage-rail:has(.whatsapp-stage-tab:focus-visible) {
+  width: var(--whatsapp-stage-gutter);
+  padding: 8px 8px 8px 0;
+  gap: 7px;
+  background: var(--ink);
+}
+#whatsapp-view .whatsapp-stage-tab,
+#whatsapp-view .whatsapp-stage-tab:hover,
+#whatsapp-view .whatsapp-stage-tab:focus-visible,
+#whatsapp-view .whatsapp-stage-tab.is-active,
+#whatsapp-view .whatsapp-stage-tab.is-active:hover,
+#whatsapp-view .whatsapp-stage-tab.is-active:focus-visible,
+#whatsapp-view .whatsapp-stage-tab:not(.is-active) {
+  position: relative;
+  width: 164px;
+  min-width: 164px;
+  min-height: 44px;
+  height: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 0 12px;
+  overflow: visible;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #bac2bb;
+  box-shadow: none;
+  text-align: left;
+  transform: none;
+}
+#whatsapp-view .whatsapp-stage-tab:hover,
+#whatsapp-view .whatsapp-stage-tab:focus-visible,
+#whatsapp-view .whatsapp-stage-tab:not(.is-active):hover,
+#whatsapp-view .whatsapp-stage-tab:not(.is-active):focus-visible {
+  background: #ffffff0b;
+  color: white;
+  box-shadow: none;
+}
+#whatsapp-view .whatsapp-stage-tab.is-active,
+#whatsapp-view .whatsapp-stage-tab.is-active:hover,
+#whatsapp-view .whatsapp-stage-tab.is-active:focus-visible {
+  background: #ffffff12;
+  color: white;
+  box-shadow: none;
+}
+#whatsapp-view .whatsapp-stage-tab.is-active::after {
+  content: "" !important;
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: -3px;
+  bottom: 0;
+  width: 11px;
+  border: 3px solid var(--signal);
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  pointer-events: none;
+}
+#whatsapp-view .whatsapp-stage-tab > span { position: relative; z-index: 1; }
+#whatsapp-view .whatsapp-stage-index { display: none; }
+#whatsapp-view .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-rail:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:hover .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab:focus-visible .whatsapp-stage-name,
+#whatsapp-view .whatsapp-stage-tab .whatsapp-stage-name {
+  max-height: none;
+  overflow: hidden;
+  opacity: 1;
+  font: 700 12px/1 "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  transform: none;
+}
+#whatsapp-view .whatsapp-stage-count {
+  display: block;
+  min-width: 24px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #ffffff16;
+  color: white;
+  font: 700 10px/1 "Segoe UI", Arial, sans-serif;
+  text-align: center;
+}
