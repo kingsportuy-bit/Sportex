@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: Leads administra sin reemplazar WhatsApp; candidato publicado y listo para prueba autenticada
+estado: Pestañas de WhatsApp publicadas en PILOTO_DELTA; aceptación visual humana pendiente
 updated_at: 2026-08-19
-candidate: 2933ff2
+candidate: a7964f3
 
 ## Recorrido cubierto
 
@@ -88,17 +88,18 @@ candidate: 2933ff2
   `sportex-staging:2933ff227196e536`, `1/1`, con `/health` y `/ready` PASS;
   `styles.css?v=session-reload-5` responde `200` y `no-store`.
 
-## Ajuste local pendiente de promoción
+## Despliegue PILOTO_DELTA
 
-- Las pestañas de etapa ahora conservan la misma caja compacta que el menú
-  lateral en todos los estados. La selección se expresa únicamente mediante
-  el fondo seleccionado y la línea verde interior; los nombres siguen en
-  vertical para caber en el riel.
-- Este cambio afecta solamente `frontend/styles.css`: no hubo despliegue,
-  escritura remota ni mensajes salientes.
+- Candidato `a7964f3479fb47cc2925cf617abccd39783dbf56`, publicado desde bundle
+  SHA-256 `78a2d2089d3668377f5e0057d618162fbc2511b5177425d90ab6e3d3f51292c9`.
+- Servicio `sportex_staging_core` estable en `1/1`; `/health` reporta ese
+  release y `/ready` responde `200`. El CSS público coincide byte a byte con
+  el candidato (`e0a81a546569984f8d1202ee7e4290fd4ab570d927b8d7351e83e3bae44c3953`).
+- No hubo migraciones, escrituras de datos ni mensajes. Rollback inmediato:
+  `sportex-staging:2933ff227196e536` con respaldo de la especificación previa.
 
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:304065966a7ef2a0`; las migraciones se
+- Rollback inmediato: `sportex-staging:2933ff227196e536`; las migraciones se
   conservan por ser aditivas.

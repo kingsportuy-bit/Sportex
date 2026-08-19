@@ -87,8 +87,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "2933ff227196e536cc9e44b456bf9e338fe82328",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_LOCAL_VALIDATED",
+    "headAtLastEvidence": "a7964f3479fb47cc2925cf617abccd39783dbf56",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_PILOT_DEPLOYED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -117,10 +117,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 2933ff2: 57/57, build, pestañas alineadas al menú, smoke y assets actuales PASS."
+    "note": "Candidato a7964f3: 57/57, build, pestañas uniformes, smoke y CSS público PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_2933FF2_WHATSAPP_STAGE_TABS_ALIGNED",
+    "status": "PILOTO_DELTA_A7964F3_WHATSAPP_TABS_UNIFORM",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -141,9 +141,10 @@
       "27e46529c4080f3a3f5556e210bf73b745c763c5",
       "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e",
       "304065966a7ef2a0e559f3e35947b6907366ae7a",
-      "2933ff227196e536cc9e44b456bf9e338fe82328"
+      "2933ff227196e536cc9e44b456bf9e338fe82328",
+      "a7964f3479fb47cc2925cf617abccd39783dbf56"
     ],
-    "note": "Runtime 2933ff2 1/1 healthy; pestañas de WhatsApp alineadas al menú. Sin mensajes. Rollback 3040659."
+    "note": "Runtime a7964f3 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback 2933ff2."
   },
   "externalIntegrations": [
     {
@@ -183,15 +184,15 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas de WhatsApp uniformes localmente: selección verde, etiquetas verticales. Sin promoción a PILOTO_DELTA.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "Pestañas de WhatsApp uniformes desplegadas: selección verde y etiquetas verticales; sin mensajes.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
-      "summary": "Las pestañas laterales de WhatsApp conservan la caja del menú; solo la activa marca verde. Validación local PASS.",
+      "summary": "Las pestañas WhatsApp conservan la caja del menú; la activa marca verde. a7964f3 desplegado y sano.",
       "documents": [
         "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
         "frontend/styles.css",
@@ -277,9 +278,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_2933FF2_PUBLIC_HEALTHY_STAGE_TABS_ALIGNED",
+    "status": "PILOTO_DELTA_A7964F3_PUBLIC_HEALTHY_WHATSAPP_TABS",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 2933ff2 sano; pestañas de WhatsApp alineadas al menú."
+    "note": "Runtime público a7964f3 sano; CSS público coincide con el candidato."
   },
   "productValidation": {
     "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_LEADS_Y_WHATSAPP",

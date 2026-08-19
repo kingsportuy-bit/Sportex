@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:304065966a7ef2a0` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:2933ff227196e536` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -70,9 +70,8 @@ transición permitida y conserva auditoría.
 - Incidentes de cursor/recarga/deploy remoto corregidos: `SPX-ERR-20260819-001/002/003`.
 - Leads ahora es administración: la tarjeta abre ficha con contexto, últimos
   mensajes y respuesta rápida; WhatsApp completo se abre sólo explícitamente.
-- `3040659`: `1/1`, health/ready y assets v4 PASS; sin mensajes de prueba.
-- Pestañas: misma caja y verde del menú; etiquetas verticales. Cambio local,
-  sin `PILOTO_DELTA`.
+- `a7964f3` desplegado en `PILOTO_DELTA`: `1/1`, `/health` y `/ready` PASS;
+  sin migraciones ni mensajes. Bundle `78a2d208`; rollback `2933ff2`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones
