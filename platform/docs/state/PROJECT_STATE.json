@@ -64,7 +64,8 @@
     "Leads y Pedidos usan tableros derivados del Core.",
     "WhatsApp es una superficie separada.",
     "Mensajes y eventos siguen separados.",
-    "Leads administra; WhatsApp concentra el chat completo."
+    "Leads administra; WhatsApp concentra el chat completo.",
+    "SPORTEX opera solamente en modo oscuro."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -80,15 +81,16 @@
     "SPORTEX-DEC-013",
     "SPORTEX-DEC-014",
     "SPORTEX-DEC-015",
-    "SPORTEX-DEC-016"
+    "SPORTEX-DEC-016",
+    "SPORTEX-DEC-017"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "a7964f3479fb47cc2925cf617abccd39783dbf56",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_PILOT_DEPLOYED",
+    "headAtLastEvidence": "4f324db0448d5345a0c723a974370027c66fa028",
+    "workingTreeState": "TASK-20260817-001_DARK_ONLY_PILOT_DEPLOYED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -117,10 +119,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato f40a7c5: 57/57, build, pestañas con regla literal del menú, smoke y CSS público PASS."
+    "note": "Candidato 4f324db: 57/57, build, tema oscuro único, smoke y CSS público PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_F40A7C5_WHATSAPP_TABS_MENU_LITERAL",
+    "status": "PILOTO_DELTA_4F324DB_DARK_ONLY",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -144,9 +146,10 @@
       "2933ff227196e536cc9e44b456bf9e338fe82328",
       "a7964f3479fb47cc2925cf617abccd39783dbf56",
       "8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c",
-      "f40a7c50ccaef02f0e65e0a16f981c170725b7c8"
+      "f40a7c50ccaef02f0e65e0a16f981c170725b7c8",
+      "4f324db0448d5345a0c723a974370027c66fa028"
     ],
-    "note": "Runtime f40a7c5 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback 8a83ac4."
+    "note": "Runtime 4f324db 1/1 healthy; oscuro fijo y CSS público coinciden. Sin mensajes. Rollback f40a7c5."
   },
   "externalIntegrations": [
     {
@@ -172,10 +175,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_F40A7C5_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_4F324DB_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-19",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en f40a7c5; health, ready y CSS público coinciden; rollback 8a83ac4 disponible."
+      "note": "sportex_staging_core 1/1 healthy en 4f324db; health, ready, oscuro fijo y CSS público coinciden; rollback f40a7c5 disponible."
     }
   ],
   "sensitiveData": {
@@ -186,11 +189,29 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas WhatsApp con regla literal del menú e indicador izquierdo desplegadas; sin mensajes.",
+    "summary": "Tema oscuro único y carril WhatsApp grafito desplegados; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "SPORTEX queda en oscuro único; sin toggle ni preferencia, con carril WhatsApp grafito. 4f324db sano; aceptación visual pendiente.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/index.html",
+        "frontend/styles.css",
+        "docs/DECISIONES.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-017"
+      ]
+    },
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
@@ -256,37 +277,19 @@
       "decisions": [
         "SPORTEX-DEC-016"
       ]
-    },
-    {
-      "date": "2026-08-16",
-      "taskId": "TASK-20260816-004",
-      "summary": "Se compacto el contexto vivo, se agregaron Biblioteca focal, errores Ranked OR y cierres proporcionales; validacion completa PASS sin tocar PILOTO_DELTA.",
-      "documents": [
-        "docs/historico/PROJECT_HISTORY.json",
-        "scripts/library-context.mjs",
-        "scripts/error-search.mjs",
-        "scripts/sportex-workflow.mjs",
-        "docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-013"
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_F40A7C5_PUBLIC_HEALTHY_WHATSAPP_TABS_MENU_LITERAL",
+    "status": "PILOTO_DELTA_4F324DB_PUBLIC_HEALTHY_DARK_ONLY",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público f40a7c5 sano; CSS público coincide con el candidato."
+    "note": "Runtime público 4f324db sano; tema oscuro fijo y CSS coinciden con el candidato."
   },
   "productValidation": {
-    "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_DE_WHATSAPP",
+    "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_OSCURO",
     "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente las pestañas desde la sesión normal, sin inventar datos ni mensajes."
+    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente el oscuro fijo y las pestañas desde la sesión normal."
   },
   "blockers": [],
   "risks": [

@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:8a83ac4a7698bdf6` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:f40a7c50ccaef02f` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -70,8 +70,8 @@ transición permitida y conserva auditoría.
 - Leads administra; WhatsApp se abre explícitamente.
 - `a7964f3` desplegado en `PILOTO_DELTA`: `1/1`, `/health` y `/ready` PASS;
   sin migraciones ni mensajes. Bundle `78a2d208`; rollback `2933ff2`.
-- `f40a7c5` desplegado: regla literal del menú, indicador lima izquierdo;
-  `1/1`, health/ready/CSS PASS, sin migraciones ni mensajes. Rollback `8a83ac4`.
+- `4f324db` desplegado: tema oscuro único y carril WhatsApp grafito fijo;
+  `1/1`, health/ready/CSS PASS, sin migraciones ni mensajes. Rollback `f40a7c5`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones
@@ -81,3 +81,4 @@ transición permitida y conserva auditoría.
   y finalización con transiciones autorizadas y auditadas.
 - `SPORTEX-DEC-016`: Leads administra oportunidades; WhatsApp conserva la
   conversación completa como superficie independiente.
+- `SPORTEX-DEC-017`: SPORTEX opera solamente en modo oscuro.

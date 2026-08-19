@@ -109,6 +109,16 @@ candidate: a7964f3
 - Sin migraciones, datos ni mensajes. Backup remoto y rollback `8a83ac4`.
 - Pendiente: aceptación visual.
 
+## Tema oscuro único PILOTO_DELTA (2026-08-19)
+
+- Candidato `4f324db0448d5345a0c723a974370027c66fa028`; bundle SHA-256
+  `1b61a92edb6f325e0f7effcbbc9d04f93f65723dbb3c721364ef1baf106ee3c6`.
+- HTML inicia oscuro; no quedan toggle ni preferencia de tema. El carril
+  WhatsApp usa grafito fijo y no invierte el modo.
+- Servicio `1/1`; health/ready, inicio oscuro, toggle ausente y CSS público
+  `c783e1f1867ac89bdd81559235696e731b7b60c5d0b33dc20174835b67683b80` PASS.
+- Sin migraciones, datos ni mensajes. Backup remoto y rollback `f40a7c5`.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.

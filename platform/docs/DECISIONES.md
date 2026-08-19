@@ -147,3 +147,10 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   en `WhatsApp` y se abren solamente mediante una acción explícita.
 - La respuesta breve usa el mismo comando manual y el mismo outbox del Core;
   el frontend no decide etapas, permisos ni estados de envío.
+
+## SPORTEX-DEC-017 - Tema oscuro único
+
+- 2026-08-19 · `VIGENTE`. SPORTEX opera únicamente en modo oscuro; no expone
+  selector, preferencia persistida ni ruta de retorno al tema claro.
+- La interfaz fija el tema antes de cargar la app y las superficies oscuras usan
+  grafito explícito cuando no deben depender de un token de texto.
