@@ -88,7 +88,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "2933ff227196e536cc9e44b456bf9e338fe82328",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_TABS_ALIGNED",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_LOCAL_VALIDATED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -183,17 +183,17 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas de WhatsApp alineadas al menú: activas con indicador verde, no relleno general. Candidato 2933ff2 saludable en PILOTO_DELTA.",
-    "environment": "PILOTO_DELTA",
+    "summary": "Pestañas de WhatsApp uniformes localmente: selección verde, etiquetas verticales. Sin promoción a PILOTO_DELTA.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
-      "summary": "Las pestañas laterales de WhatsApp quedaron neutras; solo la activa crece y marca el indicador verde del menú. Candidato 2933ff2 healthy.",
+      "summary": "Las pestañas laterales de WhatsApp conservan la caja del menú; solo la activa marca verde. Validación local PASS.",
       "documents": [
-        "frontend/index.html",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
         "frontend/styles.css",
         "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
       ],

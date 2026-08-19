@@ -71,7 +71,8 @@ transición permitida y conserva auditoría.
 - Leads ahora es administración: la tarjeta abre ficha con contexto, últimos
   mensajes y respuesta rápida; WhatsApp completo se abre sólo explícitamente.
 - `3040659`: `1/1`, health/ready y assets v4 PASS; sin mensajes de prueba.
-- Pestañas neutras; activa grande con verde. `2933ff2`, `1/1` y v5 PASS.
+- Pestañas: misma caja y verde del menú; etiquetas verticales. Cambio local,
+  sin `PILOTO_DELTA`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

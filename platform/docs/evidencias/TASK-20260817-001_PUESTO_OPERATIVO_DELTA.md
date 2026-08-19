@@ -83,10 +83,19 @@ candidate: 2933ff2
   `/health` y `/ready` PASS. El índice público referencia
   `app.js?v=session-reload-4` y `styles.css?v=session-reload-4`, ambos `200`
   y `Cache-Control: no-store`.
-- Ajuste de pestañas: el activo conserva mayor tamaño y un indicador verde,
-  mientras que los inactivos quedan neutros como el menú. Runtime
+- Ajuste publicado anterior: el activo conservaba mayor tamaño y un indicador verde,
+  mientras que los inactivos quedaban neutros como el menú. Runtime
   `sportex-staging:2933ff227196e536`, `1/1`, con `/health` y `/ready` PASS;
   `styles.css?v=session-reload-5` responde `200` y `no-store`.
+
+## Ajuste local pendiente de promoción
+
+- Las pestañas de etapa ahora conservan la misma caja compacta que el menú
+  lateral en todos los estados. La selección se expresa únicamente mediante
+  el fondo seleccionado y la línea verde interior; los nombres siguen en
+  vertical para caber en el riel.
+- Este cambio afecta solamente `frontend/styles.css`: no hubo despliegue,
+  escritura remota ni mensajes salientes.
 
 ## Límites y rollout
 

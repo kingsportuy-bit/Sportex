@@ -61,7 +61,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Tarea: `TASK-20260817-001`.
 - Fecha: `2026-08-19`.
 - Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- Pestañas de WhatsApp alineadas al menú: activas con indicador verde, no relleno general. Candidato 2933ff2 saludable en PILOTO_DELTA.
+- Pestañas de WhatsApp uniformes localmente: selección verde, etiquetas verticales. Sin promoción a PILOTO_DELTA.
 
 ## Riesgos
 

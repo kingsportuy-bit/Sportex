@@ -2293,15 +2293,10 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 #whatsapp-view .whatsapp-stage-tab.is-active,
 #whatsapp-view .whatsapp-stage-tab.is-active:hover,
 #whatsapp-view .whatsapp-stage-tab.is-active:focus-visible {
-  width: 42px;
-  min-width: 42px;
-  min-height: 82px;
-  height: 82px;
   border-color: var(--line);
   background: var(--surface-selected);
   color: var(--ink);
   box-shadow: inset -3px 0 var(--signal);
-  transform: translateX(-5px);
 }
 #whatsapp-view .whatsapp-stage-tab:not(.is-active) {
   border-color: var(--line);
@@ -2327,8 +2322,4 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   text-orientation: mixed;
   transform: rotate(180deg);
 }
-#whatsapp-view .whatsapp-stage-tab:not(.is-active) .whatsapp-stage-name { max-height: 38px; font-size: 6.3px; }
-@media (max-width: 720px) {
-  #whatsapp-view .whatsapp-stage-tab:not(.is-active) { min-height: 44px; height: 44px; }
-  #whatsapp-view .whatsapp-stage-tab.is-active { min-height: 70px; height: 70px; }
-}
+#whatsapp-view .whatsapp-stage-tab .whatsapp-stage-name { max-height: 38px; font-size: 6.3px; }
