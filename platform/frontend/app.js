@@ -49,6 +49,7 @@ const state = {
   orders: [],
   ordersView: "board",
   commercial: [],
+  stageDefinitions: { lead: [], order: [] },
   selectedCommercialId: null,
   mobileDetailOpen: false,
   mobileWhatsappDetailOpen: false,
@@ -350,11 +351,13 @@ function openWhatsAppImageViewer(blob, fileName, alt) {
 }
 
 async function loadData() {
-  const requests = [api("/v1/clients"), api("/v1/orders")];
+  const requests = [api("/v1/clients"), api("/v1/orders"), api("/v1/stage-definitions/lead"), api("/v1/stage-definitions/order")];
   if (state.commercialWorkspace) requests.push(api("/v1/commercial/workspace"));
-  const [clients, orders, commercial] = await Promise.all(requests);
+  const [clients, orders, leadStages, orderStages, commercial] = await Promise.all(requests);
   state.clients = clients.data;
   state.orders = orders.data;
+  state.stageDefinitions.lead = leadStages.data ?? [];
+  state.stageDefinitions.order = orderStages.data ?? [];
   state.commercial = commercial?.data ?? [];
   state.commercialSnapshot = commercialSnapshot(state.commercial);
   // La bandeja de WhatsApp empieza en reposo: el operador elige qué conversación abrir.
@@ -698,7 +701,7 @@ const commercialStages = salesProcessStages.map((stage) => stage.id);
 const stageLabels = Object.fromEntries(salesProcessStages.map((stage) => [stage.id, stage.label]));
 
 function stageLabel(value) {
-  return stageLabels[value] ?? value;
+  return state.stageDefinitions.lead.find((stage) => stage.id === value)?.name ?? stageLabels[value] ?? value;
 }
 
 function productLabel(value) {
