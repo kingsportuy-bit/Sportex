@@ -89,8 +89,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "a0be896fc194500734104d5af5e0246bc77fba41",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_EDITOR_DEPLOYED",
+    "headAtLastEvidence": "9ff30856c69fddae3140bc6840537e3b131f3fdc",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_TABS_DEPLOYED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -193,7 +193,7 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Editor de etapas visible en WhatsApp; sin mensajes.",
+    "summary": "Solapas de etapas desplegadas en WhatsApp; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },

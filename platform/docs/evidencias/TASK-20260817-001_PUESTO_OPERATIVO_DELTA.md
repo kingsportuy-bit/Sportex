@@ -3,7 +3,7 @@
 task: TASK-20260817-001
 estado: Pestañas de etapas sobre WhatsApp publicadas en PILOTO_DELTA; aceptación visual humana pendiente
 updated_at: 2026-08-19
-candidate: a0be896
+candidate: 9ff3085
 
 ## Recorrido cubierto
 
@@ -159,6 +159,13 @@ candidate: a0be896
   público junto a las pestañas de WhatsApp.
 - Servicio `1/1`, `/health` y `/ready` PASS. Sin migraciones, datos ni
   mensajes. Rollback inmediato: `sportex-staging:3f2962610d2a4da6`.
+
+## Solapas de etapas PILOTO_DELTA (2026-08-19)
+
+- Candidato `9ff30856c69fddae3140bc6840537e3b131f3fdc`; solapas activas
+  delineadas en lima y las demás integradas al borde superior del panel.
+- Servicio `1/1`, `/health`, `/ready` y CSS público PASS. Sin migraciones,
+  datos ni mensajes. Rollback inmediato: `sportex-staging:a0be896fc1945007`.
 
 ## Límites y rollout
 

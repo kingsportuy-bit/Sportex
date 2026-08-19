@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:3f2962610d2a4da6` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:a0be896fc1945007` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -74,6 +74,8 @@ transición permitida y conserva auditoría.
 - `a0be896` desplegado: botón `Editar etapas` visible junto a esas pestañas;
   `1/1`, health, ready y HTML público PASS. Sin migraciones, datos ni mensajes.
   Rollback `3f29626`.
+- `9ff3085` desplegado: etapas como solapas del panel. `1/1`, health, ready y
+  CSS público PASS; sin migraciones, datos ni mensajes. Rollback `a0be896`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones
