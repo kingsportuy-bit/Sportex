@@ -306,6 +306,22 @@ button { cursor: pointer; }
 .lead-master-head strong { font-size: 13px; }
 .persistence-chip { flex: none; padding: 7px 8px; border: 1px solid #ffffff45; color: #d7dad4; font: 700 8px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .08em; }
 .lead-list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.crm-workspace { grid-template-columns: minmax(0, 1fr); }
+.lead-master { max-height: none; min-height: 0; position: static; }
+.lead-kanban { display: grid; grid-template-columns: repeat(6, minmax(220px, 1fr)); gap: 12px; overflow-x: auto; padding: 12px; background: var(--canvas); }
+.lead-kanban-column { min-width: 0; display: grid; grid-template-rows: auto minmax(160px, 1fr); gap: 9px; }
+.lead-kanban-column-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px; border-bottom: 2px solid var(--signal); background: var(--paper); font-size: 11px; }
+.lead-kanban-column-head span { display: grid; place-items: center; min-width: 20px; height: 20px; border-radius: 50%; background: var(--surface-strong); color: var(--muted); font-size: 9px; }
+.lead-kanban-stack { min-height: 180px; display: grid; align-content: start; gap: 9px; padding: 2px; }
+.lead-kanban-card { display: grid; gap: 7px; padding: 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); box-shadow: 0 3px 10px rgb(24 34 28 / 6%); cursor: grab; }
+.lead-kanban-card:hover { border-color: var(--blue); box-shadow: 0 8px 18px rgb(24 34 28 / 12%); }
+.lead-kanban-card:active { cursor: grabbing; }
+.lead-kanban-card strong { font-size: 13px; line-height: 1.2; }
+.lead-kanban-contact, .lead-kanban-meta { color: var(--muted); font-size: 10px; }
+.lead-kanban-next { padding-top: 8px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; line-height: 1.35; }
+.lead-detail { margin-top: 16px; }
+.order-card { cursor: grab; }
+.order-card:active { cursor: grabbing; }
 .lead-row { --stage-color: #8b918a; width: 100%; position: relative; display: grid; gap: 12px; padding: 17px 16px 17px 19px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; }
 .lead-row::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--stage-color); }
 .lead-row[data-stage="NUEVO"] { --stage-color: var(--signal); }
@@ -781,6 +797,12 @@ button { cursor: pointer; }
 .whatsapp-row { width: 100%; min-height: 94px; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 11px; align-items: start; padding: 13px; border: 0; border-bottom: 1px solid #e6e9e3; background: white; color: var(--ink); text-align: left; }
 .whatsapp-row:hover { background: #f7f9f5; }
 .whatsapp-row.is-selected { background: #edf3ff; box-shadow: inset 3px 0 var(--blue); }
+.whatsapp-row.is-closed { background: color-mix(in srgb, var(--paper) 92%, var(--canvas)); color: var(--muted); }
+.whatsapp-row.is-closed .whatsapp-avatar { opacity: .62; filter: grayscale(.35); }
+.whatsapp-row.is-closed .whatsapp-team,
+.whatsapp-row.is-closed .whatsapp-preview { color: var(--muted); }
+.whatsapp-row.is-closed:hover { background: color-mix(in srgb, var(--signal) 8%, var(--paper)); box-shadow: inset 3px 0 color-mix(in srgb, var(--muted) 70%, transparent); }
+.whatsapp-closed-state { width: fit-content; padding: 2px 6px; border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent); border-radius: 999px; color: var(--muted); font-size: 7px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .whatsapp-row.is-unread .whatsapp-row-head strong, .whatsapp-row.is-unread .whatsapp-preview { color: var(--ink); font-weight: 800; }
 .whatsapp-unread-badge { min-width: 18px; height: 18px; display: grid; place-items: center; margin-left: auto; padding: 0 5px; border-radius: 999px; background: #22a06b; color: white; font-size: 9px; font-weight: 900; }
 .whatsapp-avatar { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #b9c0ba; border-radius: 50%; background: var(--paper); color: var(--ink-soft); font-size: 11px; font-weight: 800; }
@@ -837,6 +859,16 @@ button { cursor: pointer; }
 .whatsapp-composer button:disabled { opacity: .46; cursor: default; }
 .whatsapp-composer-input { min-height: 42px; max-height: 108px; resize: none; padding: 11px 16px; border: 1px solid #d9ddd7; border-radius: 22px; background: white; font-size: 12px; line-height: 1.45; }
 .whatsapp-local-note { position: absolute; top: -21px; right: 14px; padding: 4px 8px; border: 1px solid var(--line); border-bottom: 0; border-radius: 7px 7px 0 0; background: var(--paper); color: var(--muted); font-size: 8px; }
+.whatsapp-more-info { border-top: 1px solid var(--line); }
+.whatsapp-more-info > summary { padding: 13px 2px; color: var(--ink-soft); cursor: pointer; font-size: 11px; font-weight: 800; }
+.whatsapp-more-info[open] > summary { color: var(--blue); }
+
+/* Ningún hijo puede ensanchar la pestaña completa: la lectura sucede dentro de cada panel. */
+#whatsapp-view, .whatsapp-workspace, .whatsapp-detail, .whatsapp-detail-workspace,
+.whatsapp-chat-pane, .whatsapp-inline-details, .whatsapp-inline-details-body,
+.whatsapp-row-copy, .whatsapp-chat-identity { min-width: 0; max-width: 100%; }
+#whatsapp-view { overflow-x: clip; }
+.whatsapp-detail-workspace { overflow: hidden; }
 
 @media (max-width: 1050px) {
   .whatsapp-workspace { grid-template-columns: 290px minmax(0, 1fr); }

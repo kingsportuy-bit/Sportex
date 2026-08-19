@@ -326,8 +326,9 @@ async function loadData() {
   state.orders = orders.data;
   state.commercial = commercial?.data ?? [];
   state.commercialSnapshot = commercialSnapshot(state.commercial);
-  if (!state.commercial.some((item) => item.id === state.selectedCommercialId)) {
-    state.selectedCommercialId = state.commercial[0]?.id ?? null;
+  // La bandeja de WhatsApp empieza en reposo: el operador elige qué conversación abrir.
+  if (state.selectedCommercialId && !state.commercial.some((item) => item.id === state.selectedCommercialId)) {
+    state.selectedCommercialId = null;
   }
   renderClients();
   renderOrders();
@@ -355,9 +356,9 @@ async function refreshWhatsAppFromDatabase() {
 
     state.commercial = next;
     state.commercialSnapshot = snapshot;
-    state.selectedCommercialId = next.some((item) => item.id === selectedId)
+    state.selectedCommercialId = selectedId && next.some((item) => item.id === selectedId)
       ? selectedId
-      : next[0]?.id ?? null;
+      : null;
     renderWhatsApp();
     renderToday();
 
@@ -435,10 +436,20 @@ function renderOrders() {
     const head = element("header", "order-column-head");
     head.append(element("span", "", orderStatusLabels[status]), element("strong", "", String(columnOrders.length)));
     const cards = element("div", "order-card-stack");
+    cards.addEventListener("dragover", (event) => event.preventDefault());
+    cards.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const id = event.dataTransfer?.getData("text/plain");
+      const order = state.orders.find((candidate) => candidate.id === id);
+      if (!order || order.status === status || !(orderTransitions[order.status] ?? []).includes(status)) return;
+      void moveOrderStage(order, status, null);
+    });
     for (const order of columnOrders) {
       const client = clients.get(order.clientId);
       const card = element("article", "order-card");
       card.dataset.status = order.status;
+      card.draggable = true;
+      card.addEventListener("dragstart", (event) => event.dataTransfer?.setData("text/plain", order.id));
       card.append(
         element("span", "order-card-number", order.orderNumber),
         element("strong", "", order.teamName),
@@ -500,7 +511,7 @@ function renderOrders() {
 }
 
 async function moveOrderStage(order, status, button) {
-  setButtonBusy(button, true, "Guardando…");
+  if (button) setButtonBusy(button, true, "Guardando…");
   try {
     const response = await api(`/v1/orders/${encodeURIComponent(order.id)}/stage`, {
       method: "PATCH",
@@ -515,7 +526,7 @@ async function moveOrderStage(order, status, button) {
     if (error instanceof UiError && error.code === "order_version_conflict") await loadData();
     toast(friendlyError(error), "error");
   } finally {
-    setButtonBusy(button, false, "");
+    if (button) setButtonBusy(button, false, "");
   }
 }
 
@@ -852,43 +863,52 @@ function leadResultEmpty(list) {
 function renderLeadList(items) {
   const list = $("#commercial-list");
   list.replaceChildren();
+  list.className = "lead-list lead-kanban";
   $("#lead-result-count").textContent = `${items.length} ${items.length === 1 ? "resultado" : "resultados"}`;
   if (items.length === 0) {
     leadResultEmpty(list);
     return;
   }
 
-  for (const item of items) {
-    const selected = item.id === state.selectedCommercialId;
-    const priority = leadPriority(item);
-    const button = element("button", `lead-row${selected ? " is-selected" : ""}`);
-    button.type = "button";
-    button.dataset.priority = priority.key;
-    button.setAttribute("aria-pressed", String(selected));
-    const top = element("span", "lead-row-top");
-    const identity = element("span", "lead-row-identity");
-    identity.append(
-      element("strong", "", item.lead.teamName || "Equipo por confirmar"),
-      element("small", "", item.conversation.contactName),
-    );
-    top.append(identity, element("span", "lead-priority", priority.label));
-    const meta = element("span", "lead-row-meta");
-    meta.append(
-      element("span", "", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"}`),
-      element("span", "", priority.reason),
-    );
-    const next = element("span", "lead-row-next");
-    next.append(element("b", "", "SIGUE"), element("span", "", item.opportunity.nextAction));
-    button.append(top, meta, next);
-    button.addEventListener("click", () => {
-      state.selectedCommercialId = item.id;
-      state.mobileDetailOpen = true;
-      state.mobileLeadTab = "chat";
-      state.draftResource = null;
-      renderCommercial();
-      $("#lead-detail").focus({ preventScroll: true });
+  for (const stage of commercialStages) {
+    const column = element("section", "lead-kanban-column");
+    column.dataset.stage = stage;
+    const stageItems = items.filter((item) => item.opportunity.stage === stage);
+    const header = element("header", "lead-kanban-column-head");
+    header.append(element("strong", "", stageLabel(stage)), element("span", "", String(stageItems.length)));
+    const cards = element("div", "lead-kanban-stack");
+    cards.addEventListener("dragover", (event) => event.preventDefault());
+    cards.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const id = event.dataTransfer?.getData("text/plain");
+      const item = state.commercial.find((candidate) => candidate.id === id);
+      if (!item || item.opportunity.stage === stage || !item.opportunity.allowedStageTransitions.includes(stage)) return;
+      void saveCommercialStage(item, stage, null);
     });
-    list.append(button);
+    for (const item of stageItems) {
+      const priority = leadPriority(item);
+      const card = element("article", "lead-kanban-card");
+      card.draggable = true;
+      card.dataset.leadId = item.id;
+      card.append(
+        element("strong", "", item.lead.teamName || "Equipo por confirmar"),
+        element("span", "lead-kanban-contact", item.conversation.contactName),
+        element("span", "lead-kanban-meta", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"} prendas`),
+        element("span", "lead-kanban-next", item.opportunity.nextAction || priority.reason),
+      );
+      card.addEventListener("dragstart", (event) => event.dataTransfer?.setData("text/plain", item.id));
+      card.addEventListener("click", () => {
+        state.selectedCommercialId = item.id;
+        state.mobileDetailOpen = true;
+        state.mobileLeadTab = "chat";
+        state.draftResource = null;
+        renderCommercial();
+        $("#lead-detail").focus({ preventScroll: true });
+      });
+      cards.append(card);
+    }
+    column.append(header, cards);
+    list.append(column);
   }
 }
 
@@ -1030,6 +1050,7 @@ function renderContactOverview(item) {
   const grid = element("div", "brief-grid contact-overview-grid");
   grid.append(
     fact("Nombre", item.conversation.contactName),
+    fact("WhatsApp", item.conversation.normalizedPhone || "Número no disponible"),
     fact("Equipo o institución", item.lead.teamName || "Por confirmar"),
     fact("Interés actual", productLabel(item.lead.productType)),
     fact("Cantidad", item.lead.quantity ? `${item.lead.quantity} prendas` : "Por confirmar"),
@@ -1243,17 +1264,45 @@ function renderWhatsAppInlineDetails(item) {
   header.append(identity, close);
   const body = element("div", "whatsapp-inline-details-body");
   const conversion = renderOrderConversion(item);
-  body.append(
-    renderContactOverview(item),
+  const more = element("details", "whatsapp-more-info");
+  more.append(
+    element("summary", "", "Más información"),
     renderProcessOverview(item),
-    renderBrief(item),
-    ...(conversion ? [conversion] : []),
     renderOrigin(item),
     renderHistory(item),
     renderCommands(item),
   );
+  body.append(
+    renderContactOverview(item),
+    renderBrief(item),
+    renderQuickStage(item),
+    ...(conversion ? [conversion] : []),
+    more,
+  );
   panel.append(header, body);
   return panel;
+}
+
+function renderQuickStage(item) {
+  const card = detailCard("ETAPA", "Mover lead");
+  const form = element("form", "inline-command");
+  const select = element("select");
+  for (const stage of commercialStages) {
+    const option = element("option", "", stageLabel(stage));
+    option.value = stage;
+    option.selected = stage === item.opportunity.stage;
+    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
+    select.append(option);
+  }
+  const button = element("button", "button button--primary", "Cambiar etapa");
+  button.type = "submit";
+  form.append(select, button);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    void saveCommercialStage(item, select.value, button);
+  });
+  card.append(form);
+  return card;
 }
 
 function fieldLabel(text, control) {
@@ -1264,30 +1313,6 @@ function fieldLabel(text, control) {
 
 function renderCommands(item) {
   const wrapper = element("div", "command-stack");
-
-  const stageCard = detailCard("ACCIÓN / ETAPA", "Cambiar etapa");
-  const stageForm = element("form", "command-form");
-  const stageSelect = element("select");
-  stageSelect.id = "commercial-stage-input";
-  for (const stage of commercialStages) {
-    const option = element("option", "", stageLabel(stage));
-    option.value = stage;
-    option.selected = stage === item.opportunity.stage;
-    option.disabled = stage !== item.opportunity.stage && !item.opportunity.allowedStageTransitions.includes(stage);
-    stageSelect.append(option);
-  }
-  const stageButton = element("button", "button button--primary button--full", "Guardar etapa");
-  stageButton.type = "submit";
-  stageForm.append(
-    fieldLabel("Etapa actual", stageSelect),
-    element("p", "command-help", "Las transiciones habilitadas las decide el Core."),
-    stageButton,
-  );
-  stageForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    void saveCommercialStage(item, stageSelect.value, stageButton);
-  });
-  stageCard.append(stageForm);
 
   const actionCard = detailCard("ACCIÓN / PRÓXIMO PASO", "Editar próxima acción");
   const actionForm = element("form", "command-form");
@@ -1346,7 +1371,7 @@ function renderCommands(item) {
   });
   followCard.append(followForm);
 
-  wrapper.append(stageCard, actionCard, followCard);
+  wrapper.append(actionCard, followCard);
   return wrapper;
 }
 
@@ -1491,9 +1516,10 @@ function renderWhatsAppList(items) {
 
   for (const item of items) {
     const selected = item.id === state.selectedCommercialId;
+    const closed = item.opportunity.stage === "PERDIDO";
     const latest = item.conversation.messages.at(-1);
     const unread = state.config?.whatsappUnreadEnabled ? item.conversation.unreadCount || 0 : 0;
-    const button = element("button", `whatsapp-row${selected ? " is-selected" : ""}${unread ? " is-unread" : ""}`);
+    const button = element("button", `whatsapp-row${selected ? " is-selected" : ""}${unread ? " is-unread" : ""}${closed ? " is-closed" : ""}`);
     button.type = "button";
     button.setAttribute("aria-pressed", String(selected));
     const avatar = element("span", "whatsapp-avatar", initials(item.conversation.contactName));
@@ -1507,6 +1533,7 @@ function renderWhatsAppList(items) {
     copy.append(
       head,
       element("span", "whatsapp-team", item.lead.teamName || "Equipo por confirmar"),
+      ...(closed ? [element("span", "whatsapp-closed-state", "Cerrada")] : []),
       element("span", "whatsapp-preview", latest?.contentType === "IMAGE"
         ? `📷 Imagen${latest.text ? ` · ${latest.text}` : ""}`
         : latest?.text || "Sin mensajes"),
@@ -1744,8 +1771,8 @@ function renderWhatsApp() {
   const view = $("#whatsapp-view");
   if (!view) return;
   const items = filteredWhatsApp();
-  if (!items.some((item) => item.id === state.selectedCommercialId)) {
-    state.selectedCommercialId = items[0]?.id ?? null;
+  if (state.selectedCommercialId && !items.some((item) => item.id === state.selectedCommercialId)) {
+    state.selectedCommercialId = null;
   }
   const totalUnread = state.config?.whatsappUnreadEnabled
     ? state.commercial.reduce((sum, item) => sum + (item.conversation.unreadCount || 0), 0)
@@ -1946,7 +1973,7 @@ function replaceCommercialItem(updated) {
 }
 
 async function runCommercialMutation(button, busyLabel, operation, successMessage) {
-  setButtonBusy(button, true, busyLabel);
+  if (button) setButtonBusy(button, true, busyLabel);
   try {
     const response = await operation();
     replaceCommercialItem(response.data);
@@ -1957,7 +1984,7 @@ async function runCommercialMutation(button, busyLabel, operation, successMessag
     if (error instanceof UiError && error.code === "commercial_version_conflict") await loadData();
     toast(friendlyError(error), "error");
   } finally {
-    setButtonBusy(button, false, "");
+    if (button) setButtonBusy(button, false, "");
   }
 }
 
@@ -2220,7 +2247,13 @@ function closeMobileMenu() {
 
 function switchView(name) {
   if (name === "commercial") name = "leads";
+  const previousView = state.currentView;
   state.currentView = name;
+  if (name === "whatsapp" && previousView !== "whatsapp") {
+    state.selectedCommercialId = null;
+    state.whatsappDetailsOpen = false;
+    state.mobileWhatsappDetailOpen = false;
+  }
   $("#today-view").hidden = name !== "today";
   $("#whatsapp-view").hidden = name !== "whatsapp";
   $("#commercial-view").hidden = name !== "leads";
