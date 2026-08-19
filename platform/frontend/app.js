@@ -264,10 +264,6 @@ async function api(path, options = {}) {
   if (state.token) headers.set("authorization", `Bearer ${state.token}`);
   if (options.body) headers.set("content-type", "application/json");
   const response = await fetch(path, { ...options, headers });
-  if (response.status === 401) {
-    clearSession();
-    showLogin();
-  }
   return jsonResponse(response);
 }
 
@@ -304,12 +300,14 @@ function clearSession() {
 }
 
 function showLogin() {
+  delete document.documentElement.dataset.authPending;
   $("#app-view").hidden = true;
   $("#login-view").hidden = false;
   $("#login-password").value = "";
 }
 
 function showApp() {
+  delete document.documentElement.dataset.authPending;
   $("#login-view").hidden = true;
   $("#app-view").hidden = false;
 }
@@ -324,6 +322,15 @@ async function loadSession() {
   $("#logout-button").hidden = state.localDemo;
   if (state.session.passwordChangeRequired) openPasswordDialog(true);
   $("#today-date").textContent = todayLabel();
+}
+
+async function refreshAccessToken() {
+  if (!state.refreshToken) throw new UiError("La sesión venció.", "authentication_unavailable");
+  const response = await auth("/token?grant_type=refresh_token", {
+    method: "POST",
+    body: JSON.stringify({ refresh_token: state.refreshToken }),
+  });
+  persistSession(response);
 }
 
 function optimisticWhatsappMessage(item, text, pendingImage) {
@@ -2919,7 +2926,13 @@ async function logout() {
 }
 
 async function bootstrapAuthenticated() {
-  await loadSession();
+  try {
+    await loadSession();
+  } catch (error) {
+    if (!state.refreshToken) throw error;
+    await refreshAccessToken();
+    await loadSession();
+  }
   await loadData({ activeOnly: true });
   showApp();
   switchView(state.currentView, { reload: false });
