@@ -209,6 +209,16 @@ export async function buildServer(options: BuildServerOptions): Promise<FastifyI
       root: resolve(options.config.frontendDir),
       prefix: "/",
       wildcard: false,
+      cacheControl: false,
+      setHeaders: (reply, path) => {
+        if (/\.(?:png|ico)$/iu.test(path)) {
+          reply.header("cache-control", "public, max-age=86400");
+          return;
+        }
+        // HTML, JS and CSS have stable URLs. They must be revalidated so a
+        // normal reload always receives the current operating interface.
+        reply.header("cache-control", "no-store");
+      },
     });
     app.setNotFoundHandler(async (request, reply) => {
       if (request.url.startsWith("/v1/") || request.url === "/health" || request.url === "/ready") {
