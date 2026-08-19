@@ -64,9 +64,10 @@ conserva auditoría.
 
 ## registro_de_avances
 
-- Candidato `e96a4df`: tableros, columnas tenant-aware, carga focal y media.
+- Runtime `e6ed37e`: tableros, columnas tenant-aware, carga focal y media.
 - Local PASS: Core 57/57, build, SQL y QA visual. Sin outbound.
-- Pendiente: bundle, backup, 008--010 y QA autenticada PILOTO_DELTA.
+- Bundle, backup/restore, 008--010, deploy `1/1`, health y ready PASS.
+- Pendiente: QA autenticada de solo lectura en PILOTO_DELTA.
 
 ## decisiones
 

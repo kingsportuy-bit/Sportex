@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Publicar bundle exacto, backup y validar el candidato e96a4df en PILOTO_DELTA sin outbound."
+    "nextAction": "Completar la QA autenticada de solo lectura del puesto Delta, sin escritura ni outbound."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -85,26 +85,25 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "c6b3b5b07c63704ab260f41b793f0a5449705262",
-    "workingTreeState": "TASK-20260816-004_WORKFLOW_OPTIMIZATION_CLOSED_LOCAL",
-    "lastVerifiedAt": "2026-08-16"
+    "headAtLastEvidence": "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf",
+    "workingTreeState": "TASK-20260817-001_DEPLOYED_QA_AUTH_PENDING",
+    "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_004_005_006_APLICADAS_PILOTO_DELTA_PASS",
-    "lastVerifiedAt": "2026-08-16",
+    "status": "MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS",
+    "lastVerifiedAt": "2026-08-19",
     "executed": [
       "20260814_002",
       "20260814_003",
       "20260814_004",
       "20260815_005",
-      "20260816_006"
-    ],
-    "pending": [
+      "20260816_006",
       "20260819_008_stage_definitions",
       "20260819_009_media_dimensions",
       "20260819_010_conversation_feed_indexes"
     ],
-    "note": "Backup/restore aislado y migracion 006 migration-first PASS; 19 tablas con RLS forzado. Rollback conserva las tablas aditivas."
+    "pending": [],
+    "note": "Backup/restore aislado PASS; 008--010 migration-first con RLS forzado. Rollback conserva tablas y columnas aditivas."
   },
   "tests": {
     "status": "PASS",
@@ -116,11 +115,11 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato local e96a4df: Core 57/57, TypeScript, SQL, build y QA visual local PASS; rollout de PILOTO_DELTA pendiente."
+    "note": "Candidato e6ed37e: Core 57/57, TypeScript, SQL, build, QA visual local y smoke PILOTO_DELTA PASS; falta recorrido autenticado sin escritura."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_C6B3B5B_LIVE_CANDIDATE_E96A4DF_PENDING",
-    "lastVerifiedAt": "2026-08-16",
+    "status": "PILOTO_DELTA_E6ED37E_DEPLOYED_QA_AUTH_PENDING",
+    "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
       "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
@@ -130,7 +129,8 @@
       "c375e58cfc19f894623a9a4cf8caa9a43723b395",
       "3c8c9da25ba1fae38f4d60d4ef37253ddf69edcf",
       "72e0fc2a7abfdecd1293e9b3b3aa44acec5ca35e",
-      "c6b3b5b07c63704ab260f41b793f0a5449705262"
+      "c6b3b5b07c63704ab260f41b793f0a5449705262",
+      "e6ed37e3b136f709c724a86d2eed1e68c6a8fecf"
     ],
     "note": "Runtime c6b3b5b 1/1 healthy; media/unread y Base64 activos. Cero outbound nuevo. Rollback image-first 72e0fc2."
   },
@@ -264,16 +264,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_C6B3B5B_LIVE_CANDIDATE_E96A4DF_PENDING",
-    "lastEvidenceDate": "2026-08-16",
-    "note": "Runtime publico c6b3b5b sano; 006 aplicada, media/unread y Evolution Base64 activos, QA autenticada PASS y cero outbound nuevo."
+    "status": "PILOTO_DELTA_E6ED37E_PUBLIC_HEALTHY_QA_AUTH_PENDING",
+    "lastEvidenceDate": "2026-08-19",
+    "note": "Runtime público e6ed37e sano; 008--010 aplicadas, carga focal y media disponibles, sin outbound nuevo."
   },
   "productValidation": {
-    "status": "CANDIDATO_LOCAL_E96A4DF_VERIFICADO_ROLLOUT_PENDIENTE",
-    "lastReviewedAt": "2026-08-15",
+    "status": "DESPLEGADO_QA_AUTENTICADA_SOLO_LECTURA_PENDIENTE",
+    "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El candidato local valida etapa, columnas y tableros; falta la verificación autenticada completa posterior al despliegue en PILOTO_DELTA."
+    "note": "El runtime ya valida etapa, columnas y tableros; falta el recorrido visual autenticado final sin escritura ni mensajes."
   },
   "blockers": [],
   "risks": [

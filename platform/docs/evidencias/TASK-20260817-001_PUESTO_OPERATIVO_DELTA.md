@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: candidato local listo para bundle
+estado: desplegado; QA autenticada operativa pendiente
 updated_at: 2026-08-19
-candidate: e96a4df
+candidate: e6ed37e
 
 ## Recorrido cubierto
 
@@ -41,10 +41,25 @@ candidate: e96a4df
   chat el scroll queda abajo; Leads muestra 6 columnas y 18 tarjetas; la página
   no tiene scroll horizontal.
 
+## Despliegue PILOTO_DELTA
+
+- Guard de release y bundles inmutables PASS para `e96a4df` y la corrección
+  final `e6ed37e`.
+- Backup `pre-deploy.dump` con SHA256
+  `73f376961e9b369d245469470e72186dd2b826b3d68db5669b541cc159e7d681`
+  restaurado en una base aislada y luego eliminado.
+- Migraciones 008--010 aplicadas antes de la imagen. La tabla nueva mantiene
+  RLS forzado y las dimensiones de media quedan disponibles; no se borraron
+  datos.
+- Runtime final `sportex-staging:e6ed37e3b136f709`, `1/1`, con `/health` y
+  `/ready` en PASS. El log posterior no mostró polling global ni errores 5xx.
+- Navegador local: recargar conserva la pestaña Leads y evita la pantalla de
+  login. La QA final sobre datos reales queda deliberadamente de solo lectura
+  y sin envíos.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- PILOTO_DELTA requiere bundle inmutable, backup anterior, migraciones 008--010
-  aditivas, smoke `/health` y `/ready`, y QA autenticada sin escritura ni
-  outbound.
-- Rollback: imagen anterior; las migraciones se conservan por ser aditivas.
+- No se envió ningún mensaje ni se alteró Evolution o Barberox.
+- Rollback inmediato: `sportex-staging:e96a4df4f873f7bd`; las migraciones se
+  conservan por ser aditivas.
