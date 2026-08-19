@@ -8,19 +8,12 @@
     <link rel="icon" type="image/png" href="/assets/sportex-favicon.png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/assets/sportex-favicon.png" />
     <title>SPORTEX — Delta Sport</title>
-    <link rel="stylesheet" href="/styles.css?v=session-reload-2" />
-    <script>
-      try {
-        if (sessionStorage.getItem("sportex_access_token") || sessionStorage.getItem("sportex_refresh_token")) {
-          document.documentElement.dataset.authPending = "true";
-        }
-      } catch {}
-    </script>
+    <link rel="stylesheet" href="/styles.css?v=session-reload-3" />
   </head>
   <body>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <main id="login-view" class="login-shell">
+    <main id="login-view" class="login-shell" hidden>
       <section class="login-brand" aria-label="SPORTEX para Delta Sport">
         <div class="brand-lockup brand-lockup--light brand-lockup--sportex">
           <span class="sportex-logo-frame sportex-logo-frame--login"><img class="sportex-logo" src="/assets/sportex-logo.png" alt="SPORTEX" /></span>
@@ -312,6 +305,6 @@
       </form>
     </dialog>
 
-    <script type="module" src="/app.js?v=session-reload-2"></script>
+    <script type="module" src="/app.js?v=session-reload-3"></script>
   </body>
 </html>

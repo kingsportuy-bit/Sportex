@@ -300,14 +300,12 @@ function clearSession() {
 }
 
 function showLogin() {
-  delete document.documentElement.dataset.authPending;
   $("#app-view").hidden = true;
   $("#login-view").hidden = false;
   $("#login-password").value = "";
 }
 
 function showApp() {
-  delete document.documentElement.dataset.authPending;
   $("#login-view").hidden = true;
   $("#app-view").hidden = false;
 }
