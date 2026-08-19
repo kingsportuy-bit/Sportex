@@ -655,6 +655,33 @@ button { cursor: pointer; }
 .lead-sheet-body { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
 .lead-sheet-body .detail-card { align-self: start; border-radius: 9px; overflow: hidden; }
 
+/* Leads administra oportunidades; WhatsApp conserva el chat completo. */
+#commercial-view .crm-workspace { display: block; height: auto; min-height: 0; }
+#commercial-view .lead-master { display: block; height: auto; min-height: 0; max-height: none; overflow: visible; }
+#commercial-view .lead-list { overflow-x: auto; overflow-y: visible; overscroll-behavior-inline: contain; }
+#commercial-view .lead-detail { display: none; }
+.lead-kanban-card { min-width: 0; }
+.lead-kanban-preview { overflow: hidden; padding-top: 7px; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.lead-sheet-actions { display: flex; align-items: center; gap: 8px; }
+.lead-sheet-actions .button { white-space: nowrap; }
+.lead-message-preview { display: grid; gap: 7px; }
+.lead-message-preview-row { display: grid; gap: 3px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.lead-message-preview-row.is-delta { margin-left: 12%; border-color: #c8d7b8; background: #edf5e7; }
+.lead-message-preview-row strong { font-size: 9px; }
+.lead-message-preview-row p { margin: 0; font-size: 11px; line-height: 1.4; }
+.lead-message-preview-row time { color: var(--muted); font-size: 8px; }
+.lead-message-preview + .text-button { margin-top: 10px; }
+.lead-quick-reply { display: grid; gap: 8px; }
+.lead-quick-reply textarea { min-height: 74px; max-height: 150px; resize: vertical; padding: 10px; border-radius: 8px; font-size: 11px; }
+.lead-sheet-more-info { grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.lead-sheet-more-info > summary { padding: 13px; cursor: pointer; font-size: 11px; font-weight: 800; }
+.lead-sheet-more-info[open] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0 12px 12px; }
+.lead-sheet-more-info[open] > summary { grid-column: 1 / -1; padding: 13px 0 0; }
+.lead-sheet-more-info .detail-card { border: 1px solid var(--line); }
+:root[data-theme="dark"] .lead-message-preview-row { border-color: #3a463d; background: #1b231d; }
+:root[data-theme="dark"] .lead-message-preview-row.is-delta { border-color: #4b704d; background: #26412d; color: #f4faf2; }
+:root[data-theme="dark"] .lead-message-preview-row.is-delta time { color: #c7d8c7; }
+
 .candidate-panel, .settings-reset, .results-panel { margin-top: 16px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: white; }
 .candidate-panel header h2, .settings-reset h2, .results-panel h2 { margin: 5px 0 13px; font-size: 18px; }
 .candidate-list { display: grid; gap: 8px; }
@@ -754,6 +781,8 @@ button { cursor: pointer; }
   .draft-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .draft-actions .button:last-child { grid-column: 1 / -1; margin: 0; }
   .lead-sheet-body { grid-template-columns: 1fr; }
+  .lead-sheet-actions .button { padding: 0 9px; font-size: 10px; }
+  .lead-sheet-more-info[open] { grid-template-columns: 1fr; }
   .module-grid, .creative-module-grid, .playbook-list { grid-template-columns: 1fr; }
   .results-metrics { grid-template-columns: 1fr 1fr; }
   .candidate-row { align-items: start; }

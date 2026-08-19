@@ -1172,6 +1172,7 @@ function renderLeadList(items) {
     });
     for (const item of stageItems) {
       const priority = leadPriority(item);
+      const latestMessage = item.conversation.messages.at(-1);
       const card = element("article", "lead-kanban-card");
       card.draggable = true;
       card.dataset.leadId = item.id;
@@ -1182,15 +1183,17 @@ function renderLeadList(items) {
           ? `${productLabel(item.lead.productType)} · ${item.lead.quantity} prendas`
           : `${productLabel(item.lead.productType)} · cantidad por confirmar`),
         element("span", "lead-kanban-next", item.opportunity.nextAction || priority.reason),
+        element("span", "lead-kanban-preview", latestMessage?.contentType === "IMAGE"
+          ? "Último WhatsApp · Imagen"
+          : `Último WhatsApp · ${latestMessage?.text || "Sin mensajes"}`),
       );
-      const message = element("button", "button button--quiet lead-kanban-message", "Responder");
-      message.type = "button";
-      message.addEventListener("click", (event) => {
+      const manage = element("button", "button button--quiet lead-kanban-message", "Gestionar lead");
+      manage.type = "button";
+      manage.addEventListener("click", (event) => {
         event.stopPropagation();
-        switchView("whatsapp");
-        void openWhatsAppConversation(item.id);
+        void openLeadDetail(item.id);
       });
-      card.append(message);
+      card.append(manage);
       card.addEventListener("dragstart", (event) => event.dataTransfer?.setData("text/plain", item.id));
       card.addEventListener("click", () => void openLeadDetail(item.id));
       cards.append(card);
@@ -1204,15 +1207,12 @@ async function openLeadDetail(itemId) {
   const item = state.commercial.find((candidate) => candidate.id === itemId);
   if (!item) return;
   state.selectedCommercialId = item.id;
-  state.mobileDetailOpen = true;
-  state.mobileLeadTab = "chat";
   state.draftResource = null;
-  renderCommercial();
+  openFullLeadSheet(item);
   try {
     const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}`);
     replaceCommercialItem(response.data);
-    renderCommercial();
-    $("#lead-detail").focus({ preventScroll: true });
+    openFullLeadSheet(response.data);
   } catch (error) {
     toast(friendlyError(error), "error");
   }
@@ -1519,8 +1519,14 @@ async function convertCommercialToOrder(item, evidenceReference, amountPesos, bu
     });
     await loadData();
     state.selectedCommercialId = item.id;
-    state.whatsappDetailsOpen = true;
-    renderWhatsApp();
+    const updated = state.commercial.find((candidate) => candidate.id === item.id);
+    if (state.currentView === "whatsapp") {
+      state.whatsappDetailsOpen = true;
+      renderWhatsApp();
+    } else {
+      renderCommercial();
+      if (updated) openFullLeadSheet(updated);
+    }
     toast("Cliente, seña y pedido vinculados.");
   } catch (error) {
     errorNode.textContent = friendlyError(error);
@@ -1542,8 +1548,14 @@ async function releaseCommercialToProduction(item, button, errorNode) {
     });
     await loadData();
     state.selectedCommercialId = item.id;
-    state.whatsappDetailsOpen = true;
-    renderWhatsApp();
+    const updated = state.commercial.find((candidate) => candidate.id === item.id);
+    if (state.currentView === "whatsapp") {
+      state.whatsappDetailsOpen = true;
+      renderWhatsApp();
+    } else {
+      renderCommercial();
+      if (updated) openFullLeadSheet(updated);
+    }
     toast("Pedido entregado a producción.");
   } catch (error) {
     errorNode.textContent = friendlyError(error);
@@ -1699,11 +1711,110 @@ function openFullLeadSheet(item) {
   close.type = "button";
   close.setAttribute("aria-label", "Cerrar ficha");
   close.addEventListener("click", () => dialog.close());
-  header.append(identity, close);
+  const openWhatsApp = element("button", "button button--quiet", "Abrir WhatsApp");
+  openWhatsApp.type = "button";
+  openWhatsApp.addEventListener("click", () => {
+    dialog.close();
+    switchView("whatsapp");
+    void openWhatsAppConversation(item.id);
+  });
+  const actions = element("div", "lead-sheet-actions");
+  actions.append(openWhatsApp, close);
+  header.append(identity, actions);
   const body = element("div", "lead-sheet-body");
-  body.append(renderBrief(item), renderQualification(item), renderOrigin(item), renderHistory(item));
+  const conversion = renderOrderConversion(item);
+  const more = element("details", "lead-sheet-more-info");
+  more.append(
+    element("summary", "", "Más información del lead"),
+    renderQualification(item),
+    renderOrigin(item),
+    renderHistory(item),
+  );
+  body.append(
+    renderContactOverview(item),
+    renderBrief(item),
+    renderQuickStage(item),
+    renderLeadMessagePreview(item),
+    renderLeadQuickReply(item),
+    renderCommands(item),
+    ...(conversion ? [conversion] : []),
+    more,
+  );
   content.append(header, body);
-  dialog.showModal();
+  if (!dialog.open) dialog.showModal();
+}
+
+function renderLeadMessagePreview(item) {
+  const card = detailCard("WHATSAPP / ÚLTIMOS", "Últimos mensajes");
+  const messages = item.conversation.messages.slice(-3);
+  const preview = element("div", "lead-message-preview");
+  if (messages.length === 0) {
+    preview.append(element("p", "", "Todavía no hay mensajes en esta conversación."));
+  } else {
+    for (const message of messages) {
+      const row = element("article", `lead-message-preview-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
+      row.append(
+        element("strong", "", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
+        element("p", "", message.contentType === "IMAGE" ? `Imagen${message.text ? ` · ${message.text}` : ""}` : message.text || "Sin texto"),
+        element("time", "", shortDateTime(message.occurredAt)),
+      );
+      preview.append(row);
+    }
+  }
+  const link = element("button", "text-button", "Ver conversación completa en WhatsApp");
+  link.type = "button";
+  link.addEventListener("click", () => {
+    $("#lead-sheet-dialog").close();
+    switchView("whatsapp");
+    void openWhatsAppConversation(item.id);
+  });
+  card.append(preview, link);
+  return card;
+}
+
+function renderLeadQuickReply(item) {
+  const card = detailCard("WHATSAPP / RÁPIDO", "Responder rápido");
+  const enabled = state.localWhatsappSimulation || state.realWhatsappOutbound;
+  const form = element("form", "lead-quick-reply");
+  const input = element("textarea");
+  input.required = true;
+  input.maxLength = 4000;
+  input.placeholder = "Escribí una respuesta breve…";
+  const send = element("button", "button button--primary", "Enviar respuesta");
+  send.type = "submit";
+  send.disabled = !enabled;
+  const note = element("p", "command-help", enabled
+    ? "Envía un mensaje manual por WhatsApp y conserva la conversación completa en su panel."
+    : "La recepción está activa; el envío manual todavía está deshabilitado.");
+  form.append(input, note, send);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text || !enabled) return;
+    const original = item;
+    const optimistic = optimisticWhatsappMessage(item, text, null);
+    replaceCommercialItem(optimistic);
+    openFullLeadSheet(optimistic);
+    setButtonBusy(send, true, "Enviando…");
+    const path = state.localWhatsappSimulation
+      ? `/v1/local/whatsapp-simulated/workspace/${encodeURIComponent(item.id)}/messages`
+      : `/v1/integrations/evolution/workspace/${encodeURIComponent(item.id)}/messages`;
+    const body = state.localWhatsappSimulation ? { text } : { text, confirmation: "ENVIAR_A_WHATSAPP" };
+    void api(path, {
+      method: "POST",
+      headers: { "idempotency-key": `lead-quick-reply-${crypto.randomUUID()}` },
+      body: JSON.stringify(body),
+    }).then((result) => {
+      replaceCommercialItem(result.data);
+      openFullLeadSheet(result.data);
+    }).catch((error) => {
+      replaceCommercialItem(original);
+      openFullLeadSheet(original);
+      toast(friendlyError(error), "error");
+    }).finally(() => setButtonBusy(send, false, ""));
+  });
+  card.append(form);
+  return card;
 }
 
 function renderDraftArea(item) {
@@ -2389,8 +2500,6 @@ function renderCommercial() {
   const items = filteredCommercial();
   if (state.selectedCommercialId && !items.some((item) => item.id === state.selectedCommercialId)) state.selectedCommercialId = null;
   renderLeadList(items);
-  renderLeadDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
-  $(".crm-workspace").classList.toggle("is-detail-open", state.mobileDetailOpen && Boolean(state.selectedCommercialId));
   renderToday();
 }
 
