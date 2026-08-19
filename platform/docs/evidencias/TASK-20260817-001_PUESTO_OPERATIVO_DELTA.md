@@ -3,7 +3,7 @@
 task: TASK-20260817-001
 estado: Leads administra sin reemplazar WhatsApp; candidato publicado y listo para prueba autenticada
 updated_at: 2026-08-19
-candidate: 3040659
+candidate: 2933ff2
 
 ## Recorrido cubierto
 
@@ -83,9 +83,13 @@ candidate: 3040659
   `/health` y `/ready` PASS. El índice público referencia
   `app.js?v=session-reload-4` y `styles.css?v=session-reload-4`, ambos `200`
   y `Cache-Control: no-store`.
+- Ajuste de pestañas: el activo conserva mayor tamaño y un indicador verde,
+  mientras que los inactivos quedan neutros como el menú. Runtime
+  `sportex-staging:2933ff227196e536`, `1/1`, con `/health` y `/ready` PASS;
+  `styles.css?v=session-reload-5` responde `200` y `no-store`.
 
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:9a570c3b33ab2fcd`; las migraciones se
+- Rollback inmediato: `sportex-staging:304065966a7ef2a0`; las migraciones se
   conservan por ser aditivas.
