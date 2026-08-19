@@ -57,7 +57,7 @@ input:focus, select:focus, button:focus-visible { border-color: var(--blue); box
 .button:hover { transform: translateY(-1px); }
 .button:disabled { opacity: .5; cursor: wait; transform: none; }
 .button--primary { color: white; background: var(--ink); }
-.button--signal { color: var(--ink); background: var(--signal); border-color: var(--signal); }
+.button--signal { color: #18221c; background: var(--signal); border-color: var(--signal); }
 .button--outline { color: var(--ink); background: transparent; border-color: var(--line-dark); }
 .button--full { width: 100%; }
 .form-error { min-height: 18px; margin: 0; color: var(--danger) !important; font-size: 13px; text-transform: none; letter-spacing: 0; }
@@ -2400,3 +2400,8 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   font: 600 10px/1 "Segoe UI", Arial, sans-serif;
   text-align: center;
 }
+
+/* Toda acción verde conserva texto grafito, también fuera de la vista base. */
+.button--signal,
+.whatsapp-send,
+:root[data-theme="dark"] .whatsapp-inline-details-close { color: #18221c; }
