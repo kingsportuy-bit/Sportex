@@ -143,6 +143,7 @@ function stageResponse(spec: DemoSpec): string {
     case "EN_SEGUIMIENTO": return "Dejo el seguimiento interno agendado; esta demo no envía mensajes.";
     case "PERDIDO": return "Gracias por avisar. Registro el cierre ficticio para que el historial quede claro.";
     case "SENA_VALIDADA": return "La seña aparece validada solo como fixture manual; no existe un pago real ni un pedido.";
+    default: return "La etapa fue actualizada por el operador.";
   }
 }
 

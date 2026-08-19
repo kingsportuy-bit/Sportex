@@ -1,11 +1,5 @@
 export type AttributionClassification = "META_EXACTO" | "DESCONOCIDO";
-export type CommercialStage =
-  | "NUEVO"
-  | "EN_CALIFICACION"
-  | "COTIZADO"
-  | "EN_SEGUIMIENTO"
-  | "PERDIDO"
-  | "SENA_VALIDADA";
+export type CommercialStage = string;
 export type CommercialProductType = "CAMISETAS" | "EQUIPO_COMPLETO";
 export type CommercialMessageDirection = "CLIENTE" | "DELTA";
 export type CommercialFollowUpOutcome = "SIN_CAMBIOS" | "AVANZO" | "SIN_RESPUESTA" | "NO_CONTINUA";
@@ -20,7 +14,7 @@ const transitionMap: Record<CommercialStage, CommercialStage[]> = {
 };
 
 export function allowedCommercialStageTransitions(stage: CommercialStage): CommercialStage[] {
-  return [...transitionMap[stage]];
+  return [...(transitionMap[stage] ?? Object.keys(transitionMap))];
 }
 
 export interface EvolutionReplayEvent {

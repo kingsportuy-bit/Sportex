@@ -1,5 +1,12 @@
 BEGIN;
 
+ALTER TABLE public.sportex_staging_orders
+  DROP CONSTRAINT sportex_staging_orders_status_check;
+
+ALTER TABLE public.sportex_staging_orders
+  ADD CONSTRAINT sportex_staging_orders_status_check
+  CHECK (status ~ '^[A-Za-z][A-Za-z0-9_]{1,79}$');
+
 CREATE TABLE public.sportex_staging_stage_definitions (
   id text NOT NULL CHECK (id ~ '^[A-Za-z0-9_-]{2,80}$'),
   tenant_id uuid NOT NULL REFERENCES public.sportex_staging_tenants(id),

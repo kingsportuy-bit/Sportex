@@ -9,12 +9,7 @@ export type Capability =
   | "orders.read"
   | "production.release";
 
-export type OrderStatus =
-  | "intake_pending"
-  | "design_pending"
-  | "production_ready"
-  | "in_production"
-  | "completed";
+export type OrderStatus = string;
 
 export interface OrderDetails {
   product: string | null;

@@ -181,7 +181,8 @@ export class CommercialReplayService {
       const item = await this.requiredItem(transaction, itemId);
       this.requireVersion(item, input.expectedVersion);
       if (item.opportunity.stage === input.stage) return withConversationTimeline(item);
-      if (!allowedCommercialStageTransitions(item.opportunity.stage).includes(input.stage)) {
+      const customStage = /^CUSTOM_[A-Z0-9_]{2,72}$/u.test(input.stage);
+      if (!customStage && !allowedCommercialStageTransitions(item.opportunity.stage).includes(input.stage)) {
         throw conflict("commercial_stage_transition_invalid", "Commercial stage transition is not allowed", {
           from: item.opportunity.stage,
           to: input.stage,

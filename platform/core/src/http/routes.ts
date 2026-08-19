@@ -45,7 +45,7 @@ const releaseOrderToProductionSchema = z.object({
 }).strict();
 
 const moveOrderStageSchema = z.object({
-  status: z.enum(["intake_pending", "design_pending", "production_ready", "in_production", "completed"]),
+  status: z.string().regex(/^[A-Za-z][A-Za-z0-9_]{1,79}$/u),
   expectedVersion: z.number().int().positive(),
   reason: z.string().trim().min(2).max(500).optional(),
 }).strict();
@@ -91,14 +91,7 @@ const commercialItemParamsSchema = z.object({
 }).strict();
 
 const expectedVersionSchema = z.number().int().positive();
-const commercialStageSchema = z.enum([
-  "NUEVO",
-  "EN_CALIFICACION",
-  "COTIZADO",
-  "EN_SEGUIMIENTO",
-  "PERDIDO",
-  "SENA_VALIDADA",
-]);
+const commercialStageSchema = z.string().regex(/^[A-Z][A-Z0-9_]{1,79}$/u);
 
 const updateCommercialStageSchema = z.object({
   stage: commercialStageSchema,

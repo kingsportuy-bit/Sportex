@@ -67,7 +67,7 @@ export interface SaveStageDefinitionInput {
   terminal: boolean;
 }
 
-const orderTransitions: Record<OrderStatus, OrderStatus[]> = {
+const orderTransitions: Record<string, OrderStatus[]> = {
   intake_pending: ["design_pending"],
   design_pending: ["intake_pending", "production_ready"],
   production_ready: ["design_pending", "in_production"],
@@ -353,7 +353,8 @@ export class CoreService {
           currentVersion: current.version,
         });
       }
-      if (!orderTransitions[current.status].includes(input.status)) {
+      const customStage = /^CUSTOM_[A-Z0-9_]{2,72}$/u.test(input.status);
+      if (!customStage && !(orderTransitions[current.status] ?? Object.keys(orderTransitions)).includes(input.status)) {
         throw conflict("order_stage_transition_invalid", "Order stage transition is not allowed", {
           from: current.status,
           to: input.status,

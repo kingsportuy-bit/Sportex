@@ -468,7 +468,8 @@ function renderOrders() {
     list.append(table);
   } else {
 
-  for (const status of Object.keys(orderStatusLabels)) {
+  const orderStages = state.stageDefinitions.order.length ? state.stageDefinitions.order.map((stage) => stage.id) : Object.keys(orderStatusLabels);
+  for (const status of orderStages) {
     const column = element("section", "order-column");
     const columnOrders = state.orders.filter((order) => order.status === status);
     const head = element("header", "order-column-head");
@@ -479,7 +480,7 @@ function renderOrders() {
       event.preventDefault();
       const id = event.dataTransfer?.getData("text/plain");
       const order = state.orders.find((candidate) => candidate.id === id);
-      if (!order || order.status === status || !(orderTransitions[order.status] ?? []).includes(status)) return;
+      if (!order || order.status === status || (!(orderTransitions[order.status] ?? []).includes(status) && !status.startsWith("CUSTOM_"))) return;
       void moveOrderStage(order, status, null);
     });
     for (const order of columnOrders) {
@@ -908,7 +909,8 @@ function renderLeadList(items) {
     return;
   }
 
-  for (const stage of commercialStages) {
+  const leadStages = state.stageDefinitions.lead.length ? state.stageDefinitions.lead.map((definition) => definition.id) : commercialStages;
+  for (const stage of leadStages) {
     const column = element("section", "lead-kanban-column");
     column.dataset.stage = stage;
     const stageItems = items.filter((item) => item.opportunity.stage === stage);
@@ -920,7 +922,7 @@ function renderLeadList(items) {
       event.preventDefault();
       const id = event.dataTransfer?.getData("text/plain");
       const item = state.commercial.find((candidate) => candidate.id === id);
-      if (!item || item.opportunity.stage === stage || !item.opportunity.allowedStageTransitions.includes(stage)) return;
+      if (!item || item.opportunity.stage === stage || (!item.opportunity.allowedStageTransitions.includes(stage) && !stage.startsWith("CUSTOM_"))) return;
       void saveCommercialStage(item, stage, null);
     });
     for (const item of stageItems) {
@@ -2343,7 +2345,19 @@ function openStageConfiguration(board) {
     });
     row.append(input, save); list.append(row);
   }
-  form.append(header, list);
+  const add = element("button", "button button--primary", "Agregar columna");
+  add.type = "button";
+  add.addEventListener("click", async () => {
+    const name = window.prompt("Nombre de la nueva columna");
+    if (!name?.trim()) return;
+    const id = `CUSTOM_${crypto.randomUUID().replaceAll("-", "_").slice(0, 24).toUpperCase()}`;
+    const position = Math.max(0, ...definitions.map((definition) => definition.position)) + 10;
+    await api(`/v1/stage-definitions/${board}/${id}`, {
+      method: "PUT", body: JSON.stringify({ name: name.trim(), position, terminal: false }),
+    });
+    await loadData(); dialog.close(); if (board === "lead") renderCommercial(); else renderOrders();
+  });
+  form.append(header, list, add);
   dialog.append(form); dialog.addEventListener("close", () => dialog.remove(), { once: true }); document.body.append(dialog); dialog.showModal();
 }
 
