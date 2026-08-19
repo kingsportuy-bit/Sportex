@@ -130,3 +130,10 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - El flujo mínimo de pedido es `INGRESO -> BOCETO -> LISTO_PARA_PRODUCCION ->
   EN_PRODUCCION -> FINALIZADO`. Cada transición debe estar autorizada,
   persistida y auditada. El diseño conserva versiones y una sola vigente.
+
+## SPORTEX-DEC-015 - Tableros configurables y lectura focal
+
+- 2026-08-19 · `VIGENTE`. Leads y Pedidos usan columnas tenant-aware;
+  renombrar, ordenar o borrar conserva reasignación y auditoría en Core.
+- WhatsApp carga resumen y detalle por separado; sus cambios refrescan sólo el
+  elemento afectado. El navegador no guarda conversaciones ni adjuntos.

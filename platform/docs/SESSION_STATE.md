@@ -2,7 +2,7 @@
 
 > GENERADO desde `docs/state/PROJECT_STATE.json`. No editar manualmente.
 
-Actualizado: 2026-08-16.
+Actualizado: 2026-08-19.
 
 ## Entorno de trabajo
 
@@ -50,9 +50,9 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_005_006_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 5; pendientes 0.
-- Pruebas: `PASS`; ultima ejecucion `2026-08-16`.
-- Despliegues: `PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_PASS`; registros 9.
+- Migraciones: `MIGRACIONES_002_003_004_005_006_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 5; pendientes 3.
+- Pruebas: `PASS`; ultima ejecucion `2026-08-19`.
+- Despliegues: `PILOTO_DELTA_C6B3B5B_LIVE_CANDIDATE_E96A4DF_PENDING`; registros 9.
 - Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_C6B3B5B_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 

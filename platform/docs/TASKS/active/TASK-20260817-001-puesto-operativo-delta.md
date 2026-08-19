@@ -9,7 +9,7 @@ work_type: feature
 campaign: CAMP-20260803-001
 context_focus: product
 development_guide_impact: required
-updated_at: 2026-08-16
+updated_at: 2026-08-19
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 
 ## objetivo
@@ -33,19 +33,13 @@ Pedido, gestionar bocetos y mover el pedido hasta finalizado.
 
 ## entradas
 
-- Dirección de Fito del 2026-08-16: puesto operativo mínimo para Delta al día
-  siguiente, con tableros, tarjetas y responsabilidades separadas por capa.
-- Runtime actual `PILOTO_DELTA` en `c6b3b5b` y migraciones 002--006 aplicadas.
-- `TASK-20260815-002`, que registró pendiente el recorrido de transiciones
-  comerciales desde WhatsApp.
+- Plan aprobado de Fito, `PILOTO_DELTA` y el antecedente
+  `TASK-20260815-002`.
 
 ## salidas
 
-- Dominio y API de operaciones comerciales y pedido mínimo, con persistencia
-  PostgreSQL y auditoría tenant-aware.
-- Web operativa para WhatsApp, Leads, Pedidos, Clientes y boceto vigente.
-- Evidencia local, release inmutable, QA autenticada y prueba de flujo
-  controlada sin outbound.
+- Operación comercial persistida, web operativa y evidencia de piloto sin
+  outbound.
 
 ## validacion
 
@@ -70,7 +64,9 @@ conserva auditoría.
 
 ## registro_de_avances
 
-- 17.
+- Candidato `e96a4df`: tableros, columnas tenant-aware, carga focal y media.
+- Local PASS: Core 57/57, build, SQL y QA visual. Sin outbound.
+- Pendiente: bundle, backup, 008--010 y QA autenticada PILOTO_DELTA.
 
 ## decisiones
 

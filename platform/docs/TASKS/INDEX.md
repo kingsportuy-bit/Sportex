@@ -2,7 +2,7 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-08-16.
+Actualizado: 2026-08-19.
 
 ## Activa
 

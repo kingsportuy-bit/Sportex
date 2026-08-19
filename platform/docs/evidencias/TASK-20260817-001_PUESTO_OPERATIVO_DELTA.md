@@ -1,0 +1,50 @@
+# Evidencia — Puesto operativo Delta desde SPORTEX
+
+task: TASK-20260817-001
+estado: candidato local listo para bundle
+updated_at: 2026-08-19
+candidate: e96a4df
+
+## Recorrido cubierto
+
+- WhatsApp mantiene la conversación de Delta como fuente única y el chat abre
+  en el último mensaje.
+- Leads y Pedidos son tableros Kanban independientes con tarjetas, movimiento
+  accesible y drag and drop.
+- Las columnas empiezan con etapas útiles y cada tenant puede agregar,
+  renombrar, ordenar y eliminar; el borrado reasigna tarjetas y queda auditado.
+- Los cambios de etapa se validan contra la configuración del tenant, versión,
+  permiso y auditoría del Core.
+- La conversión conserva el origen `DESCONOCIDO` o `META_EXACTO` y reutiliza
+  los datos conocidos al crear cliente y pedido.
+
+## Rendimiento y medios
+
+- Arranque por pestaña: la bandeja solicita 25 conversaciones resumidas y pide
+  más al llegar al final; el historial se obtiene al abrir el chat.
+- Un stream autenticado notifica sólo referencias de cambios; cada referencia
+  refresca la conversación afectada y ya no existe polling global cada dos
+  segundos.
+- El envío muestra una burbuja local `Enviando…`, se concilia con Core y no
+  recarga todo el escritorio ni muestra un aviso de éxito.
+- Imagen privada con dimensiones persistidas, `ETag`, cache HTTP privada,
+  visor dentro del panel y descarga autenticada.
+
+## Pruebas locales
+
+- `node --check frontend/app.js` PASS.
+- `npm run check` PASS.
+- `npm test` PASS: 57/57.
+- `npm run validate-sql` PASS: RLS y rollback presentes.
+- `npm run build` PASS.
+- Navegador local: bandeja sin conversación seleccionada al entrar; al abrir
+  chat el scroll queda abajo; Leads muestra 6 columnas y 18 tarjetas; la página
+  no tiene scroll horizontal.
+
+## Límites y rollout
+
+- No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
+- PILOTO_DELTA requiere bundle inmutable, backup anterior, migraciones 008--010
+  aditivas, smoke `/health` y `/ready`, y QA autenticada sin escritura ni
+  outbound.
+- Rollback: imagen anterior; las migraciones se conservan por ser aditivas.

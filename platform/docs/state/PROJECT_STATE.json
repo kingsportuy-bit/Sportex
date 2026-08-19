@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-16",
+  "updatedAt": "2026-08-19",
   "updatedBy": "TASK-20260817-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Completar boceto vigente, tablero de Leads, candidato y validación de PILOTO_DELTA sin outbound."
+    "nextAction": "Publicar bundle exacto, backup y validar el candidato e96a4df en PILOTO_DELTA sin outbound."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -99,23 +99,27 @@
       "20260815_005",
       "20260816_006"
     ],
-    "pending": [],
+    "pending": [
+      "20260819_008_stage_definitions",
+      "20260819_009_media_dimensions",
+      "20260819_010_conversation_feed_indexes"
+    ],
     "note": "Backup/restore aislado y migracion 006 migration-first PASS; 19 tablas con RLS forzado. Rollback conserva las tablas aditivas."
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-08-16",
+    "lastRunAt": "2026-08-19",
     "commands": [
       "npm run validate:docs",
       "npm run validate-docs",
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260816-004_OPTIMIZACION_WORKFLOW.md",
-    "note": "Workflow 13/13, Core 55/55, SQL 19 tablas, build, docs y perfiles proporcionales PASS; sin cambios de runtime."
+    "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+    "note": "Candidato local e96a4df: Core 57/57, TypeScript, SQL, build y QA visual local PASS; rollout de PILOTO_DELTA pendiente."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_TECHNICAL_PASS",
+    "status": "PILOTO_DELTA_C6B3B5B_LIVE_CANDIDATE_E96A4DF_PENDING",
     "lastVerifiedAt": "2026-08-16",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -260,16 +264,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_C6B3B5B_MEDIA_UNREAD_CERTIFIED",
+    "status": "PILOTO_DELTA_C6B3B5B_LIVE_CANDIDATE_E96A4DF_PENDING",
     "lastEvidenceDate": "2026-08-16",
     "note": "Runtime publico c6b3b5b sano; 006 aplicada, media/unread y Evolution Base64 activos, QA autenticada PASS y cero outbound nuevo."
   },
   "productValidation": {
-    "status": "PENDIENTE_VERIFICACION_TRANSICIONES_COMERCIALES",
+    "status": "CANDIDATO_LOCAL_E96A4DF_VERIFICADO_ROLLOUT_PENDIENTE",
     "lastReviewedAt": "2026-08-15",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "La cronologia esta desplegada; cambiar etapas o estados desde WhatsApp no se considera soportado hasta validar el recorrido completo."
+    "note": "El candidato local valida etapa, columnas y tableros; falta la verificación autenticada completa posterior al despliegue en PILOTO_DELTA."
   },
   "blockers": [],
   "risks": [
