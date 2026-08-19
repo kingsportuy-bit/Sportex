@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:2933ff227196e536` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:a7964f3479fb47cc` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -64,14 +64,14 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `9a570c3`: una sesión existente no deja pintar el acceso al recargar.
-- Sin mensajes de prueba; salida manual Delta habilitada.
-- PASS local 57/57, build, SQL y QA; deploy `1/1`, health, ready y consulta.
-- Incidentes de cursor/recarga/deploy remoto corregidos: `SPX-ERR-20260819-001/002/003`.
-- Leads ahora es administración: la tarjeta abre ficha con contexto, últimos
-  mensajes y respuesta rápida; WhatsApp completo se abre sólo explícitamente.
+- Runtime `9a570c3`: recargar conserva la sesión.
+- PASS local 57/57, build, SQL, QA y deploy `1/1`.
+- Corregidos cursor/recarga/deploy: `SPX-ERR-20260819-001/002/003`.
+- Leads administra; WhatsApp se abre explícitamente.
 - `a7964f3` desplegado en `PILOTO_DELTA`: `1/1`, `/health` y `/ready` PASS;
   sin migraciones ni mensajes. Bundle `78a2d208`; rollback `2933ff2`.
+- `8a83ac4` desplegado: texto horizontal, hover neutro y bracket lima curvo;
+  `1/1`, health/ready/CSS PASS, sin migraciones ni mensajes. Rollback `a7964f3`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

@@ -117,10 +117,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato a7964f3: 57/57, build, pestañas uniformes, smoke y CSS público PASS."
+    "note": "Candidato 8a83ac4: 57/57, build, pestañas laterales con bracket curvo, smoke y CSS público PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_A7964F3_WHATSAPP_TABS_UNIFORM",
+    "status": "PILOTO_DELTA_8A83AC4_WHATSAPP_TABS_SIDEBAR_STYLE",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -142,9 +142,10 @@
       "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e",
       "304065966a7ef2a0e559f3e35947b6907366ae7a",
       "2933ff227196e536cc9e44b456bf9e338fe82328",
-      "a7964f3479fb47cc2925cf617abccd39783dbf56"
+      "a7964f3479fb47cc2925cf617abccd39783dbf56",
+      "8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c"
     ],
-    "note": "Runtime a7964f3 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback 2933ff2."
+    "note": "Runtime 8a83ac4 1/1 healthy; CSS público coincide con candidato. Sin mensajes. Rollback a7964f3."
   },
   "externalIntegrations": [
     {
@@ -170,10 +171,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_C6B3B5B_PUBLIC_HEALTHY",
-      "lastVerifiedAt": "2026-08-16",
+      "status": "PILOTO_DELTA_RUNTIME_8A83AC4_PUBLIC_HEALTHY",
+      "lastVerifiedAt": "2026-08-19",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en c6b3b5b; media/unread true, tres muestras sin errores y rollback 72e0fc2 disponible."
+      "note": "sportex_staging_core 1/1 healthy en 8a83ac4; health, ready y CSS público coinciden con el candidato; rollback a7964f3 disponible."
     }
   ],
   "sensitiveData": {
@@ -184,11 +185,27 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas de WhatsApp uniformes desplegadas: selección verde y etiquetas verticales; sin mensajes.",
+    "summary": "Pestañas de WhatsApp con estilo lateral, texto horizontal y bracket curvo desplegadas; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Pestañas WhatsApp estilo lateral: texto horizontal, hover neutro y bracket curvo. 8a83ac4 sano; aceptación visual pendiente.",
+      "documents": [
+        "frontend/styles.css",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-012"
+      ]
+    },
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
@@ -257,37 +274,19 @@
       "decisions": [
         "Migration-first y rollback image-first; tablas 006 aditivas se conservan."
       ]
-    },
-    {
-      "date": "2026-08-16",
-      "taskId": "TASK-20260816-002",
-      "summary": "Se implementaron imagenes privadas manuales y lectura por operador con flags apagadas por defecto; QA local y reinicio PASS sin efectos externos.",
-      "documents": [
-        "core/src/domain/whatsapp-image.ts",
-        "core/db/migrations/staging/20260816_006_whatsapp_media_unread.up.sql",
-        "frontend/app.js",
-        "docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md",
-        "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260816-002_WHATSAPP_MEDIA_NO_LEIDOS.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-011"
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_A7964F3_PUBLIC_HEALTHY_WHATSAPP_TABS",
+    "status": "PILOTO_DELTA_8A83AC4_PUBLIC_HEALTHY_WHATSAPP_TABS_SIDEBAR_STYLE",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público a7964f3 sano; CSS público coincide con el candidato."
+    "note": "Runtime público 8a83ac4 sano; CSS público coincide con el candidato."
   },
   "productValidation": {
-    "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_LEADS_Y_WHATSAPP",
+    "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_DE_WHATSAPP",
     "lastReviewedAt": "2026-08-19",
     "reviewedBy": "Fito",
     "taskId": "TASK-20260815-002",
-    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. La prueba final usa la sesión normal de Delta, sin inventar datos ni mensajes."
+    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente las pestañas desde la sesión normal, sin inventar datos ni mensajes."
   },
   "blockers": [],
   "risks": [

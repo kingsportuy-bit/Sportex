@@ -98,6 +98,16 @@ candidate: a7964f3
 - No hubo migraciones, escrituras de datos ni mensajes. Rollback inmediato:
   `sportex-staging:2933ff227196e536` con respaldo de la especificación previa.
 
+## Corrección visual PILOTO_DELTA (2026-08-19)
+
+- Candidato `8a83ac4a7698bdf6c0ac891e0e4658bcbbc1788c`; bundle SHA-256
+  `5fee4902cc51f1552f05746ebfb0bf6058f7bf2faa73b194cbaa4c57a3eef1a2`.
+- Texto horizontal, hover neutro y bracket lima curvo derecho.
+- Servicio `1/1`; health/ready PASS y CSS público
+  `f4f53da5e793897b17fd22023dcc47e7d539f1b94b2af5815f3e967ad52a4fa9`.
+- Sin migraciones, datos ni mensajes. Backup remoto y rollback `a7964f3`.
+- Pendiente: aceptación visual.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
