@@ -559,10 +559,12 @@ async function openWhatsAppConversation(itemId) {
   state.mobileWhatsappTab = "chat";
   state.draftResource = null;
   renderWhatsApp();
+  scrollWhatsAppConversationToLatest();
   try {
     const response = await api(`/v1/commercial/workspace/${encodeURIComponent(itemId)}`);
     replaceCommercialItem(response.data);
-    renderWhatsAppDetailPreservingChatState(response.data, true);
+    renderWhatsAppDetail(response.data);
+    scrollWhatsAppConversationToLatest(true);
   } catch (error) {
     toast(friendlyError(error), "error");
   }
@@ -1403,6 +1405,14 @@ function renderWhatsAppDetailPreservingChatState(item, focusMenu = false) {
       : previousScrollTop;
   }
   if (focusMenu) $(".whatsapp-chat-menu")?.focus({ preventScroll: true });
+}
+
+function scrollWhatsAppConversationToLatest(focusMenu = false) {
+  window.requestAnimationFrame(() => {
+    const conversation = $(".whatsapp-chat-pane .lead-conversation");
+    if (conversation) conversation.scrollTop = conversation.scrollHeight;
+    if (focusMenu) $(".whatsapp-chat-menu")?.focus({ preventScroll: true });
+  });
 }
 
 function openWhatsAppDetails(item) {
