@@ -299,6 +299,9 @@ function appendMessageContent(row, message) {
   const figure = element("figure", "whatsapp-image-message is-loading");
   const image = element("img");
   image.alt = message.text || `Imagen: ${message.media.fileName}`;
+  image.loading = "lazy";
+  image.decoding = "async";
+  if (message.media.width && message.media.height) figure.style.aspectRatio = `${message.media.width} / ${message.media.height}`;
   const caption = message.text ? element("figcaption", "", message.text) : null;
   figure.append(image, element("span", "whatsapp-image-loading", "Cargando imagen…"));
   if (caption) figure.append(caption);
@@ -307,15 +310,43 @@ function appendMessageContent(row, message) {
     .then(async (response) => {
       if (!response.ok) throw new Error("media_load_failed");
       const blob = await response.blob();
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        image.src = String(reader.result);
+      const objectUrl = URL.createObjectURL(blob);
+      image.addEventListener("load", () => {
         figure.classList.remove("is-loading");
         figure.querySelector(".whatsapp-image-loading")?.remove();
       }, { once: true });
-      reader.readAsDataURL(blob);
+      image.src = objectUrl;
+      figure.tabIndex = 0;
+      figure.setAttribute("role", "button");
+      figure.setAttribute("aria-label", `Abrir imagen ${message.media.fileName}`);
+      const open = () => openWhatsAppImageViewer(blob, message.media.fileName, image.alt);
+      figure.addEventListener("click", open);
+      figure.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); open(); }
+      });
     })
     .catch(() => { figure.querySelector(".whatsapp-image-loading").textContent = "No se pudo mostrar la imagen"; });
+}
+
+function openWhatsAppImageViewer(blob, fileName, alt) {
+  const dialog = element("dialog", "whatsapp-image-viewer");
+  const objectUrl = URL.createObjectURL(blob);
+  const close = element("button", "icon-button", "×");
+  close.type = "button";
+  close.setAttribute("aria-label", "Cerrar imagen");
+  close.addEventListener("click", () => dialog.close());
+  const image = element("img");
+  image.src = objectUrl;
+  image.alt = alt;
+  const download = element("a", "button button--primary", "Descargar");
+  download.href = objectUrl;
+  download.download = fileName.replace(/[^a-zA-Z0-9._-]/gu, "-") || "imagen-whatsapp";
+  const body = element("div", "whatsapp-image-viewer-body");
+  body.append(close, image, download);
+  dialog.append(body);
+  dialog.addEventListener("close", () => { URL.revokeObjectURL(objectUrl); dialog.remove(); }, { once: true });
+  document.body.append(dialog);
+  dialog.showModal();
 }
 
 async function loadData() {
@@ -896,6 +927,16 @@ function renderLeadList(items) {
         element("span", "lead-kanban-meta", `${productLabel(item.lead.productType)} · ${item.lead.quantity ?? "?"} prendas`),
         element("span", "lead-kanban-next", item.opportunity.nextAction || priority.reason),
       );
+      const message = element("button", "button button--quiet lead-kanban-message", "Responder");
+      message.type = "button";
+      message.addEventListener("click", (event) => {
+        event.stopPropagation();
+        switchView("whatsapp");
+        state.selectedCommercialId = item.id;
+        state.mobileWhatsappDetailOpen = true;
+        renderWhatsApp();
+      });
+      card.append(message);
       card.addEventListener("dragstart", (event) => event.dataTransfer?.setData("text/plain", item.id));
       card.addEventListener("click", () => {
         state.selectedCommercialId = item.id;

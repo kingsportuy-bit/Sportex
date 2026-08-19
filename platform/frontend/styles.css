@@ -851,6 +851,7 @@ button { cursor: pointer; }
 .whatsapp-image-preview span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .whatsapp-image-remove { width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--surface-strong); color: var(--ink); font-size: 18px; }
 .whatsapp-image-message { width: min(320px, 72vw); margin: 4px 0; display: grid; gap: 6px; }
+.whatsapp-image-message:not(.is-loading) { cursor: zoom-in; }
 .whatsapp-image-message img { width: 100%; max-height: 360px; border-radius: 7px; object-fit: cover; }
 .whatsapp-image-message figcaption { font-size: 12px; line-height: 1.4; }
 .whatsapp-image-loading { min-height: 110px; display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 7px; color: var(--muted); font-size: 10px; }
@@ -859,6 +860,12 @@ button { cursor: pointer; }
 .whatsapp-composer button:disabled { opacity: .46; cursor: default; }
 .whatsapp-composer-input { min-height: 42px; max-height: 108px; resize: none; padding: 11px 16px; border: 1px solid #d9ddd7; border-radius: 22px; background: white; font-size: 12px; line-height: 1.45; }
 .whatsapp-local-note { position: absolute; top: -21px; right: 14px; padding: 4px 8px; border: 1px solid var(--line); border-bottom: 0; border-radius: 7px 7px 0 0; background: var(--paper); color: var(--muted); font-size: 8px; }
+.whatsapp-image-viewer { width: min(900px, calc(100vw - 32px)); max-width: none; padding: 0; border: 0; background: rgb(9 13 10 / 96%); }
+.whatsapp-image-viewer::backdrop { background: rgb(0 0 0 / 72%); }
+.whatsapp-image-viewer-body { min-height: min(680px, calc(100vh - 64px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; padding: 14px; }
+.whatsapp-image-viewer-body .icon-button { justify-self: end; background: white; color: #172019; }
+.whatsapp-image-viewer-body img { width: 100%; height: min(590px, calc(100vh - 170px)); object-fit: contain; }
+.whatsapp-image-viewer-body .button { justify-self: center; }
 .whatsapp-more-info { border-top: 1px solid var(--line); }
 .whatsapp-more-info > summary { padding: 13px 2px; color: var(--ink-soft); cursor: pointer; font-size: 11px; font-weight: 800; }
 .whatsapp-more-info[open] > summary { color: var(--blue); }
