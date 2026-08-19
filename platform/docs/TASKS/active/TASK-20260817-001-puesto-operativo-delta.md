@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `788e7cee81a4240a` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:27e46529c4080f3a` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -64,10 +64,10 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Runtime `27e4652`: recarga conserva sesión y toma interfaz vigente.
+- Runtime `9a570c3`: una sesión existente no deja pintar el acceso al recargar.
 - Sin mensajes de prueba; salida manual Delta habilitada.
 - PASS local 57/57, build, SQL y QA; deploy `1/1`, health, ready y consulta.
-- Incidentes de cursor/recarga corregidos: `SPX-ERR-20260819-001/002`.
+- Incidentes de cursor/recarga/deploy remoto corregidos: `SPX-ERR-20260819-001/002/003`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

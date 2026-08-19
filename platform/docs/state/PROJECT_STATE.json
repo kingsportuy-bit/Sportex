@@ -85,8 +85,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "27e46529c4080f3a3f5556e210bf73b745c763c5",
-    "workingTreeState": "TASK-20260817-001_SESSION_AND_CACHE_RELOAD_FIXED",
+    "headAtLastEvidence": "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e",
+    "workingTreeState": "TASK-20260817-001_SESSION_RESTORE_LOGIN_FLASH_FIXED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -115,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 27e4652: 57/57, build, smoke y assets actuales PASS."
+    "note": "Candidato 9a570c3: 57/57, build, guardia de recarga, smoke y assets actuales PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_27E4652_SESSION_AND_CACHE_RELOAD_FIXED",
+    "status": "PILOTO_DELTA_9A570C3_SESSION_RESTORE_LOGIN_FLASH_FIXED",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -136,9 +136,10 @@
       "23aa757d23108a0c9f408caa7b79ba4f564a886d",
       "9250d3ac680549b7d6cc69106da211e7a0a159b6",
       "788e7cee81a4240adc12416bb6e442a9f8eeb92d",
-      "27e46529c4080f3a3f5556e210bf73b745c763c5"
+      "27e46529c4080f3a3f5556e210bf73b745c763c5",
+      "9a570c3b33ab2fcd08551abc71ee1fc10a88e05e"
     ],
-    "note": "Runtime 27e4652 1/1 healthy; recarga conserva sesión y revalida UI. Sin mensajes. Rollback 788e7ce."
+    "note": "Runtime 9a570c3 1/1 healthy; una sesión existente no muestra acceso al recargar. Sin mensajes. Rollback 27e4652."
   },
   "externalIntegrations": [
     {
@@ -270,9 +271,9 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_27E4652_PUBLIC_HEALTHY_SESSION_AND_CACHE_FIXED",
+    "status": "PILOTO_DELTA_9A570C3_PUBLIC_HEALTHY_SESSION_RESTORE_FIXED",
     "lastEvidenceDate": "2026-08-19",
-    "note": "Runtime público 27e4652 sano; sesión y UI se revalidan al recargar."
+    "note": "Runtime público 9a570c3 sano; sesión se restaura sin mostrar el acceso."
   },
   "productValidation": {
     "status": "DESPLEGADO_LISTO_PARA_PRUEBA_AUTENTICADA_DE_PRODUCTO",
