@@ -2242,9 +2242,7 @@ function renderCommercial() {
   $("#persistence-status").textContent = state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA";
 
   const items = filteredCommercial();
-  if (!items.some((item) => item.id === state.selectedCommercialId)) {
-    state.selectedCommercialId = items[0]?.id ?? null;
-  }
+  if (state.selectedCommercialId && !items.some((item) => item.id === state.selectedCommercialId)) state.selectedCommercialId = null;
   renderLeadList(items);
   renderLeadDetail(items.find((item) => item.id === state.selectedCommercialId) ?? null);
   $(".crm-workspace").classList.toggle("is-detail-open", state.mobileDetailOpen && Boolean(state.selectedCommercialId));
