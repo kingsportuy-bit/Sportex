@@ -2324,7 +2324,7 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 }
 #whatsapp-view .whatsapp-stage-tab .whatsapp-stage-name { max-height: 38px; font-size: 6.3px; }
 
-/* Etapas WhatsApp: mismo lenguaje del menú lateral, orientado hacia la lista. */
+/* Etapas WhatsApp: misma caja que el menú lateral. */
 #whatsapp-view {
   --whatsapp-stage-gutter: 172px;
   padding-left: var(--whatsapp-stage-gutter);
@@ -2333,8 +2333,8 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 #whatsapp-view .whatsapp-stage-rail:hover,
 #whatsapp-view .whatsapp-stage-rail:has(.whatsapp-stage-tab:focus-visible) {
   width: var(--whatsapp-stage-gutter);
-  padding: 8px 8px 8px 0;
-  gap: 7px;
+  padding: 20px 8px 16px 0;
+  gap: 3px;
   background: var(--ink);
 }
 #whatsapp-view .whatsapp-stage-tab,
@@ -2347,16 +2347,16 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   position: relative;
   width: 164px;
   min-width: 164px;
-  min-height: 44px;
-  height: 44px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
+  min-height: 39px;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 12px;
-  overflow: visible;
+  gap: 8px;
+  padding: 9px 10px;
+  overflow: hidden;
   border: 0;
-  border-radius: 8px;
+  border-radius: 7px;
   background: transparent;
   color: #bac2bb;
   box-shadow: none;
@@ -2376,22 +2376,11 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 #whatsapp-view .whatsapp-stage-tab.is-active:focus-visible {
   background: #ffffff12;
   color: white;
-  box-shadow: none;
+  box-shadow: inset 3px 0 var(--signal);
 }
 #whatsapp-view .whatsapp-stage-tab.is-active::after {
-  content: "" !important;
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  right: -3px;
-  bottom: 0;
-  width: 11px;
-  border: 3px solid var(--signal);
-  border-left: 0;
-  border-radius: 0 8px 8px 0;
-  pointer-events: none;
+  content: none !important;
 }
-#whatsapp-view .whatsapp-stage-tab > span { position: relative; z-index: 1; }
 #whatsapp-view .whatsapp-stage-index { display: none; }
 #whatsapp-view .whatsapp-stage-name,
 #whatsapp-view .whatsapp-stage-rail:hover .whatsapp-stage-name,
@@ -2401,8 +2390,10 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
   max-height: none;
   overflow: hidden;
   opacity: 1;
-  font: 700 12px/1 "Segoe UI", Arial, sans-serif;
-  letter-spacing: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: normal;
   text-transform: none;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2413,10 +2404,10 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 #whatsapp-view .whatsapp-stage-count {
   display: block;
   min-width: 24px;
-  padding: 4px 7px;
+  padding: 3px 7px;
   border-radius: 999px;
   background: #ffffff16;
   color: white;
-  font: 700 10px/1 "Segoe UI", Arial, sans-serif;
+  font: 600 10px/1 "Segoe UI", Arial, sans-serif;
   text-align: center;
 }
