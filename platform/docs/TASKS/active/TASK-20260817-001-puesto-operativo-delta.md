@@ -53,7 +53,7 @@ PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:e845927e36d6c34f` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:3f2962610d2a4da6` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -64,8 +64,6 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- `92084ba` desplegado: toda acción verde usa texto grafito; `1/1`,
-  health/ready/CSS PASS, sin migraciones ni mensajes. Rollback `4f324db`.
 - `e845927` desplegado: al abrir cualquier chat de WhatsApp, tanto la primera
   carga como su actualización quedan en el último mensaje. `1/1`, health,
   ready y JavaScript público PASS; sin migraciones, datos ni mensajes.
@@ -73,6 +71,9 @@ transición permitida y conserva auditoría.
 - `3f29626` desplegado: pestañas de etapas arriba de WhatsApp, antes del chat.
   `1/1`, health, ready, HTML y CSS públicos PASS; sin migraciones, datos ni
   mensajes. Rollback `e845927`.
+- `a0be896` desplegado: botón `Editar etapas` visible junto a esas pestañas;
+  `1/1`, health, ready y HTML público PASS. Sin migraciones, datos ni mensajes.
+  Rollback `3f29626`.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

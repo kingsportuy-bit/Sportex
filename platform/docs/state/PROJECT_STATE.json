@@ -89,8 +89,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_TABS_ABOVE_DEPLOYED",
+    "headAtLastEvidence": "a0be896fc194500734104d5af5e0246bc77fba41",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_EDITOR_DEPLOYED",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -122,7 +122,7 @@
     "note": "Candidato 3f29626: 57/57, build, pestañas superiores y HTML/CSS públicos PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_3F29626_WHATSAPP_STAGE_TABS_ABOVE",
+    "status": "PILOTO_DELTA_A0BE896_WHATSAPP_STAGE_EDITOR",
     "lastVerifiedAt": "2026-08-19",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -150,9 +150,10 @@
       "4f324db0448d5345a0c723a974370027c66fa028",
       "92084ba5d10001a926fe73a38e14b2b5f36790cb",
       "e845927e36d6c34f9e1c1a0fbd44216659e88333",
-      "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0"
+      "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
+      "a0be896fc194500734104d5af5e0246bc77fba41"
     ],
-    "note": "Runtime 3f29626 1/1 healthy; pestañas de etapa arriba del chat. Sin mensajes. Rollback e845927."
+    "note": "Runtime a0be896 1/1 healthy; editor de etapas visible en WhatsApp. Sin mensajes. Rollback 3f29626."
   },
   "externalIntegrations": [
     {
@@ -192,7 +193,7 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Pestañas de etapa arriba de WhatsApp desplegadas; sin mensajes.",
+    "summary": "Editor de etapas visible en WhatsApp; sin mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },

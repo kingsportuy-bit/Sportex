@@ -53,7 +53,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 8; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-08-19`.
-- Despliegues: `PILOTO_DELTA_3F29626_WHATSAPP_STAGE_TABS_ABOVE`; registros 26.
+- Despliegues: `PILOTO_DELTA_A0BE896_WHATSAPP_STAGE_EDITOR`; registros 27.
 - Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_3F29626_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
@@ -62,7 +62,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Tarea: `TASK-20260817-001`.
 - Fecha: `2026-08-19`.
 - Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- Pestañas de etapa arriba de WhatsApp desplegadas; sin mensajes.
+- Editor de etapas visible en WhatsApp; sin mensajes.
 
 ## Riesgos
 
