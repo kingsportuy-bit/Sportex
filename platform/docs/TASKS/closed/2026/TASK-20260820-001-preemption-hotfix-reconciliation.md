@@ -3,8 +3,8 @@
 id: TASK-20260820-001
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: documentacion
 campaign: CAMP-20260803-001
 context_focus: documentation
@@ -73,7 +73,17 @@ GO propio luego de la primera version usable aceptada.
 - `task:doctor` PASS y `task:next-id` asigno `TASK-20260820-001`.
 - Alcance limitado a OS, documentacion, tooling, tests y commits locales.
 
+### 2026-08-20 - implementacion y cierre
+
+- Contrato y estado estructurado incorporados en `7ae6e49`.
+- `workflow:close` y `worktree:close` aplican los gates fail-closed.
+- 26 regresiones PASS, incluidas rutas positivas y negativas del protocolo.
+- `PILOT_ONLY` permanece vigente; no se creo ni fingio STAGING.
+- Owner return listo para SARA, sin ninguna accion externa.
+
 ## decisiones
 
 - La aceptacion de la primera version usable habilita planificar la transicion;
   no despliega, migra ni crea entornos por si sola.
+- El gate futuro de STAGING se activa solo tras una task de transicion
+  completada que cambie el modelo de entornos.

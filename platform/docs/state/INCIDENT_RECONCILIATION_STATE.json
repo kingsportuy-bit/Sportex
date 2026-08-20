@@ -19,7 +19,10 @@
     "coherence": null
   },
   "ownerReturn": {
-    "status": "NOT_REQUIRED",
-    "taskId": null
+    "status": "READY",
+    "taskId": "TASK-20260820-001",
+    "owner": "SARA",
+    "environmentModel": "PILOT_ONLY",
+    "externalActions": "NONE"
   }
 }

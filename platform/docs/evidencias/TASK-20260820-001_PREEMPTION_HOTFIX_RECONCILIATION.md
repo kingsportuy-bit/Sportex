@@ -18,7 +18,31 @@ mensajes, migraciones ni secretos.
 
 ## Validacion
 
-Pendiente de cierre owner.
+- `npm run incident:check`: PASS (`PILOT_ONLY`, `NOT_REQUIRED`).
+- `npm run test:workflow`: 26/26 PASS.
+- `npm run validate-docs`: PASS, 77 fuentes obligatorias.
+- `npm run validate:docs`: PASS.
+- `npm run worktree:check`: `WORKTREE_CLOSE=PASS`; dos worktrees fisicos,
+  ambos clasificados `PRESERVAR`.
+- `git diff --check`: PASS.
+- Commit de implementacion: `7ae6e49`.
+
+## Cobertura negativa
+
+Las regresiones bloquean: segundo incidente activo, snapshot incompleto,
+worktree pausado no preservado, candidato previo reutilizable, mutacion sin GO,
+rollback o evidencia, cierre con reconciliacion pendiente, rama/candidato sin
+hotfix y modelo futuro sin STAGING certificado.
+
+## Owner return
+
+- Owner: SARA.
+- Task: `TASK-20260820-001`.
+- Resultado: protocolo implementado y validado localmente.
+- Modelo real: `PILOT_ONLY`; STAGING inexistente y no simulado.
+- Operaciones externas: ninguna.
+- Proxima decision: mantener el modelo actual hasta que Fito acepte la primera
+  version usable; entonces abrir una task de transicion separada.
 
 ## Acciones externas
 

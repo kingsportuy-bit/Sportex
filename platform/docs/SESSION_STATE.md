@@ -10,7 +10,7 @@ Actualizado: 2026-08-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `documentation`.
+- Intencion actual: `idle`.
 
 ## Git
 
@@ -23,11 +23,11 @@ Actualizado: 2026-08-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260820-001`: `in_progress` (docs/TASKS/active/TASK-20260820-001-preemption-hotfix-reconciliation.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Adaptar el protocolo de preemption, hotfix, reconciliacion y evolucion de entornos al Project OS SPORTEX.
+Mantener el Project OS listo para trabajo local y proteger cualquier hotfix con preemption y reconciliacion fail-closed.
 
 ## Alcance actual
 
@@ -59,10 +59,10 @@ Adaptar el protocolo de preemption, hotfix, reconciliacion y evolucion de entorn
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260817-001`.
+- Tarea: `TASK-20260820-001`.
 - Fecha: `2026-08-20`.
-- Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- d9c32b7 aceptado visualmente e integrado localmente; TASK cerrada sin push ni nuevo release; WORKTREE_CLOSE=PASS.
+- Fuente: `docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md`.
+- Protocolo de preemption, hotfix y reconciliacion implementado y validado localmente; owner return a SARA listo.
 
 ## Riesgos
 
@@ -77,6 +77,6 @@ Adaptar el protocolo de preemption, hotfix, reconciliacion y evolucion de entorn
 
 ## Siguientes acciones
 
-- Iniciar el próximo trabajo local desde el contexto canónico y una tarea compatible aprobada.
-- No hacer acción remota, push, deploy ni mensaje sin un GO nuevo y exacto.
-- Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.
+- Retornar a SARA el cierre owner de TASK-20260820-001 y sus commits locales.
+- Mantener PILOT_ONLY hasta una aceptacion usable y una task de transicion especifica posterior.
+- No hacer accion remota, push, deploy, migracion ni mensaje sin un GO nuevo y exacto.
