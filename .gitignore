@@ -42,3 +42,6 @@ next-env.d.ts
 
 # SPORTEX local-only fictional demo state
 /platform/.sportex-local/
+
+# Local brand source supplied by Fito; intentionally outside the SPORTEX repo.
+/logo-sportex.png

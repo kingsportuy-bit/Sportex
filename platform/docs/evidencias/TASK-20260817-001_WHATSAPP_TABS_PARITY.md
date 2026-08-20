@@ -2,7 +2,7 @@
 
 task: `TASK-20260817-001`
 fecha: `2026-08-20`
-estado: `IN_PROGRESS`
+estado: `HUMAN_ACCEPTED_LOCAL_INTEGRATED`
 entornos: `DESARROLLO_LOCAL`, `PILOTO_DELTA`
 rama: `codex/task-20260817-001-whatsapp-tabs-parity`
 worktree: `C:\Users\Fito\Documents\CODEX\SPORTEX-WORKTREES\TASK-20260817-001-whatsapp-tabs-parity`
@@ -40,7 +40,9 @@ worktree: `C:\Users\Fito\Documents\CODEX\SPORTEX-WORKTREES\TASK-20260817-001-wha
 - Las siete etapas exigen el mismo path trasladado, los mismos tokens SVG, unión sin trazo inferior, tres capas activas y teclado completo también en responsive.
 - Autoprueba: 34 vectores CIEDE2000 con error máximo `4.95e-05`; SSIM, máscara AA, conectividad 8 y perfil de halo en `PASS`.
 - Control negativo del baseline: `FAIL_CLOSED` por altura real `51px` frente a `67±0.25px`; demuestra que el arnés detecta la brecha existente.
-- Candidato visual todavía pendiente.
+- Candidato `d9c32b7` aceptado visualmente por Fito e integrado localmente.
+- El E2E estructural y de acceso pasó; la comparación raster estricta quedó
+  `FAIL_CLOSED` y no se presenta como paridad píxel perfecta.
 
 ## Rollback
 
@@ -49,4 +51,4 @@ worktree: `C:\Users\Fito\Documents\CODEX\SPORTEX-WORKTREES\TASK-20260817-001-wha
 
 ## Pendientes
 
-- Completar arnés, implementación, matrices, revisión, release, observación y aceptación visual.
+- Un nuevo release, observación de runtime o push requiere autorización aparte.

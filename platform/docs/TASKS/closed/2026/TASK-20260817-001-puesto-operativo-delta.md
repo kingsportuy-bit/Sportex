@@ -3,8 +3,8 @@
 id: TASK-20260817-001
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: feature
 campaign: CAMP-20260803-001
 context_focus: product
@@ -48,9 +48,9 @@ una sola versión vigente sin borrar historial; UI verifica tableros y contraste
 PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 La carcasa visual exige contorno único, color exacto y ninguna línea bajo la
-activa; se verifican primera/intermedia/última y responsive. La segunda Mesa
-fue solicitada, pero no estuvo disponible. El GO de Fito del 2026-08-20 sólo
-autorizó `4898d55`; no equivale a Mesa ni a aceptación visual humana.
+activa; se verifican primera/intermedia/última y responsive. Fito otorgó
+aceptación visual humana explícita el 2026-08-20 sobre la versión local luego
+versionada como `d9c32b7`; no autorizó un nuevo despliegue.
 
 ## evidencia
 
@@ -66,6 +66,8 @@ transición permitida y conserva auditoría.
 
 - Certificación real de seña, producción detallada, entregas, postventa y
   procesos configurables completos permanecen fuera de este corte.
+- `d9c32b7` quedó integrado localmente y aceptado, pero no fue publicado ni
+  desplegado. El runtime continúa en `4898d55` hasta un GO remoto nuevo.
 
 ## registro_de_avances
 
@@ -74,7 +76,17 @@ transición permitida y conserva auditoría.
 - Un solo `panelContour` une activa, cabecera y panel en `#111914`; las seis
   inactivas usan `#0e1510`.
 - Outbound preservado: `SENT 16→16`, pendientes y outbox `0→0`.
-  Mesa y validación humana autenticada pendientes, sin escritura.
+  No hubo nueva escritura remota.
+- Fito aceptó visualmente la versión `d9c32b7`. Sintaxis, tres capturas frías,
+  siete estados, responsive, teclado y requests controladas PASS. La copia
+  píxel a píxel contra la referencia sellada siguió `FAIL_CLOSED` y no se usó
+  para sustituir la decisión humana.
+- La rama fue integrada por fast-forward en `sportex-governance-20260801`.
+  La política `INTEGRADO/PRESERVAR/BLOQUEADO` quedó probada y el inventario
+  final de worktrees devolvió `WORKTREE_CLOSE=PASS`.
+- Una pérdida lateral de `platform/core` durante el primer retiro se detectó,
+  restauró desde `HEAD` sin diff y quedó cubierta por el guard post-retiro;
+  tipos, 57/57, SQL y build volvieron a pasar.
 
 ## decisiones
 
@@ -84,3 +96,5 @@ transición permitida y conserva auditoría.
 - `SPORTEX-DEC-016`: Leads administra oportunidades; WhatsApp conserva la
   conversación completa como superficie independiente.
 - `SPORTEX-DEC-017`: SPORTEX opera solamente en modo oscuro.
+- `SPORTEX-DEC-018`: el cierre clasifica todos los worktrees y sólo retira
+  automáticamente los limpios e integrados.

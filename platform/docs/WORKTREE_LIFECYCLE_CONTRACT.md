@@ -25,7 +25,9 @@ un directorio físico.
 `npm run worktree:close` retira automáticamente únicamente worktrees físicos
 clasificados `INTEGRADO`, limpios y contenidos en la rama objetivo. Nunca usa
 `--force`, no borra ramas ni refs y no retira el checkout desde el que se
-ejecuta. Después poda metadatos `prunable`.
+ejecuta. Después de cada retiro verifica que ningún `PRESERVAR` o `BLOQUEADO`
+haya cambiado y se detiene si detecta una dependencia compartida. Al final
+poda metadatos `prunable`.
 
 `PRESERVAR` y `BLOQUEADO` permanecen intactos. Un cambio exclusivo se commitea,
 se integra o se mantiene bloqueado; nunca se descarta para limpiar.

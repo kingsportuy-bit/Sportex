@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: 4898d557 desplegado en PILOTO_DELTA con verificación técnica PASS; Mesa automática no disponible y aceptación visual humana pendiente
+estado: tarea cerrada; 4898d557 continúa desplegado y d9c32b7 quedó aceptado e integrado localmente sin nuevo release
 updated_at: 2026-08-20
-candidate: 4898d557cf0fa6788bab5ec4f45db187d73c3c8c
+candidate: d9c32b74e13f992136cf62c473ce6ca35636fb8a
 
 ## Recorrido cubierto
 
@@ -217,6 +217,38 @@ candidate: 4898d557cf0fa6788bab5ec4f45db187d73c3c8c
   no pudo ejecutarse por límite de capacidad y no existe aprobación de Mesa;
   el GO de release no sustituye la aceptación visual humana en la sesión
   autenticada.
+
+## Aceptación humana, integración y cierre local (2026-08-20)
+
+- Fito otorgó aceptación visual humana explícita sobre los dos cambios locales
+  de `frontend/app.js` y `frontend/styles.css`; se versionaron exactamente en
+  `d9c32b74e13f992136cf62c473ce6ca35636fb8a`.
+- `node --check`, `git diff --check`, autoprueba CIEDE2000/SSIM y el E2E visual
+  PASS: tres procesos fríos idénticos, siete estados, responsive, teclado,
+  63 requests esperadas y cero errores de consola.
+- La comparación estricta con la referencia sellada devolvió `FAIL_CLOSED`
+  (`SSIM 0.875634`, umbral `0.995`). Se conserva como resultado honesto; la
+  aceptación humana no se reetiqueta como paridad píxel perfecta.
+- `d9c32b7` y el guard de worktrees `a372c74` se integraron por fast-forward en
+  `sportex-governance-20260801`, sin push ni operación remota.
+- Worktrees: rebuild y task retirados limpios+integrados; tres fantasmas
+  podados; checkout canónico y working tree administrativo `main` preservados
+  y clasificados. Ramas y commits permanecen.
+- El primer retiro dejó `platform/core` ausente en el checkout preservado. Se
+  detuvo el cierre, se restauró exactamente desde `HEAD` (`git diff` cero), se
+  repusieron dependencias locales y Core volvió a pasar tipos, 57/57, SQL y
+  build. El retirador ahora compara el estado de cada `PRESERVAR/BLOQUEADO`
+  después de cada retiro y falla ante cualquier cambio lateral.
+- Artefactos raíz: `logo-sportex.png` preservado localmente (SHA-256
+  `9B413B59D4C47D3D170CD1E119CBE6BA12F8A46DE51B188D143AA7323BCF10B8`).
+  Veintitrés bundles y tres scripts temporales fueron clasificados y movidos,
+  sin borrado, a
+  `C:\Users\Fito\Documents\CODEX\SPORTEX-ARCHIVE\TASK-20260817-001-closure-20260820`;
+  los 22 commits abreviados de bundles se verificaron alcanzables en Git.
+- No hubo producción, runtime, mensajes, datos, secretos, proveedores, push ni
+  remotos en este cierre.
+- `npm install` volvió a informar las cuatro vulnerabilidades altas ya
+  registradas en `TASK-20260801-002`; no se ejecutó `npm audit fix`.
 
 ## Límites y rollout
 

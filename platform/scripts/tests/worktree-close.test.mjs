@@ -71,6 +71,16 @@ test('INTEGRADO sucio queda bloqueado y no se retira', () => {
   assert.equal(fs.existsSync(sibling), true);
 });
 
+test('el working tree administrativo debe clasificarse PRESERVAR', () => {
+  const { project } = fixture();
+  const inventory = path.join(project, 'docs', 'state', 'WORKTREE_CLASSIFICATIONS.json');
+  const data = JSON.parse(fs.readFileSync(inventory, 'utf8'));
+  data.worktrees[0].classification = 'INTEGRADO';
+  fs.writeFileSync(inventory, `${JSON.stringify(data, null, 2)}\n`);
+  const result = auditWorktrees(project);
+  assert(result.failures.some((failure) => failure.includes('administrativo')));
+});
+
 test('retira sólo el worktree limpio e integrado y preserva su ref', () => {
   const { repo, project, sibling } = fixture();
   const result = auditWorktrees(project);

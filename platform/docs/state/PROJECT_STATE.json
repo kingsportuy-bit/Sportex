@@ -13,8 +13,8 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "feature",
-  "objective": "Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsApp, Leads, Pedidos y Clientes, sin mensajes reales no autorizados.",
+  "mode": "idle",
+  "objective": "Mantener estable el puesto operativo de Delta y preparar el próximo trabajo local sin acciones remotas implícitas.",
   "scope": {
     "allowed": [
       "Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001.",
@@ -24,15 +24,7 @@
       "No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20260817-001",
-    "title": "Puesto operativo Delta desde SPORTEX",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
-    "workType": "feature",
-    "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito valida 4898d55 en su sesión autenticada; no hay nueva acción remota sin GO."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -82,15 +74,16 @@
     "SPORTEX-DEC-014",
     "SPORTEX-DEC-015",
     "SPORTEX-DEC-016",
-    "SPORTEX-DEC-017"
+    "SPORTEX-DEC-017",
+    "SPORTEX-DEC-018"
   ],
   "git": {
-    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",
+    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
-    "branch": "codex/task-20260817-001-whatsapp-tabs-parity",
+    "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_PARITY_IN_PROGRESS",
+    "headAtLastEvidence": "d9c32b74e13f992136cf62c473ce6ca35636fb8a",
+    "workingTreeState": "TASK_20260817_001_DONE_LOCAL_ACCEPTED_INTEGRATED_NO_REMOTE_RELEASE",
     "lastVerifiedAt": "2026-08-20"
   },
   "migrations": {
@@ -119,7 +112,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "4898d55: validate, guard y verificación pública PASS; Mesa y aceptación humana pendientes."
+    "note": "d9c32b7 aceptado por Fito e integrado localmente. E2E estructural PASS; comparación raster estricta FAIL_CLOSED registrada sin falsear paridad."
   },
   "deployments": {
     "status": "PILOTO_DELTA_4898D55_WHATSAPP_TABBED_PANEL",
@@ -194,11 +187,31 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-20",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "4898d55 desplegado: SVG une activa, cabecera y panel; runtime y recursos públicos PASS; aceptación humana pendiente.",
+    "summary": "d9c32b7 aceptado visualmente e integrado localmente; TASK cerrada sin push ni nuevo release; WORKTREE_CLOSE=PASS.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-20",
+      "taskId": "TASK-20260817-001",
+      "summary": "Fito aceptó d9c32b7; integración local, política de worktrees, clasificación y cierre sin acciones remotas.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/WORKTREE_LIFECYCLE_CONTRACT.md",
+        "docs/state/WORKTREE_CLASSIFICATIONS.json"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-018"
+      ]
+    },
     {
       "date": "2026-08-20",
       "taskId": "TASK-20260817-001",
@@ -207,7 +220,7 @@
         "frontend/index.html",
         "frontend/app.js",
         "frontend/styles.css",
-        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
         "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
       ],
       "evidence": [
@@ -223,7 +236,7 @@
       "summary": "WhatsApp abre cada conversación en el último mensaje. e845927 sano; aceptación visual pendiente.",
       "documents": [
         "frontend/app.js",
-        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
         "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
       ],
       "evidence": [
@@ -257,23 +270,7 @@
       "summary": "Pestañas WhatsApp usan literalmente el menú lateral; indicador verde izquierdo. f40a7c5 sano; aceptación visual pendiente.",
       "documents": [
         "frontend/styles.css",
-        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-012"
-      ]
-    },
-    {
-      "date": "2026-08-19",
-      "taskId": "TASK-20260817-001",
-      "summary": "Pestañas WhatsApp estilo lateral: texto horizontal, hover neutro y bracket curvo. 8a83ac4 sano; aceptación visual pendiente.",
-      "documents": [
-        "frontend/styles.css",
-        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
         "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
       ],
       "evidence": [
@@ -290,11 +287,11 @@
     "note": "Runtime público 4898d55 sano; activa, cabecera y panel comparten superficie."
   },
   "productValidation": {
-    "status": "PILOTO_DELTA_TECHNICAL_RELEASE_PASS_MESA_Y_ACEPTACION_HUMANA_PENDIENTES",
+    "status": "LOCAL_D9C32B7_HUMAN_ACCEPTED_INTEGRATED_RUNTIME_4898D55_UNCHANGED",
     "lastReviewedAt": "2026-08-20",
-    "reviewedBy": "QA local/remota; Mesa no disponible; Fito autorizó el release",
+    "reviewedBy": "Fito: aceptación visual humana explícita; QA local y guard de worktrees",
     "taskId": "TASK-20260817-001",
-    "note": "Activa, cabecera y panel dan #111914 sin línea inferior. 4898d55 verificado; Mesa y aceptación humana pendientes."
+    "note": "d9c32b7 aceptado e integrado localmente. El runtime continúa en 4898d55; no hubo GO ni nuevo release."
   },
   "blockers": [],
   "risks": [
@@ -304,13 +301,13 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito valida 4898d55 en su sesión autenticada antes de aceptarlo visualmente.",
-    "No hacer otra acción remota ni prueba sin GO; mantener cero outbound nuevo.",
+    "Iniciar el próximo trabajo local desde el contexto canónico y una tarea compatible aprobada.",
+    "No hacer acción remota, push, deploy ni mensaje sin un GO nuevo y exacto.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 23,
-    "throughDate": "2026-08-20"
+    "archivedChanges": 24,
+    "throughDate": "2026-08-19"
   }
 }

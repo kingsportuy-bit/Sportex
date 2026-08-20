@@ -10,12 +10,12 @@ Actualizado: 2026-08-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `feature`.
+- Intencion actual: `idle`.
 
 ## Git
 
-- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity`.
-- Rama: `codex/task-20260817-001-whatsapp-tabs-parity`.
+- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
+- Rama: `sportex-governance-20260801`.
 - Remote: `https://github.com/kingsportuy-bit/Sportex.git`.
 - Verificado: `2026-08-20`.
 
@@ -23,11 +23,11 @@ Actualizado: 2026-08-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260817-001`: `in_progress` (docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsApp, Leads, Pedidos y Clientes, sin mensajes reales no autorizados.
+Mantener estable el puesto operativo de Delta y preparar el próximo trabajo local sin acciones remotas implícitas.
 
 ## Alcance actual
 
@@ -62,7 +62,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Tarea: `TASK-20260817-001`.
 - Fecha: `2026-08-20`.
 - Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- 4898d55 desplegado: SVG une activa, cabecera y panel; runtime y recursos públicos PASS; aceptación humana pendiente.
+- d9c32b7 aceptado visualmente e integrado localmente; TASK cerrada sin push ni nuevo release; WORKTREE_CLOSE=PASS.
 
 ## Riesgos
 
@@ -77,6 +77,6 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 ## Siguientes acciones
 
-- Fito valida 4898d55 en su sesión autenticada antes de aceptarlo visualmente.
-- No hacer otra acción remota ni prueba sin GO; mantener cero outbound nuevo.
+- Iniciar el próximo trabajo local desde el contexto canónico y una tarea compatible aprobada.
+- No hacer acción remota, push, deploy ni mensaje sin un GO nuevo y exacto.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

@@ -11,18 +11,20 @@
     },
     {
       "path": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",
-      "classification": "PRESERVAR",
-      "reason": "Worktree activo de TASK-20260817-001 hasta integrar y cerrar su rama."
+      "classification": "INTEGRADO",
+      "reason": "Retirado automáticamente después de integrar por fast-forward; rama y commit preservados.",
+      "retiredAt": "2026-08-20"
     },
     {
       "path": "C:/Users/Fito/Documents/APP/SPORTEX",
-      "classification": "INTEGRADO",
-      "reason": "Checkout main limpio; su HEAD está contenido en la rama canónica."
+      "classification": "PRESERVAR",
+      "reason": "Working tree administrativo principal de Git; está limpio e integrado, pero no es retirable con git worktree remove."
     },
     {
       "path": "C:/Users/Fito/Documents/CODEX/DELTA/sportex-rebuild",
       "classification": "INTEGRADO",
-      "reason": "Rebuild limpio; su HEAD está contenido en la rama canónica."
+      "reason": "Retirado automáticamente limpio e integrado; rama y commit preservados.",
+      "retiredAt": "2026-08-20"
     },
     {
       "path": "C:/Users/Fito/AppData/Local/Temp/sportex-release-wt-34c9664",

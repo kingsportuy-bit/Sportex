@@ -72,7 +72,7 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
   const classifications = new Map(inventory.worktrees.map((item) => [normalizedPath(item.path), item]));
   const worktrees = parseWorktreePorcelain(git(repoRoot, 'worktree', 'list', '--porcelain'));
   const failures = [];
-  const audited = worktrees.map((worktree) => {
+  const audited = worktrees.map((worktree, index) => {
     const physical = fs.existsSync(worktree.path);
     const classification = classifications.get(normalizedPath(worktree.path)) || null;
     let clean = null;
@@ -87,6 +87,9 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
       if (classification?.classification === 'INTEGRADO' && !integrated) {
         failures.push(`INTEGRADO no contenido en ${targetRef}: ${worktree.path} (${worktree.head})`);
       }
+      if (classification?.classification === 'INTEGRADO' && index === 0) {
+        failures.push(`working tree administrativo no es retirable automáticamente; usar PRESERVAR: ${worktree.path}`);
+      }
     }
     return {
       ...worktree,
@@ -95,6 +98,7 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
       reason: classification?.reason || '',
       clean,
       integrated,
+      administrative: index === 0,
     };
   });
   return { repoRoot, projectRoot, inventoryPath, targetRef, inventory, audited, failures };
@@ -103,12 +107,21 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
 export function retireSafeWorktrees(result) {
   if (result.failures.length) throw new Error(result.failures.join('\n'));
   const current = normalizedPath(git(result.projectRoot, 'rev-parse', '--show-toplevel'));
+  const preservedSnapshots = new Map(result.audited
+    .filter((item) => item.physical && item.classification !== 'INTEGRADO')
+    .map((item) => [item.path, git(item.path, 'status', '--porcelain')]));
   const retired = [];
   for (const item of result.audited) {
     if (!item.physical || item.classification !== 'INTEGRADO' || !item.clean || !item.integrated) continue;
     if (normalizedPath(item.path) === current) continue;
     git(result.repoRoot, 'worktree', 'remove', '--', item.path);
     retired.push(item.path);
+    for (const [preservedPath, before] of preservedSnapshots) {
+      const after = git(preservedPath, 'status', '--porcelain');
+      if (after !== before) {
+        throw new Error(`retiro de ${item.path} alteró el worktree PRESERVAR/BLOQUEADO ${preservedPath}`);
+      }
+    }
   }
   git(result.repoRoot, 'worktree', 'prune');
   return retired;

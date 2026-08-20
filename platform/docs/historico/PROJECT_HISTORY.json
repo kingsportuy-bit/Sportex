@@ -37,6 +37,22 @@
       ]
     },
     {
+      "date": "2026-08-19",
+      "taskId": "TASK-20260817-001",
+      "summary": "Pestañas WhatsApp estilo lateral: texto horizontal, hover neutro y bracket curvo. 8a83ac4 sano; aceptación visual pendiente.",
+      "documents": [
+        "frontend/styles.css",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-012"
+      ]
+    },
+    {
       "date": "2026-08-15",
       "taskId": "TASK-20260815-001",
       "summary": "Se ejecuto el gate documental posterior a 279cdf6 con cierre PASS y sin cambio de código ni acción remota.",
@@ -410,5 +426,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-08-19"
+  "updatedAt": "2026-08-20"
 }

@@ -6,7 +6,7 @@ Actualizado: 2026-08-20.
 
 ## Activa
 
-- `TASK-20260817-001` | `in_progress` | Puesto operativo Delta desde SPORTEX | docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md
+- Ninguna.
 
 ## Cola
 
@@ -36,3 +36,4 @@ Actualizado: 2026-08-20.
 - `TASK-20260816-002` | `done` | Incorporar imágenes y no leídos a WhatsApp | docs/TASKS/closed/2026/TASK-20260816-002-whatsapp-imagenes-y-no-leidos.md
 - `TASK-20260816-003` | `done` | Promover imágenes y no leídos al piloto Delta | docs/TASKS/closed/2026/TASK-20260816-003-promover-whatsapp-media-no-leidos-piloto.md
 - `TASK-20260816-004` | `done` | Optimizar contexto, Biblioteca y cierre proporcional | docs/TASKS/closed/2026/TASK-20260816-004-optimizar-contexto-biblioteca-y-cierre.md
+- `TASK-20260817-001` | `done` | Puesto operativo Delta desde SPORTEX | docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md
