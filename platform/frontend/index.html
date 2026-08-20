@@ -118,25 +118,28 @@
           </section>
 
           <section id="whatsapp-view" class="view-section" hidden>
-            <div class="whatsapp-stage-bar">
-              <nav id="whatsapp-stage-tabs" class="whatsapp-stage-rail" aria-label="Etapas del proceso comercial"></nav>
-              <button id="whatsapp-stage-config" class="button button--quiet" type="button">Editar etapas</button>
-            </div>
-            <div id="whatsapp-workspace" class="whatsapp-workspace">
-              <aside id="whatsapp-master" class="whatsapp-master" aria-label="Conversaciones de WhatsApp" tabindex="-1">
-                <div class="whatsapp-list-pane">
-                  <header class="whatsapp-master-head">
-                    <div><strong>Conversaciones</strong><span id="whatsapp-result-count">0</span></div>
-                    <label class="whatsapp-search">
-                      <span class="sr-only">Buscar conversación</span>
-                      <input id="whatsapp-search" type="search" placeholder="Buscar nombre, equipo o mensaje" autocomplete="off" />
-                    </label>
-                    <button id="whatsapp-unread-filter" class="whatsapp-unread-filter" type="button" aria-pressed="false">No leídos</button>
-                  </header>
-                  <div id="whatsapp-list" class="whatsapp-list" aria-live="polite"></div>
-                </div>
-              </aside>
-              <section id="whatsapp-detail" class="whatsapp-detail" aria-live="polite"></section>
+            <div class="whatsapp-workspace-shell">
+              <svg id="whatsapp-tabbed-panel-frame" class="whatsapp-tabbed-panel-frame" aria-hidden="true"></svg>
+              <div class="whatsapp-stage-bar">
+                <nav id="whatsapp-stage-tabs" class="whatsapp-process-tabs" aria-label="Etapas del proceso comercial"></nav>
+              </div>
+              <div id="whatsapp-workspace" class="whatsapp-workspace">
+                <aside id="whatsapp-master" class="whatsapp-master" aria-label="Conversaciones de WhatsApp" tabindex="-1">
+                  <div class="whatsapp-list-pane">
+                    <header class="whatsapp-master-head">
+                      <div><strong>Conversaciones</strong><span id="whatsapp-result-count">0</span></div>
+                      <label class="whatsapp-search">
+                        <span class="sr-only">Buscar conversación</span>
+                        <input id="whatsapp-search" type="search" placeholder="Buscar nombre, equipo o mensaje" autocomplete="off" />
+                      </label>
+                      <button id="whatsapp-unread-filter" class="whatsapp-unread-filter" type="button" aria-pressed="false">No leídos</button>
+                      <button id="whatsapp-stage-config" class="button button--quiet" type="button">Editar etapas</button>
+                    </header>
+                    <div id="whatsapp-list" class="whatsapp-list" aria-live="polite"></div>
+                  </div>
+                </aside>
+                <section id="whatsapp-detail" class="whatsapp-detail" aria-live="polite"></section>
+              </div>
             </div>
           </section>
 

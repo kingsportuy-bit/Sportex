@@ -47,6 +47,10 @@ Core valida tenant, permisos, transición, versión e idempotencia; Diseño deja
 una sola versión vigente sin borrar historial; UI verifica tableros y contraste;
 PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
+La carcasa visual local exige contorno único, color exacto y ninguna línea bajo
+la activa. Primera/intermedia/última, responsive y segunda Mesa preceden todo
+resultado o despliegue.
+
 ## evidencia
 
 - `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
@@ -64,18 +68,12 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- `e845927` desplegado: al abrir cualquier chat de WhatsApp, tanto la primera
-  carga como su actualización quedan en el último mensaje. `1/1`, health,
-  ready y JavaScript público PASS; sin migraciones, datos ni mensajes.
-  Rollback `d7150d7`.
-- `3f29626` desplegado: pestañas de etapas arriba de WhatsApp, antes del chat.
-  `1/1`, health, ready, HTML y CSS públicos PASS; sin migraciones, datos ni
-  mensajes. Rollback `e845927`.
-- `a0be896` desplegado: botón `Editar etapas` visible junto a esas pestañas;
-  `1/1`, health, ready y HTML público PASS. Sin migraciones, datos ni mensajes.
-  Rollback `3f29626`.
-- `9ff3085` desplegado: etapas como solapas del panel. `1/1`, health, ready y
-  CSS público PASS; sin migraciones, datos ni mensajes. Rollback `a0be896`.
+- Releases UI: `e845927` (último mensaje), `3f29626` (pestañas arriba),
+  `a0be896` (edición) y `9ff3085` (solapas): todos `1/1`, health/ready PASS,
+  sin migraciones, datos ni mensajes. Rollback actual `a0be896`.
+- Candidato local: `#whatsapp-tabbed-panel-frame` reemplaza tres capas. Un
+  `panelContour` comparte activa/panel `#111914`; seis inactivas usan
+  `#0e1510`. QA: `#111914`, sin línea; Mesa/aceptación pendientes. Sin deploy.
 - Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
 
 ## decisiones

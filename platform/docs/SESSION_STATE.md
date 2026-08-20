@@ -62,7 +62,7 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 - Tarea: `TASK-20260817-001`.
 - Fecha: `2026-08-19`.
 - Fuente: `docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md`.
-- Editor de etapas visible en WhatsApp; sin mensajes.
+- Candidato local: SVG único activa/panel; QA técnico PASS, Mesa y aceptación humana pendientes.
 
 ## Riesgos
 
@@ -77,6 +77,6 @@ Dejar a Delta un puesto operativo mínimo en SPORTEX para trabajar desde WhatsAp
 
 ## Siguientes acciones
 
-- Fito valida con la sesión normal las pestañas superiores y la apertura de cada chat en el último mensaje.
+- Fito valida visualmente el candidato local antes de aceptación o release.
 - Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.
 - Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad.

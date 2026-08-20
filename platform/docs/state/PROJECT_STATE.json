@@ -31,7 +31,7 @@
     "path": "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
     "workType": "feature",
     "campaign": "CAMP-20260803-001",
-    "nextAction": "Fito prueba Leads como tablero de administración y WhatsApp como chat completo, sin mensajes de prueba."
+    "nextAction": "Fito valida visualmente el candidato local antes de cualquier release."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -90,7 +90,7 @@
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "9ff30856c69fddae3140bc6840537e3b131f3fdc",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_STAGE_TABS_DEPLOYED",
+    "workingTreeState": "TASK-20260817-001_LOCAL_TABS_QA_PASS_MESA_HUMAN_PENDING",
     "lastVerifiedAt": "2026-08-19"
   },
   "migrations": {
@@ -119,7 +119,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "Candidato 3f29626: 57/57, build, pestañas superiores y HTML/CSS públicos PASS."
+    "note": "Candidato local: QA visual técnico PASS; Mesa y aceptación humana pendientes."
   },
   "deployments": {
     "status": "PILOTO_DELTA_A0BE896_WHATSAPP_STAGE_EDITOR",
@@ -193,17 +193,18 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-19",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "Solapas de etapas desplegadas en WhatsApp; sin mensajes.",
-    "environment": "PILOTO_DELTA",
+    "summary": "Candidato local: SVG único activa/panel; QA técnico PASS, Mesa y aceptación humana pendientes.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
     {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
-      "summary": "Pestañas WhatsApp arriba del chat. 3f29626 sano; columnas configurables auditadas.",
+      "summary": "Candidato local: SVG único une activa/panel; QA técnico PASS, Mesa y aceptación pendientes.",
       "documents": [
         "frontend/index.html",
+        "frontend/app.js",
         "frontend/styles.css",
         "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
         "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
@@ -288,11 +289,11 @@
     "note": "Runtime público 3f29626 sano; las pestañas de etapa están sobre WhatsApp."
   },
   "productValidation": {
-    "status": "DESPLEGADO_PENDIENTE_ACEPTACION_VISUAL_OSCURO",
+    "status": "CANDIDATO_LOCAL_QA_PASS_MESA_Y_ACEPTACION_PENDIENTES",
     "lastReviewedAt": "2026-08-19",
-    "reviewedBy": "Fito",
-    "taskId": "TASK-20260815-002",
-    "note": "El runtime valida etapa, columnas, tableros, boceto y carga focal; Leads administra y WhatsApp concentra el chat. Falta aceptar visualmente las pestañas superiores desde la sesión normal."
+    "reviewedBy": "QA local reproducible; Mesa pendiente; Fito pendiente",
+    "taskId": "TASK-20260817-001",
+    "note": "Activa, cabecera anexa y panel dan #111914; sin línea bajo activa. Mesa, aceptación humana y release pendientes."
   },
   "blockers": [],
   "risks": [
@@ -302,7 +303,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito valida con la sesión normal las pestañas superiores y la apertura de cada chat en el último mensaje.",
+    "Fito valida visualmente el candidato local antes de aceptación o release.",
     "Preparar release PILOTO_DELTA y ejecutar solo la prueba controlada autorizada, sin outbound.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],

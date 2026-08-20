@@ -1862,16 +1862,100 @@ function filteredWhatsApp() {
     .sort((left, right) => right.conversation.lastActivityAt.localeCompare(left.conversation.lastActivityAt));
 }
 
-function whatsappStageIcon(stageId) {
-  return {
-    ALL: "▣",
-    NUEVO: "♙",
-    EN_CONVERSACION: "◰",
-    COTIZADO: "✎",
-    EN_SEGUIMIENTO: "⌁",
-    SENA_VALIDADA: "✓",
-    PERDIDO: "⊘",
-  }[stageId] ?? "◌";
+function whatsappStageGlyph(stageId) {
+  const glyphs = {
+    ALL: ["M4 4.75h8a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2H8l-3.1 2.2.6-2.2H4a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2Z", "M5.75 8.5h4.5"],
+    NUEVO: ["M8 8a2.6 2.6 0 1 0 0-5.2A2.6 2.6 0 0 0 8 8Z", "M3.25 14.5c.45-2.5 2.12-3.75 4.75-3.75s4.3 1.25 4.75 3.75", "M13 4.75v3.5M11.25 6.5h3.5"],
+    EN_CALIFICACION: ["M3.5 5.25h6.25a1.75 1.75 0 0 1 1.75 1.75v3.75a1.75 1.75 0 0 1-1.75 1.75H6.5l-2.25 1.6.45-1.6H3.5A1.75 1.75 0 0 1 1.75 10.75V7A1.75 1.75 0 0 1 3.5 5.25Z", "M12.25 8.75h.25A1.75 1.75 0 0 1 14.25 10.5v2.25a1.75 1.75 0 0 1-1.75 1.75H11.3l-1.55 1.1.3-1.1h-.3"],
+    COTIZADO: ["m4 12.75 1.25-3.25L11.5 3.25l1.25 1.25-6.25 6.25L4 12.75Z", "m10.5 4.25 1.25 1.25", "M3.5 14.25h9"],
+    EN_SEGUIMIENTO: ["m3 11 3-3 2.25 2.25L13 5.5", "M9.75 5.5H13v3.25"],
+    SENA_VALIDADA: ["M8 14.75A6.75 6.75 0 1 0 8 1.25a6.75 6.75 0 0 0 0 13.5Z", "m5 8 1.8 1.8L11.25 5.5"],
+    PERDIDO: ["M8 14.75A6.75 6.75 0 1 0 8 1.25a6.75 6.75 0 0 0 0 13.5Z", "m4 4 8 8"],
+  };
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.classList.add("whatsapp-process-tab__icon");
+  svg.setAttribute("viewBox", "0 0 16 16");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  for (const pathData of glyphs[stageId] ?? glyphs.ALL) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", pathData);
+    svg.append(path);
+  }
+  return svg;
+}
+
+let whatsappStageFrameObserver;
+let whatsappStageFrameDrawPending = false;
+
+function svgPath(className, pathData) {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.classList.add(...className.split(" "));
+  path.setAttribute("d", pathData);
+  return path;
+}
+
+function drawWhatsAppTabbedPanelFrame() {
+  const rail = $("#whatsapp-stage-tabs");
+  const frame = $("#whatsapp-tabbed-panel-frame");
+  const shell = $("#whatsapp-view .whatsapp-workspace-shell");
+  const workspace = $("#whatsapp-workspace");
+  if (!rail || !frame || !shell || !workspace) return;
+  const shellRect = shell.getBoundingClientRect();
+  const workspaceRect = workspace.getBoundingClientRect();
+  const panelWidth = Math.round(shellRect.width);
+  const panelHeight = Math.round(shellRect.height);
+  const panelTop = Math.round(workspaceRect.top - shellRect.top);
+  const activeButton = rail.querySelector(".whatsapp-process-tab.is-active");
+  if (!activeButton || !panelWidth || !panelHeight) return;
+  const activeRect = activeButton.getBoundingClientRect();
+  const activeLeft = Math.round(activeRect.left - shellRect.left);
+  const activeRight = Math.round(activeRect.right - shellRect.left);
+  const activeIsVisible = activeRight > 0 && activeLeft < panelWidth;
+  const activeRootLeft = Math.max(0, activeLeft - 24);
+  const activeRootRight = Math.min(panelWidth, activeRight + 3);
+  const panelCorner = 11;
+  const activeContourPath = activeIsVisible
+    ? `M ${activeRootLeft} ${panelTop} V ${panelTop - 8} C ${activeRootLeft} ${panelTop - 4} ${activeRootLeft + 4} ${panelTop - 3} ${activeRootLeft + 9} ${panelTop - 3} H ${activeRootLeft + 14} C ${activeRootLeft + 19} ${panelTop - 3} ${activeLeft - 3} ${panelTop - 7} ${activeLeft - 2} ${panelTop - 12} L ${activeLeft + 2} 10 C ${activeLeft + 3} 5 ${activeLeft + 6} 1 ${activeLeft + 13} 1 H ${activeRight - 13} C ${activeRight - 6} 1 ${activeRight - 3} 5 ${activeRight - 2} 10 L ${activeRootRight} ${panelTop}`
+    : `M 0 ${panelTop} H ${panelWidth}`;
+  const panelContour = activeIsVisible
+    ? `${activeContourPath} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner}${activeRootLeft > panelCorner ? ` Q 0 ${panelTop} ${panelCorner} ${panelTop} H ${activeRootLeft}` : ` V ${panelTop}`} Z`
+    : `M ${panelCorner} ${panelTop} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner} Q 0 ${panelTop} ${panelCorner} ${panelTop} Z`;
+  frame.setAttribute("viewBox", `0 0 ${panelWidth} ${panelHeight}`);
+  frame.setAttribute("preserveAspectRatio", "none");
+  frame.replaceChildren();
+
+  frame.append(svgPath("whatsapp-tabbed-panel-frame__surface", panelContour));
+  const stageButtons = [...rail.querySelectorAll(".whatsapp-process-tab")];
+  const activeStageIndex = stageButtons.indexOf(activeButton);
+  for (const [stageIndex, button] of stageButtons.entries()) {
+    if (button.classList.contains("is-active")) continue;
+    const rect = button.getBoundingClientRect();
+    const tabLeft = Math.round(rect.left - shellRect.left);
+    const tabWidth = Math.round(rect.width);
+    const tabRight = tabLeft + tabWidth;
+    const tabLeftRoot = stageIndex === activeStageIndex + 1 ? activeRootRight : tabLeft - 3;
+    const tabRightRoot = stageIndex === activeStageIndex - 1 ? activeRootLeft : tabRight + 3;
+    const fillPath = `M ${tabLeft + 13} 1 H ${tabRight - 13} C ${tabRight - 6} 1 ${tabRight - 3} 5 ${tabRight - 2} 10 L ${tabRightRoot} ${panelTop} H ${tabLeftRoot} L ${tabLeft + 2} 10 C ${tabLeft + 3} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 Z`;
+    const outlinePath = `M ${tabLeftRoot} ${panelTop} L ${tabLeft + 2} 10 C ${tabLeft + 3} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 H ${tabRight - 13} C ${tabRight - 6} 1 ${tabRight - 3} 5 ${tabRight - 2} 10 L ${tabRightRoot} ${panelTop}`;
+    frame.append(
+      svgPath("whatsapp-tabbed-panel-frame__inactive", fillPath),
+      svgPath("whatsapp-tabbed-panel-frame__inactive-outline", outlinePath),
+    );
+  }
+  frame.append(
+    svgPath("whatsapp-tabbed-panel-frame__outline", panelContour),
+    svgPath("whatsapp-tabbed-panel-frame__active-outline", activeContourPath),
+  );
+}
+
+function scheduleWhatsAppTabbedPanelFrameDraw() {
+  if (whatsappStageFrameDrawPending) return;
+  whatsappStageFrameDrawPending = true;
+  requestAnimationFrame(() => {
+    whatsappStageFrameDrawPending = false;
+    drawWhatsAppTabbedPanelFrame();
+  });
 }
 
 function renderWhatsAppStages() {
@@ -1884,21 +1968,23 @@ function renderWhatsAppStages() {
       ? state.stageDefinitions.lead.map((stage) => ({ id: stage.id, label: stage.name, shortLabel: stage.name }))
       : salesProcessStages),
   ];
-  for (const [index, stage] of stages.entries()) {
+  for (const stage of stages) {
     const active = state.whatsappStage === stage.id;
     const count = stage.id === "ALL"
       ? state.commercial.length
       : state.commercial.filter((item) => item.opportunity.stage === stage.id).length;
-    const button = element("button", `whatsapp-stage-tab${active ? " is-active" : ""}`);
+    const button = element("button", `whatsapp-process-tab${active ? " is-active" : ""}`);
     button.type = "button";
     button.dataset.stage = stage.id;
     button.setAttribute("aria-pressed", String(active));
     button.setAttribute("aria-label", `${stage.label}: ${count} conversaciones`);
-    button.append(
-      element("span", "whatsapp-stage-index", whatsappStageIcon(stage.id)),
-      element("span", "whatsapp-stage-name", stage.label),
-      element("span", "whatsapp-stage-count", String(count)),
+    const content = element("span", "whatsapp-process-tab__content");
+    content.append(
+      whatsappStageGlyph(stage.id),
+      element("span", "whatsapp-process-tab__name", stage.label),
+      element("span", "whatsapp-process-tab__count", String(count)),
     );
+    button.append(content);
     button.addEventListener("click", () => {
       state.whatsappStage = stage.id;
       state.mobileWhatsappDetailOpen = false;
@@ -1907,6 +1993,17 @@ function renderWhatsAppStages() {
       $("#whatsapp-list")?.focus({ preventScroll: true });
     });
     rail.append(button);
+  }
+  scheduleWhatsAppTabbedPanelFrameDraw();
+  whatsappStageFrameObserver?.disconnect();
+  whatsappStageFrameObserver = new ResizeObserver(scheduleWhatsAppTabbedPanelFrameDraw);
+  whatsappStageFrameObserver.observe(rail);
+  const workspaceShell = $("#whatsapp-view .whatsapp-workspace-shell");
+  if (workspaceShell) whatsappStageFrameObserver.observe(workspaceShell);
+  if (rail.dataset.tabbedPanelFrameBound !== "true") {
+    rail.dataset.tabbedPanelFrameBound = "true";
+    rail.addEventListener("scroll", scheduleWhatsAppTabbedPanelFrameDraw, { passive: true });
+    window.addEventListener("resize", scheduleWhatsAppTabbedPanelFrameDraw, { passive: true });
   }
 }
 

@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: Pestañas de etapas sobre WhatsApp publicadas en PILOTO_DELTA; aceptación visual humana pendiente
+estado: PILOTO_DELTA permanece en 9ff3085; candidato local de contorno único con QA técnica PASS, Mesa pendiente y aceptación visual humana pendiente
 updated_at: 2026-08-19
-candidate: 9ff3085
+candidate: LOCAL_UNCOMMITTED_TABBED_PANEL_FRAME
 
 ## Recorrido cubierto
 
@@ -166,6 +166,36 @@ candidate: 9ff3085
   delineadas en lima y las demás integradas al borde superior del panel.
 - Servicio `1/1`, `/health`, `/ready` y CSS público PASS. Sin migraciones,
   datos ni mensajes. Rollback inmediato: `sportex-staging:a0be896fc1945007`.
+
+## Candidato local — contorno único de pestaña y panel (2026-08-19)
+
+- Alcance autorizado: sólo `DESARROLLO_LOCAL`. No hubo commit, despliegue,
+  migración, mensaje, operación sobre `PILOTO_DELTA` ni cambio de datos reales.
+- `frontend/index.html` conserva los controles y el espacio de trabajo, pero
+  reemplaza `whatsapp-panel-fill`, `whatsapp-panel-outline` y
+  `whatsapp-stage-frame` por el único SVG
+  `#whatsapp-tabbed-panel-frame`.
+- `frontend/app.js` usa un solo `panelContour` para superficie y contorno. La
+  activa se eleva desde el propio borde del panel; las seis inactivas son rutas
+  oscuras adicionales dentro del mismo SVG. Los botones permanecen como
+  controles transparentes con `aria-pressed` y foco visible.
+- La Mesa 2 previa queda revocada: midió el panel central y no detectó que la
+  cabecera anexa seguía en `#1a211c`. La corrección local la iguala a
+  `#111914`, sin cambiar controles ni listas.
+- Navegador local, 1440x792: primera, intermedia y última activas verifican un
+  único SVG. Activa, cabecera inmediata y panel central dan `#111914`; 122,
+  123 y 122 píxeles interiores, respectivamente, no contienen línea bajo la
+  activa.
+- Navegador local: las siete etapas, filtros, `Space`, editor y apertura
+  del chat al último mensaje PASS. No hubo errores ni requests posteriores a
+  la carga durante el cambio de etapas. Responsive PASS en 1280x720,
+  1024x768, 768x1024 y 390x844, incluida la última pestaña visible en móvil.
+- `npm run validate` PASS: NUL limpio, 13/13 workflow, documentación, tipos,
+  57/57 Core, SQL/RLS y build. `git diff --check` PASS.
+- La Mesa automática no pudo iniciarse por límite de capacidad; no existe
+  aprobación de Mesa. QA local confirma resize en la misma página: `viewBox`
+  666→594 y unión `0px` tras 1440x792→1440x720.
+- Gate pendiente: aceptación visual humana. Este bloque no autoriza release.
 
 ## Límites y rollout
 
