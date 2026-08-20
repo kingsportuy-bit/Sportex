@@ -85,12 +85,12 @@
     "SPORTEX-DEC-017"
   ],
   "git": {
-    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
+    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",
     "projectRoot": "platform",
-    "branch": "sportex-governance-20260801",
+    "branch": "codex/task-20260817-001-whatsapp-tabs-parity",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
-    "workingTreeState": "TASK-20260817-001_PILOTO_4898D55_TECH_PASS_MESA_HUMAN_PENDING",
+    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_PARITY_IN_PROGRESS",
     "lastVerifiedAt": "2026-08-20"
   },
   "migrations": {

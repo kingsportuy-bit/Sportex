@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "referenceId": "SPORTEX-WHATSAPP-TABS-20260820",
+  "authority": "user_supplied_target",
+  "source": {
+    "fileName": "399a3cdf-21e8-4081-8c1f-652249a47660.png",
+    "storedInGit": false,
+    "width": 1672,
+    "height": 941,
+    "sha256": "5167043b9f9db3cbec5da61bef653d82e8fbf118873aa75d39173b1976285438",
+    "colorInterpretation": "untagged_assumed_sRGB",
+    "metadata": "source had no sRGB, iCCP or gAMA declaration; auxiliary metadata is not copied"
+  },
+  "canonicalCrop": {
+    "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-tabs.png",
+    "roi": { "x": 247, "y": 94, "width": 1320, "height": 96 },
+    "resampling": "none",
+    "containsPrivateAccountOrConversationData": false,
+    "sha256": "cebee25314c0598dd7aa22c56c96ada6be89f9e9ccc6150ffc43427670ceeb23"
+  },
+  "strictRasterAuthority": {
+    "viewport": { "width": 1672, "height": 941, "deviceScaleFactor": 1 },
+    "activeStage": "Todas",
+    "otherActiveStages": "DOM_SVG_STYLE_INVARIANTS_ONLY",
+    "responsive": "STRUCTURAL_AND_FUNCTIONAL_ONLY"
+  },
+  "sealedArtifacts": {
+    "plan": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/plan-v2.json", "sha256": "9c15fcd70c1cc4f24cd1c482d96bd2ae80ffe06d11c846d78eb49cf9b96e9ac3" },
+    "fixture": { "path": "scripts/fixtures/whatsapp-tabs-visual.json", "sha256": "9eb92acd0de9a47489a027a5ce4353d7fba2d9950e5278abf40ec61ad19fa68a" },
+    "comparator": { "path": "scripts/compare-whatsapp-tabs.ps1", "sha256": "8c1ebccef62aaea99cd23be75dc713a269dec743ad7695720d40348f50ae6b38" },
+    "e2eHarness": { "path": "scripts/e2e-whatsapp-tabs-visual.mjs", "sha256": "7ef401230925e6dcd1c98f6281ec183b14ad524554c99516e947ec61933652a5" },
+    "referenceManifest": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-manifest.json", "sha256": "19c249855ed0aeda5d1c63778bdf2c8c8c82c469ea1461457a9b483dd10c1502" },
+    "reference": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-tabs.png", "sha256": "cebee25314c0598dd7aa22c56c96ada6be89f9e9ccc6150ffc43427670ceeb23" },
+    "geometryMask": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-strict-inclusion-mask.png", "sha256": "d14828856da6a138fc8f04d2fef834baf8c28be51d402eb847bb10fd2d4d16ab" },
+    "antiAliasingMask": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-aa-exclusion-mask.png", "sha256": "4b9567446c2e222209614f7f746d8272153f4c8d4616e1cb4709026205d652fb" },
+    "haloMask": { "path": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-halo-seed-mask.png", "sha256": "942c0a70768051caf6db36bad228b0812029cb730a6eabf6e499935b04b284b8" }
+  },
+  "sealedBeforeUiEdit": true
+}

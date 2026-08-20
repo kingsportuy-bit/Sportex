@@ -1,0 +1,204 @@
+{
+  "$schema": "sportex.whatsapp-tabs-visual-fixture.v1",
+  "fixtureId": "TASK-20260817-001-whatsapp-tabs-parity-v1",
+  "clockUtc": "2026-08-20T15:00:00.000Z",
+  "reference": {
+    "sourcePath": "C:/Users/Fito/Downloads/399a3cdf-21e8-4081-8c1f-652249a47660.png",
+    "sourceSha256": "5167043b9f9db3cbec5da61bef653d82e8fbf118873aa75d39173b1976285438",
+    "preparedPath": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/sealed/reference-tabs.png",
+    "preparedSha256": "cebee25314c0598dd7aa22c56c96ada6be89f9e9ccc6150ffc43427670ceeb23",
+    "sealManifestPath": "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/reference/reference-manifest.json",
+    "sourceWidth": 1672,
+    "sourceHeight": 941,
+    "colorSpace": "untagged_assumed_sRGB",
+    "strictState": "ALL",
+    "crop": {
+      "x": 247,
+      "y": 94,
+      "width": 1320,
+      "height": 96
+    }
+  },
+  "capture": {
+    "viewport": {
+      "width": 1672,
+      "height": 941
+    },
+    "deviceScaleFactor": 1,
+    "locale": "es-UY",
+    "timezoneId": "America/Montevideo",
+    "colorScheme": "dark",
+    "coldProcesses": 3,
+    "animationPolicy": "disabled",
+    "fontFamilies": [
+      "Bahnschrift",
+      "Segoe UI",
+      "Cascadia Mono",
+      "Consolas"
+    ]
+  },
+  "geometry": {
+    "tabHeight": 67.0,
+    "tabWidth": 180.0,
+    "topPlateau": 160.0,
+    "sideRun": 15.0,
+    "shoulderRadius": 11.0,
+    "panelRadius": 11.0,
+    "railGutter": 29.0,
+    "bottomOverlap": 8.0,
+    "domTolerance": 0.25,
+    "joinTolerance": 0.0
+  },
+  "stages": [
+    {
+      "id": "ALL",
+      "label": "Todas",
+      "count": 25
+    },
+    {
+      "id": "NUEVO",
+      "label": "Nuevos",
+      "count": 24
+    },
+    {
+      "id": "EN_CALIFICACION",
+      "label": "En conversación",
+      "count": 0
+    },
+    {
+      "id": "COTIZADO",
+      "label": "Cotización / boceto",
+      "count": 0
+    },
+    {
+      "id": "EN_SEGUIMIENTO",
+      "label": "Seguimiento",
+      "count": 1
+    },
+    {
+      "id": "SENA_VALIDADA",
+      "label": "Confirmados",
+      "count": 0
+    },
+    {
+      "id": "PERDIDO",
+      "label": "No continúa",
+      "count": 0
+    }
+  ],
+  "data": {
+    "contactPrefix": "Contacto ficticio",
+    "teamPrefix": "Equipo ficticio",
+    "messageText": "Mensaje ficticio de control visual.",
+    "nextAction": "Responder consulta ficticia",
+    "productType": "CAMISETAS"
+  },
+  "api": {
+    "publicConfig": {
+      "environment": "development",
+      "release": "visual-fixture-001",
+      "authUrl": "",
+      "authAnonKey": "",
+      "localCommercialReplayEnabled": true,
+      "localCommercialPersistenceEnabled": false,
+      "localWhatsAppSimulationEnabled": false,
+      "commercialWorkspaceEnabled": true,
+      "evolutionIngressEnabled": false,
+      "evolutionOutboundEnabled": false,
+      "whatsappUnreadEnabled": true,
+      "whatsappMediaEnabled": false,
+      "conversationTimelineEnabled": false
+    },
+    "session": {
+      "tenantName": "Delta Sport QA local",
+      "email": "operador.ficticio@example.invalid",
+      "passwordChangeRequired": false
+    }
+  },
+  "comparison": {
+    "ssim": {
+      "windowSize": 11,
+      "sigma": 1.5,
+      "k1": 0.01,
+      "k2": 0.03,
+      "minimum": 0.995
+    },
+    "deltaE00": {
+      "medianMaximum": 1.0,
+      "percentile95Maximum": 2.0,
+      "componentPixelThreshold": 2.0
+    },
+    "antiAliasing": {
+      "neighborhoodRadius": 1,
+      "luminanceRangeMinimum": 8.0,
+      "endpointDistance": 1.5,
+      "dilationRadius": 0
+    },
+    "components": {
+      "connectivity": 8,
+      "mismatchFractionMaximum": 0.0001,
+      "largestAreaMaximum": 4
+    },
+    "halo": {
+      "region": {
+        "x": 5,
+        "y": 4,
+        "width": 238,
+        "height": 84
+      },
+      "seedGreenExcessMinimum": 50.0,
+      "seedLuminanceMinimum": 70.0,
+      "maximumDistance": 18.0,
+      "baselineDistanceMinimum": 14.0,
+      "baselineDistanceMaximum": 18.0,
+      "minimumSignal": 0.000001,
+      "peakLuminanceRelativeTolerance": 0.03,
+      "effectiveRadiusRelativeTolerance": 0.05,
+      "integratedAreaRelativeTolerance": 0.05,
+      "falloffRelativeTolerance": 0.05,
+      "centerShiftMaximumPixels": 0.5
+    }
+  },
+  "responsiveViewports": [
+    {
+      "name": "desktop-1280x720",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "tablet-1024x768",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "tablet-portrait-768x1024",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "mobile-390x844",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "allowedRequests": {
+    "staticPaths": [
+      "/",
+      "/index.html",
+      "/styles.css",
+      "/app.js",
+      "/favicon.ico",
+      "/assets/sportex-favicon.png",
+      "/assets/sportex-logo.png"
+    ],
+    "apiRoutes": [
+      "GET /v1/public-config",
+      "GET /v1/session",
+      "GET /v1/clients",
+      "GET /v1/orders",
+      "GET /v1/stage-definitions/lead",
+      "GET /v1/stage-definitions/order",
+      "GET /v1/commercial/conversations?limit=25"
+    ]
+  }
+}

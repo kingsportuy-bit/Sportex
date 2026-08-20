@@ -14,8 +14,8 @@ Actualizado: 2026-08-20.
 
 ## Git
 
-- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
-- Rama: `sportex-governance-20260801`.
+- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity`.
+- Rama: `codex/task-20260817-001-whatsapp-tabs-parity`.
 - Remote: `https://github.com/kingsportuy-bit/Sportex.git`.
 - Verificado: `2026-08-20`.
 

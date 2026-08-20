@@ -12,10 +12,10 @@ Actualizado: 2026-08-20.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Tarea: `TASK-20260817-001`.
-- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
-- Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 69991/70000 caracteres.
-- Tokens estimados: 17498 (aproximacion de 4 caracteres por token).
+- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity`.
+- Rama: `codex/task-20260817-001-whatsapp-tabs-parity`.
+- Presupuesto potencial: 69364/70000 caracteres.
+- Tokens estimados: 17341 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 22.
 
 ## Objetivo, alcance y riesgo

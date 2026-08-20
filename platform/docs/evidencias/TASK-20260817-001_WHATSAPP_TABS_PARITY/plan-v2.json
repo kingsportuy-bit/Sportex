@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "planId": "TASK-20260817-001-WHATSAPP-TABS-PARITY-V5",
+  "status": "PLAN_APPROVED_AUTHORIZED",
+  "approvedBy": "Fito",
+  "approvedAt": "2026-08-20",
+  "secondReview": "PASS",
+  "executionModel": { "model": "gpt-5.6-sol", "reasoningEffort": "max" },
+  "outcome": "Paridad visual certificada dentro de tolerancias selladas para Todas activa en desktop canónico, con pestaña y panel fusionados y halo verde equivalente; seis estados restantes por invariantes; release reversible en PILOTO_DELTA.",
+  "reference": {
+    "sourceSha256": "5167043b9f9db3cbec5da61bef653d82e8fbf118873aa75d39173b1976285438",
+    "cropSha256": "cebee25314c0598dd7aa22c56c96ada6be89f9e9ccc6150ffc43427670ceeb23",
+    "cropRoi": { "x": 247, "y": 94, "width": 1320, "height": 96 },
+    "colorInterpretation": "untagged_assumed_sRGB"
+  },
+  "git": {
+    "base": "293793a4621661238647cdc4a92efae5ac472eed",
+    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",
+    "branch": "codex/task-20260817-001-whatsapp-tabs-parity",
+    "localRollback": "discard only this branch and worktree",
+    "remoteRollbackCandidate": "sportex-staging:9ff30856c69fddae"
+  },
+  "scope": {
+    "allowed": [
+      "frontend/app.js",
+      "frontend/styles.css",
+      "scripts/e2e-whatsapp-tabs-visual.mjs",
+      "scripts/compare-whatsapp-tabs.ps1",
+      "scripts/fixtures/whatsapp-tabs-visual.json",
+      "package.json commands without dependencies",
+      "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md",
+      "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY/**",
+      "active task, PROJECT_STATE and generated workflow views"
+    ],
+    "excluded": [
+      "frontend/index.html unless a structural test proves necessity and new authority is obtained",
+      "Core, API, DB, Evolution, migrations, real data and messages",
+      "PRODUCCION_COMERCIAL and unrelated files"
+    ]
+  },
+  "geometry": {
+    "tabHeight": 67,
+    "tabWidth": 180,
+    "plateau": 160,
+    "sideRun": 15,
+    "shoulderRadius": 11,
+    "panelRadius": 11,
+    "railGutter": 29,
+    "bottomOverlap": 8
+  },
+  "visualTokens": {
+    "accent": "#C7F13C",
+    "background": "#0E1110",
+    "master": "#151B17",
+    "canvas": "#101412",
+    "structuralBorder": "#324137",
+    "inactiveGradient": ["#161A17", "#0F1311"],
+    "inactiveBorder": "#2C3930",
+    "sharpStrokePx": 1.25,
+    "nearGlow": { "radiusPx": 5, "opacity": 0.4 },
+    "outerGlow": { "radiusPx": 11, "opacity": 0.15 }
+  },
+  "implementationOrder": [
+    "seal reference, fixture, comparator and masks",
+    "geometry without glow",
+    "surfaces and structural borders",
+    "outer and near glow plus sharp outline",
+    "icons and typography",
+    "seven states, responsive and accessibility",
+    "strict canonical comparison",
+    "specialist review",
+    "immutable pilot release and observation"
+  ],
+  "canonicalGates": {
+    "ssimMin": 0.995,
+    "deltaE00MedianMax": 1,
+    "deltaE00P95Max": 2,
+    "haloPeakDifferencePercentMax": 3,
+    "haloHalfMaxRadiusDifferencePercentMax": 5,
+    "haloAucDifferencePercentMax": 5,
+    "haloFalloffNrmsePercentMax": 5,
+    "haloCenterShiftPxMax": 0.5,
+    "nonAaMismatchPercentMax": 0.01,
+    "maxConnectedMismatchAreaPx": 4,
+    "domSvgToleranceCssPx": 0.25,
+    "activePanelGapPx": 0,
+    "lineUnderActivePx": 0,
+    "coldRenderCount": 3,
+    "coldRendersMustBeBitIdentical": true
+  },
+  "otherStates": {
+    "count": 6,
+    "claim": "no strict raster identity",
+    "requirements": ["same translated path", "same tokens", "single active", "zero gap", "no double line", "no clipping"]
+  },
+  "responsive": {
+    "viewports": ["1280x720", "1024x768", "768x1024", "390x844"],
+    "requirements": ["horizontal accessible row", "no page overflow", "no clipping", "keyboard and focus preserved"]
+  },
+  "release": {
+    "environment": "PILOTO_DELTA",
+    "authorized": true,
+    "candidateBindingRequiredBeforeRemoteAction": true,
+    "source": "remote commit and git archive",
+    "effect": "frontend tabs only",
+    "prohibitions": ["migrations", "data mutation", "Evolution changes", "messages"],
+    "stopConditions": ["replica not 1/1", "health or ready failure", "asset hash mismatch", "unexpected logs", "outbound change", "visual gate failure"]
+  },
+  "timebox": { "reviewAtHours": 8, "capHours": 12 }
+}

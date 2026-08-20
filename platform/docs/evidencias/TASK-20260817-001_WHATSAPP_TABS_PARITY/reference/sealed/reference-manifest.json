@@ -1,0 +1,127 @@
+{
+    "schema":  "sportex.whatsapp-tabs-visual-reference.v1",
+    "status":  "REFERENCE_PREPARED_AND_SEALED",
+    "preparedAtUtc":  "2026-08-20T05:20:33.1069230Z",
+    "fixture":  {
+                    "path":  "scripts/fixtures/whatsapp-tabs-visual.json",
+                    "sha256":  "9eb92acd0de9a47489a027a5ce4353d7fba2d9950e5278abf40ec61ad19fa68a",
+                    "id":  "TASK-20260817-001-whatsapp-tabs-parity-v1"
+                },
+    "source":  {
+                   "fileName":  "399a3cdf-21e8-4081-8c1f-652249a47660.png",
+                   "sha256":  "5167043b9f9db3cbec5da61bef653d82e8fbf118873aa75d39173b1976285438",
+                   "width":  1672,
+                   "height":  941,
+                   "pngChunks":  [
+                                     "IHDR",
+                                     "caBX",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IDAT",
+                                     "IEND"
+                                 ],
+                   "declaredColorChunks":  [
+
+                                           ],
+                   "colorSpace":  "untagged_assumed_sRGB",
+                   "metadataPolicy":  "source_untagged_assumed_sRGB; prepared_artifact_reencoded_as_sRGB_without_copying_source_metadata"
+               },
+    "crop":  {
+                 "x":  247,
+                 "y":  94,
+                 "width":  1320,
+                 "height":  96
+             },
+    "preparedPngChunks":  [
+                              "IHDR",
+                              "sRGB",
+                              "gAMA",
+                              "pHYs",
+                              "IDAT",
+                              "IDAT",
+                              "IDAT",
+                              "IEND"
+                          ],
+    "preparedColorChunks":  [
+                                "sRGB",
+                                "gAMA"
+                            ],
+    "algorithms":  {
+                       "ssim":  {
+                                    "windowSize":  11,
+                                    "sigma":  1.5,
+                                    "k1":  0.01,
+                                    "k2":  0.03,
+                                    "minimum":  0.995
+                                },
+                       "deltaE00":  {
+                                        "medianMaximum":  1.0,
+                                        "percentile95Maximum":  2.0,
+                                        "componentPixelThreshold":  2.0
+                                    },
+                       "antiAliasing":  {
+                                            "neighborhoodRadius":  1,
+                                            "luminanceRangeMinimum":  8.0,
+                                            "endpointDistance":  1.5,
+                                            "dilationRadius":  0
+                                        },
+                       "components":  {
+                                          "connectivity":  8,
+                                          "mismatchFractionMaximum":  0.0001,
+                                          "largestAreaMaximum":  4
+                                      },
+                       "halo":  {
+                                    "region":  {
+                                                   "x":  5,
+                                                   "y":  4,
+                                                   "width":  238,
+                                                   "height":  84
+                                               },
+                                    "seedGreenExcessMinimum":  50.0,
+                                    "seedLuminanceMinimum":  70.0,
+                                    "maximumDistance":  18.0,
+                                    "baselineDistanceMinimum":  14.0,
+                                    "baselineDistanceMaximum":  18.0,
+                                    "minimumSignal":  0.000001,
+                                    "peakLuminanceRelativeTolerance":  0.03,
+                                    "effectiveRadiusRelativeTolerance":  0.05,
+                                    "integratedAreaRelativeTolerance":  0.05,
+                                    "falloffRelativeTolerance":  0.05,
+                                    "centerShiftMaximumPixels":  0.5
+                                }
+                   },
+    "artifacts":  {
+                      "reference":  {
+                                        "file":  "reference-tabs.png",
+                                        "sha256":  "cebee25314c0598dd7aa22c56c96ada6be89f9e9ccc6150ffc43427670ceeb23"
+                                    },
+                      "antiAliasExclusionMask":  {
+                                                     "file":  "reference-aa-exclusion-mask.png",
+                                                     "sha256":  "4b9567446c2e222209614f7f746d8272153f4c8d4616e1cb4709026205d652fb"
+                                                 },
+                      "strictInclusionMask":  {
+                                                  "file":  "reference-strict-inclusion-mask.png",
+                                                  "sha256":  "d14828856da6a138fc8f04d2fef834baf8c28be51d402eb847bb10fd2d4d16ab"
+                                              },
+                      "haloSeedMask":  {
+                                           "file":  "reference-halo-seed-mask.png",
+                                           "sha256":  "942c0a70768051caf6db36bad228b0812029cb730a6eabf6e499935b04b284b8"
+                                       }
+                  }
+}
