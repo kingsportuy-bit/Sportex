@@ -154,3 +154,11 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   selector, preferencia persistida ni ruta de retorno al tema claro.
 - La interfaz fija el tema antes de cargar la app y las superficies oscuras usan
   grafito explícito cuando no deben depender de un token de texto.
+
+## SPORTEX-DEC-018 - Cierre gobernado de worktrees
+
+- 2026-08-20 · `VIGENTE`. Cada worktree físico se clasifica `INTEGRADO`,
+  `PRESERVAR` o `BLOQUEADO`; un checkout no clasificado bloquea el cierre.
+- El retiro automático se limita a `INTEGRADO`, limpio y contenido en la rama
+  objetivo. No usa `--force`, no borra refs y poda por separado metadatos
+  fantasma `prunable`.

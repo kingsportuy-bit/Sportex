@@ -14,8 +14,8 @@ Actualizado: 2026-08-20.
 - Tarea: `TASK-20260817-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity`.
 - Rama: `codex/task-20260817-001-whatsapp-tabs-parity`.
-- Presupuesto potencial: 69364/70000 caracteres.
-- Tokens estimados: 17341 (aproximacion de 4 caracteres por token).
+- Presupuesto potencial: 69591/70000 caracteres.
+- Tokens estimados: 17398 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 22.
 
 ## Objetivo, alcance y riesgo

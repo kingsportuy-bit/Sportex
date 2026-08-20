@@ -29,6 +29,7 @@
     {"path":"docs/ENVIRONMENTS_CONTRACT.md","owner":"release-governance","authority":100,"readWhen":["always","operation","incident","deploy","runtime"]},
     {"path":"docs/RELEASE_GOVERNANCE_CONTRACT.md","owner":"release-governance","authority":95,"readWhen":["operation","incident","deploy","runtime","quality"]},
     {"path":"docs/GIT_RELEASE_CONTRACT.md","owner":"release-governance","authority":90,"readWhen":["operation","deploy","quality"]},
+    {"path":"docs/WORKTREE_LIFECYCLE_CONTRACT.md","owner":"release-governance","authority":90,"readWhen":["documentation","operation","quality","tasks"]},
     {"path":"docs/DEPLOYMENT_PROTOCOL.md","owner":"release-governance","authority":90,"readWhen":["operation","incident","deploy"]},
     {"path":"docs/DEPLOYMENT_MANIFEST_TEMPLATE.md","owner":"release-governance","authority":80,"readWhen":["deploy"]},
     {"path":"docs/BIBLIA_SPORTEX.md","owner":"product","authority":90,"readWhen":["product","architecture","feature"]},

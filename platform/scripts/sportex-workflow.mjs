@@ -444,6 +444,7 @@ function main() {
     const closureFailures = validateClosure(before.state, task, args.root, profile);
     if (closureFailures.length) return printFailures(closureFailures);
     try {
+      runNode(args.root, 'scripts/worktree-close.mjs');
       runNode(args.root, 'scripts/documentation/generate-documentation-views.mjs');
       const npm = npmRunInvocation(profile === 'docs' ? 'validate:docs' : 'validate');
       execFileSync(npm.file, npm.args, { cwd: args.root, stdio: 'inherit' });

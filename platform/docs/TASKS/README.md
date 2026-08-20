@@ -41,6 +41,9 @@
 
 - El repositorio Git es la fuente; una copia manual no crea otra verdad.
 - Ejecutar `npm run task:doctor` antes de abrir trabajo nuevo.
+- Antes del cierre, `npm run worktree:check` exige clasificación completa.
+- `npm run worktree:close` retira sólo worktrees `INTEGRADO`, limpios y ya
+  contenidos en la rama objetivo; `PRESERVAR` y `BLOQUEADO` quedan intactos.
 - Obtener el siguiente ID con `npm run task:next-id`.
 - Cada release usa commit remoto y scope explicito.
 

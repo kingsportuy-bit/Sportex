@@ -9,6 +9,8 @@ retomar SPORTEX sin reconstruir decisiones desde conversaciones sueltas.
 
 - `docs/state/PROJECT_STATE.json`: estado de trabajo canonico.
 - `docs/state/DOCUMENT_REGISTRY.json`: clasificacion, autoridad y router.
+- `docs/state/WORKTREE_CLASSIFICATIONS.json`: inventario y destino de cada
+  worktree físico antes del cierre.
 - `docs/DECISIONES.md`: decisiones tecnicas durables y reemplazos.
 - `docs/TASKS/{active,queued,closed}`: contratos de trabajo.
 - `docs/historico/PROJECT_HISTORY.json`: checkpoints anteriores retirados del

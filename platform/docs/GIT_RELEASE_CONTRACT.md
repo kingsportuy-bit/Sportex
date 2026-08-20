@@ -11,6 +11,10 @@ una carpeta del mismo repositorio; una copia manual no crea una segunda verdad.
 - No se borran ni revierten cambios ajenos para limpiar un worktree.
 - El siguiente ID de tarea se obtiene con `npm run task:next-id`.
 - Antes de abrir trabajo, `npm run task:doctor` muestra ramas y worktrees.
+- Todo worktree físico se clasifica `INTEGRADO`, `PRESERVAR` o `BLOQUEADO`;
+  el cierre falla ante uno no clasificado.
+- El retiro automático exige `INTEGRADO`, limpio y contenido en la rama
+  objetivo; nunca usa fuerza ni borra refs.
 - Un release usa un commit remoto y un scope explicito.
 - El artefacto se construye desde `git archive` o mecanismo equivalente del
   commit aprobado, nunca desde archivos locales sueltos.
@@ -33,3 +37,6 @@ inmutable. Ninguno despliega por si mismo.
 
 `PILOTO_DELTA` y `PRODUCCION_COMERCIAL` son gates distintos. La evidencia del
 piloto puede ser requisito, pero nunca permiso automatico para salir al mercado.
+
+El detalle operativo y el inventario viven en
+`WORKTREE_LIFECYCLE_CONTRACT.md` y `state/WORKTREE_CLASSIFICATIONS.json`.

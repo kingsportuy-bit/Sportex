@@ -24,6 +24,8 @@
     "validate:docs": "npm run scan:text && npm run test:workflow && npm run validate-docs:fast",
     "task:doctor": "node scripts/task-worktree-doctor.mjs --strict",
     "task:next-id": "node scripts/task-worktree-doctor.mjs --strict --next-id",
+    "worktree:check": "node scripts/worktree-close.mjs",
+    "worktree:close": "node scripts/worktree-close.mjs --apply",
     "errors:preflight": "powershell -ExecutionPolicy Bypass -File scripts/codex-preflight-errors.ps1",
     "history:compact": "node scripts/documentation/compact-project-history.mjs",
     "demo:commercial": "powershell -ExecutionPolicy Bypass -File scripts/start-commercial-demo.ps1",

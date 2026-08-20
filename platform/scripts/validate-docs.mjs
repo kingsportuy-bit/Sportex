@@ -19,6 +19,7 @@ const requiredDocs = [
   'docs/MODOS_DE_TRABAJO.md', 'docs/CODEX_WORKFLOW.md',
   'docs/DELTA_PROJECT_INTERFACE.md', 'docs/ENVIRONMENTS_CONTRACT.md',
   'docs/RELEASE_GOVERNANCE_CONTRACT.md', 'docs/GIT_RELEASE_CONTRACT.md',
+  'docs/WORKTREE_LIFECYCLE_CONTRACT.md',
   'docs/DEPLOYMENT_PROTOCOL.md', 'docs/DEPLOYMENT_MANIFEST_TEMPLATE.md',
   'docs/BIBLIA_SPORTEX.md', 'docs/BUSINESS.md', 'docs/ARCHITECTURE.md',
   'docs/CORE_CONTRACT.md', 'docs/MULTITENANCY_CONTRACT.md', 'docs/SECURITY.md',
@@ -29,7 +30,7 @@ const requiredDocs = [
   'docs/CURRENT_RUNTIME_BASELINE.md', 'docs/DOMAIN_MODEL_V1.md',
   'docs/API_CONTRACT_V1.md', 'docs/SESSION_STATE.md',
   'docs/state/PROJECT_STATE.json', 'docs/state/DOCUMENT_REGISTRY.json',
-  'docs/state/CAMPAIGN_STATE.json', 'docs/TASKS/README.md',
+  'docs/state/CAMPAIGN_STATE.json', 'docs/state/WORKTREE_CLASSIFICATIONS.json', 'docs/TASKS/README.md',
   'docs/TASKS/TEMPLATE.md', 'docs/TASKS/INDEX.md',
   'docs/generated/CURRENT_CONTEXT.md', 'docs/biblioteca/README.md',
   'docs/biblioteca/MODULE_TEMPLATE.md',
@@ -50,6 +51,7 @@ const requiredDocs = [
   'scripts/validate-task-consistency.mjs',
   'scripts/validate-development-guide-sync.mjs',
   'scripts/task-worktree-doctor.mjs',
+  'scripts/worktree-close.mjs', 'scripts/tests/worktree-close.test.mjs',
   'scripts/release-governance-guard.ps1',
   'scripts/new-release-bundle.ps1',
 ];
@@ -65,7 +67,7 @@ const moduleSections = [
 ];
 const textExtensions = new Set(['.md','.json','.mjs','.js','.ts','.tsx','.jsx','.yml','.yaml','.ps1','.sql','.html','.css']);
 const binaryExtensions = new Set(['.png','.jpg','.jpeg','.gif','.webp','.ico','.pdf','.zip','.gz','.mp3','.mp4','.woff','.woff2']);
-const excluded = /[\\/](node_modules|dist|dist-test|\.git|\.npm-cache|coverage|\.next)[\\/]/u;
+const excluded = /[\\/](node_modules|dist|dist-test|\.git|\.npm-cache|\.sportex-local|coverage|\.next)[\\/]/u;
 const mojibake = /\u00c3[\u0080-\u00bf]|\u00c2[\u0080-\u00bf]|\u00e2[\u0080-\u00bf]|\ufffd/u;
 
 function full(relative) { return path.join(root, ...relative.split('/')); }
@@ -74,7 +76,7 @@ function walk(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const target = path.join(dir, entry.name);
-    if (entry.isDirectory() && !['node_modules','dist','dist-test','.git','.npm-cache','coverage','.next'].includes(entry.name)) return walk(target);
+    if (entry.isDirectory() && !['node_modules','dist','dist-test','.git','.npm-cache','.sportex-local','coverage','.next'].includes(entry.name)) return walk(target);
     return entry.isDirectory() ? [] : [target];
   });
 }

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "project": "SPORTEX",
+  "targetRef": "sportex-governance-20260801",
+  "updatedAt": "2026-08-20",
+  "worktrees": [
+    {
+      "path": "C:/Users/Fito/Documents/CODEX/SPORTEX",
+      "classification": "PRESERVAR",
+      "reason": "Checkout canónico del Project OS SPORTEX."
+    },
+    {
+      "path": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",
+      "classification": "PRESERVAR",
+      "reason": "Worktree activo de TASK-20260817-001 hasta integrar y cerrar su rama."
+    },
+    {
+      "path": "C:/Users/Fito/Documents/APP/SPORTEX",
+      "classification": "INTEGRADO",
+      "reason": "Checkout main limpio; su HEAD está contenido en la rama canónica."
+    },
+    {
+      "path": "C:/Users/Fito/Documents/CODEX/DELTA/sportex-rebuild",
+      "classification": "INTEGRADO",
+      "reason": "Rebuild limpio; su HEAD está contenido en la rama canónica."
+    },
+    {
+      "path": "C:/Users/Fito/AppData/Local/Temp/sportex-release-wt-34c9664",
+      "classification": "INTEGRADO",
+      "reason": "Metadato prunable sin directorio físico; commit preservado por Git y releases."
+    },
+    {
+      "path": "C:/Users/Fito/AppData/Local/Temp/sportex-release-wt-d871d2e",
+      "classification": "INTEGRADO",
+      "reason": "Metadato prunable sin directorio físico; commit preservado por Git y releases."
+    },
+    {
+      "path": "C:/Users/Fito/AppData/Local/Temp/sportex-release-wt-f6a9277",
+      "classification": "INTEGRADO",
+      "reason": "Metadato prunable sin directorio físico; commit preservado por Git y releases."
+    }
+  ]
+}

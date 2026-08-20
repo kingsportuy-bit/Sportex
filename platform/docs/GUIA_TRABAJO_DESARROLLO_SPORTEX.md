@@ -91,6 +91,11 @@ backup/rollback, smokes ni observacion de PILOTO_DELTA.
 Una consulta read-only cierra con `npm run workflow:check`. Ninguno de estos
 comandos concede permisos de runtime.
 
+El cierre también ejecuta `npm run worktree:check`: cada worktree físico debe
+ser `INTEGRADO`, `PRESERVAR` o `BLOQUEADO`. `npm run worktree:close` sólo
+retira automáticamente los `INTEGRADO` limpios y contenidos en la rama
+objetivo, sin fuerza ni borrado de refs.
+
 ## Como se mantiene actualizada esta guia
 
 Si una tarea cambia entrada, modos, tareas, campanas, entornos, pruebas,
