@@ -1895,6 +1895,12 @@ function svgPath(className, pathData) {
   return path;
 }
 
+function svgElement(name, attributes = {}) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+  for (const [attribute, value] of Object.entries(attributes)) node.setAttribute(attribute, value);
+  return node;
+}
+
 function drawWhatsAppTabbedPanelFrame() {
   const rail = $("#whatsapp-stage-tabs");
   const frame = $("#whatsapp-tabbed-panel-frame");
@@ -1912,18 +1918,71 @@ function drawWhatsAppTabbedPanelFrame() {
   const activeLeft = Math.round(activeRect.left - shellRect.left);
   const activeRight = Math.round(activeRect.right - shellRect.left);
   const activeIsVisible = activeRight > 0 && activeLeft < panelWidth;
+  const panelCorner = 11;
   const activeRootLeft = Math.max(0, activeLeft - 24);
   const activeRootRight = Math.min(panelWidth, activeRight + 3);
-  const panelCorner = 11;
   const activeContourPath = activeIsVisible
-    ? `M ${activeRootLeft} ${panelTop} V ${panelTop - 8} C ${activeRootLeft} ${panelTop - 4} ${activeRootLeft + 4} ${panelTop - 3} ${activeRootLeft + 9} ${panelTop - 3} H ${activeRootLeft + 14} C ${activeRootLeft + 19} ${panelTop - 3} ${activeLeft - 3} ${panelTop - 7} ${activeLeft - 2} ${panelTop - 12} L ${activeLeft + 2} 10 C ${activeLeft + 3} 5 ${activeLeft + 6} 1 ${activeLeft + 13} 1 H ${activeRight - 13} C ${activeRight - 6} 1 ${activeRight - 3} 5 ${activeRight - 2} 10 L ${activeRootRight} ${panelTop}`
+    ? `M ${activeRootLeft} ${panelTop} V ${panelTop - 8} C ${activeRootLeft} ${panelTop - 4} ${activeRootLeft + 4} ${panelTop - 3} ${activeRootLeft + 9} ${panelTop - 3} H ${activeRootLeft + 14} C ${activeRootLeft + 19} ${panelTop - 3} ${activeLeft - 3} ${panelTop - 7} ${activeLeft - 2} ${panelTop - 12} L ${activeLeft + 2} 10 C ${activeLeft + 3} 5 ${activeLeft + 6} 1 ${activeLeft + 16} 1 H ${activeRight - 10} C ${activeRight - 6} 1 ${activeRight - 3} 5 ${activeRight - 2} 10 L ${activeRootRight} ${panelTop}`
     : `M 0 ${panelTop} H ${panelWidth}`;
   const panelContour = activeIsVisible
     ? `${activeContourPath} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner}${activeRootLeft > panelCorner ? ` Q 0 ${panelTop} ${panelCorner} ${panelTop} H ${activeRootLeft}` : ` V ${panelTop}`} Z`
     : `M ${panelCorner} ${panelTop} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner} Q 0 ${panelTop} ${panelCorner} ${panelTop} Z`;
   frame.setAttribute("viewBox", `0 0 ${panelWidth} ${panelHeight}`);
   frame.setAttribute("preserveAspectRatio", "none");
-  frame.replaceChildren();
+  const definitions = svgElement("defs");
+  const inactiveGradient = svgElement("pattern", {
+    id: "whatsapp-tab-inactive-gradient",
+    x: "0",
+    y: "0",
+    width: "1",
+    height: String(panelTop),
+    patternUnits: "userSpaceOnUse",
+  });
+  const inactiveTopColor = [22, 26, 23];
+  const inactiveBottomColor = [17, 23, 19];
+  for (let row = 0; row < panelTop; row += 1) {
+    const progress = row / Math.max(1, panelTop - 1);
+    const color = inactiveTopColor.map((channel, index) =>
+      Math.round(channel + (inactiveBottomColor[index] - channel) * progress));
+    inactiveGradient.append(svgElement("rect", {
+      x: "0",
+      y: String(row),
+      width: "1",
+      height: "1",
+      fill: `rgb(${color.join(" ")})`,
+    }));
+  }
+  const activeStrokeGradient = svgElement("linearGradient", {
+    id: "whatsapp-tab-active-stroke",
+    x1: "0",
+    y1: "0",
+    x2: "0",
+    y2: String(panelTop),
+    gradientUnits: "userSpaceOnUse",
+  });
+  for (const [offset, color] of [["0%", "#c3ed3d"], ["8%", "#c3ed3d"], ["18%", "#667436"], ["100%", "#4d5a32"]]) {
+    activeStrokeGradient.append(svgElement("stop", { offset, "stop-color": color }));
+  }
+  const outerHalo = svgElement("filter", {
+    id: "whatsapp-tab-active-halo-outer",
+    x: "-30%",
+    y: "-80%",
+    width: "160%",
+    height: "260%",
+    "color-interpolation-filters": "sRGB",
+  });
+  outerHalo.append(svgElement("feGaussianBlur", { stdDeviation: "2.3" }));
+  const nearHalo = svgElement("filter", {
+    id: "whatsapp-tab-active-halo-near",
+    x: "-20%",
+    y: "-50%",
+    width: "140%",
+    height: "200%",
+    "color-interpolation-filters": "sRGB",
+  });
+  nearHalo.append(svgElement("feGaussianBlur", { stdDeviation: ".95" }));
+  definitions.append(inactiveGradient, activeStrokeGradient, outerHalo, nearHalo);
+  frame.replaceChildren(definitions);
 
   frame.append(svgPath("whatsapp-tabbed-panel-frame__surface", panelContour));
   const stageButtons = [...rail.querySelectorAll(".whatsapp-process-tab")];
@@ -1932,8 +1991,8 @@ function drawWhatsAppTabbedPanelFrame() {
     if (button.classList.contains("is-active")) continue;
     const rect = button.getBoundingClientRect();
     const tabLeft = Math.round(rect.left - shellRect.left);
-    const tabWidth = Math.round(rect.width);
-    const tabRight = tabLeft + tabWidth;
+    const inactiveTabWidth = Math.round(rect.width);
+    const tabRight = tabLeft + inactiveTabWidth;
     const tabLeftRoot = stageIndex === activeStageIndex + 1 ? activeRootRight : tabLeft - 3;
     const tabRightRoot = stageIndex === activeStageIndex - 1 ? activeRootLeft : tabRight + 3;
     const fillPath = `M ${tabLeft + 13} 1 H ${tabRight - 13} C ${tabRight - 6} 1 ${tabRight - 3} 5 ${tabRight - 2} 10 L ${tabRightRoot} ${panelTop} H ${tabLeftRoot} L ${tabLeft + 2} 10 C ${tabLeft + 3} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 Z`;
@@ -1945,6 +2004,8 @@ function drawWhatsAppTabbedPanelFrame() {
   }
   frame.append(
     svgPath("whatsapp-tabbed-panel-frame__outline", panelContour),
+    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--outer", activeContourPath),
+    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--near", activeContourPath),
     svgPath("whatsapp-tabbed-panel-frame__active-outline", activeContourPath),
   );
 }
@@ -1962,6 +2023,8 @@ function renderWhatsAppStages() {
   const rail = $("#whatsapp-stage-tabs");
   if (!rail) return;
   rail.replaceChildren();
+  rail.setAttribute("role", "tablist");
+  rail.setAttribute("aria-orientation", "horizontal");
   const stages = [
     { id: "ALL", label: "Todas", shortLabel: "Todas" },
     ...(state.stageDefinitions.lead.length
@@ -1976,8 +2039,13 @@ function renderWhatsAppStages() {
     const button = element("button", `whatsapp-process-tab${active ? " is-active" : ""}`);
     button.type = "button";
     button.dataset.stage = stage.id;
+    button.id = `whatsapp-stage-tab-${stage.id.toLowerCase().replaceAll("_", "-")}`;
+    button.setAttribute("role", "tab");
     button.setAttribute("aria-pressed", String(active));
+    button.setAttribute("aria-selected", String(active));
+    button.setAttribute("aria-controls", "whatsapp-workspace");
     button.setAttribute("aria-label", `${stage.label}: ${count} conversaciones`);
+    button.tabIndex = active ? 0 : -1;
     const content = element("span", "whatsapp-process-tab__content");
     content.append(
       whatsappStageGlyph(stage.id),
@@ -2003,6 +2071,20 @@ function renderWhatsAppStages() {
   if (rail.dataset.tabbedPanelFrameBound !== "true") {
     rail.dataset.tabbedPanelFrameBound = "true";
     rail.addEventListener("scroll", scheduleWhatsAppTabbedPanelFrameDraw, { passive: true });
+    rail.addEventListener("keydown", (event) => {
+      if (!event.target.matches(".whatsapp-process-tab")) return;
+      const buttons = [...rail.querySelectorAll(".whatsapp-process-tab")];
+      const currentIndex = buttons.indexOf(event.target);
+      let targetIndex = currentIndex;
+      if (event.key === "ArrowRight") targetIndex = (currentIndex + 1) % buttons.length;
+      else if (event.key === "ArrowLeft") targetIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+      else if (event.key === "Home") targetIndex = 0;
+      else if (event.key === "End") targetIndex = buttons.length - 1;
+      else return;
+      event.preventDefault();
+      buttons[targetIndex].focus({ preventScroll: true });
+      buttons[targetIndex].scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
     window.addEventListener("resize", scheduleWhatsAppTabbedPanelFrameDraw, { passive: true });
   }
 }
