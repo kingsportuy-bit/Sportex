@@ -48,9 +48,10 @@ una sola versión vigente sin borrar historial; UI verifica tableros y contraste
 PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
 La carcasa visual exige contorno único, color exacto y ninguna línea bajo la
-activa; se verifican primera/intermedia/última y responsive. La segunda Mesa
-fue solicitada, pero no estuvo disponible. El GO de Fito del 2026-08-20 sólo
-autorizó `4898d55`; no equivale a Mesa ni a aceptación visual humana.
+activa; se verifican primera/intermedia/última y responsive. El candidato
+`8823a77365f78f25db9fbf7afb5decd21e59f547` quedó autorizado por el plan,
+desplegado y aprobado por la Mesa visual y frontend/QA. La aceptación visual
+humana de Fito permanece separada y pendiente.
 
 ## evidencia
 
@@ -58,9 +59,9 @@ autorizó `4898d55`; no equivale a Mesa ni a aceptación visual humana.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:9ff30856c69fddae` si falla smoke o QA. Las migraciones
-son aditivas; no se borra información. La prueba controlada revierte por
-transición permitida y conserva auditoría.
+Revertir la imagen a `sportex-staging:4898d557cf0fa678` si falla smoke o QA.
+Las migraciones son aditivas; no se borra información. La prueba controlada
+revierte por transición permitida y conserva auditoría.
 
 ## deuda_restante
 
@@ -69,12 +70,16 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- `4898d55` está desplegado en `PILOTO_DELTA`: `1/1`, health/ready y CSS/JS
-  públicos PASS; sin migraciones, datos ni mensajes. Rollback `9ff3085`.
-- Un solo `panelContour` une activa, cabecera y panel en `#111914`; las seis
-  inactivas usan `#0e1510`.
-- Outbound preservado: `SENT 16→16`, pendientes y outbox `0→0`.
-  Mesa y validación humana autenticada pendientes, sin escritura.
+- `8823a77` está desplegado en `PILOTO_DELTA`: actualización `completed`,
+  `1/1`, un task y un contenedor, health/ready y CSS/JS públicos PASS.
+- Las siete pestañas conservan una silueta `180×67`; la superficie activa es
+  `186×68`, usa el mismo `rgb(20,25,22)` del panel y une a `0px`.
+- La activa queda en capa `2`, las inactivas en `1`; el contorno y doble halo
+  continúan por el borde superior con desvanecimiento lateral.
+- Outbound preservado: total `16→16`, pendientes `0→0` y outbox `0→0`, sin
+  migraciones, cambios de datos ni mensajes nuevos.
+- Mesa visual y frontend/QA: PASS sin brechas bloqueantes. Aceptación visual
+  humana autenticada: pendiente.
 
 ## decisiones
 

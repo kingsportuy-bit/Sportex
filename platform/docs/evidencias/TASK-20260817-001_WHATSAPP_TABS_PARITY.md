@@ -2,7 +2,7 @@
 
 task: `TASK-20260817-001`
 fecha: `2026-08-20`
-estado: `IN_PROGRESS`
+estado: `PILOTO_DELTA_TECHNICAL_AND_MESA_PASS_HUMAN_ACCEPTANCE_PENDING`
 entornos: `DESARROLLO_LOCAL`, `PILOTO_DELTA`
 rama: `codex/task-20260817-001-whatsapp-tabs-parity`
 worktree: `C:\Users\Fito\Documents\CODEX\SPORTEX-WORKTREES\TASK-20260817-001-whatsapp-tabs-parity`
@@ -34,19 +34,37 @@ worktree: `C:\Users\Fito\Documents\CODEX\SPORTEX-WORKTREES\TASK-20260817-001-wha
 
 ## Resultado actual
 
-- `SPORTEX_CONTEXT=PASS` en el worktree aislado.
-- Referencia, plan `V5`, fixture, comparador, E2E y máscaras sellados antes de modificar la UI.
-- La cadena raíz verifica plan `V5`, fixture, comparador, E2E, manifiesto preparado, referencia y tres máscaras por ruta y SHA-256 antes de capturar o comparar.
-- Las siete etapas exigen el mismo path trasladado, los mismos tokens SVG, unión sin trazo inferior, tres capas activas y teclado completo también en responsive.
-- Autoprueba: 34 vectores CIEDE2000 con error máximo `4.95e-05`; SSIM, máscara AA, conectividad 8 y perfil de halo en `PASS`.
-- Control negativo del baseline: `FAIL_CLOSED` por altura real `51px` frente a `67±0.25px`; demuestra que el arnés detecta la brecha existente.
-- Candidato visual todavía pendiente.
+- Candidato desplegado:
+  `8823a77365f78f25db9fbf7afb5decd21e59f547`; guard de release y rama remota
+  PASS para los dos archivos frontend autorizados.
+- `npm run check`, 57/57 tests, SQL/RLS, build y `git diff --check` PASS. Los
+  wrappers de workflow que lanzan procesos hijos quedaron bloqueados por
+  `spawn EPERM` del sandbox; no se declara `SPORTEX_CLOSE=PASS`.
+- Las siete pestañas reutilizan la misma geometría y cambian únicamente la
+  posición activa. `ALL`, central y última dieron `180×67`, superficie activa
+  `186×68`, unión `0px`, activa en capa `2` e inactivas en `1`.
+- Activa y panel comparten `rgb(20,25,22)`. El contorno y doble halo usan el
+  mismo gradiente dinámico: máximo lima sobre la activa y caída hacia ambos
+  laterales, sin trazo horizontal bajo la pestaña.
+- El comparador raster sellado de `Todas` permanece sin rebase y no se alteró
+  para forzar un PASS. La aclaración posterior de Fito exige una sola silueta
+  para todos los estados, incompatible con variaciones históricas de esa toma;
+  la aceptación vigente usa invariantes estructurales y Mesa visual autenticada.
+- Responsive PASS en 1280×720, 1024×768, 768×1024 y 390×844. Foco y activación
+  por Arrow/Home/End/Enter/Space PASS.
+- Imagen `sportex-staging:8823a77365f78f25`, runtime `1/1`, health/ready
+  `200`, CSS/JS públicos exactos y outbound total `16→16`, pendientes/outbox
+  `0→0`.
+- Mesa visual independiente y frontend/QA: PASS sin brechas bloqueantes.
+  Aceptación visual humana de Fito: pendiente.
 
 ## Rollback
 
 - Local: descartar exclusivamente esta rama y worktree.
-- Remoto: revalidar `sportex-staging:9ff30856c69fddae` antes de desplegar y volver image-first si falla cualquier gate.
+- Remoto: volver image-first a `sportex-staging:4898d557cf0fa678` si falla
+  cualquier gate posterior.
 
 ## Pendientes
 
-- Completar arnés, implementación, matrices, revisión, release, observación y aceptación visual.
+- Registrar la aceptación visual humana de Fito o iterar desde el rollback si
+  detecta una brecha nueva. La task operativa mayor continúa activa.

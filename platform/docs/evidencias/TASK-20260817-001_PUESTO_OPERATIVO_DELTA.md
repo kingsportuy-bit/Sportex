@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: 4898d557 desplegado en PILOTO_DELTA con verificación técnica PASS; Mesa automática no disponible y aceptación visual humana pendiente
+estado: 8823a773 desplegado en PILOTO_DELTA con verificación técnica y Mesa PASS; aceptación visual humana pendiente
 updated_at: 2026-08-20
-candidate: 4898d557cf0fa6788bab5ec4f45db187d73c3c8c
+candidate: 8823a77365f78f25db9fbf7afb5decd21e59f547
 
 ## Recorrido cubierto
 
@@ -218,8 +218,46 @@ candidate: 4898d557cf0fa6788bab5ec4f45db187d73c3c8c
   el GO de release no sustituye la aceptación visual humana en la sesión
   autenticada.
 
+## Release PILOTO_DELTA — silueta constante y halo continuo (2026-08-20)
+
+- El plan aprobado autorizó el candidato exacto
+  `8823a77365f78f25db9fbf7afb5decd21e59f547`. La rama remota coincide con ese
+  SHA y el guard de release dio PASS para `frontend/app.js` y
+  `frontend/styles.css`.
+- El `git archive` completo y sellado tuvo SHA-256
+  `7ea10a04d364854cace6b8f1d0dcf243b963a9a367722b761c5885a1f668631c`.
+  La imagen inmutable es `sportex-staging:8823a77365f78f25`.
+- Respaldo remoto previo validado mediante lectura: `pre-8823a77.dump`,
+  SHA-256 `d7f24a694a5a8714c711afc190d59c342ee095d75e63fd7692a88dae6eac0e95`.
+  No hubo migraciones ni escritura de datos durante el release.
+- `sportex_staging_core` quedó con actualización `completed`, `1/1`, un task y
+  un contenedor. `/health` y `/ready` respondieron `200`; no hubo eventos
+  fatales en los logs del servicio durante la observación.
+- Los recursos públicos coincidieron exactamente con el artefacto: CSS
+  `efd75ebd8190d59a6976cec06acb7c55a5a301136b28e1a74bacd208bbc3ecf7`
+  y JS
+  `65ba971a2f36c32fb6e16fb634aae31e63f1805e013ef21e3eeaa6334fb4b253`.
+- En la sesión autenticada del navegador Codex, `ALL`, `COTIZADO` y `PERDIDO`
+  conservaron pestañas `180×67` y superficie activa `186×68`; la unión con el
+  panel fue `0px`, ambos fills dieron `rgb(20,25,22)`, la activa quedó en capa
+  `2` y las inactivas en `1`.
+- El gradiente mantuvo máximo lima sobre la activa y continuó por el borde
+  superior del panel con desvanecimiento lateral. No apareció una línea bajo
+  la activa. Arrow, Home, End, Enter y Space conservaron foco y activación.
+- Las capturas autenticadas permanecen locales por contener datos reales. Sus
+  SHA-256 son: `ALL`
+  `2df1fe2076a5599b4a13b14e056595e72735082aef4c843ef09b702c1619cc16`,
+  central `05187b2d68e32727ef3e4d750e0d4d475c0b03049d9014624f820ad735f19e98`
+  y última `606e98dbf20c745e92c7a43f1246ce119763c9a0579103b23914edf83147de2c`.
+- La Mesa visual independiente y la revisión frontend/QA dieron PASS sin
+  brechas bloqueantes. La aceptación visual humana de Fito sigue siendo un
+  gate separado.
+- El estado outbound se preservó sin crear ni enviar mensajes: total
+  `16→16`, pendientes `0→0` y outbox listo `0→0`.
+- Rollback inmediato y revalidado: `sportex-staging:4898d557cf0fa678`.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:9ff30856c69fddae`; las migraciones se
+- Rollback inmediato: `sportex-staging:4898d557cf0fa678`; las migraciones se
   conservan por ser aditivas.

@@ -89,8 +89,8 @@
     "projectRoot": "platform",
     "branch": "codex/task-20260817-001-whatsapp-tabs-parity",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
-    "workingTreeState": "TASK-20260817-001_WHATSAPP_TABS_PARITY_IN_PROGRESS",
+    "headAtLastEvidence": "8823a77365f78f25db9fbf7afb5decd21e59f547",
+    "workingTreeState": "TASK-20260817-001_PILOTO_DELTA_8823A77_TECHNICAL_MESA_PASS_HUMAN_PENDING",
     "lastVerifiedAt": "2026-08-20"
   },
   "migrations": {
@@ -110,19 +110,21 @@
     "note": "Backup/restore aislado PASS; 008--010 migration-first con RLS forzado. Rollback conserva tablas y columnas aditivas."
   },
   "tests": {
-    "status": "PASS",
+    "status": "FOCAL_AND_RELEASE_PASS_WORKFLOW_CHILD_SPAWN_BLOCKED",
     "lastRunAt": "2026-08-20",
     "commands": [
-      "npm run validate:docs",
-      "npm run validate-docs",
-      "npm run validate",
+      "npm run check",
+      "npm test",
+      "npm run validate-sql",
+      "npm run build",
+      "scripts/release-governance-guard.ps1",
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "note": "4898d55: validate, guard y verificación pública PASS; Mesa y aceptación humana pendientes."
+    "note": "8823a77: check, 57/57 tests, SQL/RLS, build, guard, runtime y Mesa PASS. Wrappers de workflow bloqueados por spawn EPERM del sandbox; aceptación humana pendiente."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_4898D55_WHATSAPP_TABBED_PANEL",
+    "status": "PILOTO_DELTA_8823A77_CONSTANT_TABS_CONTINUOUS_HALO",
     "lastVerifiedAt": "2026-08-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -152,17 +154,18 @@
       "e845927e36d6c34f9e1c1a0fbd44216659e88333",
       "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
       "a0be896fc194500734104d5af5e0246bc77fba41",
-      "4898d557cf0fa6788bab5ec4f45db187d73c3c8c"
+      "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
+      "8823a77365f78f25db9fbf7afb5decd21e59f547"
     ],
-    "note": "Runtime 4898d55 1/1 healthy; superficie fusionada. Sin migraciones, datos ni mensajes nuevos. Rollback 9ff3085."
+    "note": "Runtime 8823a77 con update completed, 1/1, un task y un contenedor; tabs de silueta constante, superficie fusionada y halo continuo. Sin migraciones, datos ni mensajes nuevos. Rollback 4898d55."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED",
-      "lastVerifiedAt": "2026-08-15",
+      "status": "REMOTE_CANDIDATE_8823A77_DEPLOYED_VERIFIED",
+      "lastVerifiedAt": "2026-08-20",
       "writeAuthorized": true,
-      "note": "Rama publicada con 72e0fc2; guard y bundle f0cb3b49 PASS y runtime coincide con el commit exacto."
+      "note": "Rama codex/task-20260817-001-whatsapp-tabs-parity publicada con 8823a77; guard y bundle 7ea10a04 PASS y runtime coincide con el commit exacto."
     },
     {
       "name": "Supabase",
@@ -180,10 +183,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_4898D55_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_8823A77_PUBLIC_HEALTHY",
       "lastVerifiedAt": "2026-08-20",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 4898d55; health, ready y CSS/JS públicos coinciden. Sin migraciones ni mensajes; rollback 9ff3085."
+      "note": "sportex_staging_core update completed, 1/1, un task y un contenedor en 8823a77; health, ready y CSS/JS públicos coinciden. Sin migraciones ni mensajes; rollback 4898d55."
     }
   ],
   "sensitiveData": {
@@ -194,11 +197,30 @@
     "taskId": "TASK-20260817-001",
     "date": "2026-08-20",
     "path": "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-    "summary": "4898d55 desplegado: SVG une activa, cabecera y panel; runtime y recursos públicos PASS; aceptación humana pendiente.",
+    "summary": "8823a77 desplegado: misma silueta en siete tabs, activa fusionada y halo continuo; runtime, Mesa y recursos públicos PASS; aceptación humana pendiente.",
     "environment": "PILOTO_DELTA",
-    "branch": "sportex-governance-20260801"
+    "branch": "codex/task-20260817-001-whatsapp-tabs-parity"
   },
   "recentChanges": [
+    {
+      "date": "2026-08-20",
+      "taskId": "TASK-20260817-001",
+      "summary": "8823a77 desplegado: silueta constante, fusión 0px y halo continuo; runtime y Mesa PASS, aceptación humana pendiente.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/active/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-017"
+      ]
+    },
     {
       "date": "2026-08-20",
       "taskId": "TASK-20260817-001",
@@ -285,16 +307,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_4898D55_PUBLIC_HEALTHY_TABBED_PANEL",
+    "status": "PILOTO_DELTA_8823A77_PUBLIC_HEALTHY_CONSTANT_TABS",
     "lastEvidenceDate": "2026-08-20",
-    "note": "Runtime público 4898d55 sano; activa, cabecera y panel comparten superficie."
+    "note": "Runtime público 8823a77 sano; las siete tabs comparten silueta y la activa se fusiona con el panel mediante halo continuo."
   },
   "productValidation": {
-    "status": "PILOTO_DELTA_TECHNICAL_RELEASE_PASS_MESA_Y_ACEPTACION_HUMANA_PENDIENTES",
+    "status": "PILOTO_DELTA_TECHNICAL_AND_MESA_PASS_HUMAN_ACCEPTANCE_PENDING",
     "lastReviewedAt": "2026-08-20",
-    "reviewedBy": "QA local/remota; Mesa no disponible; Fito autorizó el release",
+    "reviewedBy": "QA local/remota y Mesa visual/frontend independiente; Fito autorizó el release",
     "taskId": "TASK-20260817-001",
-    "note": "Activa, cabecera y panel dan #111914 sin línea inferior. 4898d55 verificado; Mesa y aceptación humana pendientes."
+    "note": "ALL, central y última conservan 180x67; activa y panel dan rgb(20,25,22), unión 0px, z 2/1 y halo lateral continuo. 8823a77 y Mesa verificados; aceptación humana pendiente."
   },
   "blockers": [],
   "risks": [
@@ -304,7 +326,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito valida 4898d55 en su sesión autenticada antes de aceptarlo visualmente.",
+    "Fito valida 8823a77 en su sesión autenticada antes de aceptarlo visualmente.",
     "No hacer otra acción remota ni prueba sin GO; mantener cero outbound nuevo.",
     "Mantener TASK-20260801-002 y TASK-20260719-007 en cola hasta nueva prioridad."
   ],
