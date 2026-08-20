@@ -30,6 +30,15 @@
 Permite releases reales para uso de Delta, pero cada deploy, migracion, envio o
 activacion requiere GO. El piloto no autoriza operar empresas externas.
 
+Ante un incidente, el hotfix parte del commit/digest observado. La recuperacion
+queda `RECOVERED_RECONCILIATION_PENDING` hasta contener el fix en Git canonico,
+revalidar localmente y actualizar la rama/candidato pausados. Mientras el modelo
+sea `PILOT_ONLY`, esto no exige un STAGING inexistente.
+
+Despues de una task explicita que cambie el modelo a
+`SEPARATED_STAGING_PRODUCTION`, toda promocion y cierre de incidente requiere
+el gate `ENVIRONMENT_RECONCILIATION` con STAGING certificado.
+
 ## PRODUCCION_COMERCIAL
 
 Requiere un gate comercial adicional. No puede inferirse de una certificacion

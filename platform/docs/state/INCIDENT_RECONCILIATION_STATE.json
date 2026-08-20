@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "project": "SPORTEX",
+  "updatedAt": "2026-08-20",
+  "environmentModel": "PILOT_ONLY",
+  "readOnlyDiagnosisAllowed": true,
+  "transition": {
+    "status": "NOT_REQUESTED",
+    "acceptanceTask": null,
+    "transitionTask": null
+  },
+  "activeIncidents": [],
+  "pausedTask": null,
+  "reconciliation": {
+    "status": "NOT_REQUIRED",
+    "hotfixCommit": null,
+    "localValidation": null,
+    "stagingCertification": null,
+    "coherence": null
+  },
+  "ownerReturn": {
+    "status": "NOT_REQUIRED",
+    "taskId": null
+  }
+}

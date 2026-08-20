@@ -6,11 +6,11 @@ Actualizado: 2026-08-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DOCUMENTACION`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `idle`.
+- Intencion actual: `documentation`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-08-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20260820-001`: `in_progress` (docs/TASKS/active/TASK-20260820-001-preemption-hotfix-reconciliation.md).
 
 ## Objetivo actual
 
-Mantener estable el puesto operativo de Delta y preparar el próximo trabajo local sin acciones remotas implícitas.
+Adaptar el protocolo de preemption, hotfix, reconciliacion y evolucion de entornos al Project OS SPORTEX.
 
 ## Alcance actual
 
-- Permitido: Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001. | Preparar el candidato y la evidencia de despliegue para PILOTO_DELTA.
-- Prohibido: No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001.
+- Permitido: Modificar documentacion, estado, tooling y tests del Project OS. | Integrar gates locales con workflow:close y worktree:close.
+- Prohibido: No tocar runtime, PILOTO_DELTA, produccion, deploys, mensajes, migraciones, datos, secretos, proveedores, remotos ni push.
 
 ## Decisiones vigentes
 

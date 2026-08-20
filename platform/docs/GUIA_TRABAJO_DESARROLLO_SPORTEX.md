@@ -49,6 +49,17 @@ checkpoint. Una campana agrupa objetivos sin reemplazar tareas acotadas.
 La ausencia de STAGING separado reduce infraestructura, no controles. El piloto
 debe ser reversible, observable y recuperable.
 
+El modelo actual es `PILOT_ONLY`. La aceptacion de la primera version usable
+solo exige abrir una task futura de transicion; no crea entornos ni despliega.
+Despues de separar y certificar STAGING y PRODUCCION/PILOTO mediante esa task,
+el modelo sera local -> STAGING -> artefacto certificado -> GO -> PRODUCCION.
+
+Un incidente admite diagnostico read-only inmediato. Antes de mutar, la task
+material se pausa con snapshot, su worktree queda `PRESERVAR`, el candidato
+queda `STALE_AFTER_HOTFIX` y se abre una unica task incidente. La recuperacion
+no cierra hasta reconciliar el hotfix en Git canonico y revalidar la linea
+pausada.
+
 ## Arquitectura y Biblioteca
 
 Una capacidad de negocio es un modulo. El recorrido tecnico se divide en capas.
@@ -95,6 +106,10 @@ El cierre también ejecuta `npm run worktree:check`: cada worktree físico debe
 ser `INTEGRADO`, `PRESERVAR` o `BLOQUEADO`. `npm run worktree:close` sólo
 retira automáticamente los `INTEGRADO` limpios y contenidos en la rama
 objetivo, sin fuerza ni borrado de refs.
+
+Tambien ejecuta `npm run incident:check -- --closure`: bloquea
+`RECOVERED_RECONCILIATION_PENDING` y, en el modelo futuro separado, exige
+`ENVIRONMENT_RECONCILIATION` con STAGING certificado.
 
 ## Como se mantiene actualizada esta guia
 

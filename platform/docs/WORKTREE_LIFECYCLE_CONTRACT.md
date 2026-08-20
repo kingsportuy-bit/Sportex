@@ -10,6 +10,11 @@ checkpoint. La clasificación vive en
 - `PRESERVAR`: sigue siendo una fuente o checkout intencional;
 - `BLOQUEADO`: contiene trabajo exclusivo, cambios locales o una duda que impide retirarlo.
 
+Un worktree cuya task fue interrumpida por incidente debe quedar `PRESERVAR`
+mientras su estado sea `PAUSED_BY_INCIDENT`. `worktree:close` contrasta el
+inventario con `INCIDENT_RECONCILIATION_STATE.json` y falla ante una
+clasificacion distinta. Un candidato `STALE_AFTER_HOTFIX` nunca habilita retiro.
+
 ## Gate de cierre
 
 `npm run worktree:check` falla si encuentra un worktree físico sin clasificar,

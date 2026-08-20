@@ -30,6 +30,11 @@
 - Cambiar el sistema de desarrollo exige
   `development_guide_impact: required` y actualizar la guia maestra.
 - La tarea no autoriza runtime; las operaciones reales requieren un GO aparte.
+- El diagnostico read-only de un incidente puede comenzar sin preemption. Antes
+  de mutar, la task vigente pasa a `PAUSED_BY_INCIDENT`, se preserva snapshot de
+  task/rama/worktree/HEAD/candidato/entorno y se abre una unica task incidente.
+  El candidato anterior queda `STALE_AFTER_HOTFIX` y no puede reanudarse hasta
+  completar `INCIDENT_PREEMPTION_RECONCILIATION_CONTRACT.md`.
 - Cada checkpoint material debe ser la primera entrada de `recentChanges`,
   coincidir con `updatedBy` y `latestEvidence`, y cerrar con
   `SPORTEX_CLOSE=PASS`.

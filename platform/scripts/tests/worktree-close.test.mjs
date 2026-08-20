@@ -90,3 +90,31 @@ test('retira sólo el worktree limpio e integrado y preserva su ref', () => {
   assert.match(git(repo, 'show-ref', '--verify', 'refs/heads/integrated'), /^[a-f0-9]{40}/u);
   assert.equal(fs.existsSync(repo), true);
 });
+
+test('bloquea un worktree PAUSED_BY_INCIDENT que no esté PRESERVAR', () => {
+  const { project, sibling } = fixture();
+  const statePath = path.join(project, 'docs', 'state', 'INCIDENT_RECONCILIATION_STATE.json');
+  fs.writeFileSync(statePath, `${JSON.stringify({
+    schemaVersion: 1,
+    project: 'SPORTEX',
+    environmentModel: 'PILOT_ONLY',
+    readOnlyDiagnosisAllowed: true,
+    transition: { status: 'NOT_REQUESTED', acceptanceTask: null, transitionTask: null },
+    activeIncidents: [{
+      taskId: 'TASK-20260820-099', status: 'ACTIVE_INCIDENT',
+      observedRuntime: { commit: 'runtime', digest: 'sha256:runtime' },
+      mutationAuthorized: false,
+    }],
+    pausedTask: {
+      status: 'PAUSED_BY_INCIDENT', candidateStatus: 'STALE_AFTER_HOTFIX',
+      snapshot: {
+        taskId: 'TASK-20260820-001', branch: 'integrated', worktree: sibling, head: 'head',
+        candidate: 'old', environment: 'PILOTO_DELTA', incidentTaskId: 'TASK-20260820-099',
+        pausedAt: '2026-08-20T09:00:00Z',
+      },
+    },
+    reconciliation: { status: 'NOT_REQUIRED', hotfixCommit: null, localValidation: null, stagingCertification: null, coherence: null },
+  }, null, 2)}\n`);
+  const result = auditWorktrees(project);
+  assert(result.failures.some((failure) => failure.includes('PRESERVAR')));
+});

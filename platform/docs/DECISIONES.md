@@ -162,3 +162,22 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - El retiro automático se limita a `INTEGRADO`, limpio y contenido en la rama
   objetivo. No usa `--force`, no borra refs y poda por separado metadatos
   fantasma `prunable`.
+
+## SPORTEX-DEC-019 - Preemption y reconciliacion obligatoria de hotfixes
+
+- 2026-08-20 · `VIGENTE`. El diagnostico de incidentes comienza read-only; la
+  primera mutacion exige una unica task incidente y pausa formal de la task
+  material con snapshot completo, worktree `PRESERVAR` y candidato
+  `STALE_AFTER_HOTFIX`.
+- Recuperar el servicio deja `RECOVERED_RECONCILIATION_PENDING`. El cierre y
+  la reanudacion requieren fix en Git canonico, rama/candidato actualizados y
+  revalidacion local PASS.
+
+## SPORTEX-DEC-020 - Evolucion explicita del modelo de entornos
+
+- 2026-08-20 · `VIGENTE`. Hoy rige `PILOT_ONLY`: `PILOTO_DELTA` es produccion
+  restringida y no existe STAGING separado.
+- La aceptacion de la primera version usable no despliega ni migra. Requiere
+  una task futura especifica para separar y certificar los entornos.
+- Solo despues de esa transicion rige local -> STAGING -> artefacto certificado
+  -> GO -> PRODUCCION y el gate `ENVIRONMENT_RECONCILIATION` exige STAGING.

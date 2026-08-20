@@ -28,6 +28,12 @@ No existe un STAGING permanente separado. Los recursos con nombres
 `sportex_staging_*` son transitorios heredados y no se renombran, eliminan ni
 promueven sin una tarea de migracion.
 
+El modelo canonico actual se denomina `PILOT_ONLY`. La aceptacion humana de la
+primera version usable no crea STAGING ni despliega: marca como requerida una
+task de transicion especifica. Solo esa task, con GO, rollback y evidencia
+propios, puede separar y certificar STAGING y PRODUCCION/PILOTO y cambiar el
+modelo a `SEPARATED_STAGING_PRODUCTION`.
+
 ## PRODUCCION_COMERCIAL
 
 Estado futuro en el que SPORTEX admite empresas externas. Permanece bloqueado
@@ -50,6 +56,12 @@ mercado. Requiere como minimo:
 - Todo cambio remoto requiere tarea, version, alcance, preflight, permiso,
   rollback y evidencia.
 - Los secretos nunca se guardan en tareas, evidencias, memoria ni Git.
+- En `PILOT_ONLY` ningun gate puede exigir o fingir STAGING.
+- En `SEPARATED_STAGING_PRODUCTION`, el flujo normal sera local -> STAGING ->
+  artefacto certificado -> GO -> PRODUCCION. `ENVIRONMENT_RECONCILIATION`
+  exigira STAGING certificado antes de cerrar incidentes o promover releases.
+- Preemption, hotfix y reconciliacion se rigen por
+  `INCIDENT_PREEMPTION_RECONCILIATION_CONTRACT.md`.
 
 ### Persistencia de la demo CRM
 

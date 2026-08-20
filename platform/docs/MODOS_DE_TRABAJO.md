@@ -41,6 +41,11 @@ Migraciones, secretos, deploy, infraestructura, backups o recuperacion. Usa
 Primero diagnostico acotado y read-only. Si se necesita mutar runtime, se
 convierte en operacion autorizada con criterio de detencion y rollback.
 
+Antes de mutar se registra `PAUSED_BY_INCIDENT`, snapshot completo,
+`PRESERVAR` y candidato `STALE_AFTER_HOTFIX`, y se abre una unica task
+incidente. La recuperacion queda `RECOVERED_RECONCILIATION_PENDING` hasta
+reconciliar el fix en Git y revalidar la linea pausada.
+
 ## Product
 
 Aclara reglas de negocio. Una consulta puede ser read-only; si cambia una

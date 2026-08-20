@@ -6,7 +6,7 @@ Actualizado: 2026-08-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260820-001` | `in_progress` | Protocolo de preemption, hotfix y reconciliacion de entornos | docs/TASKS/active/TASK-20260820-001-preemption-hotfix-reconciliation.md
 
 ## Cola
 

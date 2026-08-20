@@ -52,3 +52,10 @@ nunca reducirlo. Solamente `SPORTEX_CLOSE=PASS` habilita declarar el checkpoint
 terminado. No ejecuta deploys ni autoriza operaciones remotas.
 
 Para una consulta sin cambios se usa `npm run workflow:check`.
+
+`workflow:close` ejecuta tambien el gate de reconciliacion de incidentes y el
+gate de worktrees. Falla ante `RECOVERED_RECONCILIATION_PENDING`, un candidato
+que no contiene el hotfix o un worktree pausado que no siga `PRESERVAR`.
+
+Durante un incidente, el diagnostico read-only puede comenzar de inmediato.
+La primera mutacion requiere preemption formal y una task incidente unica.

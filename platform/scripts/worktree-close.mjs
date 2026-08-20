@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { loadIncidentState, validateIncidentState } from './incident-reconciliation.mjs';
 
 const scriptPath = fileURLToPath(import.meta.url);
 const defaultProjectRoot = path.resolve(path.dirname(scriptPath), '..');
@@ -101,6 +102,13 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
       administrative: index === 0,
     };
   });
+  const incidentStatePath = path.join(projectRoot, 'docs', 'state', 'INCIDENT_RECONCILIATION_STATE.json');
+  if (fs.existsSync(incidentStatePath)) {
+    const incidentFailures = validateIncidentState(loadIncidentState(projectRoot), {
+      worktrees: inventory.worktrees,
+    });
+    failures.push(...incidentFailures.map((failure) => `preemption: ${failure}`));
+  }
   return { repoRoot, projectRoot, inventoryPath, targetRef, inventory, audited, failures };
 }
 

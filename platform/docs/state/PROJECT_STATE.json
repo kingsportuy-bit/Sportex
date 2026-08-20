@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-08-20",
-  "updatedBy": "TASK-20260817-001",
-  "environment": "PILOTO_DELTA",
+  "updatedBy": "TASK-20260820-001",
+  "environment": "DOCUMENTACION",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,18 +13,26 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "idle",
-  "objective": "Mantener estable el puesto operativo de Delta y preparar el próximo trabajo local sin acciones remotas implícitas.",
+  "mode": "documentation",
+  "objective": "Adaptar el protocolo de preemption, hotfix, reconciliacion y evolucion de entornos al Project OS SPORTEX.",
   "scope": {
     "allowed": [
-      "Construir y validar localmente el puesto operativo mínimo definido por TASK-20260817-001.",
-      "Preparar el candidato y la evidencia de despliegue para PILOTO_DELTA."
+      "Modificar documentacion, estado, tooling y tests del Project OS.",
+      "Integrar gates locales con workflow:close y worktree:close."
     ],
     "prohibited": [
-      "No enviar mensajes reales ni mutar PILOTO_DELTA fuera del alcance exacto, release y prueba controlada de TASK-20260817-001."
+      "No tocar runtime, PILOTO_DELTA, produccion, deploys, mensajes, migraciones, datos, secretos, proveedores, remotos ni push."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260820-001",
+    "title": "Protocolo de preemption, hotfix y reconciliacion de entornos",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260820-001-preemption-hotfix-reconciliation.md",
+    "workType": "documentacion",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Completar contratos, gates, regresiones y cierre owner local."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
