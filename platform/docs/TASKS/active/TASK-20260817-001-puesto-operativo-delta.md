@@ -9,7 +9,7 @@ work_type: feature
 campaign: CAMP-20260803-001
 context_focus: product
 development_guide_impact: required
-updated_at: 2026-08-19
+updated_at: 2026-08-20
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 
 ## objetivo
@@ -47,9 +47,10 @@ Core valida tenant, permisos, transición, versión e idempotencia; Diseño deja
 una sola versión vigente sin borrar historial; UI verifica tableros y contraste;
 PILOTO_DELTA exige health/ready, login y cero mensajes salientes.
 
-La carcasa visual local exige contorno único, color exacto y ninguna línea bajo
-la activa. Primera/intermedia/última, responsive y segunda Mesa preceden todo
-resultado o despliegue.
+La carcasa visual exige contorno único, color exacto y ninguna línea bajo la
+activa; se verifican primera/intermedia/última y responsive. La segunda Mesa
+fue solicitada, pero no estuvo disponible. El GO de Fito del 2026-08-20 sólo
+autorizó `4898d55`; no equivale a Mesa ni a aceptación visual humana.
 
 ## evidencia
 
@@ -57,7 +58,7 @@ resultado o despliegue.
 
 ## rollback
 
-Revertir la imagen a `sportex-staging:a0be896fc1945007` si falla smoke o QA. Las migraciones
+Revertir la imagen a `sportex-staging:9ff30856c69fddae` si falla smoke o QA. Las migraciones
 son aditivas; no se borra información. La prueba controlada revierte por
 transición permitida y conserva auditoría.
 
@@ -68,13 +69,12 @@ transición permitida y conserva auditoría.
 
 ## registro_de_avances
 
-- Releases UI: `e845927` (último mensaje), `3f29626` (pestañas arriba),
-  `a0be896` (edición) y `9ff3085` (solapas): todos `1/1`, health/ready PASS,
-  sin migraciones, datos ni mensajes. Rollback actual `a0be896`.
-- Candidato local: `#whatsapp-tabbed-panel-frame` reemplaza tres capas. Un
-  `panelContour` comparte activa/panel `#111914`; seis inactivas usan
-  `#0e1510`. QA: `#111914`, sin línea; Mesa/aceptación pendientes. Sin deploy.
-- Pendiente: recorrido autenticado real, sin escritura ni mensajes de prueba.
+- `4898d55` está desplegado en `PILOTO_DELTA`: `1/1`, health/ready y CSS/JS
+  públicos PASS; sin migraciones, datos ni mensajes. Rollback `9ff3085`.
+- Un solo `panelContour` une activa, cabecera y panel en `#111914`; las seis
+  inactivas usan `#0e1510`.
+- Outbound preservado: `SENT 16→16`, pendientes y outbox `0→0`.
+  Mesa y validación humana autenticada pendientes, sin escritura.
 
 ## decisiones
 

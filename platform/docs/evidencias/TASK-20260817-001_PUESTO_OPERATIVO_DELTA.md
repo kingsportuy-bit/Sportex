@@ -1,9 +1,9 @@
 # Evidencia — Puesto operativo Delta desde SPORTEX
 
 task: TASK-20260817-001
-estado: PILOTO_DELTA permanece en 9ff3085; candidato local de contorno único con QA técnica PASS, Mesa pendiente y aceptación visual humana pendiente
-updated_at: 2026-08-19
-candidate: LOCAL_UNCOMMITTED_TABBED_PANEL_FRAME
+estado: 4898d557 desplegado en PILOTO_DELTA con verificación técnica PASS; Mesa automática no disponible y aceptación visual humana pendiente
+updated_at: 2026-08-20
+candidate: 4898d557cf0fa6788bab5ec4f45db187d73c3c8c
 
 ## Recorrido cubierto
 
@@ -197,8 +197,29 @@ candidate: LOCAL_UNCOMMITTED_TABBED_PANEL_FRAME
   666→594 y unión `0px` tras 1440x792→1440x720.
 - Gate pendiente: aceptación visual humana. Este bloque no autoriza release.
 
+## Release PILOTO_DELTA — activa fusionada con panel (2026-08-20)
+
+- Fito autorizó explícitamente el despliegue de
+  `4898d557cf0fa6788bab5ec4f45db187d73c3c8c` para `PILOTO_DELTA`. El bundle
+  inmutable del `git archive` completo tuvo SHA-256
+  `fbb794f8077268658f075b9d2e99c643cd8b3cca1ce74d23f2106280912036c9`.
+- Respaldo remoto previo validado mediante lectura: `pre-4898d55.dump`,
+  SHA-256 `404df748b2a0e0de4a6bf118c5441b726170b20230e2356c520ba47196c1bce0`.
+  No hubo migraciones ni escritura de datos durante el release.
+- Runtime `sportex_staging_core` quedó `1/1`; `/health` y `/ready` públicos
+  respondieron `200`. Los recursos públicos coincidieron exactamente con el
+  artefacto: CSS
+  `47a878fcf14d964b99801439ecda6fc94dfd67c2b6ae03e99e1d5522041fe00e` y JS
+  `a0f4211d7283d8acbbaa1ec07443b89a0ea008b321693b519e2d2e2d28b521fc`.
+- El estado outbound existente se preservó sin crear ni enviar mensajes:
+  `SENT 16→16`, mensajes pendientes `0→0` y outbox listo `0→0`.
+- Rollback disponible: `sportex-staging:9ff30856c69fddae`. La Mesa automática
+  no pudo ejecutarse por límite de capacidad y no existe aprobación de Mesa;
+  el GO de release no sustituye la aceptación visual humana en la sesión
+  autenticada.
+
 ## Límites y rollout
 
 - No se alteró Evolution ni Barberox y no se mandaron mensajes de prueba.
-- Rollback inmediato: `sportex-staging:e845927e36d6c34f`; las migraciones se
+- Rollback inmediato: `sportex-staging:9ff30856c69fddae`; las migraciones se
   conservan por ser aditivas.
