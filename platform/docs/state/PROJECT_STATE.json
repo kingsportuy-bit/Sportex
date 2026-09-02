@@ -126,7 +126,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20260902-001_REORGANIZAR_CRM_CONFIGURACION_EMPRESA.md",
-    "note": "26 regresiones workflow y 59 tests Core/API PASS; SQL valida 24 tablas, RLS forzado y rollback; build y QA visual desktop/movil PASS."
+    "note": "26 regresiones workflow y 59 tests Core/API PASS; gate SQL corregido para validar 25 tablas incluyendo stage_definitions, RLS forzado y rollback; build y QA visual desktop/movil PASS."
   },
   "deployments": {
     "status": "PILOTO_DELTA_8823A77_OBSERVED_HEALTHY",

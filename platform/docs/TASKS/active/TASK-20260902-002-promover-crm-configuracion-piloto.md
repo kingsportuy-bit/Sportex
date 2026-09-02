@@ -58,7 +58,7 @@ capacidades mínimas, artefacto inmutable, backup, rollback y verificación.
 
 - Release guard PASS desde commit remoto y scope exacto.
 - Backup con hash y restore aislado; migración 011 ensayada y aplicada antes de
-  la imagen; 24 tablas esperadas con RLS forzado y aislamiento negativo.
+  la imagen; 25 tablas esperadas con RLS forzado y aislamiento negativo.
 - Servicio 1/1 healthy, `/health` y `/ready` 200, release exacto y cero errores
   atribuibles al despliegue.
 - Login y navegación autenticada de solo lectura en desktop/móvil; Mi empresa
@@ -108,8 +108,10 @@ repetidos atribuibles al candidato.
   falla si la migración 011 no está realmente disponible para el rol runtime.
 - El seed controlado de Delta incorpora `company.read` y `company.manage`.
 - `git diff --check` PASS con aviso informativo de normalización CRLF/LF.
-- `npm run validate` PASS: 26/26 workflow, 59/59 Core/API, 24 tablas SQL con
-  RLS forzado, documentación completa, TypeScript y build.
+- `npm run validate` PASS inicial: 26/26 workflow, 59/59 Core/API; el inventario
+  remoto detectó que el gate SQL debía contar 25 tablas incluyendo
+  `stage_definitions`, por lo que se corrigió y recertificó antes del deploy.
+- RLS forzado, documentación completa, TypeScript y build.
 - No hubo todavía mutación remota.
 
 ## decisiones

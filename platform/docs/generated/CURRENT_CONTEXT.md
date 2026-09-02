@@ -14,8 +14,8 @@ Actualizado: 2026-09-02.
 - Tarea: `TASK-20260902-002`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 58626/90000 caracteres.
-- Tokens estimados: 14657 (aproximacion de 4 caracteres por token).
+- Presupuesto potencial: 58775/90000 caracteres.
+- Tokens estimados: 14694 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 21.
 
 ## Objetivo, alcance y riesgo

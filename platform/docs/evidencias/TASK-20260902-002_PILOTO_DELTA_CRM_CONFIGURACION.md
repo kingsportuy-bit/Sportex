@@ -45,9 +45,18 @@ Quedan excluidos mensajes, pedidos, pagos, Evolution, Meta Ads, otros tenants y
   tenant Delta y con snapshot previo.
 - `git diff --check`: PASS; único aviso informativo CRLF/LF en HTML.
 - `npm run validate`: PASS.
-- Workflow: 26/26; Core/API: 59/59; SQL: 24 tablas con RLS forzado y rollback;
+- Workflow: 26/26; Core/API: 59/59; SQL inicial: 24 tablas con RLS forzado y rollback;
   documentación, TypeScript y build: PASS.
 - No hubo mutación remota durante esta certificación.
+
+## Reconciliación del inventario SQL
+
+- La base real contiene 20 tablas `sportex_staging_*`, todas con RLS forzado.
+- La migración 011 todavía no está aplicada y agrega cinco tablas: el total
+  posterior correcto es 25.
+- El validador omitía `stage_definitions` y no exigía explícitamente los archivos
+  007--010. Se corrigió antes de cualquier mutación remota y el candidato será
+  recertificado con el conteo completo.
 
 ## Rollback fijado
 
