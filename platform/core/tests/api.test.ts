@@ -21,7 +21,7 @@ function headers(tenantId = tenantA, idempotency = "client-001"): Record<string,
   return {
     "x-sportex-tenant-id": tenantId,
     "x-sportex-actor-id": actor,
-    "x-sportex-capabilities": "clients.create,clients.read,payments.certify,orders.create,orders.read,production.release",
+    "x-sportex-capabilities": "clients.create,clients.read,company.read,company.manage,payments.certify,orders.create,orders.read,production.release",
     "idempotency-key": idempotency,
     "x-correlation-id": "corr-api-test",
   };
@@ -81,6 +81,33 @@ test("API returns stable validation errors", async () => {
   assert.equal(response.statusCode, 400);
   assert.equal(response.json().error, "invalid_payload");
   assert.equal(response.json().correlationId, "corr-api-test");
+  await app.close();
+});
+
+test("API persists the company configuration aggregate", async () => {
+  const app = await buildServer({ config, store: new InMemoryCoreStore(), logger: false });
+  const initial = await app.inject({ method: "GET", url: "/v1/company/configuration", headers: headers() });
+  assert.equal(initial.statusCode, 200);
+  assert.equal(initial.json().data.version, 0);
+
+  const payload = {
+    expectedVersion: 0,
+    brand: { brandName: "Marca API", legalName: null, primaryPhone: null, primaryEmail: null, website: null, description: null },
+    operations: {
+      defaultCurrency: "UYU", depositPercentage: 50, defaultQuoteValidityDays: 7, defaultLeadTimeDays: 15,
+      paymentMethods: ["Transferencia"], deliveryMethods: [], salesTerms: null, productionNotes: null,
+    },
+    products: [], sizeCharts: [], resources: [],
+  };
+  const saved = await app.inject({
+    method: "PUT", url: "/v1/company/configuration", headers: headers(tenantA, "company-api-save"), payload,
+  });
+  assert.equal(saved.statusCode, 200);
+  assert.equal(saved.json().data.brand.brandName, "Marca API");
+  assert.equal(saved.json().data.version, 1);
+
+  const fetched = await app.inject({ method: "GET", url: "/v1/company/configuration", headers: headers() });
+  assert.equal(fetched.json().data.operations.paymentMethods[0], "Transferencia");
   await app.close();
 });
 

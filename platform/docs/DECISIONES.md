@@ -66,7 +66,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 ## SPORTEX-DEC-008 - Tableros primero para Leads y Pedidos
 
 - Fecha: 2026-08-03
-- Estado: `VIGENTE`
+- Estado: `REEMPLAZADA_POR_SPORTEX_DEC_021`
 - Fuente: `DELTA-DEC-012`.
 - Decisión: `Leads` y `Pedidos` abren en tableros por etapas; una tarjeta abre
   conversación y ficha. `Clientes` enlaza historias, oportunidades y pedidos.
@@ -76,7 +76,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 ## SPORTEX-DEC-009 - WhatsApp es una superficie operativa separada
 
 - Fecha: 2026-08-13
-- Estado: `VIGENTE`
+- Estado: `REEMPLAZADA_POR_SPORTEX_DEC_021`
 - Decisión: SPORTEX será un tercer cliente sincronizado de WhatsApp. `WhatsApp`
   muestra chats; `Leads` y `Pedidos` conservan tableros distintos; `Clientes`
   enlaza la historia sin duplicarla.
@@ -140,7 +140,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 
 ## SPORTEX-DEC-016 - Leads administra; WhatsApp atiende
 
-- 2026-08-19 · `VIGENTE`. `Leads` es el tablero Kanban de oportunidades; sus
+- 2026-08-19 · `REEMPLAZADA_POR_SPORTEX_DEC_021`. `Leads` es el tablero Kanban de oportunidades; sus
   tarjetas abren una ficha administrativa, no el chat de WhatsApp.
 - La ficha muestra el contexto comercial, el próximo paso, los últimos
   mensajes y una respuesta breve. El historial y la atención completa siguen
@@ -181,3 +181,13 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   una task futura especifica para separar y certificar los entornos.
 - Solo despues de esa transicion rige local -> STAGING -> artefacto certificado
   -> GO -> PRODUCCION y el gate `ENVIRONMENT_RECONCILIATION` exige STAGING.
+
+## SPORTEX-DEC-021 - CRM conversacional y configuracion de la empresa
+
+- 2026-09-02 · `VIGENTE`. Navegación: `Leads`, `Clientes`, `Pedidos`, `Mi empresa`.
+- Leads/Clientes reutilizan el panel WhatsApp vigente sin cambios visuales;
+  solo cambian datos, filtros y comandos gobernados por el Core.
+- La seña crea Cliente/Pedido idempotente; reposiciones nacen desde ese pedido
+  y pasan a producción. Pedidos conserva tablero/planilla.
+- Mi empresa persiste perfil, productos, precios, talles, recursos y parámetros
+  por tenant. Solo autoriza implementación local, sin efectos remotos.

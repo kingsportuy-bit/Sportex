@@ -12,6 +12,8 @@ const actorB = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 const allCapabilities: Capability[] = [
   "clients.create",
   "clients.read",
+  "company.read",
+  "company.manage",
   "payments.certify",
   "orders.create",
   "orders.read",
@@ -184,6 +186,58 @@ test("capabilities deny by default", async () => {
     service.createClient(context(tenantA, actorA, []), "client", { displayName: "Sin permiso" }),
     isAppError("permission_denied"),
   );
+});
+
+test("company configuration is versioned, idempotent and isolated by tenant", async () => {
+  const store = new InMemoryCoreStore();
+  const service = new CoreService(store, () => new Date("2026-09-02T12:00:00.000Z"));
+  const actor = { ...context(tenantA, actorA), tenantName: "Marca A" };
+  const empty = await service.getCompanyConfiguration(actor);
+  assert.equal(empty.brand.brandName, "Marca A");
+  assert.equal(empty.version, 0);
+
+  const input = {
+    expectedVersion: 0,
+    brand: {
+      brandName: "Marca A", legalName: null, primaryPhone: "+59899111222", primaryEmail: "hola@marca.test",
+      website: "https://marca.test", description: "Indumentaria deportiva personalizada",
+    },
+    operations: {
+      defaultCurrency: "UYU" as const, depositPercentage: 50, defaultQuoteValidityDays: 7, defaultLeadTimeDays: 15,
+      paymentMethods: ["Transferencia"], deliveryMethods: ["Retiro"], salesTerms: "Precios sujetos a confirmación",
+      productionNotes: "El plazo comienza con la lista de talles confirmada",
+    },
+    sizeCharts: [{
+      id: "33333333-3333-4333-8333-333333333333", name: "Adultos", audience: "ADULT" as const,
+      notes: null, rows: [{ label: "M", measurements: { Pecho: "48 cm", Largo: "66 cm" } }], active: true,
+    }],
+    products: [{
+      id: "44444444-4444-4444-8444-444444444444", name: "Equipo corto", category: "Equipos",
+      description: null, active: true, minimumQuantity: 5, defaultLeadTimeDays: 15,
+      sizeChartId: "33333333-3333-4333-8333-333333333333",
+      priceTiers: [{
+        id: "55555555-5555-4555-8555-555555555555", minQuantity: 5, maxQuantity: null,
+        unitPriceCents: 59_000, currency: "UYU" as const,
+      }],
+    }],
+    resources: [{
+      id: "66666666-6666-4666-8666-666666666666", kind: "FABRIC_PHOTO" as const,
+      name: "Tela dry fit", description: "Foto de referencia", reference: "carpeta/telas/dry-fit.jpg", active: true,
+    }],
+  };
+  const saved = await service.saveCompanyConfiguration(actor, "company-save-1", input);
+  const replay = await service.saveCompanyConfiguration(actor, "company-save-1", input);
+  assert.equal(saved.data.version, 1);
+  assert.equal(replay.replayed, true);
+  assert.equal((await service.getCompanyConfiguration(actor)).products[0]?.priceTiers[0]?.unitPriceCents, 59_000);
+  assert.equal((await service.getCompanyConfiguration(context(tenantB, actorB))).version, 0);
+  assert.equal(store.snapshot().companyConfigurations.length, 1);
+
+  await assert.rejects(
+    service.saveCompanyConfiguration(actor, "company-save-stale", { ...input, brand: { ...input.brand, brandName: "Cambio viejo" } }),
+    isAppError("company_configuration_version_conflict"),
+  );
+  await assert.rejects(service.getCompanyConfiguration(context(tenantA, actorA, [])), isAppError("permission_denied"));
 });
 
 test("tenant stage columns are configurable, reordered and safely reassign orders on deletion", async () => {

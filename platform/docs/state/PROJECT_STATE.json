@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-08-20",
-  "updatedBy": "TASK-20260820-001",
-  "environment": "DOCUMENTACION",
+  "updatedAt": "2026-09-02",
+  "updatedBy": "TASK-20260902-002",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,18 +13,29 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "idle",
-  "objective": "Mantener el Project OS listo para trabajo local y proteger cualquier hotfix con preemption y reconciliacion fail-closed.",
+  "mode": "operation",
+  "objective": "Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migracion aditiva, capacidades minimas, artefacto inmutable, backup, rollback y verificacion sin mensajes reales.",
   "scope": {
     "allowed": [
-      "Modificar documentacion, estado, tooling y tests del Project OS.",
-      "Integrar gates locales con workflow:close y worktree:close."
+      "Versionar y publicar el candidato exacto de TASK-20260902-001.",
+      "Respaldar, ensayar y aplicar 20260902_011 en PILOTO_DELTA; otorgar company.read/company.manage solo a operadores Delta autorizados.",
+      "Desplegar y verificar health, ready, login, Leads, Clientes, Pedidos y Mi empresa en modo solo lectura."
     ],
     "prohibited": [
-      "No tocar runtime, PILOTO_DELTA, produccion, deploys, mensajes, migraciones, datos, secretos, proveedores, remotos ni push."
+      "No enviar mensajes, crear pedidos, certificar pagos ni mutar conversaciones durante la verificacion.",
+      "No cambiar Evolution, Meta Ads, DNS, secretos, otros tenants, servicios compartidos ni PRODUCCION_COMERCIAL.",
+      "No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260902-002",
+    "title": "Promover CRM y configuración de empresa al piloto",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Publicar el candidato exacto, ejecutar release guard y completar backup/restore antes de la primera mutacion remota."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -53,10 +64,10 @@
     "La demo local preserva 18 leads, persistencia y comandos Core sin efectos externos.",
     "PASS técnico y producto son gates separados.",
     "CAMP entrega la V1 por etapas.",
-    "Leads y Pedidos usan tableros derivados del Core.",
-    "WhatsApp es una superficie separada.",
+    "Leads y Clientes reutilizan directamente el panel WhatsApp vigente sin modificar su diseno visual.",
+    "Pedidos usa tablero y planilla derivados del Core.",
     "Mensajes y eventos siguen separados.",
-    "Leads administra; WhatsApp concentra el chat completo.",
+    "Mi empresa concentra configuracion tenant-aware de marca, productos, precios, talles y recursos.",
     "SPORTEX opera solamente en modo oscuro."
   ],
   "decisionRefs": [
@@ -77,16 +88,17 @@
     "SPORTEX-DEC-017",
     "SPORTEX-DEC-018",
     "SPORTEX-DEC-019",
-    "SPORTEX-DEC-020"
+    "SPORTEX-DEC-020",
+    "SPORTEX-DEC-021"
   ],
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "7ae6e49",
-    "workingTreeState": "TASK_20260820_001_DONE_LOCAL_OS_ONLY_NO_REMOTE_ACTIONS",
-    "lastVerifiedAt": "2026-08-20"
+    "headAtLastEvidence": "2713e85a125c8c981dea966b3e04749cbd41f110",
+    "workingTreeState": "TASK_20260902_002_CANDIDATE_LOCAL_PASS_UNCOMMITTED",
+    "lastVerifiedAt": "2026-09-02"
   },
   "migrations": {
     "status": "MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS",
@@ -101,24 +113,24 @@
       "20260819_009_media_dimensions",
       "20260819_010_conversation_feed_indexes"
     ],
-    "pending": [],
-    "note": "Backup/restore aislado PASS; 008--010 migration-first con RLS forzado. Rollback conserva tablas y columnas aditivas."
+    "pending": [
+      "20260902_011_company_configuration"
+    ],
+    "note": "008--010 siguen aplicadas en PILOTO_DELTA. 011 fue validada localmente con RLS forzado y rollback, pero no fue ejecutada en ningun entorno remoto."
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-08-20",
+    "lastRunAt": "2026-09-02",
     "commands": [
-      "npm run validate:docs",
-      "npm run validate-docs",
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md",
-    "note": "26 regresiones PASS; PILOT_ONLY no exige STAGING y los cierres bloquean reconciliacion pendiente o worktree pausado no preservado."
+    "evidence": "docs/evidencias/TASK-20260902-001_REORGANIZAR_CRM_CONFIGURACION_EMPRESA.md",
+    "note": "26 regresiones workflow y 59 tests Core/API PASS; SQL valida 24 tablas, RLS forzado y rollback; build y QA visual desktop/movil PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_4898D55_WHATSAPP_TABBED_PANEL",
-    "lastVerifiedAt": "2026-08-20",
+    "status": "PILOTO_DELTA_8823A77_OBSERVED_HEALTHY",
+    "lastVerifiedAt": "2026-09-02",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
       "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
@@ -147,9 +159,10 @@
       "e845927e36d6c34f9e1c1a0fbd44216659e88333",
       "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
       "a0be896fc194500734104d5af5e0246bc77fba41",
-      "4898d557cf0fa6788bab5ec4f45db187d73c3c8c"
+      "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
+      "8823a77365f78f25db9fbf7afb5decd21e59f547"
     ],
-    "note": "Runtime 4898d55 1/1 healthy; superficie fusionada. Sin migraciones, datos ni mensajes nuevos. Rollback 9ff3085."
+    "note": "Runtime observado el 2026-09-02 en 8823a773, servicio 1/1 y health/ready 200. Esa imagen queda fijada como rollback de TASK-20260902-002."
   },
   "externalIntegrations": [
     {
@@ -175,10 +188,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_4898D55_PUBLIC_HEALTHY",
-      "lastVerifiedAt": "2026-08-20",
+      "status": "PILOTO_DELTA_RUNTIME_8823A77_PUBLIC_HEALTHY",
+      "lastVerifiedAt": "2026-09-02",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 4898d55; health, ready y CSS/JS públicos coinciden. Sin migraciones ni mensajes; rollback 9ff3085."
+      "note": "sportex_staging_core 1/1 healthy en 8823a773; health y ready 200. Imagen actual fijada como rollback antes de la promocion."
     }
   ],
   "sensitiveData": {
@@ -186,14 +199,51 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260820-001",
-    "date": "2026-08-20",
-    "path": "docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md",
-    "summary": "Protocolo de preemption, hotfix y reconciliacion implementado y validado localmente; owner return a SARA listo.",
-    "environment": "DOCUMENTACION",
+    "taskId": "TASK-20260902-002",
+    "date": "2026-09-02",
+    "path": "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md",
+    "summary": "Operacion autorizada; runtime 8823a773 sano y rollback fijado. Candidato local PASS con readiness estricto para migracion 011.",
+    "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-09-02",
+      "taskId": "TASK-20260902-002",
+      "summary": "Fito autorizo promover CRM y Mi empresa al piloto; runtime 8823a773 fijado como rollback y candidato local completo PASS.",
+      "documents": [
+        "docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md",
+        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
+      ],
+      "decisions": [
+        "La migracion 011 se aplica antes que la imagen y el rollback vuelve primero al runtime 8823a773."
+      ]
+    },
+    {
+      "date": "2026-09-02",
+      "taskId": "TASK-20260902-001",
+      "summary": "Leads y Clientes reutilizan WhatsApp; Pedidos conserva tablero/planilla y Mi empresa agrega configuracion tenant-aware versionada con migracion local no ejecutada.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "core/src/domain/company-configuration.ts",
+        "core/src/application/core-service.ts",
+        "core/src/adapters/persistence/postgres-core-store.ts",
+        "core/db/migrations/staging/20260902_011_company_configuration.up.sql",
+        "core/db/migrations/staging/20260902_011_company_configuration.down.sql",
+        "docs/TASKS/closed/2026/TASK-20260902-001-reorganizar-crm-y-configuracion-empresa.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260902-001_REORGANIZAR_CRM_CONFIGURACION_EMPRESA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-021"
+      ]
+    },
     {
       "date": "2026-08-20",
       "taskId": "TASK-20260820-001",
@@ -250,69 +300,36 @@
       "decisions": [
         "SPORTEX-DEC-016"
       ]
-    },
-    {
-      "date": "2026-08-19",
-      "taskId": "TASK-20260817-001",
-      "summary": "WhatsApp abre cada conversación en el último mensaje. e845927 sano; aceptación visual pendiente.",
-      "documents": [
-        "frontend/app.js",
-        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-016"
-      ]
-    },
-    {
-      "date": "2026-08-19",
-      "taskId": "TASK-20260817-001",
-      "summary": "Acciones verdes usan texto grafito. 92084ba sano; aceptación visual pendiente.",
-      "documents": [
-        "frontend/app.js",
-        "frontend/index.html",
-        "frontend/styles.css",
-        "docs/DECISIONES.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-017"
-      ]
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_4898D55_PUBLIC_HEALTHY_TABBED_PANEL",
-    "lastEvidenceDate": "2026-08-20",
-    "note": "Runtime público 4898d55 sano; activa, cabecera y panel comparten superficie."
+    "status": "PILOTO_DELTA_8823A77_PUBLIC_HEALTHY_PRE_RELEASE",
+    "lastEvidenceDate": "2026-09-02",
+    "note": "Runtime público 8823a773 sano y fijado como rollback; promoción de TASK-20260902-002 en preparación."
   },
   "productValidation": {
-    "status": "LOCAL_D9C32B7_HUMAN_ACCEPTED_INTEGRATED_RUNTIME_4898D55_UNCHANGED",
-    "lastReviewedAt": "2026-08-20",
-    "reviewedBy": "Fito: aceptación visual humana explícita; QA local y guard de worktrees",
-    "taskId": "TASK-20260817-001",
-    "note": "d9c32b7 aceptado e integrado localmente. El runtime continúa en 4898d55; no hubo GO ni nuevo release."
+    "status": "LOCAL_TASK_20260902_001_ACCEPTED_FOR_PILOT_RELEASE",
+    "lastReviewedAt": "2026-09-02",
+    "reviewedBy": "Fito autorizo aplicar los cambios en PILOTO_DELTA; Codex valido suite completa y QA visual local desktop/movil",
+    "taskId": "TASK-20260902-002",
+    "note": "Implementacion local aceptada para promocion controlada; validacion productiva pendiente del artefacto exacto."
   },
   "blockers": [],
   "risks": [
+    "El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada.",
     "Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas.",
     "4 vulnerabilidades altas siguen en TASK-20260801-002.",
     "El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte.",
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Retornar a SARA el cierre owner de TASK-20260820-001 y sus commits locales.",
-    "Mantener PILOT_ONLY hasta una aceptacion usable y una task de transicion especifica posterior.",
-    "No hacer accion remota, push, deploy, migracion ni mensaje sin un GO nuevo y exacto."
+    "Publicar el candidato exacto de TASK-20260902-002 y ejecutar el release guard.",
+    "Completar backup/restore aislado antes de aplicar 20260902_011 y desplegar en PILOTO_DELTA.",
+    "Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores; no hacer push, deploy, migracion ni mensaje sin nuevo GO."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 25,
+    "archivedChanges": 27,
     "throughDate": "2026-08-19"
   }
 }

@@ -8,6 +8,8 @@ import type {
   OutboxEvent,
 } from "../../domain/models.js";
 import type { StageBoardKind, StageDefinition } from "../../domain/stage-configuration.js";
+import type { CompanyConfiguration } from "../../domain/company-configuration.js";
+import { conflict } from "../../shared/errors.js";
 import type { CoreStore, CoreTransaction } from "../../ports/core-store.js";
 
 interface MemoryState {
@@ -20,6 +22,7 @@ interface MemoryState {
   outboxEvents: OutboxEvent[];
   orderCounters: Record<string, number>;
   stageDefinitions: StageDefinition[];
+  companyConfigurations: CompanyConfiguration[];
 }
 
 const emptyState = (): MemoryState => ({
@@ -32,6 +35,7 @@ const emptyState = (): MemoryState => ({
   outboxEvents: [],
   orderCounters: {},
   stageDefinitions: [],
+  companyConfigurations: [],
 });
 
 class MemoryTransaction implements CoreTransaction {
@@ -146,6 +150,24 @@ class MemoryTransaction implements CoreTransaction {
   async deleteStageDefinition(board: StageBoardKind, id: string): Promise<void> {
     this.state.stageDefinitions = this.state.stageDefinitions.filter((candidate) => !(candidate.tenantId === this.tenantId
       && candidate.board === board && candidate.id === id));
+  }
+
+  async findCompanyConfiguration(): Promise<CompanyConfiguration | null> {
+    const configuration = this.state.companyConfigurations.find((candidate) => candidate.tenantId === this.tenantId);
+    return configuration ? structuredClone(configuration) : null;
+  }
+
+  async saveCompanyConfiguration(configuration: CompanyConfiguration, expectedVersion: number): Promise<void> {
+    const index = this.state.companyConfigurations.findIndex((candidate) => candidate.tenantId === this.tenantId);
+    const current = index >= 0 ? this.state.companyConfigurations[index] : undefined;
+    if ((current?.version ?? 0) !== expectedVersion) {
+      throw conflict("company_configuration_version_conflict", "Company configuration changed", {
+        expectedVersion,
+        currentVersion: current?.version ?? 0,
+      });
+    }
+    if (index >= 0) this.state.companyConfigurations[index] = structuredClone(configuration);
+    else this.state.companyConfigurations.push(structuredClone(configuration));
   }
 
   async appendAudit(event: AuditEvent): Promise<void> {

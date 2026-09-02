@@ -1,0 +1,7 @@
+BEGIN;
+DROP TABLE public.sportex_staging_company_resources;
+DROP TABLE public.sportex_staging_catalog_product_price_tiers;
+DROP TABLE public.sportex_staging_catalog_products;
+DROP TABLE public.sportex_staging_company_size_charts;
+DROP TABLE public.sportex_staging_company_profiles;
+COMMIT;

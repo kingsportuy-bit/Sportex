@@ -1,6 +1,8 @@
 export type Capability =
   | "clients.create"
   | "clients.read"
+  | "company.read"
+  | "company.manage"
   | "commercial.read"
   | "commercial.replay"
   | "commercial.manage"

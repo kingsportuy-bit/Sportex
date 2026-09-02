@@ -17,6 +17,18 @@ import { requireCapability } from "../shared/authorization.js";
 import { requestHash } from "../shared/canonical-json.js";
 import { AppError, conflict, notFound } from "../shared/errors.js";
 import { defaultStageDefinitions, type StageBoardKind, type StageDefinition } from "../domain/stage-configuration.js";
+import type {
+  CompanyConfiguration,
+  CompanyProduct,
+  CompanyProductInput,
+  CompanyResource,
+  CompanyResourceInput,
+  CompanySizeChart,
+  CompanySizeChartInput,
+  ProductPriceTier,
+  SaveCompanyConfigurationInput,
+  SizeChartRow,
+} from "../domain/company-configuration.js";
 
 export interface CommandResult<T> {
   data: T;
@@ -169,6 +181,229 @@ export class CoreService {
       await transaction.saveStageDefinition({ ...stage, tenantId, board, createdAt: now, updatedAt: now });
     }
     return transaction.listStageDefinitions(board);
+  }
+
+  async getCompanyConfiguration(context: ActorContext): Promise<CompanyConfiguration> {
+    requireCapability(context, "company.read");
+    return this.store.transaction(context.tenantId, async (transaction) => {
+      const current = await transaction.findCompanyConfiguration();
+      return current ?? this.emptyCompanyConfiguration(context);
+    });
+  }
+
+  async saveCompanyConfiguration(
+    context: ActorContext,
+    idempotencyKey: string,
+    input: SaveCompanyConfigurationInput,
+  ): Promise<CommandResult<CompanyConfiguration>> {
+    requireCapability(context, "company.manage");
+    return this.idempotent(context, "company.configuration.save", idempotencyKey, input, async (transaction, now) => {
+      const current = await transaction.findCompanyConfiguration();
+      const expectedVersion = this.nonNegativeInteger(input.expectedVersion, "expectedVersion", 1_000_000_000);
+      const configuration = this.normalizeCompanyConfiguration(context, input, current, now);
+      await transaction.saveCompanyConfiguration(configuration, expectedVersion);
+      await transaction.appendAudit(this.audit(context, "company.configuration_saved", "company_configuration", context.tenantId, {
+        previousVersion: current?.version ?? 0,
+        version: configuration.version,
+        products: configuration.products.length,
+        sizeCharts: configuration.sizeCharts.length,
+        resources: configuration.resources.length,
+      }, now));
+      return configuration;
+    });
+  }
+
+  private emptyCompanyConfiguration(context: ActorContext): CompanyConfiguration {
+    const now = this.clock().toISOString();
+    return {
+      id: context.tenantId,
+      tenantId: context.tenantId,
+      brand: {
+        brandName: context.tenantName?.trim() || "Mi empresa",
+        legalName: null,
+        primaryPhone: null,
+        primaryEmail: null,
+        website: null,
+        description: null,
+      },
+      operations: {
+        defaultCurrency: "UYU",
+        depositPercentage: 50,
+        defaultQuoteValidityDays: 7,
+        defaultLeadTimeDays: 15,
+        paymentMethods: [],
+        deliveryMethods: [],
+        salesTerms: null,
+        productionNotes: null,
+      },
+      products: [],
+      sizeCharts: [],
+      resources: [],
+      version: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
+  }
+
+  private normalizeCompanyConfiguration(
+    context: ActorContext,
+    input: SaveCompanyConfigurationInput,
+    current: CompanyConfiguration | null,
+    now: string,
+  ): CompanyConfiguration {
+    if ((current?.version ?? 0) !== input.expectedVersion) {
+      throw conflict("company_configuration_version_conflict", "Company configuration changed", {
+        expectedVersion: input.expectedVersion,
+        currentVersion: current?.version ?? 0,
+      });
+    }
+    if (input.products.length > 200 || input.sizeCharts.length > 100 || input.resources.length > 200) {
+      throw new AppError("invalid_payload", 400, "Company configuration exceeds supported limits");
+    }
+
+    const sizeChartIds = this.uniqueIds(input.sizeCharts.map((chart) => chart.id), "sizeChartId");
+    this.uniqueIds(input.products.map((product) => product.id), "productId");
+    this.uniqueIds(input.products.flatMap((product) => product.priceTiers.map((tier) => tier.id)), "priceTierId");
+    this.uniqueIds(input.resources.map((resource) => resource.id), "resourceId");
+    const currentProducts = new Map((current?.products ?? []).map((product) => [product.id, product]));
+    const currentCharts = new Map((current?.sizeCharts ?? []).map((chart) => [chart.id, chart]));
+    const currentResources = new Map((current?.resources ?? []).map((resource) => [resource.id, resource]));
+
+    const sizeCharts = input.sizeCharts.map((chart) => this.normalizeSizeChart(chart, currentCharts.get(chart.id), now));
+    const products = input.products.map((product) => {
+      if (product.sizeChartId && !sizeChartIds.has(product.sizeChartId)) {
+        throw new AppError("invalid_payload", 400, "Product references an unknown size chart", { productId: product.id });
+      }
+      return this.normalizeProduct(product, currentProducts.get(product.id), now);
+    });
+    const resources = input.resources.map((resource) => this.normalizeResource(resource, currentResources.get(resource.id), now));
+    const website = this.optionalText(input.brand.website, "website", 3, 300);
+    if (website && !/^https?:\/\//iu.test(website)) {
+      throw new AppError("invalid_payload", 400, "Website must start with http:// or https://", { field: "website" });
+    }
+    const primaryEmail = this.optionalText(input.brand.primaryEmail, "primaryEmail", 3, 254);
+    if (primaryEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(primaryEmail)) {
+      throw new AppError("invalid_payload", 400, "Invalid primaryEmail", { field: "primaryEmail" });
+    }
+    const primaryPhone = input.brand.primaryPhone ? this.phone(input.brand.primaryPhone) : null;
+    const paymentMethods = this.stringList(input.operations.paymentMethods, "paymentMethods", 20);
+    const deliveryMethods = this.stringList(input.operations.deliveryMethods, "deliveryMethods", 20);
+
+    return {
+      id: context.tenantId,
+      tenantId: context.tenantId,
+      brand: {
+        brandName: this.text(input.brand.brandName, "brandName", 2, 120),
+        legalName: this.optionalText(input.brand.legalName, "legalName", 2, 160),
+        primaryPhone,
+        primaryEmail,
+        website,
+        description: this.optionalText(input.brand.description, "description", 2, 1_000),
+      },
+      operations: {
+        defaultCurrency: input.operations.defaultCurrency,
+        depositPercentage: this.nonNegativeInteger(input.operations.depositPercentage, "depositPercentage", 100),
+        defaultQuoteValidityDays: this.positiveInteger(input.operations.defaultQuoteValidityDays, "defaultQuoteValidityDays"),
+        defaultLeadTimeDays: this.positiveInteger(input.operations.defaultLeadTimeDays, "defaultLeadTimeDays"),
+        paymentMethods,
+        deliveryMethods,
+        salesTerms: this.optionalText(input.operations.salesTerms, "salesTerms", 2, 2_000),
+        productionNotes: this.optionalText(input.operations.productionNotes, "productionNotes", 2, 2_000),
+      },
+      products,
+      sizeCharts,
+      resources,
+      version: (current?.version ?? 0) + 1,
+      createdAt: current?.createdAt ?? now,
+      updatedAt: now,
+    };
+  }
+
+  private normalizeProduct(product: CompanyProductInput, current: CompanyProduct | undefined, now: string): CompanyProduct {
+    if (product.priceTiers.length > 50) throw new AppError("invalid_payload", 400, "Too many price tiers");
+    this.uniqueIds(product.priceTiers.map((tier) => tier.id), "priceTierId");
+    const priceTiers = product.priceTiers
+      .map((tier) => this.normalizePriceTier(tier))
+      .sort((left, right) => left.minQuantity - right.minQuantity || left.currency.localeCompare(right.currency));
+    for (const currency of ["UYU", "USD"] as const) {
+      const tiers = priceTiers.filter((tier) => tier.currency === currency);
+      for (let index = 1; index < tiers.length; index += 1) {
+        const previous = tiers[index - 1]!;
+        const next = tiers[index]!;
+        if (previous.maxQuantity === null || previous.maxQuantity >= next.minQuantity) {
+          throw new AppError("invalid_payload", 400, "Product price tiers overlap", { productId: product.id, currency });
+        }
+      }
+    }
+    return {
+      id: this.uuid(product.id, "productId"),
+      name: this.text(product.name, "productName", 2, 120),
+      category: this.text(product.category, "productCategory", 2, 80),
+      description: this.optionalText(product.description, "productDescription", 2, 1_000),
+      active: Boolean(product.active),
+      minimumQuantity: this.positiveInteger(product.minimumQuantity, "minimumQuantity"),
+      defaultLeadTimeDays: this.positiveInteger(product.defaultLeadTimeDays, "productLeadTimeDays"),
+      sizeChartId: product.sizeChartId ? this.uuid(product.sizeChartId, "sizeChartId") : null,
+      priceTiers,
+      createdAt: current?.createdAt ?? now,
+      updatedAt: now,
+    };
+  }
+
+  private normalizePriceTier(tier: ProductPriceTier): ProductPriceTier {
+    const minQuantity = this.positiveInteger(tier.minQuantity, "minQuantity");
+    const maxQuantity = tier.maxQuantity === null ? null : this.positiveInteger(tier.maxQuantity, "maxQuantity");
+    if (maxQuantity !== null && maxQuantity < minQuantity) {
+      throw new AppError("invalid_payload", 400, "Price tier maximum is below minimum");
+    }
+    this.positiveMoney(tier.unitPriceCents, "unitPriceCents");
+    return { id: this.uuid(tier.id, "priceTierId"), minQuantity, maxQuantity, unitPriceCents: tier.unitPriceCents, currency: tier.currency };
+  }
+
+  private normalizeSizeChart(chart: CompanySizeChartInput, current: CompanySizeChart | undefined, now: string): CompanySizeChart {
+    if (chart.rows.length > 100) throw new AppError("invalid_payload", 400, "Too many size chart rows");
+    return {
+      id: this.uuid(chart.id, "sizeChartId"),
+      name: this.text(chart.name, "sizeChartName", 2, 120),
+      audience: chart.audience,
+      notes: this.optionalText(chart.notes, "sizeChartNotes", 2, 1_000),
+      rows: chart.rows.map((row) => this.normalizeSizeChartRow(row)),
+      active: Boolean(chart.active),
+      createdAt: current?.createdAt ?? now,
+      updatedAt: now,
+    };
+  }
+
+  private normalizeSizeChartRow(row: SizeChartRow): SizeChartRow {
+    const entries = Object.entries(row.measurements);
+    if (entries.length > 30) throw new AppError("invalid_payload", 400, "Too many measurements in size row");
+    return {
+      label: this.text(row.label, "sizeLabel", 1, 40),
+      measurements: Object.fromEntries(entries.map(([key, value]) => [
+        this.text(key, "measurementName", 1, 60),
+        this.text(value, "measurementValue", 1, 60),
+      ])),
+    };
+  }
+
+  private normalizeResource(resource: CompanyResourceInput, current: CompanyResource | undefined, now: string): CompanyResource {
+    return {
+      id: this.uuid(resource.id, "resourceId"),
+      kind: resource.kind,
+      name: this.text(resource.name, "resourceName", 2, 120),
+      description: this.optionalText(resource.description, "resourceDescription", 2, 1_000),
+      reference: this.optionalText(resource.reference, "resourceReference", 2, 500),
+      active: Boolean(resource.active),
+      createdAt: current?.createdAt ?? now,
+      updatedAt: now,
+    };
+  }
+
+  private uniqueIds(ids: string[], field: string): Set<string> {
+    const normalized = ids.map((id) => this.uuid(id, field));
+    const unique = new Set(normalized);
+    if (unique.size !== normalized.length) throw new AppError("invalid_payload", 400, `Duplicate ${field}`, { field });
+    return unique;
   }
 
   async createClient(
@@ -574,6 +809,31 @@ export class CoreService {
       throw new AppError("invalid_payload", 400, `Invalid ${field}`, { field });
     }
     return normalized;
+  }
+
+  private optionalText(value: string | null, field: string, min: number, max: number): string | null {
+    if (value === null || value.trim() === "") return null;
+    return this.text(value, field, min, max);
+  }
+
+  private stringList(values: string[], field: string, maxItems: number): string[] {
+    if (values.length > maxItems) throw new AppError("invalid_payload", 400, `Too many ${field}`, { field });
+    const normalized = values.map((value) => this.text(value, field, 2, 120));
+    return [...new Set(normalized)];
+  }
+
+  private uuid(value: string, field: string): string {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(value)) {
+      throw new AppError("invalid_payload", 400, `Invalid ${field}`, { field });
+    }
+    return value.toLowerCase();
+  }
+
+  private nonNegativeInteger(value: number, field: string, max: number): number {
+    if (!Number.isSafeInteger(value) || value < 0 || value > max) {
+      throw new AppError("invalid_payload", 400, `Invalid ${field}`, { field });
+    }
+    return value;
   }
 
   private phone(value: string): string {

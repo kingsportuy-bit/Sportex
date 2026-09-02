@@ -33,6 +33,8 @@ VALUES (
     'commercial.read',
     'commercial.replay',
     'commercial.manage',
+    'company.read',
+    'company.manage',
     'payments.certify',
     'orders.create',
     'orders.read',

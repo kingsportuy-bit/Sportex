@@ -2,16 +2,16 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 const VIEW_STORAGE_KEY = "sportex_last_view";
-const OPERATIONAL_VIEWS = new Set(["whatsapp", "leads", "orders", "clients"]);
+const OPERATIONAL_VIEWS = new Set(["leads", "clients", "orders", "company"]);
 
 function storedOperationalView() {
   try {
     const view = sessionStorage.getItem(VIEW_STORAGE_KEY);
     if (OPERATIONAL_VIEWS.has(view)) return view;
   } catch {
-    // La app abre en WhatsApp si el navegador no permite conservar la sesión.
+    // La app abre en Leads si el navegador no permite conservar la sesión.
   }
-  return "whatsapp";
+  return "leads";
 }
 
 function persistOperationalView(view) {
@@ -40,6 +40,8 @@ const state = {
   commercialNextCursor: null,
   commercialPageLoading: false,
   stageDefinitions: { lead: [], order: [] },
+  companyConfiguration: null,
+  companyDirty: false,
   selectedCommercialId: null,
   mobileDetailOpen: false,
   mobileWhatsappDetailOpen: false,
@@ -93,6 +95,7 @@ const messages = {
   stage_definition_in_use: "Antes mové las tarjetas de esta columna a otra etapa.",
   stage_definition_required: "Tiene que quedar al menos una columna activa.",
   stage_definition_reassignment_required: "Elegí a qué columna pasar las tarjetas antes de eliminarla.",
+  company_configuration_version_conflict: "La configuración cambió en otra sesión. Recargamos su versión más reciente.",
   production_release_confirmation_required: "Confirmá la entrega antes de continuar.",
 };
 
@@ -102,6 +105,8 @@ const localIdentity = {
   capabilities: [
     "clients.create",
     "clients.read",
+    "company.read",
+    "company.manage",
     "commercial.read",
     "commercial.replay",
     "commercial.manage",
@@ -259,6 +264,8 @@ function clearSession() {
   state.clients = [];
   state.orders = [];
   state.commercial = [];
+  state.companyConfiguration = null;
+  state.companyDirty = false;
   state.selectedCommercialId = null;
   state.mobileDetailOpen = false;
   state.mobileWhatsappDetailOpen = false;
@@ -281,11 +288,18 @@ function showApp() {
 async function loadSession() {
   const payload = await api("/v1/session");
   state.session = payload.data;
-  $("#tenant-name").textContent = state.localDemo ? "Delta Sport · demo local" : state.session.tenantName;
+  $("#tenant-name").textContent = state.localDemo ? "Empresa demo · local" : state.session.tenantName;
   $("#account-email").textContent = state.localDemo ? "Operador ficticio" : state.session.email || "Cuenta";
   $("#account-initials").textContent = initials(state.session.email || state.session.tenantName);
   $("#account-button").hidden = state.localDemo;
   $("#logout-button").hidden = state.localDemo;
+  const canReadCompany = state.session.capabilities.includes("company.read");
+  $("#company-nav").hidden = !canReadCompany;
+  $("#save-company-button").hidden = !state.session.capabilities.includes("company.manage");
+  if (!canReadCompany && state.currentView === "company") {
+    state.currentView = "leads";
+    persistOperationalView("leads");
+  }
   if (state.session.passwordChangeRequired) openPasswordDialog(true);
   $("#today-date").textContent = todayLabel();
 }
@@ -458,22 +472,53 @@ function openWhatsAppImageViewer(blob, fileName, alt) {
   dialog.showModal();
 }
 
+function isConversationView(view = state.currentView) {
+  return view === "leads" || view === "clients";
+}
+
+function conversationViewForItem(item) {
+  return item?.opportunity?.coreConversion ? "clients" : "leads";
+}
+
+function conversationItemsForCurrentView() {
+  const converted = state.currentView === "clients";
+  return state.commercial.filter((item) => Boolean(item.opportunity.coreConversion) === converted);
+}
+
+function orderForConversation(item) {
+  const orderId = item.opportunity.coreConversion?.orderId;
+  return orderId ? state.orders.find((order) => order.id === orderId) ?? null : null;
+}
+
+function conversationStageLabel(item) {
+  const order = orderForConversation(item);
+  return order ? orderStageLabel(order.status) : stageLabel(item.opportunity.stage);
+}
+
 async function loadData({ activeOnly = false } = {}) {
-  const wantsCommercial = state.commercialWorkspace && (!activeOnly || state.currentView === "whatsapp" || state.currentView === "leads");
-  const wantsOrders = !activeOnly || state.currentView === "orders";
+  const conversationView = state.currentView === "leads" || state.currentView === "clients";
+  const wantsCommercial = state.commercialWorkspace && (!activeOnly || conversationView);
+  const wantsOrders = !activeOnly || state.currentView === "orders" || state.currentView === "clients";
   const wantsClients = !activeOnly || state.currentView === "clients" || wantsOrders;
+  const canReadCompany = state.session?.capabilities.includes("company.read") ?? false;
+  const wantsCompany = canReadCompany && (!activeOnly || state.currentView === "company" || !state.companyConfiguration);
   const requests = [];
   if (wantsClients) requests.push(["clients", api("/v1/clients")]);
   if (wantsOrders) requests.push(["orders", api("/v1/orders")]);
-  if (!activeOnly || state.currentView === "whatsapp" || state.currentView === "leads") requests.push(["leadStages", api("/v1/stage-definitions/lead")]);
+  if (!activeOnly || state.currentView === "leads") requests.push(["leadStages", api("/v1/stage-definitions/lead")]);
   if (wantsOrders) requests.push(["orderStages", api("/v1/stage-definitions/order")]);
   if (wantsCommercial) requests.push(["commercial", api("/v1/commercial/conversations?limit=25")]);
+  if (wantsCompany) requests.push(["company", api("/v1/company/configuration")]);
   const responses = await Promise.all(requests.map(async ([key, request]) => [key, await request]));
   const loaded = Object.fromEntries(responses);
   if (loaded.clients) state.clients = loaded.clients.data;
   if (loaded.orders) state.orders = loaded.orders.data;
   if (loaded.leadStages) state.stageDefinitions.lead = loaded.leadStages.data ?? [];
   if (loaded.orderStages) state.stageDefinitions.order = loaded.orderStages.data ?? [];
+  if (loaded.company) {
+    state.companyConfiguration = loaded.company.data;
+    state.companyDirty = false;
+  }
   if (loaded.commercial) {
     state.commercial = loaded.commercial.data ?? [];
     state.commercialSnapshot = commercialSnapshot(state.commercial);
@@ -487,6 +532,7 @@ async function loadData({ activeOnly = false } = {}) {
   renderOrders();
   renderWhatsApp();
   renderCommercial();
+  renderCompany();
 }
 
 async function refreshWhatsAppFromDatabase() {
@@ -572,7 +618,7 @@ async function openWhatsAppConversation(itemId) {
 
 function startLiveRefresh() {
   stopLiveRefresh();
-  if (state.localDemo || !state.commercialWorkspace || state.currentView !== "whatsapp" || document.hidden) return;
+  if (state.localDemo || !state.commercialWorkspace || !isConversationView() || document.hidden) return;
   const controller = new AbortController();
   state.liveStreamAbort = controller;
   void consumeCommercialStream(controller.signal);
@@ -614,7 +660,7 @@ async function consumeCommercialStream(signal) {
   } catch (error) {
     if (!signal.aborted) console.warn("SPORTEX stream reconnecting", error);
   }
-  if (!signal.aborted && state.currentView === "whatsapp" && !document.hidden) {
+  if (!signal.aborted && isConversationView() && !document.hidden) {
     const delay = state.liveStreamDelay;
     state.liveStreamDelay = Math.min(state.liveStreamDelay * 2, 30_000);
     state.liveStreamReconnectTimer = window.setTimeout(() => startLiveRefresh(), delay);
@@ -733,9 +779,8 @@ function renderOrders() {
       const button = element("button", "button button--quiet", "Revisar lead");
       button.type = "button";
       button.addEventListener("click", () => {
-        state.selectedCommercialId = item.id;
         switchView("leads");
-        renderCommercial();
+        void openWhatsAppConversation(item.id);
       });
       row.append(text, button);
       candidates.append(row);
@@ -881,9 +926,8 @@ function renderClients() {
       const button = element("button", "button button--quiet", "Abrir conversación");
       button.type = "button";
       button.addEventListener("click", () => {
-        state.selectedCommercialId = item.id;
         switchView("leads");
-        renderCommercial();
+        void openWhatsAppConversation(item.id);
       });
       row.append(text, button);
       candidates.append(row);
@@ -1066,7 +1110,7 @@ function renderToday() {
     openButton.addEventListener("click", () => {
       state.mobileDetailOpen = true;
       state.mobileLeadTab = "chat";
-      switchView("whatsapp");
+      switchView(conversationViewForItem(item));
       void openWhatsAppConversation(item.id);
     });
     row.append(flag, identity, next, openButton);
@@ -1263,7 +1307,7 @@ function renderConversation(item) {
   const timeline = element("div", "conversation-timeline");
   for (const message of item.conversation.messages) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
-    row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
+    row.append(element("span", "message-author", message.direction === "DELTA" ? (state.companyConfiguration?.brand.brandName || "Tu marca") : item.conversation.contactName));
     appendMessageContent(row, message, item);
     row.append(element("time", "", message.pending ? "Enviando…" : shortDateTime(message.occurredAt)));
     timeline.append(row);
@@ -1345,7 +1389,7 @@ function renderProcessOverview(item) {
   const current = element("div", "process-current-stage");
   current.append(
     element("span", "process-current-label", "Etapa actual"),
-    element("strong", "process-current-value", stageLabel(item.opportunity.stage)),
+    element("strong", "process-current-value", conversationStageLabel(item)),
     element("small", "", `Versión ${item.opportunity.version}`),
   );
   const next = element("div", "process-next-action");
@@ -1497,14 +1541,9 @@ async function convertCommercialToOrder(item, evidenceReference, amountPesos, bu
     });
     await loadData();
     state.selectedCommercialId = item.id;
-    const updated = state.commercial.find((candidate) => candidate.id === item.id);
-    if (state.currentView === "whatsapp") {
-      state.whatsappDetailsOpen = true;
-      renderWhatsApp();
-    } else {
-      renderCommercial();
-      if (updated) openFullLeadSheet(updated);
-    }
+    state.whatsappDetailsOpen = true;
+    switchView("clients", { reload: false });
+    renderWhatsApp();
     toast("Cliente, seña y pedido vinculados.");
   } catch (error) {
     errorNode.textContent = friendlyError(error);
@@ -1527,7 +1566,7 @@ async function releaseCommercialToProduction(item, button, errorNode) {
     await loadData();
     state.selectedCommercialId = item.id;
     const updated = state.commercial.find((candidate) => candidate.id === item.id);
-    if (state.currentView === "whatsapp") {
+    if (isConversationView()) {
       state.whatsappDetailsOpen = true;
       renderWhatsApp();
     } else {
@@ -1550,7 +1589,7 @@ function renderWhatsAppInlineDetails(item) {
   identity.append(
     element("span", "page-kicker", "Contacto y proceso"),
     element("h2", "", item.conversation.contactName),
-    element("p", "", `${item.lead.teamName || "Equipo por confirmar"} · ${stageLabel(item.opportunity.stage)}`),
+    element("p", "", `${item.lead.teamName || "Equipo por confirmar"} · ${conversationStageLabel(item)}`),
   );
   const close = element("button", "icon-button whatsapp-inline-details-close", "×");
   close.type = "button";
@@ -1683,7 +1722,7 @@ function openFullLeadSheet(item) {
   identity.append(
     element("span", "page-kicker", "Ficha completa"),
     element("h2", "", item.lead.teamName || "Equipo por confirmar"),
-    element("p", "", `${item.conversation.contactName} · ${stageLabel(item.opportunity.stage)} · versión ${item.opportunity.version}`),
+    element("p", "", `${item.conversation.contactName} · ${conversationStageLabel(item)} · versión ${item.opportunity.version}`),
   );
   const close = element("button", "icon-button", "×");
   close.type = "button";
@@ -1693,7 +1732,7 @@ function openFullLeadSheet(item) {
   openWhatsApp.type = "button";
   openWhatsApp.addEventListener("click", () => {
     dialog.close();
-    switchView("whatsapp");
+    switchView(conversationViewForItem(item));
     void openWhatsAppConversation(item.id);
   });
   const actions = element("div", "lead-sheet-actions");
@@ -1732,7 +1771,7 @@ function renderLeadMessagePreview(item) {
     for (const message of messages) {
       const row = element("article", `lead-message-preview-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
       row.append(
-        element("strong", "", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
+        element("strong", "", message.direction === "DELTA" ? (state.companyConfiguration?.brand.brandName || "Tu marca") : item.conversation.contactName),
         element("p", "", message.contentType === "IMAGE" ? `Imagen${message.text ? ` · ${message.text}` : ""}` : message.text || "Sin texto"),
         element("time", "", shortDateTime(message.occurredAt)),
       );
@@ -1743,7 +1782,7 @@ function renderLeadMessagePreview(item) {
   link.type = "button";
   link.addEventListener("click", () => {
     $("#lead-sheet-dialog").close();
-    switchView("whatsapp");
+    switchView(conversationViewForItem(item));
     void openWhatsAppConversation(item.id);
   });
   card.append(preview, link);
@@ -1807,7 +1846,7 @@ function renderDraftArea(item) {
   sizes.type = "button";
   sizes.addEventListener("click", () => {
     state.draftResource = "sizes";
-    if (state.currentView === "whatsapp") renderWhatsApp();
+    if (isConversationView()) renderWhatsApp();
     else renderLeadDetail(item);
   });
   const quick = element("button", "button button--quiet", "Usar respuesta rápida");
@@ -1846,9 +1885,10 @@ function renderDraftArea(item) {
 
 function filteredWhatsApp() {
   const search = normalizedSearch($("#whatsapp-search")?.value);
-  return [...state.commercial]
+  return conversationItemsForCurrentView()
     .filter((item) => {
-      if (state.whatsappStage !== "ALL" && item.opportunity.stage !== state.whatsappStage) return false;
+      const stage = state.currentView === "clients" ? orderForConversation(item)?.status : item.opportunity.stage;
+      if (state.whatsappStage !== "ALL" && stage !== state.whatsappStage) return false;
       if (state.config?.whatsappUnreadEnabled && state.whatsappUnreadOnly && !(item.conversation.unreadCount > 0)) return false;
       if (!search) return true;
       const lastMessage = item.conversation.messages.at(-1)?.text || "";
@@ -1856,6 +1896,7 @@ function filteredWhatsApp() {
         item.conversation.contactName,
         item.lead.teamName,
         item.lead.productType,
+        orderForConversation(item)?.orderNumber,
         lastMessage,
       ].filter(Boolean).join(" ")).includes(search);
     })
@@ -2025,17 +2066,24 @@ function renderWhatsAppStages() {
   rail.replaceChildren();
   rail.setAttribute("role", "tablist");
   rail.setAttribute("aria-orientation", "horizontal");
+  const configured = state.currentView === "clients"
+    ? (state.stageDefinitions.order.length
+      ? state.stageDefinitions.order.map((stage) => ({ id: stage.id, label: stage.name, shortLabel: stage.name }))
+      : Object.entries(orderStatusLabels).map(([id, label]) => ({ id, label, shortLabel: label })))
+    : (state.stageDefinitions.lead.length
+      ? state.stageDefinitions.lead.map((stage) => ({ id: stage.id, label: stage.name, shortLabel: stage.name }))
+      : salesProcessStages);
   const stages = [
     { id: "ALL", label: "Todas", shortLabel: "Todas" },
-    ...(state.stageDefinitions.lead.length
-      ? state.stageDefinitions.lead.map((stage) => ({ id: stage.id, label: stage.name, shortLabel: stage.name }))
-      : salesProcessStages),
+    ...configured,
   ];
+  if (!stages.some((stage) => stage.id === state.whatsappStage)) state.whatsappStage = "ALL";
+  const baseItems = conversationItemsForCurrentView();
   for (const stage of stages) {
     const active = state.whatsappStage === stage.id;
     const count = stage.id === "ALL"
-      ? state.commercial.length
-      : state.commercial.filter((item) => item.opportunity.stage === stage.id).length;
+      ? baseItems.length
+      : baseItems.filter((item) => (state.currentView === "clients" ? orderForConversation(item)?.status : item.opportunity.stage) === stage.id).length;
     const button = element("button", `whatsapp-process-tab${active ? " is-active" : ""}`);
     button.type = "button";
     button.dataset.stage = stage.id;
@@ -2333,7 +2381,7 @@ function renderWhatsAppChatPane(item) {
     }
     const message = entry.message;
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
-    row.append(element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName));
+    row.append(element("span", "message-author", message.direction === "DELTA" ? (state.companyConfiguration?.brand.brandName || "Tu marca") : item.conversation.contactName));
     appendMessageContent(row, message, item);
     row.append(element("time", "", shortDateTime(message.occurredAt)));
     conversation.append(row);
@@ -2370,11 +2418,15 @@ function renderWhatsApp() {
   if (state.selectedCommercialId && !items.some((item) => item.id === state.selectedCommercialId)) {
     state.selectedCommercialId = null;
   }
+  const baseItems = conversationItemsForCurrentView();
   const totalUnread = state.config?.whatsappUnreadEnabled
-    ? state.commercial.reduce((sum, item) => sum + (item.conversation.unreadCount || 0), 0)
+    ? baseItems.reduce((sum, item) => sum + (item.conversation.unreadCount || 0), 0)
     : 0;
-  $("#whatsapp-count-nav").textContent = String(totalUnread || state.commercial.length);
-  $("#whatsapp-count-nav").classList.toggle("has-unread", totalUnread > 0);
+  const navCount = state.currentView === "clients" ? $("#clients-count-nav") : $("#leads-count-nav");
+  if (navCount) {
+    navCount.textContent = String(totalUnread || baseItems.length);
+    navCount.classList.toggle("has-unread", totalUnread > 0);
+  }
   const unreadFilter = $("#whatsapp-unread-filter");
   if (unreadFilter) unreadFilter.hidden = !state.config?.whatsappUnreadEnabled;
   unreadFilter?.setAttribute("aria-pressed", String(state.whatsappUnreadOnly));
@@ -2418,7 +2470,7 @@ function renderChatPane(item) {
   for (const message of item.conversation.messages) {
     const row = element("article", `message-row ${message.direction === "DELTA" ? "is-delta" : "is-client"}`);
     row.append(
-      element("span", "message-author", message.direction === "DELTA" ? "Delta" : item.conversation.contactName),
+      element("span", "message-author", message.direction === "DELTA" ? (state.companyConfiguration?.brand.brandName || "Tu marca") : item.conversation.contactName),
       element("p", "", message.text),
       element("time", "", shortDateTime(message.occurredAt)),
     );
@@ -2578,7 +2630,7 @@ async function runCommercialMutation(button, busyLabel, operation, successMessag
   try {
     const response = await operation();
     replaceCommercialItem(response.data);
-    if (state.currentView === "whatsapp") renderWhatsApp();
+    if (isConversationView()) renderWhatsApp();
     else renderCommercial();
     toast(successMessage);
   } catch (error) {
@@ -2660,10 +2712,11 @@ function syncLeadStageFilter() {
 }
 
 function renderCommercial() {
-  $("#commercial-count-nav").textContent = String(state.commercial.length);
+  const count = $("#leads-count-nav");
+  if (count) count.textContent = String(state.commercial.filter((item) => !item.opportunity.coreConversion).length);
   $("#persistence-status").textContent = state.localDemo
     ? (state.config?.localCommercialPersistenceEnabled ? "GUARDADO LOCAL" : "MEMORIA")
-    : "PILOTO DELTA";
+    : "CONECTADO";
   syncLeadStageFilter();
 
   const items = filteredCommercial();
@@ -2686,12 +2739,361 @@ function fillClientSelect() {
   syncTeamFromClient();
 }
 
+function nullableInputValue(selector) {
+  const value = $(selector).value.trim();
+  return value || null;
+}
+
+function linesFromTextarea(selector) {
+  return $(selector).value.split(/\r?\n/u).map((value) => value.trim()).filter(Boolean);
+}
+
+function markCompanyDirty() {
+  if (!state.companyConfiguration) return;
+  state.companyDirty = true;
+  const status = $("#company-save-status");
+  if (status) {
+    status.textContent = "Cambios sin guardar";
+    status.classList.add("is-dirty");
+  }
+}
+
+function setCompanyFieldValues(configuration) {
+  $("#company-brand-name").value = configuration.brand.brandName;
+  $("#company-legal-name").value = configuration.brand.legalName ?? "";
+  $("#company-phone").value = configuration.brand.primaryPhone ?? "";
+  $("#company-email").value = configuration.brand.primaryEmail ?? "";
+  $("#company-website").value = configuration.brand.website ?? "";
+  $("#company-description").value = configuration.brand.description ?? "";
+  $("#company-currency").value = configuration.operations.defaultCurrency;
+  $("#company-deposit-percentage").value = String(configuration.operations.depositPercentage);
+  $("#company-quote-validity").value = String(configuration.operations.defaultQuoteValidityDays);
+  $("#company-lead-time").value = String(configuration.operations.defaultLeadTimeDays);
+  $("#company-payment-methods").value = configuration.operations.paymentMethods.join("\n");
+  $("#company-delivery-methods").value = configuration.operations.deliveryMethods.join("\n");
+  $("#company-sales-terms").value = configuration.operations.salesTerms ?? "";
+  $("#company-production-notes").value = configuration.operations.productionNotes ?? "";
+}
+
+function companyEmpty(title, description) {
+  const empty = element("div", "company-empty");
+  empty.append(element("strong", "", title), element("p", "", description));
+  return empty;
+}
+
+function companyInput(label, value, onInput, options = {}) {
+  const input = element(options.multiline ? "textarea" : options.selectOptions ? "select" : "input");
+  if (options.multiline) input.rows = options.rows ?? 3;
+  if (options.type) input.type = options.type;
+  if (options.min !== undefined) input.min = String(options.min);
+  if (options.max !== undefined) input.max = String(options.max);
+  if (options.step !== undefined) input.step = String(options.step);
+  if (options.required) input.required = true;
+  if (options.placeholder) input.placeholder = options.placeholder;
+  if (options.maxLength) input.maxLength = options.maxLength;
+  if (options.selectOptions) {
+    for (const [optionValue, optionLabel] of options.selectOptions) {
+      const option = element("option", "", optionLabel);
+      option.value = optionValue;
+      input.append(option);
+    }
+  }
+  input.value = value ?? "";
+  input.addEventListener("input", () => {
+    onInput(input.value, input);
+    markCompanyDirty();
+  });
+  return fieldLabel(label, input);
+}
+
+function companyEntityHeader(title, subtitle, active, onActive, onRemove) {
+  const header = element("header", "company-entity-head");
+  const identity = element("div");
+  identity.append(element("strong", "", title), element("small", "", subtitle));
+  const actions = element("div", "company-entity-actions");
+  const activeLabel = element("label", "company-active-toggle");
+  const checkbox = element("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = active;
+  checkbox.addEventListener("change", () => { onActive(checkbox.checked); markCompanyDirty(); });
+  activeLabel.append(checkbox, element("span", "", "Activo"));
+  const remove = element("button", "button button--quiet company-remove", "Quitar");
+  remove.type = "button";
+  remove.addEventListener("click", onRemove);
+  actions.append(activeLabel, remove);
+  header.append(identity, actions);
+  return header;
+}
+
+function renderCompanyProducts() {
+  const list = $("#company-products-list");
+  list.replaceChildren();
+  const configuration = state.companyConfiguration;
+  if (!configuration?.products.length) {
+    list.append(companyEmpty("Todavía no hay productos", "Agregá el primero con su mínimo, plazo y precio."));
+    return;
+  }
+  for (const product of configuration.products) {
+    const card = element("article", `company-entity-card${product.active ? "" : " is-inactive"}`);
+    card.dataset.entityId = product.id;
+    card.append(companyEntityHeader(
+      product.name || "Producto sin nombre",
+      product.category || "Sin categoría",
+      product.active,
+      (active) => { product.active = active; card.classList.toggle("is-inactive", !active); },
+      () => { configuration.products = configuration.products.filter((item) => item.id !== product.id); markCompanyDirty(); renderCompanyProducts(); },
+    ));
+    const grid = element("div", "company-card-grid");
+    grid.append(
+      companyInput("Producto", product.name, (value) => { product.name = value; }, { required: true, maxLength: 120 }),
+      companyInput("Categoría", product.category, (value) => { product.category = value; }, { required: true, maxLength: 80 }),
+      companyInput("Cantidad mínima", product.minimumQuantity, (value) => { product.minimumQuantity = Number(value); }, { type: "number", min: 1, required: true }),
+      companyInput("Plazo habitual (días)", product.defaultLeadTimeDays, (value) => { product.defaultLeadTimeDays = Number(value); }, { type: "number", min: 1, required: true }),
+      companyInput("Tabla de talles", product.sizeChartId ?? "", (value) => { product.sizeChartId = value || null; }, {
+        selectOptions: [["", "Sin tabla vinculada"], ...configuration.sizeCharts.map((chart) => [chart.id, chart.name])],
+      }),
+      companyInput("Descripción", product.description ?? "", (value) => { product.description = value || null; }, { multiline: true, rows: 3, maxLength: 1_000 }),
+    );
+    grid.lastElementChild.classList.add("company-span-all");
+    card.append(grid);
+
+    const tiers = element("section", "company-subsection");
+    const tiersHead = element("header");
+    tiersHead.append(element("h3", "", "Escalas de precio"));
+    const addTier = element("button", "button button--quiet", "+ Agregar escala");
+    addTier.type = "button";
+    addTier.addEventListener("click", () => {
+      product.priceTiers.push({ id: crypto.randomUUID(), minQuantity: product.minimumQuantity || 1, maxQuantity: null, unitPriceCents: 1, currency: configuration.operations.defaultCurrency });
+      markCompanyDirty(); renderCompanyProducts();
+    });
+    tiersHead.append(addTier);
+    const tierList = element("div", "company-tier-list");
+    if (!product.priceTiers.length) tierList.append(companyEmpty("Sin precios cargados", "Podés conservar el producto y completar sus escalas después."));
+    for (const tier of product.priceTiers) {
+      const row = element("div", "company-tier-row");
+      const min = companyInput("Desde", tier.minQuantity, (value) => { tier.minQuantity = Number(value); }, { type: "number", min: 1, required: true });
+      const max = companyInput("Hasta", tier.maxQuantity ?? "", (value) => { tier.maxQuantity = value === "" ? null : Number(value); }, { type: "number", min: 1, placeholder: "Sin límite" });
+      const price = companyInput("Precio unitario", tier.unitPriceCents / 100, (value) => { tier.unitPriceCents = Math.round(Number(value) * 100); }, { type: "number", min: .01, step: .01, required: true });
+      const currency = companyInput("Moneda", tier.currency, (value) => { tier.currency = value; }, { selectOptions: [["UYU", "UYU"], ["USD", "USD"]] });
+      const remove = element("button", "company-inline-remove", "×");
+      remove.type = "button";
+      remove.setAttribute("aria-label", "Quitar escala de precio");
+      remove.addEventListener("click", () => { product.priceTiers = product.priceTiers.filter((item) => item.id !== tier.id); markCompanyDirty(); renderCompanyProducts(); });
+      row.append(min, max, price, currency, remove);
+      tierList.append(row);
+    }
+    tiers.append(tiersHead, tierList);
+    card.append(tiers);
+    list.append(card);
+  }
+}
+
+function measurementsToText(measurements) {
+  return Object.entries(measurements).map(([name, value]) => `${name}: ${value}`).join("; ");
+}
+
+function parseMeasurements(value) {
+  const entries = value.split(/[;\n]/u).map((part) => part.trim()).filter(Boolean).map((part) => {
+    const separator = part.indexOf(":");
+    if (separator < 1 || !part.slice(separator + 1).trim()) throw new Error("invalid_measurement");
+    return [part.slice(0, separator).trim(), part.slice(separator + 1).trim()];
+  });
+  return Object.fromEntries(entries);
+}
+
+function renderCompanySizeCharts() {
+  const list = $("#company-size-charts-list");
+  list.replaceChildren();
+  const configuration = state.companyConfiguration;
+  if (!configuration?.sizeCharts.length) {
+    list.append(companyEmpty("Todavía no hay tablas", "Creá una tabla para niños, adultos o uso unisex."));
+    return;
+  }
+  for (const chart of configuration.sizeCharts) {
+    const card = element("article", `company-entity-card${chart.active ? "" : " is-inactive"}`);
+    card.append(companyEntityHeader(
+      chart.name || "Tabla sin nombre",
+      chart.audience === "CHILD" ? "Niños" : chart.audience === "ADULT" ? "Adultos" : "Unisex",
+      chart.active,
+      (active) => { chart.active = active; card.classList.toggle("is-inactive", !active); },
+      () => {
+        configuration.sizeCharts = configuration.sizeCharts.filter((item) => item.id !== chart.id);
+        for (const product of configuration.products) if (product.sizeChartId === chart.id) product.sizeChartId = null;
+        markCompanyDirty(); renderCompanySizeCharts(); renderCompanyProducts();
+      },
+    ));
+    const grid = element("div", "company-card-grid");
+    grid.append(
+      companyInput("Nombre", chart.name, (value) => { chart.name = value; }, { required: true, maxLength: 120 }),
+      companyInput("Público", chart.audience, (value) => { chart.audience = value; }, { selectOptions: [["CHILD", "Niños"], ["ADULT", "Adultos"], ["UNISEX", "Unisex"]] }),
+      companyInput("Notas", chart.notes ?? "", (value) => { chart.notes = value || null; }, { multiline: true, rows: 3, maxLength: 1_000 }),
+    );
+    grid.lastElementChild.classList.add("company-span-all");
+    card.append(grid);
+    const rowsSection = element("section", "company-subsection");
+    const rowsHead = element("header");
+    rowsHead.append(element("h3", "", "Talles y medidas"));
+    const addRow = element("button", "button button--quiet", "+ Agregar talle");
+    addRow.type = "button";
+    addRow.addEventListener("click", () => { chart.rows.push({ label: "", measurements: {} }); markCompanyDirty(); renderCompanySizeCharts(); });
+    rowsHead.append(addRow);
+    const rowList = element("div", "company-size-row-list");
+    if (!chart.rows.length) rowList.append(companyEmpty("Sin talles cargados", "Ejemplo: M — Pecho: 48; Largo: 66"));
+    for (const sizeRow of chart.rows) {
+      const row = element("div", "company-size-row");
+      const label = companyInput("Talle", sizeRow.label, (value) => { sizeRow.label = value; }, { required: true, maxLength: 40 });
+      const measurements = companyInput("Medidas", measurementsToText(sizeRow.measurements), (value, input) => {
+        try {
+          sizeRow.measurements = parseMeasurements(value);
+          input.setCustomValidity("");
+        } catch {
+          input.setCustomValidity("Usá el formato Nombre: valor; Nombre: valor");
+        }
+      }, { required: true, placeholder: "Pecho: 48 cm; Largo: 66 cm" });
+      const remove = element("button", "company-inline-remove", "×");
+      remove.type = "button";
+      remove.setAttribute("aria-label", "Quitar talle");
+      remove.addEventListener("click", () => { chart.rows = chart.rows.filter((item) => item !== sizeRow); markCompanyDirty(); renderCompanySizeCharts(); });
+      row.append(label, measurements, remove);
+      rowList.append(row);
+    }
+    rowsSection.append(rowsHead, rowList);
+    card.append(rowsSection);
+    list.append(card);
+  }
+}
+
+function renderCompanyResources() {
+  const list = $("#company-resources-list");
+  list.replaceChildren();
+  const configuration = state.companyConfiguration;
+  if (!configuration?.resources.length) {
+    list.append(companyEmpty("Todavía no hay recursos", "Guardá referencias a fotos de tela, guías o documentos frecuentes."));
+    return;
+  }
+  const kindOptions = [["FABRIC_PHOTO", "Foto de tela"], ["SIZE_GUIDE", "Guía de talles"], ["PRODUCT_IMAGE", "Imagen de producto"], ["DOCUMENT", "Documento"]];
+  for (const resource of configuration.resources) {
+    const kindLabel = kindOptions.find(([value]) => value === resource.kind)?.[1] ?? resource.kind;
+    const card = element("article", `company-entity-card${resource.active ? "" : " is-inactive"}`);
+    card.append(companyEntityHeader(
+      resource.name || "Recurso sin nombre", kindLabel, resource.active,
+      (active) => { resource.active = active; card.classList.toggle("is-inactive", !active); },
+      () => { configuration.resources = configuration.resources.filter((item) => item.id !== resource.id); markCompanyDirty(); renderCompanyResources(); },
+    ));
+    const grid = element("div", "company-card-grid");
+    grid.append(
+      companyInput("Nombre", resource.name, (value) => { resource.name = value; }, { required: true, maxLength: 120 }),
+      companyInput("Tipo", resource.kind, (value) => { resource.kind = value; }, { selectOptions: kindOptions }),
+      companyInput("Referencia o enlace", resource.reference ?? "", (value) => { resource.reference = value || null; }, { maxLength: 500, placeholder: "URL, carpeta o referencia interna" }),
+      companyInput("Descripción", resource.description ?? "", (value) => { resource.description = value || null; }, { multiline: true, rows: 3, maxLength: 1_000 }),
+    );
+    grid.lastElementChild.classList.add("company-span-all");
+    card.append(grid);
+    list.append(card);
+  }
+}
+
+function renderCompany() {
+  const configuration = state.companyConfiguration;
+  if (!configuration || !$("#company-form")) return;
+  if (!state.companyDirty) setCompanyFieldValues(configuration);
+  renderCompanyProducts();
+  renderCompanySizeCharts();
+  renderCompanyResources();
+  const status = $("#company-save-status");
+  status.textContent = state.companyDirty ? "Cambios sin guardar" : configuration.version ? `Guardado · v${configuration.version}` : "Listo para configurar";
+  status.classList.toggle("is-dirty", state.companyDirty);
+}
+
+function collectCompanyConfiguration() {
+  const configuration = state.companyConfiguration;
+  configuration.brand = {
+    brandName: $("#company-brand-name").value.trim(),
+    legalName: nullableInputValue("#company-legal-name"),
+    primaryPhone: nullableInputValue("#company-phone"),
+    primaryEmail: nullableInputValue("#company-email"),
+    website: nullableInputValue("#company-website"),
+    description: nullableInputValue("#company-description"),
+  };
+  configuration.operations = {
+    defaultCurrency: $("#company-currency").value,
+    depositPercentage: Number($("#company-deposit-percentage").value),
+    defaultQuoteValidityDays: Number($("#company-quote-validity").value),
+    defaultLeadTimeDays: Number($("#company-lead-time").value),
+    paymentMethods: linesFromTextarea("#company-payment-methods"),
+    deliveryMethods: linesFromTextarea("#company-delivery-methods"),
+    salesTerms: nullableInputValue("#company-sales-terms"),
+    productionNotes: nullableInputValue("#company-production-notes"),
+  };
+  const stripDates = ({ createdAt: _createdAt, updatedAt: _updatedAt, ...value }) => value;
+  return {
+    expectedVersion: configuration.version,
+    brand: configuration.brand,
+    operations: configuration.operations,
+    products: configuration.products.map(stripDates),
+    sizeCharts: configuration.sizeCharts.map(stripDates),
+    resources: configuration.resources.map(stripDates),
+  };
+}
+
+async function saveCompanyConfiguration(event) {
+  event.preventDefault();
+  const form = $("#company-form");
+  if (!form.reportValidity() || !state.companyConfiguration) return;
+  const button = $("#save-company-button");
+  $("#company-form-error").textContent = "";
+  setButtonBusy(button, true, "Guardando…");
+  try {
+    const response = await api("/v1/company/configuration", {
+      method: "PUT",
+      headers: { "idempotency-key": crypto.randomUUID() },
+      body: JSON.stringify(collectCompanyConfiguration()),
+    });
+    state.companyConfiguration = response.data;
+    state.companyDirty = false;
+    renderCompany();
+    toast("Configuración de la empresa guardada.");
+  } catch (error) {
+    if (error instanceof UiError && error.code === "company_configuration_version_conflict") {
+      const response = await api("/v1/company/configuration");
+      state.companyConfiguration = response.data;
+      state.companyDirty = false;
+      renderCompany();
+    }
+    $("#company-form-error").textContent = friendlyError(error);
+  } finally {
+    setButtonBusy(button, false, "");
+  }
+}
+
+function addCompanyProduct() {
+  if (!state.companyConfiguration) return;
+  state.companyConfiguration.products.push({
+    id: crypto.randomUUID(), name: "Nuevo producto", category: "Indumentaria", description: null, active: true,
+    minimumQuantity: 1, defaultLeadTimeDays: state.companyConfiguration.operations.defaultLeadTimeDays,
+    sizeChartId: null, priceTiers: [],
+  });
+  markCompanyDirty(); renderCompanyProducts();
+}
+
+function addCompanySizeChart() {
+  if (!state.companyConfiguration) return;
+  state.companyConfiguration.sizeCharts.push({ id: crypto.randomUUID(), name: "Nueva tabla", audience: "UNISEX", notes: null, rows: [], active: true });
+  markCompanyDirty(); renderCompanySizeCharts(); renderCompanyProducts();
+}
+
+function addCompanyResource() {
+  if (!state.companyConfiguration) return;
+  state.companyConfiguration.resources.push({ id: crypto.randomUUID(), kind: "FABRIC_PHOTO", name: "Nuevo recurso", description: null, reference: null, active: true });
+  markCompanyDirty(); renderCompanyResources();
+}
+
 const viewMeta = {
-  whatsapp: ["Operación", "WhatsApp"],
   today: ["Operación diaria", "Hoy"],
-  leads: ["Operación", "Leads"],
-  orders: ["Operación", "Pedidos"],
-  clients: ["Operación", "Clientes"],
+  leads: ["Operación comercial", "Leads"],
+  clients: ["Atención", "Clientes"],
+  orders: ["Producción", "Pedidos"],
+  company: ["Administración", "Mi empresa"],
   ads: ["Marketing", "Anuncios"],
   creatives: ["Marketing", "Creativos"],
   results: ["Marketing", "Resultados"],
@@ -2822,10 +3224,10 @@ function renderModule(name) {
   }
 
   if (!state.localDemo) {
-    $("#module-description").textContent = "Capacidades habilitadas para este release del Piloto Delta.";
+    $("#module-description").textContent = "Capacidades habilitadas para esta versión de SPORTEX.";
     const pilotGrid = element("div", "module-grid");
     pilotGrid.append(
-      moduleCard("Entorno", "Piloto Delta", "Datos y permisos del tenant activo"),
+      moduleCard("Entorno", "Empresa activa", "Datos y permisos de la empresa seleccionada"),
       moduleCard("WhatsApp", state.config?.evolutionIngressEnabled ? "Recepción habilitada" : "Recepción no habilitada", state.config?.whatsappUnreadEnabled ? "No leídos disponibles" : "Estado no informado en esta pantalla"),
       moduleCard("Operación", "Leads y pedidos gestionados desde SPORTEX", "Sin afirmar estado de servicios externos"),
     );
@@ -2861,20 +3263,23 @@ function closeMobileMenu() {
 
 function switchView(name, { reload = true } = {}) {
   if (name === "commercial") name = "leads";
-  if (!OPERATIONAL_VIEWS.has(name)) name = "whatsapp";
+  if (!OPERATIONAL_VIEWS.has(name)) name = "leads";
   const previousView = state.currentView;
   state.currentView = name;
   persistOperationalView(name);
-  if (name === "whatsapp" && previousView !== "whatsapp") {
+  if (isConversationView(name) && previousView !== name) {
     state.selectedCommercialId = null;
     state.whatsappDetailsOpen = false;
     state.mobileWhatsappDetailOpen = false;
+    state.whatsappStage = "ALL";
+    state.whatsappUnreadOnly = false;
   }
   $("#today-view").hidden = name !== "today";
-  $("#whatsapp-view").hidden = name !== "whatsapp";
-  $("#commercial-view").hidden = name !== "leads";
+  $("#whatsapp-view").hidden = !isConversationView(name);
+  $("#commercial-view").hidden = true;
   $("#orders-view").hidden = name !== "orders";
-  $("#clients-view").hidden = name !== "clients";
+  $("#clients-view").hidden = true;
+  $("#company-view").hidden = name !== "company";
   const isModule = false;
   $("#local-demo-actions").hidden = true;
   $("#new-order-button").hidden = state.localDemo || name !== "orders";
@@ -2883,10 +3288,10 @@ function switchView(name, { reload = true } = {}) {
   $("#topbar-title").textContent = meta[1];
   $$(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.view === name));
   if (name === "today") renderToday();
-  if (name === "whatsapp") renderWhatsApp();
-  if (name === "leads") renderCommercial();
+  if (isConversationView(name)) renderWhatsApp();
+  if (name === "company") renderCompany();
   if (reload) void loadData({ activeOnly: true }).catch((error) => console.warn("SPORTEX view load failed", error));
-  if (name === "whatsapp") startLiveRefresh();
+  if (isConversationView(name)) startLiveRefresh();
   else stopLiveRefresh();
   closeMobileMenu();
   window.scrollTo({ top: 0, behavior: "auto" });
@@ -3216,7 +3621,7 @@ async function bootstrapAuthenticated() {
   showApp();
   switchView(state.currentView, { reload: false });
   try {
-    await loadData({ activeOnly: true });
+    await loadData();
   } catch (error) {
     // Una falla puntual de datos no invalida una sesión que ya fue comprobada.
     console.warn("SPORTEX initial workspace load failed", error);
@@ -3232,7 +3637,7 @@ async function initialize() {
     state.commercialWorkspace = Boolean(state.config.commercialWorkspaceEnabled);
     state.realWhatsappOutbound = Boolean(state.config.evolutionOutboundEnabled);
     const environmentLabel = state.config.environment === "staging"
-      ? "PILOTO DELTA"
+      ? "PILOTO"
       : state.config.environment.toUpperCase();
     $("#release-label").textContent = `${environmentLabel} · ${state.config.release.slice(0, 7)}`;
   } catch (error) {
@@ -3314,7 +3719,7 @@ $$('[data-orders-view]').forEach((button) => button.addEventListener("click", ()
 $("#clear-filters").addEventListener("click", clearCommercialFilters);
 $("#lead-stage-config").addEventListener("click", () => openStageConfiguration("lead"));
 $("#order-stage-config").addEventListener("click", () => openStageConfiguration("order"));
-$("#whatsapp-stage-config").addEventListener("click", () => openStageConfiguration("lead"));
+$("#whatsapp-stage-config").addEventListener("click", () => openStageConfiguration(state.currentView === "clients" ? "order" : "lead"));
 $("#whatsapp-search").addEventListener("input", () => {
   state.mobileWhatsappDetailOpen = false;
   renderWhatsApp();
@@ -3341,6 +3746,13 @@ $("#sidebar-scrim").addEventListener("click", closeMobileMenu);
 $$("input[name=clientMode]").forEach((input) => input.addEventListener("change", syncClientMode));
 $("#order-client").addEventListener("change", syncTeamFromClient);
 $("#save-order-button").addEventListener("click", saveOrder);
+$("#company-form").addEventListener("submit", saveCompanyConfiguration);
+$("#company-form").addEventListener("input", (event) => {
+  if (!event.target.closest(".company-entity-card")) markCompanyDirty();
+});
+$("#add-company-product").addEventListener("click", addCompanyProduct);
+$("#add-company-size-chart").addEventListener("click", addCompanySizeChart);
+$("#add-company-resource").addEventListener("click", addCompanyResource);
 $("#logout-button").addEventListener("click", logout);
 $("#account-button").addEventListener("click", () => openPasswordDialog(false));
 $("#password-save").addEventListener("click", savePassword);
@@ -3352,7 +3764,7 @@ $("#password-dialog").addEventListener("close", () => {
 });
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) stopLiveRefresh();
-  else if (state.currentView === "whatsapp") startLiveRefresh();
+  else if (isConversationView()) startLiveRefresh();
 });
 
 void initialize();

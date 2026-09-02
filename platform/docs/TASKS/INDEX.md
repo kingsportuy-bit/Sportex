@@ -2,11 +2,11 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-08-20.
+Actualizado: 2026-09-02.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260902-002` | `in_progress` | Promover CRM y configuración de empresa al piloto | docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md
 
 ## Cola
 
@@ -38,3 +38,4 @@ Actualizado: 2026-08-20.
 - `TASK-20260816-004` | `done` | Optimizar contexto, Biblioteca y cierre proporcional | docs/TASKS/closed/2026/TASK-20260816-004-optimizar-contexto-biblioteca-y-cierre.md
 - `TASK-20260817-001` | `done` | Puesto operativo Delta desde SPORTEX | docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md
 - `TASK-20260820-001` | `done` | Protocolo de preemption, hotfix y reconciliacion de entornos | docs/TASKS/closed/2026/TASK-20260820-001-preemption-hotfix-reconciliation.md
+- `TASK-20260902-001` | `done` | Reorganizar CRM y configuración de empresa | docs/TASKS/closed/2026/TASK-20260902-001-reorganizar-crm-y-configuracion-empresa.md

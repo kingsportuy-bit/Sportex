@@ -2969,3 +2969,72 @@ textarea:disabled { cursor: not-allowed; opacity: .58; }
 @media (prefers-reduced-motion: reduce) {
   #whatsapp-view .whatsapp-process-tab { transition: none; }
 }
+
+/* Mi empresa comparte el lenguaje visual de SPORTEX sin alterar el panel de WhatsApp. */
+.company-form { display: grid; gap: 18px; max-width: 1360px; margin: 0 auto; }
+.company-intro { align-items: center; }
+.company-save-cluster { display: flex; align-items: center; gap: 13px; }
+.company-save-status { color: var(--muted); font: 700 10px/1 "Cascadia Mono", Consolas, monospace; letter-spacing: .06em; text-transform: uppercase; }
+.company-save-status.is-dirty { color: var(--signal); }
+.company-section-nav { position: sticky; top: 0; z-index: 4; display: flex; gap: 4px; padding: 8px; overflow-x: auto; border: 1px solid var(--line); background: color-mix(in srgb, var(--surface-panel) 94%, transparent); backdrop-filter: blur(14px); }
+.company-section-nav a { flex: 0 0 auto; padding: 10px 13px; color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 750; }
+.company-section-nav a:hover, .company-section-nav a:focus-visible { background: var(--surface-hover); color: var(--ink); outline: none; }
+.company-section { scroll-margin-top: 78px; display: grid; gap: 20px; padding: clamp(20px, 3vw, 34px); border: 1px solid var(--line); background: var(--surface-panel); }
+.company-section > header { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 18px; align-items: start; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.company-section > header h2 { margin: 0 0 6px; font: 800 clamp(22px, 2.5vw, 31px)/1 "Bahnschrift SemiCondensed", "Segoe UI", sans-serif; letter-spacing: -.02em; }
+.company-section > header p { max-width: 680px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.company-field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.company-field-grid label { min-width: 0; }
+.company-field-grid label small { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
+.company-field-wide { grid-column: 1 / -1; }
+.company-entity-list { display: grid; gap: 12px; }
+.company-empty { display: grid; justify-items: start; gap: 6px; min-height: 108px; align-content: center; padding: 20px; border: 1px dashed var(--line); color: var(--muted); }
+.company-empty strong { color: var(--ink); font-size: 14px; }
+.company-empty p { margin: 0; font-size: 12px; }
+.company-entity-card { display: grid; gap: 18px; padding: 20px; border: 1px solid var(--line); border-left: 4px solid var(--blue); background: var(--surface-raised); }
+.company-entity-card.is-inactive { opacity: .7; border-left-color: var(--line-dark); }
+.company-entity-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.company-entity-head > div { min-width: 0; }
+.company-entity-head strong { display: block; overflow: hidden; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+.company-entity-head small { color: var(--muted); }
+.company-entity-actions { display: flex; align-items: center; gap: 8px; }
+.company-active-toggle { display: flex; grid-auto-flow: column; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; white-space: nowrap; }
+.company-active-toggle input { width: 18px; min-height: 18px; height: 18px; padding: 0; accent-color: var(--signal); }
+.company-remove { min-height: 34px; padding: 0 11px; }
+.company-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.company-card-grid .company-span-2 { grid-column: span 2; }
+.company-card-grid .company-span-all { grid-column: 1 / -1; }
+.company-subsection { display: grid; gap: 10px; padding-top: 15px; border-top: 1px solid var(--line); }
+.company-subsection > header { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.company-subsection h3 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.company-tier-list, .company-size-row-list { display: grid; gap: 8px; }
+.company-tier-row { display: grid; grid-template-columns: 1fr 1fr 1.3fr .8fr auto; gap: 8px; align-items: end; }
+.company-size-row { display: grid; grid-template-columns: minmax(90px, .35fr) minmax(0, 1.65fr) auto; gap: 8px; align-items: end; }
+.company-inline-remove { width: 42px; min-height: 48px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 20px; }
+.company-inline-remove:hover { border-color: var(--danger); color: #ff7777; }
+.company-form input, .company-form select, .company-form textarea { border-radius: 7px; }
+.company-form .form-error { padding: 4px 2px 30px; }
+
+@media (max-width: 900px) {
+  .company-section > header { grid-template-columns: 1fr auto; }
+  .company-section > header .section-code { grid-column: 1 / -1; }
+  .company-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .company-tier-row { grid-template-columns: repeat(2, minmax(0, 1fr)) auto; }
+  .company-tier-row label:nth-child(3) { grid-column: 1 / 2; }
+}
+
+@media (max-width: 720px) {
+  .company-intro { align-items: flex-start; }
+  .company-save-cluster { width: 100%; justify-content: space-between; }
+  .company-section-nav { top: -1px; margin-inline: -4px; }
+  .company-section { padding: 18px 14px; }
+  .company-section > header { grid-template-columns: 1fr; }
+  .company-section > header .button { width: 100%; }
+  .company-field-grid, .company-card-grid { grid-template-columns: 1fr; }
+  .company-field-wide, .company-card-grid .company-span-2, .company-card-grid .company-span-all { grid-column: 1; }
+  .company-entity-head { align-items: flex-start; }
+  .company-entity-actions { flex-direction: column; align-items: flex-end; }
+  .company-tier-row, .company-size-row { grid-template-columns: 1fr; }
+  .company-tier-row label:nth-child(3) { grid-column: 1; }
+  .company-inline-remove { width: 100%; min-height: 36px; }
+}

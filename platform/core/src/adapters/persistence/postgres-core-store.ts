@@ -13,6 +13,14 @@ import type {
   OutboxEvent,
 } from "../../domain/models.js";
 import type { StageBoardKind, StageDefinition } from "../../domain/stage-configuration.js";
+import type {
+  CompanyConfiguration,
+  CompanyProduct,
+  CompanyResource,
+  CompanySizeChart,
+  ProductPriceTier,
+  SizeChartRow,
+} from "../../domain/company-configuration.js";
 import type { CoreStore, CoreTransaction } from "../../ports/core-store.js";
 import { conflict } from "../../shared/errors.js";
 
@@ -27,6 +35,11 @@ interface Tables {
   auditEvents: string;
   outbox: string;
   stageDefinitions: string;
+  companyProfiles: string;
+  companySizeCharts: string;
+  catalogProducts: string;
+  catalogProductPriceTiers: string;
+  companyResources: string;
 }
 
 function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): Tables {
@@ -41,6 +54,11 @@ function tablesForPrefix(prefix: SportexConfig["tablePrefix"]): Tables {
     auditEvents: `${prefix}audit_events`,
     outbox: `${prefix}outbox`,
     stageDefinitions: `${prefix}stage_definitions`,
+    companyProfiles: `${prefix}company_profiles`,
+    companySizeCharts: `${prefix}company_size_charts`,
+    catalogProducts: `${prefix}catalog_products`,
+    catalogProductPriceTiers: `${prefix}catalog_product_price_tiers`,
+    companyResources: `${prefix}company_resources`,
   };
 }
 
@@ -110,6 +128,62 @@ function rowToOrder(row: Record<string, unknown>): Order {
       currentSketch,
     },
     version: Number(row.version),
+    createdAt: iso(row.created_at),
+    updatedAt: iso(row.updated_at),
+  };
+}
+
+function jsonStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function rowToPriceTier(row: Record<string, unknown>): ProductPriceTier {
+  return {
+    id: String(row.id),
+    minQuantity: Number(row.min_quantity),
+    maxQuantity: row.max_quantity === null ? null : Number(row.max_quantity),
+    unitPriceCents: Number(row.unit_price_cents),
+    currency: String(row.currency) as Currency,
+  };
+}
+
+function rowToSizeChart(row: Record<string, unknown>): CompanySizeChart {
+  return {
+    id: String(row.id),
+    name: String(row.name),
+    audience: String(row.audience) as CompanySizeChart["audience"],
+    notes: row.notes === null ? null : String(row.notes),
+    rows: (Array.isArray(row.rows) ? row.rows : []) as SizeChartRow[],
+    active: Boolean(row.active),
+    createdAt: iso(row.created_at),
+    updatedAt: iso(row.updated_at),
+  };
+}
+
+function rowToProduct(row: Record<string, unknown>, priceTiers: ProductPriceTier[]): CompanyProduct {
+  return {
+    id: String(row.id),
+    name: String(row.name),
+    category: String(row.category),
+    description: row.description === null ? null : String(row.description),
+    active: Boolean(row.active),
+    minimumQuantity: Number(row.minimum_quantity),
+    defaultLeadTimeDays: Number(row.default_lead_time_days),
+    sizeChartId: row.size_chart_id === null ? null : String(row.size_chart_id),
+    priceTiers,
+    createdAt: iso(row.created_at),
+    updatedAt: iso(row.updated_at),
+  };
+}
+
+function rowToResource(row: Record<string, unknown>): CompanyResource {
+  return {
+    id: String(row.id),
+    kind: String(row.kind) as CompanyResource["kind"],
+    name: String(row.name),
+    description: row.description === null ? null : String(row.description),
+    reference: row.reference === null ? null : String(row.reference),
+    active: Boolean(row.active),
     createdAt: iso(row.created_at),
     updatedAt: iso(row.updated_at),
   };
@@ -352,6 +426,146 @@ class PostgresTransaction implements CoreTransaction {
     await this.client.query(`DELETE FROM ${this.tables.stageDefinitions} WHERE tenant_id = $1 AND board = $2 AND id = $3`, [this.tenantId, board, id]);
   }
 
+  async findCompanyConfiguration(): Promise<CompanyConfiguration | null> {
+    const profileResult = await this.client.query(
+      `SELECT * FROM ${this.tables.companyProfiles} WHERE tenant_id = $1`,
+      [this.tenantId],
+    );
+    const profile = profileResult.rows[0] as Record<string, unknown> | undefined;
+    if (!profile) return null;
+    const [chartResult, productResult, tierResult, resourceResult] = await Promise.all([
+      this.client.query(`SELECT * FROM ${this.tables.companySizeCharts} WHERE tenant_id = $1 ORDER BY created_at, id`, [this.tenantId]),
+      this.client.query(`SELECT * FROM ${this.tables.catalogProducts} WHERE tenant_id = $1 ORDER BY created_at, id`, [this.tenantId]),
+      this.client.query(`SELECT * FROM ${this.tables.catalogProductPriceTiers} WHERE tenant_id = $1 ORDER BY product_id, min_quantity, id`, [this.tenantId]),
+      this.client.query(`SELECT * FROM ${this.tables.companyResources} WHERE tenant_id = $1 ORDER BY created_at, id`, [this.tenantId]),
+    ]);
+    const tiersByProduct = new Map<string, ProductPriceTier[]>();
+    for (const rawRow of tierResult.rows) {
+      const row = rawRow as Record<string, unknown>;
+      const productId = String(row.product_id);
+      const tiers = tiersByProduct.get(productId) ?? [];
+      tiers.push(rowToPriceTier(row));
+      tiersByProduct.set(productId, tiers);
+    }
+    return {
+      id: this.tenantId,
+      tenantId: this.tenantId,
+      brand: {
+        brandName: String(profile.brand_name),
+        legalName: profile.legal_name === null ? null : String(profile.legal_name),
+        primaryPhone: profile.primary_phone === null ? null : String(profile.primary_phone),
+        primaryEmail: profile.primary_email === null ? null : String(profile.primary_email),
+        website: profile.website === null ? null : String(profile.website),
+        description: profile.description === null ? null : String(profile.description),
+      },
+      operations: {
+        defaultCurrency: String(profile.default_currency) as Currency,
+        depositPercentage: Number(profile.deposit_percentage),
+        defaultQuoteValidityDays: Number(profile.default_quote_validity_days),
+        defaultLeadTimeDays: Number(profile.default_lead_time_days),
+        paymentMethods: jsonStringArray(profile.payment_methods),
+        deliveryMethods: jsonStringArray(profile.delivery_methods),
+        salesTerms: profile.sales_terms === null ? null : String(profile.sales_terms),
+        productionNotes: profile.production_notes === null ? null : String(profile.production_notes),
+      },
+      products: productResult.rows.map((row) => {
+        const record = row as Record<string, unknown>;
+        return rowToProduct(record, tiersByProduct.get(String(record.id)) ?? []);
+      }),
+      sizeCharts: chartResult.rows.map((row) => rowToSizeChart(row as Record<string, unknown>)),
+      resources: resourceResult.rows.map((row) => rowToResource(row as Record<string, unknown>)),
+      version: Number(profile.version),
+      createdAt: iso(profile.created_at),
+      updatedAt: iso(profile.updated_at),
+    };
+  }
+
+  async saveCompanyConfiguration(configuration: CompanyConfiguration, expectedVersion: number): Promise<void> {
+    const profileValues = [
+      configuration.tenantId,
+      configuration.brand.brandName,
+      configuration.brand.legalName,
+      configuration.brand.primaryPhone,
+      configuration.brand.primaryEmail,
+      configuration.brand.website,
+      configuration.brand.description,
+      configuration.operations.defaultCurrency,
+      configuration.operations.depositPercentage,
+      configuration.operations.defaultQuoteValidityDays,
+      configuration.operations.defaultLeadTimeDays,
+      JSON.stringify(configuration.operations.paymentMethods),
+      JSON.stringify(configuration.operations.deliveryMethods),
+      configuration.operations.salesTerms,
+      configuration.operations.productionNotes,
+      configuration.version,
+      configuration.createdAt,
+      configuration.updatedAt,
+    ];
+    const result = expectedVersion === 0
+      ? await this.client.query(
+        `INSERT INTO ${this.tables.companyProfiles}
+         (tenant_id, brand_name, legal_name, primary_phone, primary_email, website, description,
+          default_currency, deposit_percentage, default_quote_validity_days, default_lead_time_days,
+          payment_methods, delivery_methods, sales_terms, production_notes, version, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12::jsonb,$13::jsonb,$14,$15,$16,$17,$18)
+         ON CONFLICT (tenant_id) DO NOTHING RETURNING tenant_id`,
+        profileValues,
+      )
+      : await this.client.query(
+        `UPDATE ${this.tables.companyProfiles}
+         SET brand_name=$2, legal_name=$3, primary_phone=$4, primary_email=$5, website=$6, description=$7,
+             default_currency=$8, deposit_percentage=$9, default_quote_validity_days=$10, default_lead_time_days=$11,
+             payment_methods=$12::jsonb, delivery_methods=$13::jsonb, sales_terms=$14, production_notes=$15,
+             version=$16, updated_at=$18
+         WHERE tenant_id=$1 AND version=$19 RETURNING tenant_id`,
+        [...profileValues, expectedVersion],
+      );
+    if (result.rowCount !== 1) {
+      throw conflict("company_configuration_version_conflict", "Company configuration changed", { expectedVersion });
+    }
+
+    await this.client.query(`DELETE FROM ${this.tables.catalogProductPriceTiers} WHERE tenant_id = $1`, [this.tenantId]);
+    await this.client.query(`DELETE FROM ${this.tables.catalogProducts} WHERE tenant_id = $1`, [this.tenantId]);
+    await this.client.query(`DELETE FROM ${this.tables.companySizeCharts} WHERE tenant_id = $1`, [this.tenantId]);
+    await this.client.query(`DELETE FROM ${this.tables.companyResources} WHERE tenant_id = $1`, [this.tenantId]);
+
+    for (const chart of configuration.sizeCharts) {
+      await this.client.query(
+        `INSERT INTO ${this.tables.companySizeCharts}
+         (id, tenant_id, name, audience, notes, rows, active, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9)`,
+        [chart.id, this.tenantId, chart.name, chart.audience, chart.notes, JSON.stringify(chart.rows), chart.active, chart.createdAt, chart.updatedAt],
+      );
+    }
+    for (const product of configuration.products) {
+      await this.client.query(
+        `INSERT INTO ${this.tables.catalogProducts}
+         (id, tenant_id, name, category, description, active, minimum_quantity, default_lead_time_days,
+          size_chart_id, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        [product.id, this.tenantId, product.name, product.category, product.description, product.active,
+          product.minimumQuantity, product.defaultLeadTimeDays, product.sizeChartId, product.createdAt, product.updatedAt],
+      );
+      for (const tier of product.priceTiers) {
+        await this.client.query(
+          `INSERT INTO ${this.tables.catalogProductPriceTiers}
+           (id, tenant_id, product_id, min_quantity, max_quantity, unit_price_cents, currency)
+           VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+          [tier.id, this.tenantId, product.id, tier.minQuantity, tier.maxQuantity, tier.unitPriceCents, tier.currency],
+        );
+      }
+    }
+    for (const resource of configuration.resources) {
+      await this.client.query(
+        `INSERT INTO ${this.tables.companyResources}
+         (id, tenant_id, kind, name, description, reference, active, created_at, updated_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+        [resource.id, this.tenantId, resource.kind, resource.name, resource.description, resource.reference,
+          resource.active, resource.createdAt, resource.updatedAt],
+      );
+    }
+  }
+
   async appendAudit(event: AuditEvent): Promise<void> {
     await this.client.query(
       `INSERT INTO ${this.tables.auditEvents}
@@ -408,7 +622,31 @@ export class PostgresCoreStore implements CoreStore {
   }
 
   async checkReady(): Promise<void> {
-    await this.pool.query("SELECT 1");
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      if (this.config.databaseRole) await client.query(`SET LOCAL ROLE ${this.config.databaseRole}`);
+      await client.query("SELECT set_config('app.tenant_id', $1, true)", ["00000000-0000-4000-8000-000000000000"]);
+      await client.query(
+        `SELECT profile.tenant_id
+         FROM ${this.tables.companyProfiles} profile
+         LEFT JOIN ${this.tables.companySizeCharts} size_chart
+           ON size_chart.tenant_id = profile.tenant_id
+         LEFT JOIN ${this.tables.catalogProducts} product
+           ON product.tenant_id = profile.tenant_id
+         LEFT JOIN ${this.tables.catalogProductPriceTiers} price_tier
+           ON price_tier.tenant_id = profile.tenant_id
+         LEFT JOIN ${this.tables.companyResources} resource
+           ON resource.tenant_id = profile.tenant_id
+         LIMIT 0`,
+      );
+      await client.query("ROLLBACK");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async close(): Promise<void> {

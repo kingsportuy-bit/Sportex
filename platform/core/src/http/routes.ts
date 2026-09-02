@@ -165,6 +165,65 @@ const conversationListQuerySchema = z.object({
   cursor: z.string().uuid().optional(),
 }).strict();
 
+const nullableText = (max: number) => z.string().trim().min(2).max(max).nullable();
+const companyConfigurationSchema = z.object({
+  expectedVersion: z.number().int().min(0),
+  brand: z.object({
+    brandName: z.string().trim().min(2).max(120),
+    legalName: nullableText(160),
+    primaryPhone: phoneSchema.nullable(),
+    primaryEmail: z.string().trim().email().max(254).nullable(),
+    website: z.string().trim().url().max(300).nullable(),
+    description: nullableText(1_000),
+  }).strict(),
+  operations: z.object({
+    defaultCurrency: z.enum(["UYU", "USD"]),
+    depositPercentage: z.number().int().min(0).max(100),
+    defaultQuoteValidityDays: z.number().int().positive().max(100_000),
+    defaultLeadTimeDays: z.number().int().positive().max(100_000),
+    paymentMethods: z.array(z.string().trim().min(2).max(120)).max(20),
+    deliveryMethods: z.array(z.string().trim().min(2).max(120)).max(20),
+    salesTerms: nullableText(2_000),
+    productionNotes: nullableText(2_000),
+  }).strict(),
+  sizeCharts: z.array(z.object({
+    id: z.string().uuid(),
+    name: z.string().trim().min(2).max(120),
+    audience: z.enum(["CHILD", "ADULT", "UNISEX"]),
+    notes: nullableText(1_000),
+    rows: z.array(z.object({
+      label: z.string().trim().min(1).max(40),
+      measurements: z.record(z.string().trim().min(1).max(60), z.string().trim().min(1).max(60)),
+    }).strict()).max(100),
+    active: z.boolean(),
+  }).strict()).max(100),
+  products: z.array(z.object({
+    id: z.string().uuid(),
+    name: z.string().trim().min(2).max(120),
+    category: z.string().trim().min(2).max(80),
+    description: nullableText(1_000),
+    active: z.boolean(),
+    minimumQuantity: z.number().int().positive().max(100_000),
+    defaultLeadTimeDays: z.number().int().positive().max(100_000),
+    sizeChartId: z.string().uuid().nullable(),
+    priceTiers: z.array(z.object({
+      id: z.string().uuid(),
+      minQuantity: z.number().int().positive().max(100_000),
+      maxQuantity: z.number().int().positive().max(100_000).nullable(),
+      unitPriceCents: z.number().int().positive().max(1_000_000_000),
+      currency: z.enum(["UYU", "USD"]),
+    }).strict()).max(50),
+  }).strict()).max(200),
+  resources: z.array(z.object({
+    id: z.string().uuid(),
+    kind: z.enum(["FABRIC_PHOTO", "SIZE_GUIDE", "PRODUCT_IMAGE", "DOCUMENT"]),
+    name: z.string().trim().min(2).max(120),
+    description: nullableText(1_000),
+    reference: nullableText(500),
+    active: z.boolean(),
+  }).strict()).max(200),
+}).strict();
+
 export async function registerRoutes(
   app: FastifyInstance,
   service: CoreService,
@@ -235,6 +294,18 @@ export async function registerRoutes(
       },
       meta: { correlationId: context.correlationId },
     };
+  });
+
+  app.get("/v1/company/configuration", async (request) => {
+    const context = await resolveContext(request);
+    return { data: await service.getCompanyConfiguration(context), meta: { correlationId: context.correlationId } };
+  });
+
+  app.put("/v1/company/configuration", async (request) => {
+    const context = await resolveContext(request);
+    const input = companyConfigurationSchema.parse(request.body);
+    const result = await service.saveCompanyConfiguration(context, idempotencyKey(request), input);
+    return { data: result.data, meta: { correlationId: context.correlationId, replayed: result.replayed } };
   });
 
   app.post("/v1/clients", async (request, reply) => {

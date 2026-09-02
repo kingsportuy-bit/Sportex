@@ -7,14 +7,14 @@
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="/assets/sportex-favicon.png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/assets/sportex-favicon.png" />
-    <title>SPORTEX — Delta Sport</title>
+    <title>SPORTEX — Operaciones</title>
     <link rel="stylesheet" href="/styles.css?v=session-reload-5" />
   </head>
   <body>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <main id="login-view" class="login-shell" hidden>
-      <section class="login-brand" aria-label="SPORTEX para Delta Sport">
+      <section class="login-brand" aria-label="SPORTEX">
         <div class="brand-lockup brand-lockup--light brand-lockup--sportex">
           <span class="sportex-logo-frame sportex-logo-frame--login"><img class="sportex-logo" src="/assets/sportex-logo.png" alt="SPORTEX" /></span>
           <small class="brand-product-label">OPERACIONES</small>
@@ -22,9 +22,9 @@
         <div class="login-thesis">
           <span class="eyebrow">DEL MENSAJE AL TALLER</span>
           <h1>Cada pedido,<br />en su lugar.</h1>
-          <p>El tablero operativo de Delta Sport. Ventas confirmadas, clientes y producción bajo una misma trazabilidad.</p>
+          <p>Ventas, clientes y producción bajo una misma trazabilidad, adaptadas a la forma de trabajar de tu marca.</p>
         </div>
-        <ol class="route-line" aria-label="Proceso Delta Sport">
+        <ol class="route-line" aria-label="Proceso operativo">
           <li class="is-active">Venta</li>
           <li>Diseño</li>
           <li>IMPRESIÓN</li>
@@ -37,7 +37,7 @@
         <form id="login-form" class="login-form">
           <div>
             <span class="section-code">ACCESO / 01</span>
-            <h2>Entrar a Delta</h2>
+            <h2>Entrar a SPORTEX</h2>
             <p>Usá tu cuenta de SPORTEX para continuar.</p>
           </div>
           <label>
@@ -50,7 +50,7 @@
           </label>
           <p id="login-error" class="form-error" role="alert"></p>
           <button class="button button--primary button--full" type="submit">Entrar a SPORTEX</button>
-          <small class="environment-note">Piloto operativo de Delta · WhatsApp conectado.</small>
+          <small class="environment-note">Operación comercial y productiva en un solo lugar.</small>
         </form>
       </section>
     </main>
@@ -68,10 +68,10 @@
 
         <nav class="side-nav" aria-label="Navegación principal">
           <span class="nav-group-label">Operación</span>
-          <button class="nav-item is-active" data-view="whatsapp"><span>WhatsApp</span><b id="whatsapp-count-nav">0</b></button>
-          <button class="nav-item" data-view="leads"><span>Leads</span><b id="commercial-count-nav">0</b></button>
-          <button class="nav-item" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
+          <button class="nav-item is-active" data-view="leads"><span>Leads</span><b id="leads-count-nav">0</b></button>
           <button class="nav-item" data-view="clients"><span>Clientes</span><b id="clients-count-nav">0</b></button>
+          <button class="nav-item" data-view="orders"><span>Pedidos</span><b id="orders-count-nav">0</b></button>
+          <button id="company-nav" class="nav-item" data-view="company"><span>Mi empresa</span></button>
         </nav>
 
         <div class="sidebar-foot">
@@ -218,6 +218,69 @@
               </div>
             </div>
             <section class="candidate-panel"><header><span class="page-kicker">Conversión pendiente</span><h2>Contactos con seña validada</h2></header><div id="client-candidates" class="candidate-list"></div></section>
+          </section>
+
+          <section id="company-view" class="view-section" hidden>
+            <form id="company-form" class="company-form">
+              <header class="page-intro company-intro">
+                <div><span class="page-kicker">Base operativa</span><h1>Mi empresa</h1></div>
+                <div class="company-save-cluster">
+                  <span id="company-save-status" class="company-save-status">Sin cambios</span>
+                  <button id="save-company-button" class="button button--signal" type="submit">Guardar configuración</button>
+                </div>
+              </header>
+
+              <nav class="company-section-nav" aria-label="Secciones de Mi empresa">
+                <a href="#company-brand">Marca</a>
+                <a href="#company-products">Productos y precios</a>
+                <a href="#company-sizes">Talles</a>
+                <a href="#company-resources">Recursos</a>
+                <a href="#company-operations">Venta y producción</a>
+              </nav>
+
+              <section id="company-brand" class="company-section">
+                <header><span class="section-code">01 / IDENTIDAD</span><div><h2>Marca</h2><p>Los datos que identifican a esta empresa dentro de SPORTEX.</p></div></header>
+                <div class="company-field-grid">
+                  <label>Nombre de marca<input id="company-brand-name" maxlength="120" required /></label>
+                  <label>Razón social<input id="company-legal-name" maxlength="160" /></label>
+                  <label>WhatsApp principal<input id="company-phone" placeholder="+598..." /></label>
+                  <label>Correo<input id="company-email" type="email" maxlength="254" /></label>
+                  <label class="company-field-wide">Sitio web<input id="company-website" type="url" maxlength="300" placeholder="https://" /></label>
+                  <label class="company-field-wide">Descripción<textarea id="company-description" maxlength="1000" rows="3"></textarea></label>
+                </div>
+              </section>
+
+              <section id="company-products" class="company-section">
+                <header><span class="section-code">02 / OFERTA</span><div><h2>Productos y precios</h2><p>Definí mínimos, plazos y escalas de precio para cotizar sin improvisar.</p></div><button id="add-company-product" class="button button--quiet" type="button">+ Agregar producto</button></header>
+                <div id="company-products-list" class="company-entity-list"></div>
+              </section>
+
+              <section id="company-sizes" class="company-section">
+                <header><span class="section-code">03 / TALLES</span><div><h2>Tablas de talles</h2><p>Preparalas una vez y vinculalas a los productos correspondientes.</p></div><button id="add-company-size-chart" class="button button--quiet" type="button">+ Agregar tabla</button></header>
+                <div id="company-size-charts-list" class="company-entity-list"></div>
+              </section>
+
+              <section id="company-resources" class="company-section">
+                <header><span class="section-code">04 / RECURSOS</span><div><h2>Material de venta</h2><p>Fotos de tela, imágenes de producto, guías y documentos que el operador usa todos los días.</p></div><button id="add-company-resource" class="button button--quiet" type="button">+ Agregar recurso</button></header>
+                <div id="company-resources-list" class="company-entity-list"></div>
+              </section>
+
+              <section id="company-operations" class="company-section">
+                <header><span class="section-code">05 / REGLAS</span><div><h2>Venta y producción</h2><p>Valores iniciales para cotizaciones, señas, entregas y promesas de plazo.</p></div></header>
+                <div class="company-field-grid">
+                  <label>Moneda<select id="company-currency"><option value="UYU">Pesos uruguayos</option><option value="USD">Dólares</option></select></label>
+                  <label>Seña habitual (%)<input id="company-deposit-percentage" type="number" min="0" max="100" required /></label>
+                  <label>Validez del presupuesto (días)<input id="company-quote-validity" type="number" min="1" required /></label>
+                  <label>Plazo productivo inicial (días)<input id="company-lead-time" type="number" min="1" required /></label>
+                  <label class="company-field-wide">Medios de pago <small>Uno por línea</small><textarea id="company-payment-methods" rows="4"></textarea></label>
+                  <label class="company-field-wide">Formas de entrega <small>Una por línea</small><textarea id="company-delivery-methods" rows="4"></textarea></label>
+                  <label class="company-field-wide">Condiciones comerciales<textarea id="company-sales-terms" maxlength="2000" rows="4"></textarea></label>
+                  <label class="company-field-wide">Notas generales de producción<textarea id="company-production-notes" maxlength="2000" rows="4"></textarea></label>
+                </div>
+              </section>
+
+              <p id="company-form-error" class="form-error" role="alert"></p>
+            </form>
           </section>
 
         </main>
