@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-09-02",
+  "updatedAt": "2026-09-03",
   "updatedBy": "TASK-20260902-002",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migracion aditiva, capacidades minimas, artefacto inmutable, backup, rollback y verificacion sin mensajes reales.",
+  "objective": "Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.",
   "scope": {
     "allowed": [
       "Versionar y publicar el candidato exacto de TASK-20260902-001.",
@@ -27,15 +27,7 @@
       "No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20260902-002",
-    "title": "Promover CRM y configuración de empresa al piloto",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "nextAction": "Publicar el candidato exacto, ejecutar release guard y completar backup/restore antes de la primera mutacion remota."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -96,13 +88,13 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "2713e85a125c8c981dea966b3e04749cbd41f110",
-    "workingTreeState": "TASK_20260902_002_CANDIDATE_LOCAL_PASS_UNCOMMITTED",
-    "lastVerifiedAt": "2026-09-02"
+    "headAtLastEvidence": "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8",
+    "workingTreeState": "TASK_20260902_002_DEPLOYED_POST_RELEASE_EVIDENCE_RECORDED",
+    "lastVerifiedAt": "2026-09-03"
   },
   "migrations": {
-    "status": "MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS",
-    "lastVerifiedAt": "2026-08-19",
+    "status": "MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS",
+    "lastVerifiedAt": "2026-09-03",
     "executed": [
       "20260814_002",
       "20260814_003",
@@ -111,26 +103,25 @@
       "20260816_006",
       "20260819_008_stage_definitions",
       "20260819_009_media_dimensions",
-      "20260819_010_conversation_feed_indexes"
-    ],
-    "pending": [
+      "20260819_010_conversation_feed_indexes",
       "20260902_011_company_configuration"
     ],
-    "note": "008--010 siguen aplicadas en PILOTO_DELTA. 011 fue validada localmente con RLS forzado y rollback, pero no fue ejecutada en ningun entorno remoto."
+    "pending": [],
+    "note": "011 fue ensayada sobre restore aislado y aplicada antes de la imagen: 25 tablas sportex_staging, todas con RLS forzado, cinco objetos de configuracion y cruce tenant negativo."
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-09-02",
+    "lastRunAt": "2026-09-03",
     "commands": [
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260902-001_REORGANIZAR_CRM_CONFIGURACION_EMPRESA.md",
-    "note": "26 regresiones workflow y 59 tests Core/API PASS; gate SQL corregido para validar 25 tablas incluyendo stage_definitions, RLS forzado y rollback; build y QA visual desktop/movil PASS."
+    "evidence": "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md",
+    "note": "26 regresiones workflow y 59 tests Core/API PASS; gate SQL de 25 tablas, restore/migracion/rollback y QA autenticada desktop/movil PASS; consola sin errores."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_8823A77_OBSERVED_HEALTHY",
-    "lastVerifiedAt": "2026-09-02",
+    "status": "PILOTO_DELTA_51C2DFE_DEPLOYED_VERIFIED",
+    "lastVerifiedAt": "2026-09-03",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
       "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
@@ -160,24 +151,25 @@
       "3f2962610d2a4da6dc969eb8f5fda04f4c7abfa0",
       "a0be896fc194500734104d5af5e0246bc77fba41",
       "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
-      "8823a77365f78f25db9fbf7afb5decd21e59f547"
+      "8823a77365f78f25db9fbf7afb5decd21e59f547",
+      "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8"
     ],
-    "note": "Runtime observado el 2026-09-02 en 8823a773, servicio 1/1 y health/ready 200. Esa imagen queda fijada como rollback de TASK-20260902-002."
+    "note": "Runtime 51c2dfe desplegado desde bundle inmutable: servicio 1/1, health/ready 200, release exacto y cero errores criticos. 8823a773 queda fijado como rollback image-first."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED",
-      "lastVerifiedAt": "2026-08-15",
+      "status": "REMOTE_CANDIDATE_51C2DFE_DEPLOYED_VERIFIED",
+      "lastVerifiedAt": "2026-09-03",
       "writeAuthorized": true,
-      "note": "Rama publicada con 72e0fc2; guard y bundle f0cb3b49 PASS y runtime coincide con el commit exacto."
+      "note": "Rama publicada con 51c2dfe; release guard y bundle SHA-256 0e48f5bc PASS y runtime coincide con el commit exacto."
     },
     {
       "name": "Supabase",
-      "status": "PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006",
-      "lastVerifiedAt": "2026-08-16",
+      "status": "PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011",
+      "lastVerifiedAt": "2026-09-03",
       "writeAuthorized": true,
-      "note": "Backup/restore y 006 PASS; 19 tablas RLS forzado, acceso runtime y cruce tenant cero en tablas nuevas."
+      "note": "Backup/restore aislado y 011 PASS; 25 tablas RLS forzado, cinco tablas de empresa, acceso runtime y cruce tenant cero."
     },
     {
       "name": "Evolution API",
@@ -188,10 +180,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_8823A77_PUBLIC_HEALTHY",
-      "lastVerifiedAt": "2026-09-02",
+      "status": "PILOTO_DELTA_RUNTIME_51C2DFE_PUBLIC_HEALTHY",
+      "lastVerifiedAt": "2026-09-03",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 8823a773; health y ready 200. Imagen actual fijada como rollback antes de la promocion."
+      "note": "sportex_staging_core 1/1 healthy en 51c2dfe; health y ready 200, release exacto y cero errores criticos. 8823a773 es rollback."
     }
   ],
   "sensitiveData": {
@@ -200,26 +192,27 @@
   },
   "latestEvidence": {
     "taskId": "TASK-20260902-002",
-    "date": "2026-09-02",
+    "date": "2026-09-03",
     "path": "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md",
-    "summary": "Operacion autorizada; runtime 8823a773 sano y rollback fijado. Candidato local PASS con readiness estricto para migracion 011.",
+    "summary": "51c2dfe desplegado en PILOTO_DELTA: backup/restore, migracion 011, 25/25 RLS, capacidades minimas, health/ready y QA autenticada desktop/movil PASS; outbound sin cambios.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
     {
-      "date": "2026-09-02",
+      "date": "2026-09-03",
       "taskId": "TASK-20260902-002",
-      "summary": "Fito autorizo promover CRM y Mi empresa al piloto; runtime 8823a773 fijado como rollback y candidato local completo PASS.",
+      "summary": "51c2dfe desplegado y verificado en PILOTO_DELTA con migracion 011, 25 tablas RLS, una membresia Delta autorizada, QA autenticada y outbound sin cambios.",
       "documents": [
-        "docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md",
+        "docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md",
         "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
       ],
       "decisions": [
-        "La migracion 011 se aplica antes que la imagen y el rollback vuelve primero al runtime 8823a773."
+        "La migracion 011 precedio a la imagen; el rollback vuelve primero a 8823a773 y conserva las tablas aditivas.",
+        "PRODUCCION_COMERCIAL, mensajes reales, pedidos y pagos permanecieron fuera de alcance."
       ]
     },
     {
@@ -303,16 +296,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_8823A77_PUBLIC_HEALTHY_PRE_RELEASE",
-    "lastEvidenceDate": "2026-09-02",
-    "note": "Runtime público 8823a773 sano y fijado como rollback; promoción de TASK-20260902-002 en preparación."
+    "status": "PILOTO_DELTA_51C2DFE_PUBLIC_HEALTHY_VERIFIED",
+    "lastEvidenceDate": "2026-09-03",
+    "note": "Runtime publico 51c2dfe sano, 1/1 y verificado en navegador autenticado; 8823a773 preservado como rollback."
   },
   "productValidation": {
-    "status": "LOCAL_TASK_20260902_001_ACCEPTED_FOR_PILOT_RELEASE",
-    "lastReviewedAt": "2026-09-02",
-    "reviewedBy": "Fito autorizo aplicar los cambios en PILOTO_DELTA; Codex valido suite completa y QA visual local desktop/movil",
+    "status": "PILOTO_DELTA_RELEASE_TECHNICAL_AND_BROWSER_QA_PASS",
+    "lastReviewedAt": "2026-09-03",
+    "reviewedBy": "Codex valido deploy, datos, autorizacion y QA autenticada desktop/movil; Fito tiene la pestaña abierta para su prueba operativa",
     "taskId": "TASK-20260902-002",
-    "note": "Implementacion local aceptada para promocion controlada; validacion productiva pendiente del artefacto exacto."
+    "note": "Leads, Clientes, Pedidos tablero/planilla, etapas parametrizables y Mi empresa cargan en el piloto exacto. No se ejecutaron escrituras comerciales."
   },
   "blockers": [],
   "risks": [
@@ -323,9 +316,9 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Publicar el candidato exacto de TASK-20260902-002 y ejecutar el release guard.",
-    "Completar backup/restore aislado antes de aplicar 20260902_011 y desplegar en PILOTO_DELTA.",
-    "Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores; no hacer push, deploy, migracion ni mensaje sin nuevo GO."
+    "Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.",
+    "Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores con una nueva tarea y GO.",
+    "Atender la deuda de dependencias sin mezclarla con este release; no promover a PRODUCCION_COMERCIAL ni enviar mensajes de prueba sin nueva autorizacion."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

@@ -2,7 +2,7 @@
 
 > GENERADO desde `docs/state/PROJECT_STATE.json`. No editar manualmente.
 
-Actualizado: 2026-09-02.
+Actualizado: 2026-09-03.
 
 ## Entorno de trabajo
 
@@ -17,17 +17,17 @@ Actualizado: 2026-09-02.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
 - Remote: `https://github.com/kingsportuy-bit/Sportex.git`.
-- Verificado: `2026-09-02`.
+- Verificado: `2026-09-03`.
 
 ## Campaña y tarea
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260902-002`: `in_progress` (docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migracion aditiva, capacidades minimas, artefacto inmutable, backup, rollback y verificacion sin mensajes reales.
+Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.
 
 ## Alcance actual
 
@@ -51,18 +51,18 @@ Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migrac
 
 ## Estado operativo registrado
 
-- Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_APLICADAS_PILOTO_DELTA_PASS`; ejecutadas 8; pendientes 1.
-- Pruebas: `PASS`; ultima ejecucion `2026-09-02`.
-- Despliegues: `PILOTO_DELTA_8823A77_OBSERVED_HEALTHY`; registros 29.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_72E0FC2_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_19_TABLAS_RLS_FORZADO_MEDIA_UNREAD_006` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_8823A77_PUBLIC_HEALTHY`
+- Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
+- Pruebas: `PASS`; ultima ejecucion `2026-09-03`.
+- Despliegues: `PILOTO_DELTA_51C2DFE_DEPLOYED_VERIFIED`; registros 30.
+- Integraciones: GitHub=`REMOTE_CANDIDATE_51C2DFE_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_51C2DFE_PUBLIC_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
 - Tarea: `TASK-20260902-002`.
-- Fecha: `2026-09-02`.
+- Fecha: `2026-09-03`.
 - Fuente: `docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md`.
-- Operacion autorizada; runtime 8823a773 sano y rollback fijado. Candidato local PASS con readiness estricto para migracion 011.
+- 51c2dfe desplegado en PILOTO_DELTA: backup/restore, migracion 011, 25/25 RLS, capacidades minimas, health/ready y QA autenticada desktop/movil PASS; outbound sin cambios.
 
 ## Riesgos
 
@@ -78,6 +78,6 @@ Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migrac
 
 ## Siguientes acciones
 
-- Publicar el candidato exacto de TASK-20260902-002 y ejecutar el release guard.
-- Completar backup/restore aislado antes de aplicar 20260902_011 y desplegar en PILOTO_DELTA.
-- Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores; no hacer push, deploy, migracion ni mensaje sin nuevo GO.
+- Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.
+- Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores con una nueva tarea y GO.
+- Atender la deuda de dependencias sin mezclarla con este release; no promover a PRODUCCION_COMERCIAL ni enviar mensajes de prueba sin nueva autorizacion.

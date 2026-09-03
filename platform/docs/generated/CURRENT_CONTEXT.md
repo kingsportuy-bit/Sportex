@@ -2,7 +2,7 @@
 
 > GENERADO. No editar manualmente.
 
-Actualizado: 2026-09-02.
+Actualizado: 2026-09-03.
 
 ## Trabajo
 
@@ -11,20 +11,20 @@ Actualizado: 2026-09-02.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20260902-002`.
+- Tarea: no cargada para esta consulta.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 58775/90000 caracteres.
-- Tokens estimados: 14694 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 21.
+- Presupuesto potencial: 53718/90000 caracteres.
+- Tokens estimados: 13430 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Promover a PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware con migracion aditiva, capacidades minimas, artefacto inmutable, backup, rollback y verificacion sin mensajes reales.
+- Objetivo: Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.
 - Permitido: Versionar y publicar el candidato exacto de TASK-20260902-001. | Respaldar, ensayar y aplicar 20260902_011 en PILOTO_DELTA; otorgar company.read/company.manage solo a operadores Delta autorizados. | Desplegar y verificar health, ready, login, Leads, Clientes, Pedidos y Mi empresa en modo solo lectura.
 - Prohibido: No enviar mensajes, crear pedidos, certificar pagos ni mutar conversaciones durante la verificacion. | No cambiar Evolution, Meta Ads, DNS, secretos, otros tenants, servicios compartidos ni PRODUCCION_COMERCIAL. | No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Publicar el candidato exacto, ejecutar release guard y completar backup/restore antes de la primera mutacion remota.
+- Proxima accion: Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.
 
 ## Regla de uso
 
@@ -53,4 +53,3 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
-- `docs/TASKS/active/TASK-20260902-002-promover-crm-configuracion-piloto.md` — owner `active-task`, autoridad 100.

@@ -3,13 +3,13 @@
 id: TASK-20260902-002
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: deploy
 development_guide_impact: none
-updated_at: 2026-09-02
+updated_at: 2026-09-03
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 
 ## objetivo
@@ -114,8 +114,30 @@ repetidos atribuibles al candidato.
 - RLS forzado, documentación completa, TypeScript y build.
 - No hubo todavía mutación remota.
 
+### 2026-09-03 - promoción y verificación final
+
+- Candidato publicado: `51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8`;
+  bundle SHA-256
+  `0e48f5bc434c91ddee906e6e788cb971d638295cb4004035cf9009f36a318af4`.
+- Backup remoto privado y restore aislado PASS; la migración 011 ensayó
+  `20 -> 25 -> 20 -> 25` tablas antes de tocar el piloto.
+- Migración 011 aplicada en `PILOTO_DELTA`: 25/25 tablas con RLS forzado,
+  cinco tablas de configuración y cruce tenant negativo.
+- Imagen desplegada `sportex-staging:51c2dfea8abcc05b`, ID
+  `sha256:d40ef5d4532afc18ea005b93b6fba5fcd8f9cc894b077351d27caa2359a64c3c`;
+  servicio 1/1, health/ready 200 y release público exacto.
+- La única membresía activa de Delta recibió únicamente `company.read` y
+  `company.manage`; el contador outbound permaneció en 18.
+- QA autenticada PASS en desktop y ancho móvil: Leads, Clientes, Pedidos
+  tablero/planilla, editor de etapas y Mi empresa. No se guardaron cambios ni
+  se abrieron conversaciones; consola sin errores.
+- Check final PASS: 25 tablas, 25 con RLS forzado, cinco objetos de empresa,
+  endpoint sin sesión 401 y cero errores críticos atribuibles al candidato.
+
 ## decisiones
 
 - La verificación será de solo lectura y sin mensajes reales.
 - La migración aditiva precede a la imagen; el rollback vuelve primero a la
   imagen anterior y conserva las tablas nuevas.
+- El cambio queda operativo en `PILOTO_DELTA`; `PRODUCCION_COMERCIAL` continúa
+  fuera de alcance.
