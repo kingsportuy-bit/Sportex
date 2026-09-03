@@ -6,7 +6,7 @@ Actualizado: 2026-09-03.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20260903-001` | `in_progress` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md
 
 ## Cola
 

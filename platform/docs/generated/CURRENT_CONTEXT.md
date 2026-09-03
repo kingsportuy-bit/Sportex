@@ -11,20 +11,20 @@ Actualizado: 2026-09-03.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: no cargada para esta consulta.
+- Tarea: `TASK-20260903-001`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 53718/90000 caracteres.
-- Tokens estimados: 13430 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 20.
+- Presupuesto potencial: 56475/90000 caracteres.
+- Tokens estimados: 14119 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 21.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.
-- Permitido: Versionar y publicar el candidato exacto de TASK-20260902-001. | Respaldar, ensayar y aplicar 20260902_011 en PILOTO_DELTA; otorgar company.read/company.manage solo a operadores Delta autorizados. | Desplegar y verificar health, ready, login, Leads, Clientes, Pedidos y Mi empresa en modo solo lectura.
-- Prohibido: No enviar mensajes, crear pedidos, certificar pagos ni mutar conversaciones durante la verificacion. | No cambiar Evolution, Meta Ads, DNS, secretos, otros tenants, servicios compartidos ni PRODUCCION_COMERCIAL. | No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion.
+- Objetivo: Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las funciones de 51c2dfe y publicar la correccion autorizada en PILOTO_DELTA.
+- Permitido: Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual. | Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe.
+- Prohibido: No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL. | No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.
+- Proxima accion: Recuperar renderer/CSS originales, probar paridad y desplegar el fix visual.
 
 ## Regla de uso
 
@@ -53,3 +53,4 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
+- `docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md` — owner `active-task`, autoridad 100.

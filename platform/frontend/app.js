@@ -1929,10 +1929,11 @@ function whatsappStageGlyph(stageId) {
 let whatsappStageFrameObserver;
 let whatsappStageFrameDrawPending = false;
 
-function svgPath(className, pathData) {
+function svgPath(className, pathData, attributes = {}) {
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.classList.add(...className.split(" "));
   path.setAttribute("d", pathData);
+  for (const [attribute, value] of Object.entries(attributes)) path.setAttribute(attribute, value);
   return path;
 }
 
@@ -1955,19 +1956,31 @@ function drawWhatsAppTabbedPanelFrame() {
   const panelTop = Math.round(workspaceRect.top - shellRect.top);
   const activeButton = rail.querySelector(".whatsapp-process-tab.is-active");
   if (!activeButton || !panelWidth || !panelHeight) return;
-  const activeRect = activeButton.getBoundingClientRect();
-  const activeLeft = Math.round(activeRect.left - shellRect.left);
-  const activeRight = Math.round(activeRect.right - shellRect.left);
-  const activeIsVisible = activeRight > 0 && activeLeft < panelWidth;
+  const stageButtons = [...rail.querySelectorAll(".whatsapp-process-tab")];
   const panelCorner = 11;
-  const activeRootLeft = Math.max(0, activeLeft - 24);
-  const activeRootRight = Math.min(panelWidth, activeRight + 3);
-  const activeContourPath = activeIsVisible
-    ? `M ${activeRootLeft} ${panelTop} V ${panelTop - 8} C ${activeRootLeft} ${panelTop - 4} ${activeRootLeft + 4} ${panelTop - 3} ${activeRootLeft + 9} ${panelTop - 3} H ${activeRootLeft + 14} C ${activeRootLeft + 19} ${panelTop - 3} ${activeLeft - 3} ${panelTop - 7} ${activeLeft - 2} ${panelTop - 12} L ${activeLeft + 2} 10 C ${activeLeft + 3} 5 ${activeLeft + 6} 1 ${activeLeft + 16} 1 H ${activeRight - 10} C ${activeRight - 6} 1 ${activeRight - 3} 5 ${activeRight - 2} 10 L ${activeRootRight} ${panelTop}`
-    : `M 0 ${panelTop} H ${panelWidth}`;
-  const panelContour = activeIsVisible
-    ? `${activeContourPath} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner}${activeRootLeft > panelCorner ? ` Q 0 ${panelTop} ${panelCorner} ${panelTop} H ${activeRootLeft}` : ` V ${panelTop}`} Z`
-    : `M ${panelCorner} ${panelTop} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner} Q 0 ${panelTop} ${panelCorner} ${panelTop} Z`;
+  const tabGeometry = (button) => {
+    const rect = button.getBoundingClientRect();
+    const tabLeft = Math.round(rect.left - shellRect.left);
+    const tabRight = tabLeft + Math.round(rect.width);
+    const tabLeftRoot = Math.max(0, tabLeft - 3);
+    const tabRightRoot = Math.min(panelWidth, tabRight + 3);
+    const outlineBody = `L ${tabLeft + 1} 10 C ${tabLeft + 2} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 H ${tabRight - 11} C ${tabRight - 5} 1 ${tabRight - 2} 5 ${tabRight - 1} 10 L ${tabRightRoot} ${panelTop}`;
+    const outlinePath = `M ${tabLeftRoot} ${panelTop} ${outlineBody}`;
+    return {
+      tabLeft,
+      tabRight,
+      tabLeftRoot,
+      tabRightRoot,
+      outlineBody,
+      outlinePath,
+      fillPath: `${outlinePath} H ${tabLeftRoot} Z`,
+      activeFillPath: `${outlinePath} V ${panelTop + 2} H ${tabLeftRoot} V ${panelTop} Z`,
+    };
+  };
+  const activeGeometry = tabGeometry(activeButton);
+  const panelSurface = `M ${panelCorner} ${panelTop} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner} Q 0 ${panelTop} ${panelCorner} ${panelTop} Z`;
+  const panelOutline = `M ${panelWidth} ${panelTop + panelCorner} V ${panelHeight - panelCorner} Q ${panelWidth} ${panelHeight} ${panelWidth - panelCorner} ${panelHeight} H ${panelCorner} Q 0 ${panelHeight} 0 ${panelHeight - panelCorner} V ${panelTop + panelCorner}`;
+  const activeContour = `M 0 ${panelTop + panelCorner} Q 0 ${panelTop} ${panelCorner} ${panelTop} H ${activeGeometry.tabLeftRoot} M ${activeGeometry.tabRightRoot} ${panelTop} H ${panelWidth - panelCorner} Q ${panelWidth} ${panelTop} ${panelWidth} ${panelTop + panelCorner}`;
   frame.setAttribute("viewBox", `0 0 ${panelWidth} ${panelHeight}`);
   frame.setAttribute("preserveAspectRatio", "none");
   const definitions = svgElement("defs");
@@ -1993,16 +2006,42 @@ function drawWhatsAppTabbedPanelFrame() {
       fill: `rgb(${color.join(" ")})`,
     }));
   }
-  const activeStrokeGradient = svgElement("linearGradient", {
-    id: "whatsapp-tab-active-stroke",
+  const activeContourGradient = svgElement("linearGradient", {
+    id: "whatsapp-active-contour-stroke",
     x1: "0",
-    y1: "0",
-    x2: "0",
+    y1: String(panelTop),
+    x2: String(panelWidth),
     y2: String(panelTop),
     gradientUnits: "userSpaceOnUse",
   });
-  for (const [offset, color] of [["0%", "#c3ed3d"], ["8%", "#c3ed3d"], ["18%", "#667436"], ["100%", "#4d5a32"]]) {
-    activeStrokeGradient.append(svgElement("stop", { offset, "stop-color": color }));
+  const contourOffset = (value) => `${(Math.max(0, Math.min(panelWidth, value)) / panelWidth * 100).toFixed(3)}%`;
+  const contourStops = [
+    [0, "#324137", ".62"],
+    [activeGeometry.tabLeftRoot - 520, "#405b30", ".68"],
+    [activeGeometry.tabLeftRoot - 180, "#769c32", ".84"],
+    [activeGeometry.tabLeftRoot, "#c3ed3d", "1"],
+    [activeGeometry.tabRightRoot, "#c3ed3d", "1"],
+    [activeGeometry.tabRightRoot + 180, "#769c32", ".84"],
+    [activeGeometry.tabRightRoot + 520, "#405b30", ".68"],
+    [panelWidth, "#324137", ".62"],
+  ];
+  for (const [position, color, opacity] of contourStops) {
+    activeContourGradient.append(svgElement("stop", {
+      offset: contourOffset(position),
+      "stop-color": color,
+      "stop-opacity": opacity,
+    }));
+  }
+  const panelStrokeGradient = svgElement("linearGradient", {
+    id: "whatsapp-panel-outline-stroke",
+    x1: "0",
+    y1: String(panelTop),
+    x2: String(panelWidth),
+    y2: String(panelTop),
+    gradientUnits: "userSpaceOnUse",
+  });
+  for (const [offset, color] of [["0%", "#566b34"], ["22%", "#536633"], ["55%", "#40522f"], ["82%", "#324137"], ["100%", "#324137"]]) {
+    panelStrokeGradient.append(svgElement("stop", { offset, "stop-color": color }));
   }
   const outerHalo = svgElement("filter", {
     id: "whatsapp-tab-active-halo-outer",
@@ -2022,32 +2061,41 @@ function drawWhatsAppTabbedPanelFrame() {
     "color-interpolation-filters": "sRGB",
   });
   nearHalo.append(svgElement("feGaussianBlur", { stdDeviation: ".95" }));
-  definitions.append(inactiveGradient, activeStrokeGradient, outerHalo, nearHalo);
+  const exteriorHaloMask = svgElement("mask", {
+    id: "whatsapp-active-exterior-mask",
+    x: "-12",
+    y: "-12",
+    width: String(panelWidth + 24),
+    height: String(panelHeight + 24),
+    maskUnits: "userSpaceOnUse",
+    maskContentUnits: "userSpaceOnUse",
+  });
+  exteriorHaloMask.append(
+    svgElement("rect", { x: "-12", y: "-12", width: String(panelWidth + 24), height: String(panelHeight + 24), fill: "white" }),
+    svgElement("path", { d: panelSurface, fill: "black" }),
+    svgElement("path", { d: activeGeometry.activeFillPath, fill: "black" }),
+  );
+  definitions.append(inactiveGradient, activeContourGradient, panelStrokeGradient, outerHalo, nearHalo, exteriorHaloMask);
   frame.replaceChildren(definitions);
 
-  frame.append(svgPath("whatsapp-tabbed-panel-frame__surface", panelContour));
-  const stageButtons = [...rail.querySelectorAll(".whatsapp-process-tab")];
-  const activeStageIndex = stageButtons.indexOf(activeButton);
-  for (const [stageIndex, button] of stageButtons.entries()) {
+  frame.append(svgPath("whatsapp-tabbed-panel-frame__surface", panelSurface));
+  for (const button of stageButtons) {
     if (button.classList.contains("is-active")) continue;
-    const rect = button.getBoundingClientRect();
-    const tabLeft = Math.round(rect.left - shellRect.left);
-    const inactiveTabWidth = Math.round(rect.width);
-    const tabRight = tabLeft + inactiveTabWidth;
-    const tabLeftRoot = stageIndex === activeStageIndex + 1 ? activeRootRight : tabLeft - 3;
-    const tabRightRoot = stageIndex === activeStageIndex - 1 ? activeRootLeft : tabRight + 3;
-    const fillPath = `M ${tabLeft + 13} 1 H ${tabRight - 13} C ${tabRight - 6} 1 ${tabRight - 3} 5 ${tabRight - 2} 10 L ${tabRightRoot} ${panelTop} H ${tabLeftRoot} L ${tabLeft + 2} 10 C ${tabLeft + 3} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 Z`;
-    const outlinePath = `M ${tabLeftRoot} ${panelTop} L ${tabLeft + 2} 10 C ${tabLeft + 3} 5 ${tabLeft + 6} 1 ${tabLeft + 13} 1 H ${tabRight - 13} C ${tabRight - 6} 1 ${tabRight - 3} 5 ${tabRight - 2} 10 L ${tabRightRoot} ${panelTop}`;
+    const geometry = tabGeometry(button);
     frame.append(
-      svgPath("whatsapp-tabbed-panel-frame__inactive", fillPath),
-      svgPath("whatsapp-tabbed-panel-frame__inactive-outline", outlinePath),
+      svgPath("whatsapp-tabbed-panel-frame__inactive", geometry.fillPath),
+      svgPath("whatsapp-tabbed-panel-frame__inactive-outline", geometry.outlinePath),
     );
   }
   frame.append(
-    svgPath("whatsapp-tabbed-panel-frame__outline", panelContour),
-    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--outer", activeContourPath),
-    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--near", activeContourPath),
-    svgPath("whatsapp-tabbed-panel-frame__active-outline", activeContourPath),
+    svgPath("whatsapp-tabbed-panel-frame__outline", panelOutline),
+    svgPath("whatsapp-tabbed-panel-frame__active-surface", activeGeometry.activeFillPath),
+    svgPath("whatsapp-tabbed-panel-frame__active-contour whatsapp-tabbed-panel-frame__active-contour--outer", activeContour, { mask: "url(#whatsapp-active-exterior-mask)" }),
+    svgPath("whatsapp-tabbed-panel-frame__active-contour whatsapp-tabbed-panel-frame__active-contour--near", activeContour, { mask: "url(#whatsapp-active-exterior-mask)" }),
+    svgPath("whatsapp-tabbed-panel-frame__active-contour-outline", activeContour),
+    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--outer", activeGeometry.outlinePath, { mask: "url(#whatsapp-active-exterior-mask)" }),
+    svgPath("whatsapp-tabbed-panel-frame__active-halo whatsapp-tabbed-panel-frame__active-halo--near", activeGeometry.outlinePath, { mask: "url(#whatsapp-active-exterior-mask)" }),
+    svgPath("whatsapp-tabbed-panel-frame__active-outline", activeGeometry.outlinePath),
   );
 }
 

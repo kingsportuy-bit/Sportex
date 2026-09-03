@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-09-03",
-  "updatedBy": "TASK-20260902-002",
+  "updatedBy": "TASK-20260903-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -14,20 +14,26 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.",
+  "objective": "Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las funciones de 51c2dfe y publicar la correccion autorizada en PILOTO_DELTA.",
   "scope": {
     "allowed": [
-      "Versionar y publicar el candidato exacto de TASK-20260902-001.",
-      "Respaldar, ensayar y aplicar 20260902_011 en PILOTO_DELTA; otorgar company.read/company.manage solo a operadores Delta autorizados.",
-      "Desplegar y verificar health, ready, login, Leads, Clientes, Pedidos y Mi empresa en modo solo lectura."
+      "Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual.",
+      "Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe."
     ],
     "prohibited": [
-      "No enviar mensajes, crear pedidos, certificar pagos ni mutar conversaciones durante la verificacion.",
-      "No cambiar Evolution, Meta Ads, DNS, secretos, otros tenants, servicios compartidos ni PRODUCCION_COMERCIAL.",
-      "No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion."
+      "No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL.",
+      "No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20260903-001",
+    "title": "Restaurar viñetas aprobadas de WhatsApp",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001",
+    "nextAction": "Recuperar renderer/CSS originales, probar paridad y desplegar el fix visual."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -116,8 +122,8 @@
       "npm run validate",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md",
-    "note": "26 regresiones workflow y 59 tests Core/API PASS; gate SQL de 25 tablas, restore/migracion/rollback y QA autenticada desktop/movil PASS; consola sin errores."
+    "evidence": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
+    "note": "30/30 workflow/frontend, incluyendo cuatro regresiones de paridad contra 8823a773; 59/59 Core/API, SQL 25 tablas, TS/docs/build y QA local de vinetas PASS."
   },
   "deployments": {
     "status": "PILOTO_DELTA_51C2DFE_DEPLOYED_VERIFIED",
@@ -191,14 +197,28 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260902-002",
+    "taskId": "TASK-20260903-001",
     "date": "2026-09-03",
-    "path": "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md",
-    "summary": "51c2dfe desplegado en PILOTO_DELTA: backup/restore, migracion 011, 25/25 RLS, capacidades minimas, health/ready y QA autenticada desktop/movil PASS; outbound sin cambios.",
+    "path": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
+    "summary": "Regresion visual confirmada contra el artefacto previo; restauracion exacta autorizada.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-09-03",
+      "taskId": "TASK-20260903-001",
+      "summary": "Recuperacion autorizada de las vinetas SVG/CSS perdidas durante el release 51c2dfe.",
+      "documents": [
+        "docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md"
+      ],
+      "decisions": [
+        "Referencia exacta 8823a773, sin redisenar y sin revertir funciones nuevas."
+      ]
+    },
     {
       "date": "2026-09-03",
       "taskId": "TASK-20260902-002",
@@ -275,24 +295,6 @@
       "decisions": [
         "SPORTEX-DEC-018"
       ]
-    },
-    {
-      "date": "2026-08-20",
-      "taskId": "TASK-20260817-001",
-      "summary": "4898d55 desplegado: activa, cabecera y panel fusionados; health, ready y recursos públicos PASS.",
-      "documents": [
-        "frontend/index.html",
-        "frontend/app.js",
-        "frontend/styles.css",
-        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-016"
-      ]
     }
   ],
   "runtimeTruth": {
@@ -301,11 +303,11 @@
     "note": "Runtime publico 51c2dfe sano, 1/1 y verificado en navegador autenticado; 8823a773 preservado como rollback."
   },
   "productValidation": {
-    "status": "PILOTO_DELTA_RELEASE_TECHNICAL_AND_BROWSER_QA_PASS",
+    "status": "VISUAL_REGRESSION_CONFIRMED_REPAIR_IN_PROGRESS",
     "lastReviewedAt": "2026-09-03",
     "reviewedBy": "Codex valido deploy, datos, autorizacion y QA autenticada desktop/movil; Fito tiene la pestaña abierta para su prueba operativa",
-    "taskId": "TASK-20260902-002",
-    "note": "Leads, Clientes, Pedidos tablero/planilla, etapas parametrizables y Mi empresa cargan en el piloto exacto. No se ejecutaron escrituras comerciales."
+    "taskId": "TASK-20260903-001",
+    "note": "Fito reporto regresion de vinetas. El PASS anterior no certificaba paridad frente al runtime previo."
   },
   "blockers": [],
   "risks": [
@@ -316,13 +318,12 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.",
-    "Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores con una nueva tarea y GO.",
-    "Atender la deuda de dependencias sin mezclarla con este release; no promover a PRODUCCION_COMERCIAL ni enviar mensajes de prueba sin nueva autorizacion."
+    "Restaurar renderer/CSS y validar paridad local contra 8823a773.",
+    "Desplegar fix visual autorizado, verificar y solicitar validacion de Fito."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 27,
-    "throughDate": "2026-08-19"
+    "archivedChanges": 28,
+    "throughDate": "2026-08-20"
   }
 }

@@ -3,6 +3,24 @@
   "project": "SPORTEX",
   "entries": [
     {
+      "date": "2026-08-20",
+      "taskId": "TASK-20260817-001",
+      "summary": "4898d55 desplegado: activa, cabecera y panel fusionados; health, ready y recursos públicos PASS.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-016"
+      ]
+    },
+    {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
       "summary": "Leads ahora administra oportunidades desde Kanban y ficha; los últimos mensajes y la respuesta rápida no reemplazan WhatsApp, que se abre explícitamente. Candidato 3040659 publicado y healthy.",
@@ -476,5 +494,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-09-02"
+  "updatedAt": "2026-09-03"
 }

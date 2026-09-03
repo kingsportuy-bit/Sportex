@@ -37,6 +37,12 @@
       "title": "Deploy remoto se detenia por saltos de linea Windows",
       "path": "docs/errors/entries/SPX-ERR-20260819-003-deploy-remoto-se-detenia-por-saltos-de-linea-windows.md",
       "searchText": "# spx-err-20260819-003 - deploy remoto se detenia por saltos de linea windows\n\n- fecha: 2026-08-19.\n- sintoma: el build remoto finalizaba, pero el comando de despliegue no llegaba a ejecutarse y la replica seguia en la imagen anterior.\n- causa raiz: el script bash enviado desde powershell conservaba crlf; bash interpretaba los cierres de bloque con retorno de carro y terminaba antes del deploy.\n- solucion: normalizar el script remoto a lf antes de enviarlo y verificar la version efectiva de la replica, no solo la imagen construida.\n- prevencion/guardia: todo deploy remoto enviado desde windows debe normalizar crlf a lf y cerrar con replica, sportex_release, health, ready y asset público exactos.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20260903-001",
+      "title": "Viñetas perdidas por comparar contra baseline local",
+      "path": "docs/errors/entries/SPX-ERR-20260903-001-vinetas-perdidas-por-baseline-local.md",
+      "searchText": "# spx-err-20260903-001 - viñetas perdidas por comparar contra baseline local\n\n- fecha: 2026-09-03.\n- sintoma: el release 51c2dfe conservó el css del checkout pero revirtió el diseño de viñetas ya activo en 8823a773.\n- causa raiz: el artefacto publicado contenía ajustes svg/css no reconciliados en la rama local. la qa de navegación no comparó la geometría con el artefacto real.\n- solucion: recuperar únicamente svgpath, drawwhatsapptabbedpanelframe y los estilos exactos del artefacto previo; mantener crm/core/mi empresa nuevos.\n- prevencion/guardia: scripts/tests/whatsapp-visual-parity.test.mjs valida una referencia congelada recuperada de 8823a773 y rechaza 51c2dfe. no actualizar esa referencia sin aprobación visual explícita. antes de promover, comparar las superficies protegidas contra el runtime saliente, no solo contra git local.\n"
     }
   ]
 }

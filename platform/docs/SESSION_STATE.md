@@ -23,16 +23,16 @@ Actualizado: 2026-09-03.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20260903-001`: `in_progress` (docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md).
 
 ## Objetivo actual
 
-Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware ya desplegados, mientras Fito realiza su validacion operativa sin ampliar el alcance a PRODUCCION_COMERCIAL.
+Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las funciones de 51c2dfe y publicar la correccion autorizada en PILOTO_DELTA.
 
 ## Alcance actual
 
-- Permitido: Versionar y publicar el candidato exacto de TASK-20260902-001. | Respaldar, ensayar y aplicar 20260902_011 en PILOTO_DELTA; otorgar company.read/company.manage solo a operadores Delta autorizados. | Desplegar y verificar health, ready, login, Leads, Clientes, Pedidos y Mi empresa en modo solo lectura.
-- Prohibido: No enviar mensajes, crear pedidos, certificar pagos ni mutar conversaciones durante la verificacion. | No cambiar Evolution, Meta Ads, DNS, secretos, otros tenants, servicios compartidos ni PRODUCCION_COMERCIAL. | No ejecutar down, restore destructivo ni eliminar tablas sin otro gate y autorizacion.
+- Permitido: Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual. | Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe.
+- Prohibido: No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL. | No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware y
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260902-002`.
+- Tarea: `TASK-20260903-001`.
 - Fecha: `2026-09-03`.
-- Fuente: `docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md`.
-- 51c2dfe desplegado en PILOTO_DELTA: backup/restore, migracion 011, 25/25 RLS, capacidades minimas, health/ready y QA autenticada desktop/movil PASS; outbound sin cambios.
+- Fuente: `docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md`.
+- Regresion visual confirmada contra el artefacto previo; restauracion exacta autorizada.
 
 ## Riesgos
 
@@ -78,6 +78,5 @@ Mantener estable en PILOTO_DELTA el CRM reorganizado y Mi empresa tenant-aware y
 
 ## Siguientes acciones
 
-- Fito prueba el flujo operativo en la pestaña abierta y reporta ajustes de uso o diseno sobre el piloto ya desplegado.
-- Modelar reposiciones explicitas y asistencia de ventas en cortes posteriores con una nueva tarea y GO.
-- Atender la deuda de dependencias sin mezclarla con este release; no promover a PRODUCCION_COMERCIAL ni enviar mensajes de prueba sin nueva autorizacion.
+- Restaurar renderer/CSS y validar paridad local contra 8823a773.
+- Desplegar fix visual autorizado, verificar y solicitar validacion de Fito.
