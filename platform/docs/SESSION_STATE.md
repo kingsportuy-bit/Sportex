@@ -23,11 +23,11 @@ Actualizado: 2026-09-03.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20260903-001`: `in_progress` (docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las funciones de 51c2dfe y publicar la correccion autorizada en PILOTO_DELTA.
+Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa actuales; pendiente confirmacion visual de Fito.
 
 ## Alcance actual
 
@@ -53,8 +53,8 @@ Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las fu
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-09-03`.
-- Despliegues: `PILOTO_DELTA_51C2DFE_DEPLOYED_VERIFIED`; registros 30.
-- Integraciones: GitHub=`REMOTE_CANDIDATE_51C2DFE_DEPLOYED_VERIFIED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_51C2DFE_PUBLIC_HEALTHY`
+- Despliegues: `PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED`; registros 31.
+- Integraciones: GitHub=`REMOTE_D9C4F44_VISUAL_FIX_RECONCILED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_D9C4F44_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las fu
 - Tarea: `TASK-20260903-001`.
 - Fecha: `2026-09-03`.
 - Fuente: `docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md`.
-- Regresion visual confirmada contra el artefacto previo; restauracion exacta autorizada.
+- d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.
 
 ## Riesgos
 
@@ -78,5 +78,5 @@ Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las fu
 
 ## Siguientes acciones
 
-- Restaurar renderer/CSS y validar paridad local contra 8823a773.
-- Desplegar fix visual autorizado, verificar y solicitar validacion de Fito.
+- Fito confirma visualmente las vinetas restauradas en el piloto d9c4f44.
+- No cambiar la referencia visual protegida sin aprobacion explicita; pruebas comerciales reales fuera de este fix.

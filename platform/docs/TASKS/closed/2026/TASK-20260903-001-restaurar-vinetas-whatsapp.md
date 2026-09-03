@@ -3,8 +3,8 @@
 id: TASK-20260903-001
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: frontend deploy
@@ -82,6 +82,15 @@ Restauración literal y cuatro regresiones de paridad PASS. Suite completa:
 30/30 workflow/frontend, 59/59 Core/API, SQL 25 tablas, TS/docs/build PASS.
 Viñetas Todas/En conversación y módulo Clientes revisados en la demo ficticia;
 sin errores de consola. Sin mutaciones remotas antes del release guard.
+
+### 2026-09-03 - publicación y comprobación
+
+Release d9c4f443ad07b2e1df932d7eb4273d4b2e60307b desplegado desde bundle
+inmutable; imagen sportex-staging:d9c4f443ad07b2e1, servicio 1/1,
+health/ready PASS y frontend público idéntico al candidato. Outbound 18 -> 18.
+Revisión autenticada de Todas y En conversación en 1280x800, Clientes,
+Mi empresa y Pedidos PASS; cero errores de consola. No se abrieron chats ni
+se modificaron datos. Código recuperado reconciliado en la rama canónica.
 
 ## decisiones
 

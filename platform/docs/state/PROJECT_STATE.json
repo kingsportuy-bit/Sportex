@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Restaurar las vinetas WhatsApp del artefacto aprobado 8823a773 sin perder las funciones de 51c2dfe y publicar la correccion autorizada en PILOTO_DELTA.",
+  "objective": "Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa actuales; pendiente confirmacion visual de Fito.",
   "scope": {
     "allowed": [
       "Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual.",
@@ -25,15 +25,7 @@
       "No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20260903-001",
-    "title": "Restaurar viñetas aprobadas de WhatsApp",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "nextAction": "Recuperar renderer/CSS originales, probar paridad y desplegar el fix visual."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -94,8 +86,8 @@
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8",
-    "workingTreeState": "TASK_20260902_002_DEPLOYED_POST_RELEASE_EVIDENCE_RECORDED",
+    "headAtLastEvidence": "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
+    "workingTreeState": "VISUAL_FIX_DEPLOYED_CANONICAL_POST_RELEASE_EVIDENCE",
     "lastVerifiedAt": "2026-09-03"
   },
   "migrations": {
@@ -126,7 +118,7 @@
     "note": "30/30 workflow/frontend, incluyendo cuatro regresiones de paridad contra 8823a773; 59/59 Core/API, SQL 25 tablas, TS/docs/build y QA local de vinetas PASS."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_51C2DFE_DEPLOYED_VERIFIED",
+    "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
     "lastVerifiedAt": "2026-09-03",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -158,17 +150,18 @@
       "a0be896fc194500734104d5af5e0246bc77fba41",
       "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
       "8823a77365f78f25db9fbf7afb5decd21e59f547",
-      "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8"
+      "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8",
+      "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b"
     ],
-    "note": "Runtime 51c2dfe desplegado desde bundle inmutable: servicio 1/1, health/ready 200, release exacto y cero errores criticos. 8823a773 queda fijado como rollback image-first."
+    "note": "Restauracion literal de vinetas 8823a773 sobre CRM actual. 1/1, health/ready y assets exactos PASS; rollback 51c2dfe."
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_CANDIDATE_51C2DFE_DEPLOYED_VERIFIED",
+      "status": "REMOTE_D9C4F44_VISUAL_FIX_RECONCILED",
       "lastVerifiedAt": "2026-09-03",
       "writeAuthorized": true,
-      "note": "Rama publicada con 51c2dfe; release guard y bundle SHA-256 0e48f5bc PASS y runtime coincide con el commit exacto."
+      "note": "Fix visual publicado en la rama canonica, referencia 8823a773 recuperada y protegida."
     },
     {
       "name": "Supabase",
@@ -186,10 +179,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_51C2DFE_PUBLIC_HEALTHY",
+      "status": "PILOTO_DELTA_RUNTIME_D9C4F44_HEALTHY",
       "lastVerifiedAt": "2026-09-03",
       "writeAuthorized": true,
-      "note": "sportex_staging_core 1/1 healthy en 51c2dfe; health y ready 200, release exacto y cero errores criticos. 8823a773 es rollback."
+      "note": "1/1, health/ready y archivos publicos exactos. Solo imagen/release modificados."
     }
   ],
   "sensitiveData": {
@@ -200,7 +193,7 @@
     "taskId": "TASK-20260903-001",
     "date": "2026-09-03",
     "path": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
-    "summary": "Regresion visual confirmada contra el artefacto previo; restauracion exacta autorizada.",
+    "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
     "environment": "PILOTO_DELTA",
     "branch": "sportex-governance-20260801"
   },
@@ -208,9 +201,12 @@
     {
       "date": "2026-09-03",
       "taskId": "TASK-20260903-001",
-      "summary": "Recuperacion autorizada de las vinetas SVG/CSS perdidas durante el release 51c2dfe.",
+      "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
       "documents": [
-        "docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md"
+        "frontend/app.js",
+        "frontend/styles.css",
+        "scripts/tests/whatsapp-visual-parity.test.mjs",
+        "docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md"
@@ -298,16 +294,16 @@
     }
   ],
   "runtimeTruth": {
-    "status": "PILOTO_DELTA_51C2DFE_PUBLIC_HEALTHY_VERIFIED",
+    "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
     "lastEvidenceDate": "2026-09-03",
-    "note": "Runtime publico 51c2dfe sano, 1/1 y verificado en navegador autenticado; 8823a773 preservado como rollback."
+    "note": "Runtime d9c4f44 1/1, health/ready y assets exactos; outbound 18 sin variacion."
   },
   "productValidation": {
-    "status": "VISUAL_REGRESSION_CONFIRMED_REPAIR_IN_PROGRESS",
+    "status": "VISUAL_RESTORATION_TECHNICAL_QA_PASS_HUMAN_PENDING",
     "lastReviewedAt": "2026-09-03",
-    "reviewedBy": "Codex valido deploy, datos, autorizacion y QA autenticada desktop/movil; Fito tiene la pestaña abierta para su prueba operativa",
+    "reviewedBy": "Codex: igualdad de codigo original y QA navegador; Fito pendiente",
     "taskId": "TASK-20260903-001",
-    "note": "Fito reporto regresion de vinetas. El PASS anterior no certificaba paridad frente al runtime previo."
+    "note": "No se afirma aceptacion humana ni comparacion automatizada pixel a pixel. La referencia aprobada queda protegida por cuatro pruebas."
   },
   "blockers": [],
   "risks": [
@@ -318,8 +314,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Restaurar renderer/CSS y validar paridad local contra 8823a773.",
-    "Desplegar fix visual autorizado, verificar y solicitar validacion de Fito."
+    "Fito confirma visualmente las vinetas restauradas en el piloto d9c4f44.",
+    "No cambiar la referencia visual protegida sin aprobacion explicita; pruebas comerciales reales fuera de este fix."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

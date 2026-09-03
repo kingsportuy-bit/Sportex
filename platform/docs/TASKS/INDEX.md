@@ -6,7 +6,7 @@ Actualizado: 2026-09-03.
 
 ## Activa
 
-- `TASK-20260903-001` | `in_progress` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/active/TASK-20260903-001-restaurar-vinetas-whatsapp.md
+- Ninguna.
 
 ## Cola
 
@@ -40,3 +40,4 @@ Actualizado: 2026-09-03.
 - `TASK-20260820-001` | `done` | Protocolo de preemption, hotfix y reconciliacion de entornos | docs/TASKS/closed/2026/TASK-20260820-001-preemption-hotfix-reconciliation.md
 - `TASK-20260902-001` | `done` | Reorganizar CRM y configuración de empresa | docs/TASKS/closed/2026/TASK-20260902-001-reorganizar-crm-y-configuracion-empresa.md
 - `TASK-20260902-002` | `done` | Promover CRM y configuración de empresa al piloto | docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md
+- `TASK-20260903-001` | `done` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md
