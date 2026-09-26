@@ -2,7 +2,7 @@
 
 > GENERADO desde `docs/state/PROJECT_STATE.json`. No editar manualmente.
 
-Actualizado: 2026-09-03.
+Actualizado: 2026-09-26.
 
 ## Entorno de trabajo
 
@@ -14,10 +14,10 @@ Actualizado: 2026-09-03.
 
 ## Git
 
-- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
+- Worktree: `.`.
 - Rama: `sportex-governance-20260801`.
 - Remote: `https://github.com/kingsportuy-bit/Sportex.git`.
-- Verificado: `2026-09-03`.
+- Verificado: `2026-09-26`.
 
 ## Campaña y tarea
 
@@ -48,21 +48,22 @@ Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa act
 - Mensajes y eventos siguen separados.
 - Mi empresa concentra configuracion tenant-aware de marca, productos, precios, talles y recursos.
 - SPORTEX opera solamente en modo oscuro.
+- La identidad compartida del checkout usa Git root, projectRoot relativo, rama y remote; nunca una ruta absoluta local.
 
 ## Estado operativo registrado
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
-- Pruebas: `PASS`; ultima ejecucion `2026-09-03`.
+- Pruebas: `PASS`; ultima ejecucion `2026-09-26`.
 - Despliegues: `PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED`; registros 31.
 - Integraciones: GitHub=`REMOTE_D9C4F44_VISUAL_FIX_RECONCILED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_D9C4F44_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260903-001`.
-- Fecha: `2026-09-03`.
-- Fuente: `docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md`.
-- d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.
+- Tarea: `TASK-20260926-001`.
+- Fecha: `2026-09-26`.
+- Fuente: `docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md`.
+- Arranque portable validado sin rutas absolutas compartidas; 17/17 pruebas focales y cero operaciones remotas.
 
 ## Riesgos
 

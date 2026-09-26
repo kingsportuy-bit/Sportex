@@ -191,3 +191,12 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   y pasan a producción. Pedidos conserva tablero/planilla.
 - Mi empresa persiste perfil, productos, precios, talles, recursos y parámetros
   por tenant. Solo autoriza implementación local, sin efectos remotos.
+
+## SPORTEX-DEC-022 - Identidad portable del checkout
+
+- 2026-09-26 · `VIGENTE`. La ruta absoluta del checkout es un dato local y no
+  forma parte de la identidad compartida de SPORTEX.
+- El arranque valida `platform/` relativo al Git root, la rama y el remote. El
+  inventario de worktrees acepta rutas relativas al repositorio y conserva las
+  absolutas históricas solo como evidencia local.
+- Esta decisión no cambia contratos funcionales, runtime ni PILOTO_DELTA.

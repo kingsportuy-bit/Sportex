@@ -39,6 +39,12 @@ Hay una sola tarea activa y una cola corta. Cada tarea declara tipo, foco,
 campana e impacto sobre esta guia; su cierre registra evidencia, deuda, estado y
 checkpoint. Una campana agrupa objetivos sin reemplazar tareas acotadas.
 
+La identidad del checkout es portable: `git.worktree` representa `.` respecto
+del Git root y `git.projectRoot` ubica `platform/` dentro del repositorio. La
+ruta absoluta del usuario o del equipo es evidencia local y nunca un invariante
+compartido. Los guards conservan como invariantes la rama, el remote y la
+ubicacion relativa del proyecto tecnico.
+
 ## Entornos
 
 - `DOCUMENTACION`: reglas sin runtime.

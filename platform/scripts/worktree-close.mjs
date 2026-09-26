@@ -16,8 +16,9 @@ function git(cwd, ...args) {
   }).trim();
 }
 
-function normalizedPath(value) {
-  const resolved = path.resolve(String(value)).replaceAll('\\', '/').replace(/\/$/u, '');
+function normalizedPath(value, base = process.cwd()) {
+  const candidate = String(value);
+  const resolved = path.resolve(base, candidate).replaceAll('\\', '/').replace(/\/$/u, '');
   return process.platform === 'win32' ? resolved.toLowerCase() : resolved;
 }
 
@@ -70,7 +71,7 @@ export function auditWorktrees(projectRoot = defaultProjectRoot, options = {}) {
   const { inventory } = readInventory(projectRoot, inventoryPath);
   const targetRef = options.targetRef || inventory.targetRef;
   git(repoRoot, 'rev-parse', '--verify', targetRef);
-  const classifications = new Map(inventory.worktrees.map((item) => [normalizedPath(item.path), item]));
+  const classifications = new Map(inventory.worktrees.map((item) => [normalizedPath(item.path, repoRoot), item]));
   const worktrees = parseWorktreePorcelain(git(repoRoot, 'worktree', 'list', '--porcelain'));
   const failures = [];
   const audited = worktrees.map((worktree, index) => {

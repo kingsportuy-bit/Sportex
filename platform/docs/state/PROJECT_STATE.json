@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-09-03",
-  "updatedBy": "TASK-20260903-001",
+  "updatedAt": "2026-09-26",
+  "updatedBy": "TASK-20260926-001",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -58,7 +58,8 @@
     "Pedidos usa tablero y planilla derivados del Core.",
     "Mensajes y eventos siguen separados.",
     "Mi empresa concentra configuracion tenant-aware de marca, productos, precios, talles y recursos.",
-    "SPORTEX opera solamente en modo oscuro."
+    "SPORTEX opera solamente en modo oscuro.",
+    "La identidad compartida del checkout usa Git root, projectRoot relativo, rama y remote; nunca una ruta absoluta local."
   ],
   "decisionRefs": [
     "SPORTEX-DEC-001",
@@ -79,16 +80,17 @@
     "SPORTEX-DEC-018",
     "SPORTEX-DEC-019",
     "SPORTEX-DEC-020",
-    "SPORTEX-DEC-021"
+    "SPORTEX-DEC-021",
+    "SPORTEX-DEC-022"
   ],
   "git": {
-    "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
+    "worktree": ".",
     "projectRoot": "platform",
     "branch": "sportex-governance-20260801",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
     "workingTreeState": "VISUAL_FIX_DEPLOYED_CANONICAL_POST_RELEASE_EVIDENCE",
-    "lastVerifiedAt": "2026-09-03"
+    "lastVerifiedAt": "2026-09-26"
   },
   "migrations": {
     "status": "MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS",
@@ -109,13 +111,15 @@
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-09-03",
+    "lastRunAt": "2026-09-26",
     "commands": [
-      "npm run validate",
+      "npm run validate:docs",
+      "node --test scripts/tests/sportex-workflow.test.mjs scripts/tests/worktree-close.test.mjs",
+      "npm run context -- documentation",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
-    "note": "30/30 workflow/frontend, incluyendo cuatro regresiones de paridad contra 8823a773; 59/59 Core/API, SQL 25 tablas, TS/docs/build y QA local de vinetas PASS."
+    "evidence": "docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md",
+    "note": "Cierre documental de portabilidad: arranque PASS desde una segunda ruta y 17/17 regresiones focales; runtime no evaluado ni modificado."
   },
   "deployments": {
     "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
@@ -190,14 +194,35 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260903-001",
-    "date": "2026-09-03",
-    "path": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
-    "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
-    "environment": "PILOTO_DELTA",
+    "taskId": "TASK-20260926-001",
+    "date": "2026-09-26",
+    "path": "docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md",
+    "summary": "Arranque portable validado sin rutas absolutas compartidas; 17/17 pruebas focales y cero operaciones remotas.",
+    "environment": "DOCUMENTACION",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-09-26",
+      "taskId": "TASK-20260926-001",
+      "summary": "El arranque y cierre documental usan invariantes Git portables y dejan de depender de una ruta absoluta local.",
+      "documents": [
+        "scripts/sportex-workflow.mjs",
+        "scripts/worktree-close.mjs",
+        "scripts/tests/sportex-workflow.test.mjs",
+        "scripts/tests/worktree-close.test.mjs",
+        "docs/GUIA_TRABAJO_DESARROLLO_SPORTEX.md",
+        "docs/DECISIONES.md",
+        "docs/state/WORKTREE_CLASSIFICATIONS.json",
+        "docs/TASKS/closed/2026/TASK-20260926-001-reconciliar-portabilidad-worktree.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-022"
+      ]
+    },
     {
       "date": "2026-09-03",
       "taskId": "TASK-20260903-001",
@@ -271,26 +296,6 @@
         "SPORTEX-DEC-019",
         "SPORTEX-DEC-020"
       ]
-    },
-    {
-      "date": "2026-08-20",
-      "taskId": "TASK-20260817-001",
-      "summary": "Fito aceptó d9c32b7; integración local, política de worktrees, clasificación y cierre sin acciones remotas.",
-      "documents": [
-        "frontend/app.js",
-        "frontend/styles.css",
-        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-        "docs/WORKTREE_LIFECYCLE_CONTRACT.md",
-        "docs/state/WORKTREE_CLASSIFICATIONS.json"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-018"
-      ]
     }
   ],
   "runtimeTruth": {
@@ -319,7 +324,7 @@
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 28,
+    "archivedChanges": 29,
     "throughDate": "2026-08-20"
   }
 }

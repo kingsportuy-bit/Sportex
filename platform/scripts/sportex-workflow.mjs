@@ -24,6 +24,11 @@ function normalize(value) {
   return String(value || '').replaceAll('\\', '/').replace(/\/$/u, '');
 }
 
+function isAbsoluteOnAnyPlatform(value) {
+  const normalized = normalize(value);
+  return normalized.startsWith('/') || /^[A-Za-z]:\//u.test(normalized);
+}
+
 function absolute(root, relative) {
   return path.join(root, ...normalize(relative).split('/'));
 }
@@ -243,8 +248,14 @@ export function validateProject(root, { checkGenerated = true, checkGit = true }
     failures.push('PROJECT_STATE.nextCampaign debe ser null o identificar una campaña no iniciada');
   }
 
-  for (const key of ['worktree', 'branch', 'remote', 'lastVerifiedAt']) {
+  for (const key of ['worktree', 'projectRoot', 'branch', 'remote', 'lastVerifiedAt']) {
     if (!state.git?.[key]) failures.push(`PROJECT_STATE.git.${key} ausente`);
+  }
+  if (state.git?.worktree && (isAbsoluteOnAnyPlatform(state.git.worktree) || normalize(state.git.worktree) !== '.')) {
+    failures.push('PROJECT_STATE.git.worktree debe ser . relativo al Git root; una ruta absoluta local no es portable');
+  }
+  if (state.git?.projectRoot && (isAbsoluteOnAnyPlatform(state.git.projectRoot) || normalize(state.git.projectRoot).startsWith('../'))) {
+    failures.push('PROJECT_STATE.git.projectRoot debe ser una ruta relativa portable dentro del repositorio');
   }
   if (!state.migrations?.status || !Array.isArray(state.migrations.executed) || !Array.isArray(state.migrations.pending)) {
     failures.push('PROJECT_STATE.migrations incompleto');
@@ -287,11 +298,14 @@ export function validateProject(root, { checkGenerated = true, checkGit = true }
 
   if (checkGit && state.git) {
     try {
-      const actualWorktree = normalize(git(root, 'rev-parse', '--show-toplevel')).toLowerCase();
-      const expectedWorktree = normalize(state.git.worktree).toLowerCase();
+      const actualWorktree = path.resolve(git(root, 'rev-parse', '--show-toplevel'));
+      const actualProjectRoot = normalize(path.relative(actualWorktree, root)).toLowerCase();
+      const expectedProjectRoot = normalize(state.git.projectRoot).toLowerCase();
       const actualBranch = git(root, 'branch', '--show-current');
-      if (actualWorktree !== expectedWorktree) failures.push(`Git worktree actual ${actualWorktree} no coincide con ${expectedWorktree}`);
+      const actualRemote = git(root, 'remote', 'get-url', 'origin');
+      if (actualProjectRoot !== expectedProjectRoot) failures.push(`Git projectRoot actual ${actualProjectRoot} no coincide con ${expectedProjectRoot}`);
       if (actualBranch !== state.git.branch) failures.push(`Git branch actual ${actualBranch} no coincide con ${state.git.branch}`);
+      if (actualRemote !== state.git.remote) failures.push(`Git remote origin actual ${actualRemote} no coincide con ${state.git.remote}`);
     } catch (error) {
       failures.push(`Git no verificable: ${error.message}`);
     }

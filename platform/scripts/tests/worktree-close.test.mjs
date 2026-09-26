@@ -37,8 +37,8 @@ function fixture() {
   git(repo, 'worktree', 'add', sibling, 'integrated');
   const inventoryPath = path.join(project, 'docs', 'state', 'WORKTREE_CLASSIFICATIONS.json');
   const writeInventory = (includeSibling = true) => {
-    const worktrees = [{ path: repo, classification: 'PRESERVAR', reason: 'checkout canonico' }];
-    if (includeSibling) worktrees.push({ path: sibling, classification: 'INTEGRADO', reason: 'rama integrada y limpia' });
+    const worktrees = [{ path: '.', classification: 'PRESERVAR', reason: 'checkout canonico portable' }];
+    if (includeSibling) worktrees.push({ path: path.relative(repo, sibling), classification: 'INTEGRADO', reason: 'rama integrada y limpia' });
     fs.writeFileSync(inventoryPath, `${JSON.stringify({
       schemaVersion: 1, project: 'SPORTEX', targetRef: 'canonical', updatedAt: '2026-08-20', worktrees,
     }, null, 2)}\n`);
@@ -53,6 +53,13 @@ test('parsea worktrees físicos y metadatos prunable', () => {
     { path: 'C:/repo', prunable: false, head: 'abc', branch: 'main' },
     { path: 'C:/ghost', prunable: true, head: 'def', detached: true },
   ]);
+});
+
+test('resuelve clasificaciones relativas desde el Git root', () => {
+  const { project } = fixture();
+  const result = auditWorktrees(project);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.audited[0].classification, 'PRESERVAR');
 });
 
 test('el cierre falla ante un worktree físico no clasificado', () => {

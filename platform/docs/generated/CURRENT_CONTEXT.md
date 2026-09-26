@@ -2,7 +2,7 @@
 
 > GENERADO. No editar manualmente.
 
-Actualizado: 2026-09-03.
+Actualizado: 2026-09-26.
 
 ## Trabajo
 
@@ -12,10 +12,10 @@ Actualizado: 2026-09-03.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Tarea: no cargada para esta consulta.
-- Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
+- Worktree: `.`.
 - Rama: `sportex-governance-20260801`.
-- Presupuesto potencial: 53132/90000 caracteres.
-- Tokens estimados: 13283 (aproximacion de 4 caracteres por token).
+- Presupuesto potencial: 52846/90000 caracteres.
+- Tokens estimados: 13212 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo

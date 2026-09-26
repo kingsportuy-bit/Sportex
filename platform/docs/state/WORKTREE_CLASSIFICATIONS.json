@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "project": "SPORTEX",
   "targetRef": "sportex-governance-20260801",
-  "updatedAt": "2026-08-20",
+  "updatedAt": "2026-09-26",
   "worktrees": [
     {
-      "path": "C:/Users/Fito/Documents/CODEX/SPORTEX",
+      "path": ".",
       "classification": "PRESERVAR",
-      "reason": "Checkout canónico del Project OS SPORTEX."
+      "reason": "Checkout canónico del Project OS SPORTEX, relativo al Git root para funcionar en cualquier PC."
     },
     {
       "path": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/TASK-20260817-001-whatsapp-tabs-parity",

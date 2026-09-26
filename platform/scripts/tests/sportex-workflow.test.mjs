@@ -111,7 +111,7 @@ x
     nextCampaign: { title: 'Campaña futura', status: 'NOT_STARTED' },
     decisions: ['Prueba.'],
     decisionRefs: ['SPORTEX-DEC-999'],
-    git: { worktree: root, branch: 'fixture', remote: 'fixture', lastVerifiedAt: '2026-08-02' },
+    git: { worktree: '.', projectRoot: 'platform', branch: 'fixture', remote: 'fixture', lastVerifiedAt: '2026-08-02' },
     migrations: { status: 'NONE', executed: [], pending: [] },
     tests: { status: 'PASS', lastRunAt: '2026-08-02', commands: ['npm run validate'], evidence: evidencePath },
     deployments: { status: 'NONE', records: [] },
@@ -168,6 +168,15 @@ test('valida estado canonico, tarea activa y evidencia sin depender de Git', () 
   const result = validateProject(root, { checkGenerated: false, checkGit: false });
   assert.deepEqual(result.failures, []);
   assert.equal(result.tasks.length, 1);
+});
+
+test('valida Git sin depender de la ruta absoluta del checkout', () => {
+  const { root } = fixture();
+  const repo = path.dirname(root);
+  execFileSync('git', ['init', '-b', 'fixture'], { cwd: repo, stdio: 'ignore' });
+  execFileSync('git', ['remote', 'add', 'origin', 'fixture'], { cwd: repo, stdio: 'ignore' });
+  const result = validateProject(root, { checkGenerated: false, checkGit: true });
+  assert.deepEqual(result.failures, []);
 });
 
 test('acepta una campaña activa sin inventar una campaña siguiente', () => {
