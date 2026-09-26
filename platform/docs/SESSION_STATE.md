@@ -6,11 +6,11 @@ Actualizado: 2026-09-26.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DOCUMENTACION`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `documentation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-09-26.
 
 ## Objetivo actual
 
-Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa actuales; pendiente confirmacion visual de Fito.
+Analizar el informe integral de SPORTEX y definir con Fito el producto inicial y la arquitectura de una reestructuracion desde cero.
 
 ## Alcance actual
 
-- Permitido: Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual. | Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe.
-- Prohibido: No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL. | No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales.
+- Permitido: Inventariar producto, gobierno, arquitectura, tecnologias, codigo, infraestructura documentada, estado real, deuda y riesgos. | Entregar un documento Markdown autocontenido para analisis humano y por otra IA.
+- Prohibido: No definir ni implementar todavia la arquitectura de reemplazo ni cambiar reglas de negocio o contratos funcionales. | No desplegar, migrar, enviar mensajes, consultar datos reales ni operar PILOTO_DELTA o PRODUCCION_COMERCIAL.
 
 ## Decisiones vigentes
 
@@ -60,10 +60,10 @@ Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa act
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20260926-001`.
+- Tarea: `TASK-20260926-002`.
 - Fecha: `2026-09-26`.
-- Fuente: `docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md`.
-- Arranque portable validado sin rutas absolutas compartidas; 17/17 pruebas focales y cero operaciones remotas.
+- Fuente: `docs/evidencias/TASK-20260926-002_INFORME_INTEGRAL_REESTRUCTURACION.md`.
+- Informe integral de producto, gobierno, arquitectura, tecnologias, implementacion, legado, deuda y decisiones de reestructuracion, sin operaciones remotas.
 
 ## Riesgos
 
@@ -79,5 +79,5 @@ Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa act
 
 ## Siguientes acciones
 
-- Fito confirma visualmente las vinetas restauradas en el piloto d9c4f44.
-- No cambiar la referencia visual protegida sin aprobacion explicita; pruebas comerciales reales fuera de este fix.
+- Fito y la IA externa analizan el informe integral y delimitan el producto inicial.
+- Abrir una tarea posterior para aprobar producto, contratos y arquitectura objetivo antes de implementar.

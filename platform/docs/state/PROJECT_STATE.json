@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-09-26",
-  "updatedBy": "TASK-20260926-001",
-  "environment": "PILOTO_DELTA",
+  "updatedBy": "TASK-20260926-002",
+  "environment": "DOCUMENTACION",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,16 +13,16 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "operation",
-  "objective": "Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa actuales; pendiente confirmacion visual de Fito.",
+  "mode": "documentation",
+  "objective": "Analizar el informe integral de SPORTEX y definir con Fito el producto inicial y la arquitectura de una reestructuracion desde cero.",
   "scope": {
     "allowed": [
-      "Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual.",
-      "Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe."
+      "Inventariar producto, gobierno, arquitectura, tecnologias, codigo, infraestructura documentada, estado real, deuda y riesgos.",
+      "Entregar un documento Markdown autocontenido para analisis humano y por otra IA."
     ],
     "prohibited": [
-      "No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL.",
-      "No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales."
+      "No definir ni implementar todavia la arquitectura de reemplazo ni cambiar reglas de negocio o contratos funcionales.",
+      "No desplegar, migrar, enviar mensajes, consultar datos reales ni operar PILOTO_DELTA o PRODUCCION_COMERCIAL."
     ]
   },
   "currentTask": null,
@@ -118,8 +118,8 @@
       "npm run context -- documentation",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md",
-    "note": "Cierre documental de portabilidad: arranque PASS desde una segunda ruta y 17/17 regresiones focales; runtime no evaluado ni modificado."
+    "evidence": "docs/evidencias/TASK-20260926-002_INFORME_INTEGRAL_REESTRUCTURACION.md",
+    "note": "Informe integral contrastado contra fuentes rectoras, manifests, codigo y estado; 32/32 pruebas documentales PASS. Runtime no evaluado ni modificado."
   },
   "deployments": {
     "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
@@ -194,14 +194,29 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260926-001",
+    "taskId": "TASK-20260926-002",
     "date": "2026-09-26",
-    "path": "docs/evidencias/TASK-20260926-001_PORTABILIDAD_WORKTREE.md",
-    "summary": "Arranque portable validado sin rutas absolutas compartidas; 17/17 pruebas focales y cero operaciones remotas.",
+    "path": "docs/evidencias/TASK-20260926-002_INFORME_INTEGRAL_REESTRUCTURACION.md",
+    "summary": "Informe integral de producto, gobierno, arquitectura, tecnologias, implementacion, legado, deuda y decisiones de reestructuracion, sin operaciones remotas.",
     "environment": "DOCUMENTACION",
     "branch": "sportex-governance-20260801"
   },
   "recentChanges": [
+    {
+      "date": "2026-09-26",
+      "taskId": "TASK-20260926-002",
+      "summary": "Informe integral verificable preparado para decidir una reestructuracion desde cero sin confundir vision, implementacion, piloto y legado.",
+      "documents": [
+        "docs/INFORME_INTEGRAL_SPORTEX_PARA_REESTRUCTURACION.md",
+        "docs/TASKS/closed/2026/TASK-20260926-002-informe-integral-reestructuracion-sportex.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260926-002_INFORME_INTEGRAL_REESTRUCTURACION.md"
+      ],
+      "decisions": [
+        "La nueva estructura se decidira despues de definir el producto inicial; este informe no cambia contratos funcionales."
+      ]
+    },
     {
       "date": "2026-09-26",
       "taskId": "TASK-20260926-001",
@@ -277,25 +292,6 @@
       "decisions": [
         "SPORTEX-DEC-021"
       ]
-    },
-    {
-      "date": "2026-08-20",
-      "taskId": "TASK-20260820-001",
-      "summary": "Project OS incorpora preemption, hotfix, reconciliacion fail-closed y evolucion explicita de entornos sin inventar STAGING.",
-      "documents": [
-        "docs/INCIDENT_PREEMPTION_RECONCILIATION_CONTRACT.md",
-        "docs/ENVIRONMENTS_CONTRACT.md",
-        "docs/state/INCIDENT_RECONCILIATION_STATE.json",
-        "scripts/incident-reconciliation.mjs",
-        "scripts/worktree-close.mjs"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-019",
-        "SPORTEX-DEC-020"
-      ]
     }
   ],
   "runtimeTruth": {
@@ -319,12 +315,12 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito confirma visualmente las vinetas restauradas en el piloto d9c4f44.",
-    "No cambiar la referencia visual protegida sin aprobacion explicita; pruebas comerciales reales fuera de este fix."
+    "Fito y la IA externa analizan el informe integral y delimitan el producto inicial.",
+    "Abrir una tarea posterior para aprobar producto, contratos y arquitectura objetivo antes de implementar."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 29,
+    "archivedChanges": 30,
     "throughDate": "2026-08-20"
   }
 }

@@ -42,3 +42,4 @@ Actualizado: 2026-09-26.
 - `TASK-20260902-002` | `done` | Promover CRM y configuración de empresa al piloto | docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md
 - `TASK-20260903-001` | `done` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md
 - `TASK-20260926-001` | `done` | Reconciliar portabilidad del worktree SPORTEX | docs/TASKS/closed/2026/TASK-20260926-001-reconciliar-portabilidad-worktree.md
+- `TASK-20260926-002` | `done` | Informe integral para reestructuracion de SPORTEX | docs/TASKS/closed/2026/TASK-20260926-002-informe-integral-reestructuracion-sportex.md
