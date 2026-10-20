@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- `TASK-20261020-005` | `in_progress` | Corregir copia de referencia con Logo2 | docs/TASKS/active/TASK-20261020-005-copiar-referencia.md
+- Ninguna.
 
 ## Cola
 
@@ -47,3 +47,4 @@ Actualizado: 2026-10-20.
 - `TASK-20261020-002` | `done` | Base inicial de empresas del laboratorio | docs/TASKS/closed/2026/TASK-20261020-002-base-inicial-empresas-bocetos.md
 - `TASK-20261020-003` | `done` | Eliminar empresa del laboratorio | docs/TASKS/closed/2026/TASK-20261020-003-eliminar-empresa-bocetos.md
 - `TASK-20261020-004` | `done` | Corregir base inicial de bocetos | docs/TASKS/closed/2026/TASK-20261020-004-corregir-base-bocetos.md
+- `TASK-20261020-005` | `done` | Corregir copia de referencia con Logo2 | docs/TASKS/closed/2026/TASK-20261020-005-copiar-referencia.md

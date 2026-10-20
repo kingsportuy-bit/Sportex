@@ -3,8 +3,8 @@
 id: TASK-20261020-005
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -49,7 +49,7 @@ Restaurar imagen a65249d en el mismo volumen; conservar snapshot previo.
 
 ## deuda_restante
 
-Publicacion autorizada; pendiente verificar version, respaldo y servicio.
+Sin pendientes tecnicos; Fito prueba Copiar colores en el laboratorio recargado.
 
 ## registro_de_avances
 
@@ -59,6 +59,8 @@ Prueba roja reproduce400 exacto; aceptar brand2 hace pasar el paquete real.
 SPORTEX_CLOSE=PASS local;31 workflow,59 Core, SQL/RLS y build PASS.
 GO confirmado para codigoa2e2deb. Sponsors admitidos para contornos y textos
 libres excluidos; pruebas locales con0/2/30 sponsors y3 textos PASS.
+a95850f publicado14:13 UTC;16 pruebas en imagen,HTTPS y contexto real PASS.
+2 empresas preservadas y backup restaurado; sin IA paga ni cambios de cuentas.
 
 ## decisiones
 

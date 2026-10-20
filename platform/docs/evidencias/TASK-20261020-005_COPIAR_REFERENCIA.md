@@ -51,3 +51,32 @@ lectura externa denegada, sin eludirlo. Snapshot consistente anterior valido;
 el gate verifica operaciones en curso sobre backup definitivo con servicio
 detenido antes de activar candidato. Sin cuentas de QA ni API paga.
 SPORTEX_CLOSE=PASS pilot-release previo al bundle.
+
+## Publicacion y comprobacion
+
+Release a95850ff3b0d3cd9d66232650251331a39b4ee59, codigoa2e2deb sin diferencias
+en bocetos/core/deploy; solo documentos agregados. Bundle git archive remoto
+SHA256 2ceb716b2b58b4ad31a44027e6cc502c140538f1b1d182114952d3b4572a45ae.
+Imagen sportex-bocetos:a95850ff3b0d3cd9d66232650251331a39b4ee59,
+digest sha256:7a4ded3d8d6a99577db4784a9e71b4d22bc71cc5efaf437690eb72b59b57c586.
+16 pruebas focales PASS en Node24/Linux dentro del candidato, sin red/secretos.
+Primera ejecucion de pruebas heredo NODE_ENV=production sin URLs de servicio:
+un test HTTP rechazo configuracion faltante. Repetido con NODE_ENV=test,
+entorno de fixtures correcto;16/16 PASS. No cambia configuracion de produccion.
+
+14:13:27 UTC: DEPLOYMENT=PASS. Servicio exacto healthy1/1; /ready200 de ambos
+dominios confirma release. Snapshot con servicio detenido incluye2 empresas,
+3 usuarios,0 assets,9 operaciones; no hay operaciones processing. Tras arranque,
+companies/users/assets/idempotency identicos. Snapshot descargado y restaurado
+en copia privada: quick_check ok y mismos conteos. Se conservan backups previos.
+Ruta remota: /opt/sportex-bocetos/data/backups/pre-a95850ff3b0d3cd9d66232650251331a39b4ee59.sqlite.
+
+14:13:50 UTC: servicio1/1 exacto. Prueba en el contenedor ejecutado acepta
+brand2 y sponsor, sin proveedor. Hashes de reference-details/server/reference-colors
+coinciden con bundle. HTTPS/assets/panel exactos y rutas privadas protegidas;
+base inicial conserva alineacion, vivos off y numero frontal off. CRMd9c4f44
+preservado. Sin cuentas creadas/eliminadas ni llamadas IA de QA.
+Rollback disponible: sportex-bocetos:a65249d00e1513591ec1b908a888414587bc394b,
+mismo volumen. Pruebas de proveedor simulado no certifican fidelidad de la IA.
+Checkpoint posterior: SPORTEX_CLOSE=PASS pilot-release;31 workflow,59 Core,
+SQL/RLS y build PASS; tarea cerrada,ACTIVE_TASK=none.

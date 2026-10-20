@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-005`: `in_progress` (docs/TASKS/active/TASK-20261020-005-copiar-referencia.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.
+Copia de referencia corregida y publicada con Logo2 compatible.
 
 ## Alcance actual
 
-- Permitido: Publicar codigoa2e2deb con backup, rollback y QA sin IA.
-- Prohibido: Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas.
+- Permitido: Uso y observacion del laboratorio publicado por Fito.
+- Prohibido: Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas de QA.
 
 ## Decisiones vigentes
 
@@ -53,8 +53,8 @@ Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_A65249D_HEALTHY`; registros 35.
-- Integraciones: GitHub=`BOCETOS_A65249D_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_A65249D_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_A95850F_HEALTHY`; registros 36.
+- Integraciones: GitHub=`BOCETOS_A95850F_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_A95850F_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.
 - Tarea: `TASK-20261020-005`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md`.
-- GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.
+- a95850f publicado healthy1/1;Logo2/sponsors aceptados,2 empresas y backup preservados. Sin IA paga.
 
 ## Riesgos
 
@@ -78,4 +78,5 @@ Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.
 
 ## Siguientes acciones
 
-- Preflight y release inmutable con respaldo; verificar copia de referencia sin API real.
+- Fito recarga el laboratorio y prueba Copiar colores de la referencia.
+- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.

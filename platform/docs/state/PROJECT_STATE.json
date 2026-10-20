@@ -14,27 +14,16 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.",
+  "objective": "Copia de referencia corregida y publicada con Logo2 compatible.",
   "scope": {
     "allowed": [
-      "Publicar codigoa2e2deb con backup, rollback y QA sin IA."
+      "Uso y observacion del laboratorio publicado por Fito."
     ],
     "prohibited": [
-      "Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas."
+      "Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas de QA."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-005",
-    "title": "Corregir copia de referencia con Logo2",
-    "path": "docs/TASKS/active/TASK-20261020-005-copiar-referencia.md",
-    "status": "in_progress",
-    "lifecycle": "active",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "contextFocus": "infrastructure",
-    "developmentGuideImpact": "none",
-    "nextAction": "Preflight y release inmutable con respaldo; verificar copia de referencia sin API real."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -95,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "02e428caa6a9513dda9a1ef3b6651f4df89a87f3",
-    "workingTreeState": "REFERENCE_LOGO2_FIX_LOCAL_PENDING_PUBLICATION",
+    "headAtLastEvidence": "a95850ff3b0d3cd9d66232650251331a39b4ee59",
+    "workingTreeState": "BOCETOS_A95850F_DEPLOYED_POST_RELEASE_EVIDENCE",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -127,10 +116,10 @@
       "npm run validate"
     ],
     "evidence": "docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md",
-    "note": "199 bocetos,31 workflow,59 Core, SQL/RLS y build PASS; SPORTEX_CLOSE=PASS local. Sin API real."
+    "note": "199 bocetos,31 workflow,59 Core, SQL/RLS y build PASS;16 Node24/Linux, contexto real, HTTPS y backup restaurado. Sin IA paga."
   },
   "deployments": {
-    "status": "CRM_D9C4F44_BOCETOS_A65249D_HEALTHY",
+    "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
     "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -167,29 +156,30 @@
       "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
       "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
       "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
-      "a65249d00e1513591ec1b908a888414587bc394b"
+      "a65249d00e1513591ec1b908a888414587bc394b",
+      "a95850ff3b0d3cd9d66232650251331a39b4ee59"
     ],
-    "note": "a65249d publicado: base alineada, vivos/numero frontal apagados; snapshot/restauracion PASS. CRM preservado.",
+    "note": "a95850f publicado: copia de referencia con Logo2,2 empresas preservadas y respaldo restaurado. CRM sin cambios.",
     "bocetos": {
-      "release": "a65249d00e1513591ec1b908a888414587bc394b",
+      "release": "a95850ff3b0d3cd9d66232650251331a39b4ee59",
       "service": "sportex_bocetos_app",
-      "imageDigest": "sha256:13fcbd6a687395d77284ab447812392958460b5659026ee19587ada9a8d548df",
+      "imageDigest": "sha256:7a4ded3d8d6a99577db4784a9e71b4d22bc71cc5efaf437690eb72b59b57c586",
       "urls": [
         "https://sportex-bocetos.kodebix.com",
         "https://panel-sportex-bocetos.kodebix.com"
       ],
       "replicas": "1/1",
       "backupRestored": true,
-      "rollbackRelease": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e"
+      "rollbackRelease": "a65249d00e1513591ec1b908a888414587bc394b"
     }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "BOCETOS_A65249D_PUBLISHED",
+      "status": "BOCETOS_A95850F_PUBLISHED",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Release remotoa65249d: codigo aprobado9a21e31 mas documentacion."
+      "note": "Release remotoa95850f con codigo aprobadoa2e2deb y documentacion."
     },
     {
       "name": "Supabase",
@@ -207,10 +197,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "CRM_D9C4F44_BOCETOS_A65249D_HEALTHY",
+      "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "a65249d publicado: base alineada, vivos/numero frontal apagados; snapshot/restauracion PASS. CRM preservado."
+      "note": "a95850f publicado: copia de referencia con Logo2,2 empresas preservadas y respaldo restaurado. CRM sin cambios."
     }
   ],
   "sensitiveData": {
@@ -221,17 +211,17 @@
     "taskId": "TASK-20261020-005",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md",
-    "summary": "GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "a95850f publicado healthy1/1;Logo2/sponsors aceptados,2 empresas y backup preservados. Sin IA paga.",
+    "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-005",
-      "summary": "GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.",
+      "summary": "a95850f publicado healthy1/1;Logo2/sponsors aceptados,2 empresas y backup preservados. Sin IA paga.",
       "documents": [
-        "docs/TASKS/active/TASK-20261020-005-copiar-referencia.md",
+        "docs/TASKS/closed/2026/TASK-20261020-005-copiar-referencia.md",
         "bocetos/reference-details.mjs",
         "bocetos/tests/reference-context.test.mjs",
         "docs/BOCETOS_LOCAL_CONTRACT.md"
@@ -320,7 +310,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Preflight y release inmutable con respaldo; verificar copia de referencia sin API real."
+    "Fito recarga el laboratorio y prueba Copiar colores de la referencia.",
+    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
