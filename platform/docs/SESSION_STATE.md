@@ -27,7 +27,7 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Corregir vivos activos y nombre duplicado en la base inicial.
+Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.
 
 ## Alcance actual
 
@@ -62,7 +62,7 @@ Corregir vivos activos y nombre duplicado en la base inicial.
 - Tarea: `TASK-20261020-004`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md`.
-- Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.
+- Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Corregir vivos activos y nombre duplicado en la base inicial.
 
 ## Siguientes acciones
 
-- GO de Fito para publicar base corregida; documentos existentes se conservan.
+- GO de Fito para publicar la base alineada; documentos existentes conservados.

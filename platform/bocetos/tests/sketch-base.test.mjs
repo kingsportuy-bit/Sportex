@@ -62,7 +62,8 @@ test('la base defectuosa en cache no reactiva vivos ni duplica el nombre en Nuev
   c.newSketch();
   for(const group of ['sleeve','shoulder','shirt-side','short-side','short-hem'])assert.equal(c.current.inputs[`trim-${group}-enabled`],false,group);
   assert.deepEqual(c.current.texts,[]);assert.equal(c.current.layers[id],undefined);assert.equal(c.current.visibleLayers[id],undefined);assert.equal(c.current.layerStyles[id],undefined);
-  assert.equal(c.current.layers['back-name'].y,395.1402248768759);assert.equal(c.current.layers['back-name'].size,66);
+  assert.equal(c.current.layers['back-name'].y,377.1402248768759);assert.equal(c.current.layers['back-name'].x,797);assert.equal(c.current.layers['back-number'].x,797);assert.equal(c.current.layers['back-name'].size,66);
+  assert.equal(c.current.inputs['show-front-number'],false);assert.equal(c.current.visibleLayers['front-number'],false);
   assert.equal(c.current.inputs['brand2-select'],'own-logo');assert.equal(c.current.logos.brand2[0].image.src,'own-image');
   assert.deepEqual(c.sketches.get(1),before);assert.equal(stale.layers['back-name'].y,649.670331295039);
 });

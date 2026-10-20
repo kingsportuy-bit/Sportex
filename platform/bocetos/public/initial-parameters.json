@@ -30,8 +30,8 @@
       "scaleY": 0.8954206675036103
     },
     "back-name": {
-      "x": 815,
-      "y": 395.1402248768759,
+      "x": 797,
+      "y": 377.1402248768759,
       "size": 66,
       "scaleX": 0.9285940532748821,
       "scaleY": 0.9285940532748821
@@ -140,7 +140,7 @@
     "show-brand": true,
     "show-brand2": true,
     "show-crest": true,
-    "show-front-number": true,
+    "show-front-number": false,
     "show-short-brand": true,
     "show-short-crest": true,
     "show-short-number": true,
@@ -2345,7 +2345,7 @@
     "crest": true,
     "brand": true,
     "brand2": true,
-    "front-number": true,
+    "front-number": false,
     "back-name": true,
     "back-number": true,
     "short-crest": true,
@@ -2353,5 +2353,5 @@
     "short-brand": true
   },
   "approvedAt": "2026-10-20",
-  "presetRevision": "sportex-factory-20261020-v2"
+  "presetRevision": "sportex-factory-20261020-v3"
 }

@@ -14,17 +14,17 @@ Actualizado: 2026-10-20.
 - Tarea: `TASK-20261020-004`.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `codex/desplegar-bocetos-20261020`.
-- Presupuesto potencial: 59584/60000 caracteres.
-- Tokens estimados: 14896 (aproximacion de 4 caracteres por token).
+- Presupuesto potencial: 59629/60000 caracteres.
+- Tokens estimados: 14908 (aproximacion de 4 caracteres por token).
 - Documentos unicos: 21.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Corregir vivos activos y nombre duplicado en la base inicial.
+- Objetivo: Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.
 - Permitido: Parametros iniciales, cache de base y pruebas locales de bocetos.
 - Prohibido: Sin despliegues, datos remotos, CRM, legado ni IA. Conservar bocetos.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: GO de Fito para publicar base corregida; documentos existentes se conservan.
+- Proxima accion: GO de Fito para publicar la base alineada; documentos existentes conservados.
 
 ## Regla de uso
 

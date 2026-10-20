@@ -78,6 +78,9 @@ Nuevo boceto aplica la base guardada; modo general retirado.
 arriba del numero. presetRevision actualiza exclusivamente la base defectuosa
 publicada el19/10 en cache, sin cambiar documentos existentes ni archivos propios.
 Bases personalizadas siguen prevaleciendo; los bocetos nuevos usan la base limpia.
+Fito ajusta nombre18px mas arriba y nombre/numero centrados en cuerpo posterior
+(mascara x625/ancho344, eje797); numero frontal apagado. Revisionv3 migra tambien
+la basev2, conservando tamanos, escalas y documentos ya guardados.
 Shift/clic o recuadro: multiseleccion, ejes comunes y centrado con camiseta. Logo 2 en Marca.
 Color grupal desde selector/paleta: numeros, nombres y marcas; excluye escudos/sponsors.
 Reemplazar debajo del elemento conserva alto, centro, giro y ubicacion.

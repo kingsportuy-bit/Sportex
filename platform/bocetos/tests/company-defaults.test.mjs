@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {initialParameterSketch,replacementImageSize} from '../public/element-layout.js';
+import {initialParameterSketch,replacementImageSize,restoreInitialParameters} from '../public/element-layout.js';
 
 const base=JSON.parse(readFileSync(new URL('../public/initial-parameters.json',import.meta.url),'utf8'));
 const app=readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
@@ -25,9 +25,20 @@ test('un alta comienza sin vivos y con un solo nombre normal encima del numero',
   for(const group of ['sleeve','shoulder','shirt-side','short-side','short-hem'])assert.equal(fresh.inputs[`trim-${group}-enabled`],false,group);
   assert.deepEqual(fresh.texts,[]);
   assert.ok(fresh.layers['back-name'].y<fresh.layers['back-number'].y);
-  assert.equal(fresh.layers['back-name'].y,395.1402248768759);
+  assert.equal(fresh.layers['back-name'].y,377.1402248768759);
+  assert.equal(fresh.layers['back-name'].x,797);assert.equal(fresh.layers['back-number'].x,797);
+  assert.equal(fresh.inputs['show-front-number'],false);assert.equal(fresh.visibleLayers['front-number'],false);
   assert.equal(fresh.layers['back-name'].size,66);
   for(const source of [fresh.layers,fresh.layerStyles,fresh.visibleLayers])assert.ok(!Object.keys(source).some(key=>key.startsWith('text-')));
+});
+
+test('la revision anterior de la base recibe alineacion y numero frontal apagado una sola vez',()=>{
+  const previous=structuredClone(base);previous.presetRevision='sportex-factory-20261020-v2';previous.layers['back-name'].x=815;previous.layers['back-name'].y=395.1402248768759;previous.inputs['show-front-number']=true;previous.visibleLayers['front-number']=true;
+  const current=structuredClone(base);current.presetRevision='sportex-factory-20261020-v3';current.layers['back-name']={...current.layers['back-name'],x:797,y:377.1402248768759};current.inputs['show-front-number']=false;current.visibleLayers['front-number']=false;
+  const restored=restoreInitialParameters(current,previous);
+  assert.equal(restored.layers['back-name'].x,797);assert.equal(restored.layers['back-name'].y,377.1402248768759);assert.equal(restored.inputs['show-front-number'],false);assert.equal(restored.visibleLayers['front-number'],false);
+  restored.inputs['show-front-number']=true;restored.layers['back-name'].y=400;
+  assert.deepEqual(restoreInitialParameters(current,restored),restored,'a current cached base keeps subsequent manual preferences');
 });
 
 function uploads(){

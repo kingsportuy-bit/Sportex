@@ -113,8 +113,10 @@ la base guardada, incluyendo fuentes, colores, opciones, geometría y textos;
 reutiliza los archivos en caché sin copiar ajustes del último boceto. La base
 aprobada por Fito vive en initial-parameters.json: posiciones, escalas,
 fuentes y opciones. El20/10 corrige vivos apagados y nombre unico arriba del
-numero, sin texto adicional. No incorpora imágenes subidas;
-esos archivos continúan en el navegador. Las bases antiguas no reinician las
+numero, sin texto adicional. Nombre y numero posterior comparten el eje del
+cuerpo (x797); el nombre sube18px respecto de la primera correccion. Numero
+frontal desactivado en la base. No incorpora imágenes subidas; esos archivos
+continúan en el navegador. Las bases antiguas no reinician las
 posiciones al crear un documento con la versión actual.
 
 Shift + clic alterna elementos; arrastrar desde una zona vacía selecciona por

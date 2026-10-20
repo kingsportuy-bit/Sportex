@@ -61,9 +61,12 @@ export function restoreInitialParameters(current,cached){
   const model=structuredClone(cached||current),duplicate='text-1792439241236';
   // Only the accidentally published factory preset is upgraded. Custom bases,
   // cached files and document contents retain their own settings.
-  if(current?.presetRevision&&!model.presetRevision&&model.kind==='sportex-initial-parameters'&&model.approvedAt==='2026-10-19'&&model.texts?.some(t=>t.id===duplicate&&t.value==='NOMBRE')){
+  const legacyFactory=!model.presetRevision&&model.kind==='sportex-initial-parameters'&&model.approvedAt==='2026-10-19'&&model.texts?.some(t=>t.id===duplicate&&t.value==='NOMBRE');
+  if(current?.presetRevision&&(legacyFactory||model.presetRevision==='sportex-factory-20261020-v2')){
     for(const id of Object.keys(current.inputs).filter(id=>id.startsWith('trim-')&&id.endsWith('-enabled')))model.inputs[id]=current.inputs[id];
     model.layers['back-name']=structuredClone(current.layers['back-name']);delete model.layers[duplicate];
+    model.layers['back-number'].x=current.layers['back-number'].x;
+    model.inputs['show-front-number']=current.inputs['show-front-number'];model.visibleLayers={...model.visibleLayers,'front-number':current.visibleLayers['front-number']};
     model.texts=model.texts.filter(t=>t.id!==duplicate);delete model.visibleLayers?.[duplicate];delete model.layerStyles?.[duplicate];
     model.presetRevision=current.presetRevision;model.approvedAt=current.approvedAt;
   }

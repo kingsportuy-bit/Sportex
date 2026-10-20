@@ -37,6 +37,21 @@ SQL/RLS y build. git diff --check PASS. Sin cambios visuales fuera de la base.
 Checkpoint workflow:close TASK-20261020-004: SPORTEX_CLOSE=PASS, perfil local.
 Tarea activa esperando GO para publicar el candidato.
 
+## Ajuste solicitado despues de revisar el candidato
+
+Fito pide nombre un poco mas arriba, ambos centrados en camiseta y numero frontal
+apagado. Cuerpo posterior real back-photoDesignShirtBody: x625,ancho344,eje797,
+coincide con powerClipMask usado por la alineacion del lienzo. Nombre x797,
+y377.1402248768759 (18px arriba); numero posterior x797,altura y escala intactas.
+show-front-number y visibleLayers.front-number false. Revisionv3 actualiza las
+bases previas defectuosas yv2. Prueba de migracionv2 fallo815!=797 antes del fix;
+11 pruebas focales PASS despues, sin reescribir preferencias ya actualizadas.
+198 pruebas bocetos PASS. QA interno: numero frontal apagado en control y
+render, nombre mas arriba y alineado sobre numero posterior. Captura privada
+base-alineada.png, misma carpeta anterior. Sin cambios en documentos existentes.
+Validacion general y workflow:close del ajuste: SPORTEX_CLOSE=PASS, perfil local;
+31 workflow,59 Core, SQL/RLS y build PASS.
+
 ## Limites
 
 Sin cambios remotos, IA, limpieza de bocetos ni nuevas dependencias.

@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "fix",
-  "objective": "Corregir vivos activos y nombre duplicado en la base inicial.",
+  "objective": "Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.",
   "scope": {
     "allowed": [
       "Parametros iniciales, cache de base y pruebas locales de bocetos."
@@ -33,7 +33,7 @@
     "campaign": "CAMP-20260803-001",
     "contextFocus": "frontend",
     "developmentGuideImpact": "none",
-    "nextAction": "GO de Fito para publicar base corregida; documentos existentes se conservan."
+    "nextAction": "GO de Fito para publicar la base alineada; documentos existentes conservados."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -126,7 +126,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
-    "note": "197 bocetos,31 workflow y59 Core PASS; TDD y QA de nuevo boceto/recarga, documentos conservados. Auditoria premium reporta66 hallazgos previos en HTML intacto."
+    "note": "198 bocetos PASS;11 focales rojo/verde, eje real de mascara797 y QA local. Sin cambios remotos ni IA."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY",
@@ -219,7 +219,7 @@
     "taskId": "TASK-20261020-004",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
-    "summary": "Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.",
+    "summary": "Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -227,7 +227,7 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-004",
-      "summary": "Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.",
+      "summary": "Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
         "bocetos/public/initial-parameters.json",
@@ -319,7 +319,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "GO de Fito para publicar base corregida; documentos existentes se conservan."
+    "GO de Fito para publicar la base alineada; documentos existentes conservados."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

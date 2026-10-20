@@ -14,7 +14,7 @@ updated_at: 2026-10-20
 
 ## objetivo
 
-Base con vivos apagados y un solo nombre arriba del numero.
+Base con vivos apagados, nombre/numero centrados y numero frontal apagado.
 
 ## alcance_permitido
 
@@ -27,7 +27,7 @@ Sin deploy, datos remotos, borrados reales, CRM, legado ni IA.
 
 ## entradas
 
-Fito reporta vivos activos/texto extra; confirma nombre arriba del numero.
+Fito pide nombre un poco mas arriba y ambos centrados; numero frontal apagado.
 
 ## salidas
 
