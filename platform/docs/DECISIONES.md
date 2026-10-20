@@ -243,3 +243,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   Core y SQLite privado (una replica, lock exclusivo, backup restaurable).
   Sustituye la intencion anterior de exigir proveedor Auth/DB externo para esta
   primera publicacion. La salida comercial general del CRM sigue sin habilitar.
+
+- 20/10: bocetos b8e1fc8 publicado en dos dominios Kodebix, stack propio. HTTPS,
+  admin, persistencia tras reemplazo y restauracion de backup real PASS. CRM
+  d9c4f44 conservado. Respaldo API/admin key pendientes; primera alta manual.

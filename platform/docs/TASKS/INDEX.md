@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- `TASK-20261020-001` | `in_progress` | Desplegar laboratorio y panel de bocetos | docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md
+- Ninguna.
 
 ## Cola
 
@@ -43,3 +43,4 @@ Actualizado: 2026-10-20.
 - `TASK-20260903-001` | `done` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md
 - `TASK-20261018-001` | `done` | Incorporar laboratorio de bocetos y copia de colores | docs/TASKS/closed/2026/TASK-20261018-001-laboratorio-bocetos.md
 - `TASK-20261019-001` | `done` | Panel sencillo del laboratorio | docs/TASKS/closed/2026/TASK-20261019-001-panel-bocetos.md
+- `TASK-20261020-001` | `done` | Desplegar laboratorio y panel de bocetos | docs/TASKS/closed/2026/TASK-20261020-001-desplegar-laboratorio-bocetos.md

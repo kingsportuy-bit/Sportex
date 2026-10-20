@@ -3,7 +3,7 @@
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
   "updatedBy": "TASK-20261020-001",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Desplegar laboratorio y panel de bocetos en dominios propios.",
+  "objective": "Laboratorio y panel publicados; primera alta manual de Fito.",
   "scope": {
     "allowed": [
       "Runtime bocetos y servicio aislado; DNS de los dos dominios autorizados."
@@ -23,15 +23,7 @@
       "Sin cambios de CRM, legado, otros proyectos, WhatsApp ni DB compartida."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-001",
-    "status": "in_progress",
-    "path": "docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md",
-    "nextAction": "Preparar runtime HTTPS y persistencia; verificar candidato antes de publicar.",
-    "title": "Desplegar laboratorio y panel de bocetos",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001"
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -92,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
-    "workingTreeState": "BOCETOS_RELEASE_PREPARATION",
+    "headAtLastEvidence": "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
+    "workingTreeState": "BOCETOS_DEPLOYED_POST_RELEASE_EVIDENCE",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -122,11 +114,11 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md",
-    "note": "182 bocetos PASS; SQLite/restauracion, sesiones HTTPS y dominios aislados; sin generaciones pagas."
+    "note": "182 bocetos, 31 workflow y 59 Core/API PASS; runtime Linux y backup real restaurado; sin imagenes pagas."
   },
   "deployments": {
-    "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
-    "lastVerifiedAt": "2026-09-03",
+    "status": "CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY",
+    "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
       "d871d2eea627d6a65b7721feaa6a53d0c1c0e487",
@@ -158,17 +150,29 @@
       "4898d557cf0fa6788bab5ec4f45db187d73c3c8c",
       "8823a77365f78f25db9fbf7afb5decd21e59f547",
       "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8",
-      "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b"
+      "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
+      "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d"
     ],
-    "note": "Restauracion literal de vinetas 8823a773 sobre CRM actual. 1/1, health/ready y assets exactos PASS; rollback 51c2dfe."
+    "note": "Laboratorio b8e1fc8 aislado, TLS/login/backup/reinicio PASS; CRM d9c4f44 sin cambios.",
+    "bocetos": {
+      "release": "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
+      "service": "sportex_bocetos_app",
+      "imageDigest": "sha256:96e59a6299d1ec500dae82d4d7c45fed988061914808d18ac6f11dd09ba513d3",
+      "urls": [
+        "https://sportex-bocetos.kodebix.com",
+        "https://panel-sportex-bocetos.kodebix.com"
+      ],
+      "replicas": "1/1",
+      "backupRestored": true
+    }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "REMOTE_D9C4F44_VISUAL_FIX_RECONCILED",
-      "lastVerifiedAt": "2026-09-03",
+      "status": "BOCETOS_B8E1FC8_PUBLISHED",
+      "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Fix visual publicado en la rama canonica, referencia 8823a773 recuperada y protegida."
+      "note": "Rama codex/desplegar-bocetos-20261020 publicada; CRM conserva su release."
     },
     {
       "name": "Supabase",
@@ -186,10 +190,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "PILOTO_DELTA_RUNTIME_D9C4F44_HEALTHY",
-      "lastVerifiedAt": "2026-09-03",
+      "status": "CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY",
+      "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "1/1, health/ready y archivos publicos exactos. Solo imagen/release modificados."
+      "note": "Nuevo stack aislado y dos TLS; CRM 1/1 preservado. Backup real restaurado."
     }
   ],
   "sensitiveData": {
@@ -200,20 +204,20 @@
     "taskId": "TASK-20261020-001",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md",
-    "summary": "Preparacion de despliegue autorizada por Fito; inventario remoto read-only.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.",
+    "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-001",
-      "summary": "Candidato independiente con SQLite/HTTPS y dos DNS autorizados.",
+      "summary": "Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.",
       "documents": [
-        "core/bocetos/sqlite-store.mjs",
+        "docs/TASKS/closed/2026/TASK-20261020-001-desplegar-laboratorio-bocetos.md",
         "bocetos/production-start.mjs",
-        "deploy/docker-stack.bocetos.yml",
-        "docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md"
+        "core/bocetos/sqlite-store.mjs",
+        "deploy/docker-stack.bocetos.yml"
       ],
       "evidence": [
         "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md"
@@ -305,7 +309,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Preparar candidato aislado y publicar los dos dominios autorizados."
+    "Fito entra al panel y crea la primera empresa.",
+    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

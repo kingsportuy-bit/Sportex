@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
@@ -23,11 +23,11 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-001`: `in_progress` (docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Desplegar laboratorio y panel de bocetos en dominios propios.
+Laboratorio y panel publicados; primera alta manual de Fito.
 
 ## Alcance actual
 
@@ -53,8 +53,8 @@ Desplegar laboratorio y panel de bocetos en dominios propios.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-19`.
-- Despliegues: `PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED`; registros 31.
-- Integraciones: GitHub=`REMOTE_D9C4F44_VISUAL_FIX_RECONCILED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`PILOTO_DELTA_RUNTIME_D9C4F44_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`; registros 32.
+- Integraciones: GitHub=`BOCETOS_B8E1FC8_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Desplegar laboratorio y panel de bocetos en dominios propios.
 - Tarea: `TASK-20261020-001`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md`.
-- Preparacion de despliegue autorizada por Fito; inventario remoto read-only.
+- Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.
 
 ## Riesgos
 
@@ -78,4 +78,5 @@ Desplegar laboratorio y panel de bocetos en dominios propios.
 
 ## Siguientes acciones
 
-- Preparar candidato aislado y publicar los dos dominios autorizados.
+- Fito entra al panel y crea la primera empresa.
+- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.

@@ -3,8 +3,8 @@
 id: TASK-20261020-001
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -53,7 +53,8 @@ No modificar el CRM existente. Detener si falla seguridad, salud o aislamiento.
 
 ## deuda_restante
 
-Inventariar runtime y preparar candidato exacto antes de publicar.
+Clave de respaldo y OPENAI_ADMIN_KEY pendientes de proporcionar. Primera empresa
+se crea manualmente por Fito. Sin QA de imagen paga ni certificacion comercial del CRM.
 
 ## registro_de_avances
 
@@ -70,3 +71,8 @@ Modelo OpenAI existente disponible, verificado por /models sin generar imagen.
 
 Autorizacion operativa: pedido directo de Fito en este hilo de desplegar los dos
 dominios; alcance explicado y DNS ofrecido expresamente. Sin cambio del CRM.
+
+20/10 01:44 UTC: release b8e1fc8 desplegado, servicio 1/1 healthy. Dos HTTPS validos,
+login administrador, bloqueo anonimo/setup y assets exactos PASS. Reemplazo de
+contenedor conserva sesion; backup real restaurado y admin verificado sin fixtures.
+CRM sigue d9c4f44 1/1. Contraseñas y copia inicial privadas, fuera de Git.
