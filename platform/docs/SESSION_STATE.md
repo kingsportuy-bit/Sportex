@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `feature`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo actual.
+Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
 
 ## Alcance actual
 
-- Permitido: Catalogo admin, editor y defaults; prototipo 2D propio local; fixtures y Git.
-- Prohibido: Sin deploy, API paga, datos reales, CRM, legado ni importador PSD arbitrario.
+- Permitido: Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f.
+- Prohibido: Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS.
 
 ## Decisiones vigentes
 
@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- Material V/polo adaptado al PSD; anclajes aprobados y espalda conservados. Falta integracion y QA visual.
+- GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Revisar material de cuellos e integrar al kit; QA visual.
+- Certificar bundle, respaldar y publicar configurador; cuellos en pausa.

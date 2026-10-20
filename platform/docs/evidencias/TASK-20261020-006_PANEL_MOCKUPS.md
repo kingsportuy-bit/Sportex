@@ -200,3 +200,28 @@ HTTP del módulo de material PASS en4321. Sin cambios de perfiles del navegador.
 Checkpoint SPORTEX_CLOSE=PASS, perfil local. Log privado
 sportex-collar-material-close.log. Revertir este checkpoint restaura la apariencia
 anterior sin modificar el JSON de anclajes. Sin deploy.
+
+## GO para publicar el configurador
+
+Fito pide descartar por ahora la prueba de cuellos y da GO producción para subir
+el configurador de bocetos. Alcance: catálogo/panel Mockups, editor de defaults,
+guardar/probar/publicar configuración inicial; código ejecutable de33a54. Los
+commits posteriores de prototipos no cambian el código publicado del laboratorio.
+Se excluyen prototipos del bundle y la imagen; no se integran cuellos.
+
+Servicio independiente sportex_bocetos_app, dominios Kodebix existentes, con los
+controles de operación real PILOTO_DELTA usados en los releases anteriores.
+No se habilita ni promueve el CRM comercial. Release podrá sumar documentación,
+manteniendo el mismo código ejecutable. Snapshot SQLite consistente antes de
+activar, verificación de restauración y rollback a95850f en el mismo volumen.
+No se crean cuentas ni se llama a proveedores de pago como pruebas.
+
+Preflight23:12 UTC: a95850f observado healthy1/1,38GB libres y6.8GB RAM disponibles.
+Se reutiliza el procedimiento de release anterior: stop-first, backup con el
+servicio detenido, gate sin operaciones processing y comparación de estado.
+El GO de Fito autoriza esta publicación; no se pide una confirmación repetida.
+Preflight HTTPS: ambos /ready identifican a95850f y los hashes publicados de
+app/panel/initial-parameters/garment-trims/element-layout coinciden con Git del
+release saliente. Código ejecutable actual idéntico a de33a54; Docker ya copia
+solo módulos raíz, Core, public y moldes. CRM observado d9c4f44, sin cambios.
+Suite224 tests PASS,0 fallos; log privado sportex-mockup-configurator-release-tests.log.

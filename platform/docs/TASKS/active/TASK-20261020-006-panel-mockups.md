@@ -5,9 +5,9 @@ owner: Codex
 requester: Fito
 estado: in_progress
 lifecycle: active
-work_type: feature
+work_type: operacion
 campaign: CAMP-20260803-001
-context_focus: runtime
+context_focus: infrastructure
 development_guide_impact: none
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 updated_at: 2026-10-20
@@ -18,15 +18,15 @@ Panel Mockups: borrador, prueba y publicacion de defaults. Conservar bocetos.
 
 ## alcance_permitido
 
-Core/catalogo admin, panel/editor, opciones/vivos/version. Prototipo 2D propio.
+Publicar configurador de33a54 en sportex_bocetos_app, backup y rollback a95850f.
 
 ## alcance_prohibido
 
-Sin deploy, datos reales, API paga, CRM, legado ni importador PSD arbitrario.
+Sin cuellos experimentales, IA paga, mutaciones de cuentas, CRM, legado ni DNS.
 
 ## entradas
 
-Fito aprueba panel y prueba propia; luego prioriza cuellos sobre Futbol basico.
+Fito pausa cuellos y confirma GO produccion para el configurador del panel.
 
 ## salidas
 
@@ -43,20 +43,18 @@ docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md
 
 ## rollback
 
-Revertir commits de esta task; runtime a95850f permanece sin cambios.
-Catalogo es aditivo; conservar datos publicados al volver a version anterior.
+Volver a imagen a95850f en el mismo volumen; conservar backup y catalogo aditivo.
 
 ## deuda_restante
 
-QA visual final pendiente por control de navegador deshabilitado. Sin deploy.
-Cuellos: defaults locales aprobados; falta integracion al kit del laboratorio.
+Publicacion pendiente; cuellos en pausa, excluidos del paquete y de la imagen.
 
 ## registro_de_avances
 
 Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
 224 tests;6 checks de montaje PASS. QA navegador pendiente.
 JSON frontal de Fito aplicado como defaults; espalda original fija.
-Material V/polo adaptado al cuello PSD; geometria aprobada conservada.
+Material V/polo local en pausa. GO de Fito para publicar solo configurador.
 
 ## decisiones
 

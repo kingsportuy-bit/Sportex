@@ -3,7 +3,7 @@
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
   "updatedBy": "TASK-20261020-006",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,14 +13,14 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "feature",
-  "objective": "Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo actual.",
+  "mode": "operation",
+  "objective": "Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.",
   "scope": {
     "allowed": [
-      "Catalogo admin, editor y defaults; prototipo 2D propio local; fixtures y Git."
+      "Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f."
     ],
     "prohibited": [
-      "Sin deploy, API paga, datos reales, CRM, legado ni importador PSD arbitrario."
+      "Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS."
     ]
   },
   "currentTask": {
@@ -29,11 +29,11 @@
     "path": "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
     "status": "in_progress",
     "lifecycle": "active",
-    "workType": "feature",
+    "workType": "operacion",
     "campaign": "CAMP-20260803-001",
-    "contextFocus": "runtime",
+    "contextFocus": "infrastructure",
     "developmentGuideImpact": "none",
-    "nextAction": "Revisar material de cuellos e integrar al kit; QA visual."
+    "nextAction": "Certificar bundle, respaldar y publicar configurador; cuellos en pausa."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -221,15 +221,15 @@
     "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "Material V/polo adaptado al PSD; anclajes aprobados y espalda conservados. Falta integracion y QA visual.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.",
+    "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
-      "summary": "Material V/polo adaptado al PSD; anclajes aprobados y espalda conservados. Falta integracion y QA visual.",
+      "summary": "GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
         "core/bocetos/mockups.mjs",
@@ -322,7 +322,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Revisar material de cuellos e integrar al kit; QA visual."
+    "Certificar bundle, respaldar y publicar configurador; cuellos en pausa."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

@@ -301,3 +301,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   bicolor es solo referencia; no se ha pedido preparar otra variante.
 - Fito aclara que el desajuste es de luces/tejido. Mantener anclajes aprobados;
   V/polo toman apariencia de la banda original del PSD, con pliegues suavizados.
+- Fito pausa cuellos y da GO para desplegar el configurador del panel en el
+  servicio de bocetos. Codigo de33a54; release solo suma documentos. Snapshot
+  SQLite y rollback a95850f; conservar empresas/bocetos. Sin prototipos en paquete.

@@ -40,3 +40,5 @@ JSON por modelo; los mockups de clientes se prepararan sobre sus propias bases.
 Fito confirma los tres ajustes frontales y mantiene el cuello original fijo en
 espalda. Su JSON ya define los defaults frontales del visor local; los cambios
 posteriores guardados en cada navegador siguen teniendo prioridad.
+Fito deja la prueba de cuellos en pausa y autoriza publicar solo el configurador
+del panel. Los prototipos quedan fuera del paquete desplegado.
