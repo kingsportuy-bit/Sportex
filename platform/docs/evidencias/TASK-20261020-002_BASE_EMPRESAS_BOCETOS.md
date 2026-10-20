@@ -48,7 +48,43 @@ base-inicial.png, login-desktop.png, login-mobile.png.
 
 ## Limites y rollback
 
-Sin llamadas OpenAI, cambios de cuentas reales, DB remota ni despliegue.
+El checkpoint local no realizo llamadas OpenAI ni cambios remotos.
 Historial conserva temporalmente fuentes para deshacer; no se promete memoria
 constante para documentos grandes. Revertir codigo; no borrar caches ni cuentas.
-Publicacion pendiente de GO de Fito sobre el candidato validado.
+El GO y la publicacion posteriores se registran debajo.
+
+## Publicacion autorizada y observada
+
+Fito responde «si autorizo» a publicar6b6f5f2. Se registra GO en69739bb,
+un descendiente que cambia solo documentos; app aprobada identica byte a byte.
+Rama publicada. Guard de release PASS; archivo Git SHA256
+1bbdd0a95dcfe2db9685929edc0009034aa808375cbad3bb58e0ae3d3c16cb90.
+Release69739bbf8f4cd2b044b2ff90edaff28378c74b23, imagen Docker
+sha256:ac310ac7ec7709e19f43ea9f40be1370e8d6e5a37645c3a9cc8901bb1d721b76.
+
+Preflight: VPS con6.6GB disponibles y38GB de disco, servicio anterior b8e1fc8.
+Build usa digest Node24 fijado; capas dependencias en cache. Siete pruebas de
+runtime/SQLite/reemplazos pasan dentro de la imagen Linux, sin red externa.
+No habia unzip en host; extraccion por python3.zipfile antes del build.
+
+Se detuvo solo sportex_bocetos_app para copiar SQLite de forma consistente;
+quick_check PASS. Copia pre-release y restore-check privadas fuera del repositorio,
+restauracion local con una empresa PASS. Comparacion antes/despues de companies,
+users y assets identica; una empresa, cero assets administrados y cero operaciones.
+Primer chequeo HTTPS404 tras healthy produjo rollback. Segundo intento con
+wrapper no convergio al release esperado y tambien repuso b8e1fc8. No se atribuye
+causa raiz del wrapper; nueva activacion explicita por imagen, filtro por imagen
+de contenedor y espera acotada de /ready del commit completaron el despliegue.
+SPX-ERR-20261020-001 registra la guardia de verificacion.
+
+20/10/2026 03:06:40 UTC: Swarm update completed,1/1 healthy, release69739bb.
+HTTPS /ready de ambos dominios200 con commit exacto; JS/CSS/base/element-layout
+coinciden con el bundle. Setup404, admin desde laboratorio404 y APIs anonimas401.
+Navegador interno confirma nuevo login y sesion admin conservada; Delta Sport
+activa,5 disponibles,0 llamadas. Captura login-publicado.png en directorio privado.
+Sin cuentas ficticias remotas, cambios DNS, migraciones, mensajes ni generaciones.
+CRM sigue d9c4f443ad07b2e1 healthy1/1.
+
+Rollback disponible: imagen sportex-bocetos:b8e1fc827c0a6e668b79ee27d90af5ad91ae636d,
+mismo volumen /opt/sportex-bocetos/data. No restaurar datos sobre la base viva.
+Backup /opt/sportex-bocetos/data/backups/pre-69739bbf8f4cd2b044b2ff90edaff28378c74b23.sqlite.

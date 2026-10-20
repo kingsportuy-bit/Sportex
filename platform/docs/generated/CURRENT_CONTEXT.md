@@ -11,20 +11,20 @@ Actualizado: 2026-10-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20261020-002`.
+- Tarea: no cargada para esta consulta.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `codex/desplegar-bocetos-20261020`.
-- Presupuesto potencial: 54384/90000 caracteres.
-- Tokens estimados: 13596 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 21.
+- Presupuesto potencial: 52748/90000 caracteres.
+- Tokens estimados: 13187 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
-- Permitido: Actualizar solo sportex_bocetos_app; backup y rollback del volumen propio.
-- Prohibido: Sin CRM, legado, DNS, Evolution, nuevas cuentas ni llamadas IA.
+- Objetivo: Laboratorio actualizado; Fito valida uso con Delta Sport.
+- Permitido: Uso y observacion del laboratorio publicado por Fito.
+- Prohibido: Sin CRM, legado, DNS, Evolution ni llamadas IA de QA.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Construir release, respaldar SQLite y actualizar solo el laboratorio autorizado.
+- Proxima accion: Fito prueba el laboratorio publicado con Delta Sport.
 
 ## Regla de uso
 
@@ -53,4 +53,3 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
-- `docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md` — owner `active-task`, autoridad 100.

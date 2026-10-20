@@ -14,27 +14,16 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.",
+  "objective": "Laboratorio actualizado; Fito valida uso con Delta Sport.",
   "scope": {
     "allowed": [
-      "Actualizar solo sportex_bocetos_app; backup y rollback del volumen propio."
+      "Uso y observacion del laboratorio publicado por Fito."
     ],
     "prohibited": [
-      "Sin CRM, legado, DNS, Evolution, nuevas cuentas ni llamadas IA."
+      "Sin CRM, legado, DNS, Evolution ni llamadas IA de QA."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-002",
-    "title": "Base inicial de empresas del laboratorio",
-    "path": "docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md",
-    "status": "in_progress",
-    "lifecycle": "active",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "contextFocus": "infrastructure",
-    "developmentGuideImpact": "none",
-    "nextAction": "Construir release, respaldar SQLite y actualizar solo el laboratorio autorizado."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -95,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
-    "workingTreeState": "BOCETOS_DEFAULTS_LOCAL_CANDIDATE",
+    "headAtLastEvidence": "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
+    "workingTreeState": "BOCETOS_69739BB_DEPLOYED_POST_RELEASE_EVIDENCE",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -126,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md",
-    "note": "187 bocetos PASS, dos empresas ficticias y login desktop/movil; validate y SPORTEX_CLOSE PASS, perfil local."
+    "note": "187 bocetos,31 workflow y59 Core PASS;7 pruebas Linux, HTTPS/assets y cuenta Delta; backup real restaurado. Sin IA."
   },
   "deployments": {
-    "status": "CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY",
+    "status": "CRM_D9C4F44_BOCETOS_69739BB_HEALTHY",
     "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -163,28 +152,30 @@
       "8823a77365f78f25db9fbf7afb5decd21e59f547",
       "51c2dfea8abcc05bcce56a015c5ed2b2295a9ee8",
       "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
-      "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d"
+      "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
+      "69739bbf8f4cd2b044b2ff90edaff28378c74b23"
     ],
-    "note": "Laboratorio b8e1fc8 aislado, TLS/login/backup/reinicio PASS; CRM d9c4f44 sin cambios.",
+    "note": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS. CRM d9c4f44 conservado.",
     "bocetos": {
-      "release": "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
+      "release": "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
       "service": "sportex_bocetos_app",
-      "imageDigest": "sha256:96e59a6299d1ec500dae82d4d7c45fed988061914808d18ac6f11dd09ba513d3",
+      "imageDigest": "sha256:ac310ac7ec7709e19f43ea9f40be1370e8d6e5a37645c3a9cc8901bb1d721b76",
       "urls": [
         "https://sportex-bocetos.kodebix.com",
         "https://panel-sportex-bocetos.kodebix.com"
       ],
       "replicas": "1/1",
-      "backupRestored": true
+      "backupRestored": true,
+      "rollbackRelease": "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d"
     }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "BOCETOS_B8E1FC8_PUBLISHED",
+      "status": "BOCETOS_69739BB_PUBLISHED",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Rama codex/desplegar-bocetos-20261020 publicada; CRM conserva su release."
+      "note": "Rama canonica publicada; fuente aprobada6b6f5f2 mas documentos."
     },
     {
       "name": "Supabase",
@@ -202,10 +193,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY",
+      "status": "CRM_D9C4F44_BOCETOS_69739BB_HEALTHY",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Nuevo stack aislado y dos TLS; CRM 1/1 preservado. Backup real restaurado."
+      "note": "Laboratorio actualizado; cuenta y backup conservados. CRM sin cambios."
     }
   ],
   "sensitiveData": {
@@ -216,17 +207,17 @@
     "taskId": "TASK-20261020-002",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md",
-    "summary": "Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.",
+    "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-002",
-      "summary": "Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.",
+      "summary": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.",
       "documents": [
-        "docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md",
+        "docs/TASKS/closed/2026/TASK-20261020-002-base-inicial-empresas-bocetos.md",
         "bocetos/public/initial-parameters.json",
         "bocetos/public/app.js",
         "bocetos/public/panel.css"
@@ -316,7 +307,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito revisa candidato local y autoriza publicacion del laboratorio.",
+    "Fito prueba el laboratorio publicado con Delta Sport.",
     "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
   ],
   "history": {

@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-002`: `in_progress` (docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
+Laboratorio actualizado; Fito valida uso con Delta Sport.
 
 ## Alcance actual
 
-- Permitido: Actualizar solo sportex_bocetos_app; backup y rollback del volumen propio.
-- Prohibido: Sin CRM, legado, DNS, Evolution, nuevas cuentas ni llamadas IA.
+- Permitido: Uso y observacion del laboratorio publicado por Fito.
+- Prohibido: Sin CRM, legado, DNS, Evolution ni llamadas IA de QA.
 
 ## Decisiones vigentes
 
@@ -53,8 +53,8 @@ Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`; registros 32.
-- Integraciones: GitHub=`BOCETOS_B8E1FC8_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_69739BB_HEALTHY`; registros 33.
+- Integraciones: GitHub=`BOCETOS_69739BB_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_69739BB_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
 - Tarea: `TASK-20261020-002`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md`.
-- Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.
+- Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.
 
 ## Riesgos
 
@@ -78,5 +78,5 @@ Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
 
 ## Siguientes acciones
 
-- Fito revisa candidato local y autoriza publicacion del laboratorio.
+- Fito prueba el laboratorio publicado con Delta Sport.
 - Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.

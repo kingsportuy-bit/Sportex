@@ -253,3 +253,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   Cada espacio de imagen reemplaza su archivo, sin acumular biblioteca ni
   alterar otros bocetos. Acceso minimalista sin tarjeta, logo/subtitulo centrados.
   Preparacion local; publicacion requiere GO operativo.
+
+- 20/10, GO de Fito: «si autorizo».69739bb publica el codigo aprobado6b6f5f2;
+  diferencias solo documentales. Login/base/assets exactos, backup restaurado
+  y cuenta Delta preservada; ninguna llamada IA ni cambio de CRM.

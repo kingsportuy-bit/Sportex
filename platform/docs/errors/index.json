@@ -79,6 +79,12 @@
       "title": "Scope de release eliminaba el punto de dotfiles",
       "path": "docs/errors/entries/SPX-ERR-20261019-006-scope-de-release-eliminaba-el-punto-de-dotfiles.md",
       "searchText": "# spx-err-20261019-006 - scope de release eliminaba el punto de dotfiles\n\n- fecha: 2026-10-19.\n- sintoma: el bundle rechazaba platform/.dockerignore pese a estar declarado en scope.\n- causa raiz: trimstart eliminaba caracteres punto y barra en lugar del prefijo literal ./.\n- solucion: conservar dotfiles y quitar solo ./; mismo criterio en guard y bundle.\n- prevencion/guardia: test ejecuta normalizador real: dotfiles y rutas windows; rutas absolutas/traversal rechazadas.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-001",
+      "title": "Readiness publico inmediato provoco rollback prematuro",
+      "path": "docs/errors/entries/SPX-ERR-20261020-001-readiness-publico-inmediato-provoco-rollback-prematuro.md",
+      "searchText": "# spx-err-20261020-001 - readiness publico inmediato provoco rollback prematuro\n\n- fecha: 2026-10-20.\n- sintoma: el contenedor nuevo quedo healthy pero /ready publico devolvio 404 durante la actualizacion, activando el rollback de seguridad.\n- causa raiz: la comprobacion asumio disponibilidad publica inmediata al ver healthy. propagacion de traefik pendiente de corroborar con reintento.\n- solucion: esperar de forma acotada hasta que https /ready responda con el commit esperado; conservar rollback si no converge.\n- prevencion/guardia: verificar salud interna y readiness publica del commit con reintentos limitados, sin aceptar solo healthy ni modificar tls.\r\n"
     }
   ]
 }

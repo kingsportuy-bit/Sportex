@@ -3,8 +3,8 @@
 id: TASK-20261020-002
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -49,11 +49,14 @@ Volver a imagen b8e1fc8, mismo volumen. Backup SQLite consistente antes del cort
 
 ## deuda_restante
 
-Publicacion autorizada, pendiente de ejecutar y verificar.
+Sin pendientes de esta tarea. Claves de respaldo/admin siguen fuera de alcance.
 
 ## registro_de_avances
 
 20/10: 187 bocetos y cierre local PASS; QA de altas, reemplazos y login responsive.
+20/10 03:06 UTC: 69739bb publicado, healthy1/1; HTTPS/assets/cuenta Delta PASS.
+Backup real restaurado. Dos rollbacks de verificacion y despliegue final
+con imagen explicita y readiness del commit. CRM conservado, cero gasto IA.
 
 ## decisiones
 
