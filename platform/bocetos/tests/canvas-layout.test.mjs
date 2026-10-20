@@ -65,7 +65,7 @@ test('text can change height without changing its manually stretched width, incl
 
 test('approved initial parameters seed dimensions and font choices while latest cached Logo2 survives new sketches',()=>{
   const model=JSON.parse(readFileSync(new URL('../public/initial-parameters.json',import.meta.url),'utf8'));
-  assert.equal(model.approvedAt,'2026-10-19');assert.equal(model.inputs['design-format'],'3:4');assert.equal(model.layers.brand2.x,797);assert(model.texts.length>0);
+  assert.equal(model.inputs['design-format'],'3:4');assert.equal(model.layers.brand2.x,797);
   const blank={inputs:{},logos:{brand:[],brand2:[],crest:[]},layers:{},layerStyles:{},visibleLayers:{},texts:[]};
   const base=initialParameterSketch(blank,model),live={...base,logos:{...blank.logos,brand2:[{id:'cached-two',name:model.logoFiles.brand2,image:{src:'data:image/png,original'}}]},inputs:{...base.inputs,'brand2-select':'cached-two'},layers:{...base.layers,brand2:{...base.layers.brand2,x:790,letterSpacing:2}}};
   const prefs=preferenceSnapshot(live,Object.keys(live.layers)),next=initialParameterSketch(base,model,prefs);

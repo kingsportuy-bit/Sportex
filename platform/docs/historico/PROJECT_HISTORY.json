@@ -19,6 +19,23 @@
       ]
     },
     {
+      "date": "2026-09-03",
+      "taskId": "TASK-20260903-001",
+      "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/styles.css",
+        "scripts/tests/whatsapp-visual-parity.test.mjs",
+        "docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md"
+      ],
+      "decisions": [
+        "Referencia exacta 8823a773, sin redisenar y sin revertir funciones nuevas."
+      ]
+    },
+    {
       "date": "2026-09-02",
       "taskId": "TASK-20260902-001",
       "summary": "Leads y Clientes reutilizan WhatsApp; Pedidos conserva tablero/planilla y Mi empresa agrega configuracion tenant-aware versionada con migracion local no ejecutada.",

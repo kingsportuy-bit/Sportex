@@ -20,6 +20,16 @@ test('la base de altas conserva el modelo aprobado, sin archivos de identidad',(
   assert(!/DELTA|Danubio|data:image/.test(JSON.stringify(base)));
 });
 
+test('un alta comienza sin vivos y con un solo nombre normal encima del numero',()=>{
+  const fresh=initialParameterSketch({inputs:{},layers:{},logos:{brand:[],brand2:[],crest:[]}},base);
+  for(const group of ['sleeve','shoulder','shirt-side','short-side','short-hem'])assert.equal(fresh.inputs[`trim-${group}-enabled`],false,group);
+  assert.deepEqual(fresh.texts,[]);
+  assert.ok(fresh.layers['back-name'].y<fresh.layers['back-number'].y);
+  assert.equal(fresh.layers['back-name'].y,395.1402248768759);
+  assert.equal(fresh.layers['back-name'].size,66);
+  for(const source of [fresh.layers,fresh.layerStyles,fresh.visibleLayers])assert.ok(!Object.keys(source).some(key=>key.startsWith('text-')));
+});
+
 function uploads(){
   const nodes=new Map(),node=id=>{if(!nodes.has(id))nodes.set(id,{value:'',checked:false,options:[],replaceChildren(...options){this.options=options;},querySelector(){return {disabled:true};}});return nodes.get(id);};
   const old={width:200,height:100,src:'old'},image={width:100,height:200,src:'new'},oldLogo={id:'selected',name:'old.png',image:old};

@@ -268,3 +268,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   eliminaciones reales ni pruebas IA.
 - 14de41c publicado y observado healthy1/1, HTTPS/assets exactos, cuenta y respaldo
   conservados. Aviso de eliminacion abierto/cancelado, ninguna empresa borrada.
+- TASK-20261020-004: Fito confirma nombre arriba del numero y vivos apagados
+  en la base inicial. Quitar el texto adicional; conservar bocetos existentes.

@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
-  "updatedBy": "TASK-20261020-003",
-  "environment": "PILOTO_DELTA",
+  "updatedBy": "TASK-20261020-004",
+  "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,17 +13,28 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "operation",
-  "objective": "Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.",
+  "mode": "fix",
+  "objective": "Corregir vivos activos y nombre duplicado en la base inicial.",
   "scope": {
     "allowed": [
-      "Uso y observacion del panel publicado por Fito."
+      "Parametros iniciales, cache de base y pruebas locales de bocetos."
     ],
     "prohibited": [
-      "Sin borrados reales de QA, CRM, legado, DNS ni IA."
+      "Sin despliegues, datos remotos, CRM, legado ni IA. Conservar bocetos."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-004",
+    "title": "Corregir base inicial de bocetos",
+    "path": "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
+    "status": "in_progress",
+    "lifecycle": "active",
+    "workType": "fix",
+    "campaign": "CAMP-20260803-001",
+    "contextFocus": "frontend",
+    "developmentGuideImpact": "none",
+    "nextAction": "GO de Fito para publicar base corregida; documentos existentes se conservan."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -85,7 +96,7 @@
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
-    "workingTreeState": "BOCETOS_14DE41C_DEPLOYED_POST_RELEASE_EVIDENCE",
+    "workingTreeState": "BOCETOS_INITIAL_BASE_FIX_LOCAL",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -111,11 +122,11 @@
     "commands": [
       "npm run check:bocetos",
       "npm run validate",
-      "npm run workflow:close -- TASK-20261020-003 --profile=auto",
+      "npm run workflow:close -- TASK-20261020-004 --profile=auto",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md",
-    "note": "195 bocetos,31 workflow y59 Core PASS;18 pruebas Node24/Linux, HTTPS/assets/cuenta y backup restaurado. Sin IA ni borrados reales."
+    "evidence": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
+    "note": "197 bocetos,31 workflow y59 Core PASS; TDD y QA de nuevo boceto/recarga, documentos conservados. Auditoria premium reporta66 hallazgos previos en HTML intacto."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY",
@@ -205,14 +216,30 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20261020-003",
+    "taskId": "TASK-20261020-004",
     "date": "2026-10-20",
-    "path": "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md",
-    "summary": "14de41c publicado healthy1/1: eliminacion protegida, cuenta Delta y backup conservados; sin borrados reales.",
-    "environment": "PILOTO_DELTA",
+    "path": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
+    "summary": "Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-004",
+      "summary": "Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.",
+      "documents": [
+        "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
+        "bocetos/public/initial-parameters.json",
+        "bocetos/public/element-layout.js"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md"
+      ],
+      "decisions": [
+        "Nombre normal arriba, cinco vivos apagados; conservar documentos."
+      ]
+    },
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-003",
@@ -281,23 +308,6 @@
       "decisions": [
         "SPORTEX-DEC-022"
       ]
-    },
-    {
-      "date": "2026-09-03",
-      "taskId": "TASK-20260903-001",
-      "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
-      "documents": [
-        "frontend/app.js",
-        "frontend/styles.css",
-        "scripts/tests/whatsapp-visual-parity.test.mjs",
-        "docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md"
-      ],
-      "decisions": [
-        "Referencia exacta 8823a773, sin redisenar y sin revertir funciones nuevas."
-      ]
     }
   ],
   "blockers": [],
@@ -309,12 +319,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito usa Eliminar empresa desde el panel cuando corresponda.",
-    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
+    "GO de Fito para publicar base corregida; documentos existentes se conservan."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 32,
+    "archivedChanges": 33,
     "throughDate": "2026-09-03"
   }
 }

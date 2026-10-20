@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-004` | `in_progress` | Corregir base inicial de bocetos | docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md
 
 ## Cola
 

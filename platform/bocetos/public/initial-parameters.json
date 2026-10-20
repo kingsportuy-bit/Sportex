@@ -30,8 +30,8 @@
       "scaleY": 0.8954206675036103
     },
     "back-name": {
-      "x": 797,
-      "y": 649.670331295039,
+      "x": 815,
+      "y": 395.1402248768759,
       "size": 66,
       "scaleX": 0.9285940532748821,
       "scaleY": 0.9285940532748821
@@ -64,33 +64,26 @@
       "x": 392.207488299532,
       "y": 943.1653666146647,
       "size": 36
-    },
-    "text-1792439241236": {
-      "x": 815,
-      "y": 395.1402248768759,
-      "size": 66,
-      "scaleX": 0.9285940532748821,
-      "scaleY": 0.9285940532748821
     }
   },
   "inputs": {
     "trim-sleeve-enabled": false,
     "trim-sleeve-color": "#ffffff",
     "trim-sleeve-width": "8",
-    "trim-shoulder-enabled": true,
+    "trim-shoulder-enabled": false,
     "trim-shoulder-style": "triple",
     "trim-shoulder-color": "#202732",
     "trim-shoulder-width": "5",
-    "trim-shirt-side-enabled": true,
+    "trim-shirt-side-enabled": false,
     "trim-shirt-side-color": "#212833",
     "trim-shirt-side-width": "7",
-    "trim-short-side-enabled": true,
+    "trim-short-side-enabled": false,
     "trim-short-side-style": "single",
     "trim-short-side-mode": "solid",
     "trim-short-side-color": "#199cd1",
     "trim-short-side-color2": "#cfe64e",
     "trim-short-side-width": "12",
-    "trim-short-hem-enabled": true,
+    "trim-short-hem-enabled": false,
     "trim-short-hem-color": "#1a9ed3",
     "trim-short-hem-width": "14",
     "reference-neck-cuffs": true,
@@ -208,11 +201,6 @@
       "enabled": false,
       "color": "#000000",
       "width": 1
-    },
-    "text-1792439241236": {
-      "enabled": false,
-      "color": "#ffffff",
-      "width": 3
     }
   },
   "trimEdits": {
@@ -2346,14 +2334,7 @@
     }
   },
   "sponsors": [],
-  "texts": [
-    {
-      "id": "text-1792439241236",
-      "value": "NOMBRE",
-      "font": "club-real-madrid-font-2024-2025",
-      "color": "#ffffff"
-    }
-  ],
+  "texts": [],
   "texturePlacements": {},
   "logoFiles": {
     "brand": null,
@@ -2369,8 +2350,8 @@
     "back-number": true,
     "short-crest": true,
     "short-number": true,
-    "short-brand": true,
-    "text-1792439241236": true
+    "short-brand": true
   },
-  "approvedAt": "2026-10-19"
+  "approvedAt": "2026-10-20",
+  "presetRevision": "sportex-factory-20261020-v2"
 }

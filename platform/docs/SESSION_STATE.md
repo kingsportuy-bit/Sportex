@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DESARROLLO_LOCAL`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `fix`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-004`: `in_progress` (docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md).
 
 ## Objetivo actual
 
-Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.
+Corregir vivos activos y nombre duplicado en la base inicial.
 
 ## Alcance actual
 
-- Permitido: Uso y observacion del panel publicado por Fito.
-- Prohibido: Sin borrados reales de QA, CRM, legado, DNS ni IA.
+- Permitido: Parametros iniciales, cache de base y pruebas locales de bocetos.
+- Prohibido: Sin despliegues, datos remotos, CRM, legado ni IA. Conservar bocetos.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-003`.
+- Tarea: `TASK-20261020-004`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md`.
-- 14de41c publicado healthy1/1: eliminacion protegida, cuenta Delta y backup conservados; sin borrados reales.
+- Fuente: `docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md`.
+- Base local corregida: cinco vivos apagados, unico nombre arriba y migracion focal de cache;197 bocetos PASS.
 
 ## Riesgos
 
@@ -78,5 +78,4 @@ Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.
 
 ## Siguientes acciones
 
-- Fito usa Eliminar empresa desde el panel cuando corresponda.
-- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.
+- GO de Fito para publicar base corregida; documentos existentes se conservan.

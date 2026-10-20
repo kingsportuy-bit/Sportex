@@ -91,6 +91,12 @@
       "title": "UpdateStatus opcional en Swarm",
       "path": "docs/errors/entries/SPX-ERR-20261020-002-updatestatus-opcional-en-swarm.md",
       "searchText": "# spx-err-20261020-002 - updatestatus opcional en swarm\n\n- fecha: 2026-10-20.\n- sintoma: imagen candidata healthy y ambos /ready correctos, pero la plantilla .updatestatus.state fallo y activo rollback preventivo.\n- causa raiz: tras escalar a cero y crear la replica con otra imagen, el objeto observado no incluia updatestatus. la comprobacion asumia su presencia obligatoria.\n- solucion: leer el campo con index/with y manejar ausencia; comprobar siempre imagen exacta, replica healthy y ambos /ready del commit. reintento desde replica activa completo con state=completed.\n- prevencion/guardia: probar el lector con campo ausente antes de activar. no aceptar imagen vieja por health ni omitir rollback ante fallas reales.\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-003",
+      "title": "Base inicial con vivos y nombre duplicado",
+      "path": "docs/errors/entries/SPX-ERR-20261020-003-base-inicial-vivos-y-nombre-duplicado.md",
+      "searchText": "# spx-err-20261020-003 - base inicial con vivos y nombre duplicado\n\n- fecha: 2026-10-20.\n- sintoma: nuevas empresas/bocetos mostraban vivos activos y dos nombres.\n- causa raiz: el preset exportado incluia cuatro activaciones y un texto adicional; restoreworkspace preferia su copia cacheada a la base corregida.\n- solucion: cinco vivos apagados, nombre normal arriba y sin duplicado. revision focal del preset defectuoso cacheado, conservando archivos y documentos.\n- prevencion/guardia: company-defaults y sketch-base prueban alta, base anterior en cache, nuevos bocetos y conservacion del documento editado.\n"
     }
   ]
 }

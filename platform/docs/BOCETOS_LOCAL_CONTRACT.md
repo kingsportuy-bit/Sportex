@@ -74,6 +74,10 @@ Cambiar fuente conserva alto/centro. Edicion manual: laterales libres, vertices 
 Texto con espaciado por elemento. Sin panel Posicion/tamano ni botones de formato; solo3:4.
 Encuadre centra/amplia camiseta o camiseta+short; con medias conserva el conjunto.
 Nuevo boceto aplica la base guardada; modo general retirado.
+20/10: la base generica apaga los cinco vivos y conserva solo el nombre normal
+arriba del numero. presetRevision actualiza exclusivamente la base defectuosa
+publicada el19/10 en cache, sin cambiar documentos existentes ni archivos propios.
+Bases personalizadas siguen prevaleciendo; los bocetos nuevos usan la base limpia.
 Shift/clic o recuadro: multiseleccion, ejes comunes y centrado con camiseta. Logo 2 en Marca.
 Color grupal desde selector/paleta: numeros, nombres y marcas; excluye escudos/sponsors.
 Reemplazar debajo del elemento conserva alto, centro, giro y ubicacion.

@@ -53,7 +53,21 @@ export function initialParameterSketch(blank,model,assets={}){
   const sponsorFiles=[...(blank.sponsors||[]),...(assets.sponsors||[])];
   const sponsors=(model.sponsors||[]).flatMap(sponsor=>{const file=sponsorFiles.find(file=>file.id===sponsor.id)||sponsorFiles.find(file=>file.name===sponsor.name);return file?[{...file,...sponsor}]:[];});
   const layers=Object.fromEntries(Object.entries(blank.layers||{}).filter(([key])=>!key.startsWith('text-')&&!key.startsWith('sponsor-')));
-  return {...blank,inputs,logos,sponsors,elementModel:structuredClone(model),layers:{...layers,...structuredClone(model.layers)},texts:structuredClone(model.texts||[]),visibleLayers:{...blank.visibleLayers,...model.visibleLayers},layerStyles:structuredClone(model.layerStyles||{}),trimEdits:structuredClone(model.trimEdits||{}),backgroundMode:model.backgroundMode||blank.backgroundMode,customBackground:model.backgroundMode==='custom'?(assets.customBackground??blank.customBackground):null,documentPalette:[...(model.documentPalette||[])]};
+  const visibleLayers=Object.fromEntries(Object.entries(blank.visibleLayers||{}).filter(([key])=>!key.startsWith('text-')&&!key.startsWith('sponsor-')));
+  return {...blank,inputs,logos,sponsors,elementModel:structuredClone(model),layers:{...layers,...structuredClone(model.layers)},texts:structuredClone(model.texts||[]),visibleLayers:{...visibleLayers,...model.visibleLayers},layerStyles:structuredClone(model.layerStyles||{}),trimEdits:structuredClone(model.trimEdits||{}),backgroundMode:model.backgroundMode||blank.backgroundMode,customBackground:model.backgroundMode==='custom'?(assets.customBackground??blank.customBackground):null,documentPalette:[...(model.documentPalette||[])]};
+}
+
+export function restoreInitialParameters(current,cached){
+  const model=structuredClone(cached||current),duplicate='text-1792439241236';
+  // Only the accidentally published factory preset is upgraded. Custom bases,
+  // cached files and document contents retain their own settings.
+  if(current?.presetRevision&&!model.presetRevision&&model.kind==='sportex-initial-parameters'&&model.approvedAt==='2026-10-19'&&model.texts?.some(t=>t.id===duplicate&&t.value==='NOMBRE')){
+    for(const id of Object.keys(current.inputs).filter(id=>id.startsWith('trim-')&&id.endsWith('-enabled')))model.inputs[id]=current.inputs[id];
+    model.layers['back-name']=structuredClone(current.layers['back-name']);delete model.layers[duplicate];
+    model.texts=model.texts.filter(t=>t.id!==duplicate);delete model.visibleLayers?.[duplicate];delete model.layerStyles?.[duplicate];
+    model.presetRevision=current.presetRevision;model.approvedAt=current.approvedAt;
+  }
+  return model;
 }
 
 export function parameterInputs(inputs){

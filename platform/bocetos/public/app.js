@@ -12,7 +12,7 @@ import {compactAtlas} from './atlas-layout.js';
 import {trimGroups,trimInputIds,readTrimSettings,trimSettingsForMold,buildTrimBatches,paintTrimBatches,migrateTrimEdits} from './garment-trims.js';
 import {installTrimEditor} from './trim-editor.js';
 import {withApprovedTrimModel} from './trim-defaults.js';
-import {fitTextInk,proportionalResize,makeElementModel,replacementImageSize,trackedGlyphLayout,compositionTransform,initialParameterSketch,resolveTextureClips} from './element-layout.js';
+import {fitTextInk,proportionalResize,makeElementModel,replacementImageSize,trackedGlyphLayout,compositionTransform,initialParameterSketch,restoreInitialParameters,resolveTextureClips} from './element-layout.js';
 import {toggleElement,marqueeElements,alignElements,colorableElements} from './element-selection.js';
 import {installTextureImport} from './texture-import.js';
 import {bootstrapLab} from './lab-client.js';
@@ -2033,7 +2033,7 @@ async function restoreWorkspace() {
   try {
     const saved = await readWorkspace();
     if (!saved?.sketches?.length) return false;
-    initialParameters=structuredClone(saved.initialParameters||saved.preferences?.elementModel||initialParameters);
+    initialParameters=restoreInitialParameters(initialParameters,saved.initialParameters||saved.preferences?.elementModel);
     if(saved.cuffOverlayVersion!==1)for(const [,sketch] of saved.sketches)sketch.inputs['cuffs-enabled']=false;
     const restored = await Promise.all(saved.sketches.map(async ([id, sketch]) => [id, withApprovedTrimModel(await hydrateSketch(sketch))]));
     // An old document may still use this background; new companies never load it.

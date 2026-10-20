@@ -61,6 +61,9 @@ Este documento refleja ese runtime (modelo B); no es una segunda hoja de tokens.
 
 Mangas, hombros, laterales de camiseta, laterales de short y bajo de short.
 Cada grupo comienza apagado, se puede combinar y guarda modelo, colores y grosor.
+La base inicial del20/10 confirma los cinco grupos apagados; el nombre normal
+queda arriba del numero, sin texto adicional. Nuevo boceto actualiza solo la
+base generica antigua guardada en cache y conserva los documentos existentes.
 Los ajustes aparecen debajo de su activación. El segundo color aparece solamente
 cuando el modelo lo utiliza. No hay llamada IA ni estado de carga en este flujo.
 La manga lleva una sola franja. Hombros: una franja del ancho de manga o tres
@@ -108,8 +111,9 @@ contornos, vivos, textos, sponsors y colocación de estampados. IndexedDB conser
 la base aparte; los cambios normales quedan en ese boceto. Nuevo boceto aplica
 la base guardada, incluyendo fuentes, colores, opciones, geometría y textos;
 reutiliza los archivos en caché sin copiar ajustes del último boceto. La base
-aprobada por Fito el 19/10 vive en initial-parameters.json: posiciones, escalas,
-fuentes, activaciones, vivos y texto adicional. No incorpora imágenes subidas;
+aprobada por Fito vive en initial-parameters.json: posiciones, escalas,
+fuentes y opciones. El20/10 corrige vivos apagados y nombre unico arriba del
+numero, sin texto adicional. No incorpora imágenes subidas;
 esos archivos continúan en el navegador. Las bases antiguas no reinician las
 posiciones al crear un documento con la versión actual.
 
