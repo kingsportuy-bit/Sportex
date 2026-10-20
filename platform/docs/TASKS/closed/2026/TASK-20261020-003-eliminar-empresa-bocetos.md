@@ -3,8 +3,8 @@
 id: TASK-20261020-003
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -48,12 +48,13 @@ Volver a imagen 69739bb, mismo volumen. Borrados confirmados requieren respaldo.
 
 ## deuda_restante
 
-Completar despliegue y observacion; sin eliminaciones reales de QA.
+Sin pendientes. Respaldos y bocetos locales conservados por decision de Fito.
 
 ## registro_de_avances
 
 20/10: alcance y conservacion de respaldos confirmados por Fito.
 195 bocetos y validacion general PASS; QA responsive sin borrados reales.
+14de41c publicado03:50 UTC: healthy/HTTPS/assets/cuenta/backup PASS;18Linux PASS.
 
 ## decisiones
 

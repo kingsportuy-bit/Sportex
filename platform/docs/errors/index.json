@@ -85,6 +85,12 @@
       "title": "Readiness publico inmediato provoco rollback prematuro",
       "path": "docs/errors/entries/SPX-ERR-20261020-001-readiness-publico-inmediato-provoco-rollback-prematuro.md",
       "searchText": "# spx-err-20261020-001 - readiness publico inmediato provoco rollback prematuro\n\n- fecha: 2026-10-20.\n- sintoma: el contenedor nuevo quedo healthy pero /ready publico devolvio 404 durante la actualizacion, activando el rollback de seguridad.\n- causa raiz: la comprobacion asumio disponibilidad publica inmediata al ver healthy. propagacion de traefik pendiente de corroborar con reintento.\n- solucion: esperar de forma acotada hasta que https /ready responda con el commit esperado; conservar rollback si no converge.\n- prevencion/guardia: verificar salud interna y readiness publica del commit con reintentos limitados, sin aceptar solo healthy ni modificar tls.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-002",
+      "title": "UpdateStatus opcional en Swarm",
+      "path": "docs/errors/entries/SPX-ERR-20261020-002-updatestatus-opcional-en-swarm.md",
+      "searchText": "# spx-err-20261020-002 - updatestatus opcional en swarm\n\n- fecha: 2026-10-20.\n- sintoma: imagen candidata healthy y ambos /ready correctos, pero la plantilla .updatestatus.state fallo y activo rollback preventivo.\n- causa raiz: tras escalar a cero y crear la replica con otra imagen, el objeto observado no incluia updatestatus. la comprobacion asumia su presencia obligatoria.\n- solucion: leer el campo con index/with y manejar ausencia; comprobar siempre imagen exacta, replica healthy y ambos /ready del commit. reintento desde replica activa completo con state=completed.\n- prevencion/guardia: probar el lector con campo ausente antes de activar. no aceptar imagen vieja por health ni omitir rollback ante fallas reales.\n"
     }
   ]
 }

@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-003`: `in_progress` (docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales.
+Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.
 
 ## Alcance actual
 
-- Permitido: Publicar codigo01e6797 en sportex_bocetos_app; backup, rollback y QA sin borrados reales.
-- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA. Respaldos conservados.
+- Permitido: Uso y observacion del panel publicado por Fito.
+- Prohibido: Sin borrados reales de QA, CRM, legado, DNS ni IA.
 
 ## Decisiones vigentes
 
@@ -53,8 +53,8 @@ Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_69739BB_HEALTHY`; registros 33.
-- Integraciones: GitHub=`BOCETOS_69739BB_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_69739BB_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY`; registros 34.
+- Integraciones: GitHub=`BOCETOS_14DE41C_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales
 - Tarea: `TASK-20261020-003`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md`.
-- Fito autoriza publicar01e6797 con backup/rollback; codigo local validado, runtime pendiente.
+- 14de41c publicado healthy1/1: eliminacion protegida, cuenta Delta y backup conservados; sin borrados reales.
 
 ## Riesgos
 
@@ -78,4 +78,5 @@ Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales
 
 ## Siguientes acciones
 
-- Publicar candidato aprobado con backup consistente y comprobar HTTPS/assets/cuentas.
+- Fito usa Eliminar empresa desde el panel cuando corresponda.
+- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.

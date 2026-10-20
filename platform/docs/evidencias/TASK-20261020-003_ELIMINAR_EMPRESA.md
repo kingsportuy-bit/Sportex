@@ -35,7 +35,7 @@ Validacion: npm run check:bocetos PASS, 195 pruebas. npm run validate PASS:
 31 workflow, 59 Core, documentos, SQL/RLS y build. git diff --check PASS.
 Pruebas focales de eliminacion repetidas tras endurecer entrada null: 8 PASS.
 Checkpoint npm run workflow:close -- TASK-20261020-003 --profile=auto:
-SPORTEX_CLOSE=PASS, perfil local. La tarea sigue activa esperando GO operativo.
+SPORTEX_CLOSE=PASS local; luego pilot-release PASS antes de publicar.
 
 ## Limites y publicacion
 
@@ -49,3 +49,32 @@ cuentas actuales y no ejecutar eliminaciones reales como parte del despliegue.
 
 03:46 UTC: preflight remoto read-only, 69739bb healthy1/1, update completed.
 Disco38GB libres, memoria7GB disponibles; CRMd9c4f44 conservado.
+
+## Publicacion autorizada
+
+Release14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e, codigo identico a01e6797;
+solo documentacion operativa agregada. Bundle git archive desde commit remoto:
+SHA2567562440276f88e71f6bc127ba56d0862a2f9398e39c13c41c6f9677bc3611f9c.
+Imagen sportex-bocetos:14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e:
+sha256:634f41f9819ba621d7b6e984e37a21433036a0f84b47d4cfdfd3eac739ba8b18.
+Build y18 pruebas focales dentro de Node24/Linux PASS, sin red ni secretos.
+Helper shell normalizado a LF fuera de la fuente tras detectar CRLF del archive.
+Primer corte activa rollback por campo opcional UpdateStatus ausente: error002.
+69739bb recuperado y sano; lector probado con campo inexistente. Reintento
+desde replica activa sin tocar datos; update completed03:50:55 UTC.
+03:51:14 UTC: imagen exacta healthy1/1; HTTPS /ready en ambos dominios200 con
+commit esperado. panel.html/js/css, app.js y base bytes exactos del bundle.
+Setup y admin en dominio laboratorio404; APIs privadas401 sin sesion. Nuevo
+comando rechaza solicitud anonima401 antes de mutar.
+Sesion admin recordada valida; Delta Sport activa,0usadas/5disponibles,0llamadas.
+Se abre aviso Eliminar y se cancela: no se escribe confirmacion ni se elimina.
+Captura eliminar-empresa-publicado.png, carpeta privada indicada arriba.
+Estado companies/users/assets/idempotency identico al respaldo, una empresa.
+Backup consistente pre-14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e.sqlite en
+/opt/sportex-bocetos/data/backups; copia privada descargada y restaurada,
+quick_check ok,1empresa/1admin/0assets/0operaciones. Respaldos previos intactos.
+CRM d9c4f44 conservado; sin borrados reales, generaciones ni cargos IA.
+Rollback disponible a69739bb, mismo volumen. Restaurar un borrado futuro exige
+seleccionar respaldo; una restauracion completa tambien revierte datos posteriores.
+Cierre posterior con tarea done/closed y currentTask null: SPORTEX_CLOSE=PASS,
+perfil pilot-release; validacion general, SQL/RLS y build PASS.

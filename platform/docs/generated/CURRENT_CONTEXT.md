@@ -11,20 +11,20 @@ Actualizado: 2026-10-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20261020-003`.
+- Tarea: no cargada para esta consulta.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `codex/desplegar-bocetos-20261020`.
-- Presupuesto potencial: 54291/90000 caracteres.
-- Tokens estimados: 13573 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 21.
+- Presupuesto potencial: 52769/90000 caracteres.
+- Tokens estimados: 13193 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales.
-- Permitido: Publicar codigo01e6797 en sportex_bocetos_app; backup, rollback y QA sin borrados reales.
-- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA. Respaldos conservados.
+- Objetivo: Eliminacion de empresas publicada; Fito usa el panel con respaldos conservados.
+- Permitido: Uso y observacion del panel publicado por Fito.
+- Prohibido: Sin borrados reales de QA, CRM, legado, DNS ni IA.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Publicar candidato aprobado con backup consistente y comprobar HTTPS/assets/cuentas.
+- Proxima accion: Fito usa Eliminar empresa desde el panel cuando corresponda.
 
 ## Regla de uso
 
@@ -53,4 +53,3 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
-- `docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md` — owner `active-task`, autoridad 100.

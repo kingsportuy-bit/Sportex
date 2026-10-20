@@ -266,3 +266,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - Fito responde «go» para publicar el codigo01e6797 con backup y rollback a
   69739bb. El release puede sumar solo documentacion operativa; no incluye
   eliminaciones reales ni pruebas IA.
+- 14de41c publicado y observado healthy1/1, HTTPS/assets exactos, cuenta y respaldo
+  conservados. Aviso de eliminacion abierto/cancelado, ninguna empresa borrada.
