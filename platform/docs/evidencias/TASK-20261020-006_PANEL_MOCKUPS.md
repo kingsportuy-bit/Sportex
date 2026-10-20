@@ -225,3 +225,46 @@ app/panel/initial-parameters/garment-trims/element-layout coinciden con Git del
 release saliente. Código ejecutable actual idéntico a de33a54; Docker ya copia
 solo módulos raíz, Core, public y moldes. CRM observado d9c4f44, sin cambios.
 Suite224 tests PASS,0 fallos; log privado sportex-mockup-configurator-release-tests.log.
+
+## Publicacion del configurador
+
+23:19:57 UTC,20/10/2026 (20:19:57 America/Montevideo): DEPLOYMENT=PASS.
+Release f4386fb39ee07b239b22e0ce61f64b07c989ef40, código ejecutable de33a54 exacto.
+Imagen sportex-bocetos:f4386fb39ee07b239b22e0ce61f64b07c989ef40, ID/digest observado
+sha256:67b961197d1f41e14bb10c59e3762927a827c9160f95efe0e655d1bf5a3e54eb.
+Bundle git archive remoto SHA256
+4d7333c19877d16c0768bfa0258be6cf6bef9ea6532599435a17ecee84f084bd.
+Scope explícito: módulos raíz, Core bocetos, public, moldes, cinco tests focales,
+deploy y documentos del release. No contiene bocetos/prototypes; la imagen tampoco.
+
+Preparación tuvo tres fricciones antes de afectar el servicio: expansión local
+de un comando SSH, unzip ausente y CRLF del helper archivado. Se usó archivo
+POSIX privado LF, Python zipfile existente y copia LF del helper; ZIP/hash
+originales permanecen intactos. Sin instalar herramientas remotas. Logs privados
+en .codex/artifacts/sportex-bocetos-20261020-006/publish-f4386fb/.
+
+Candidato:27 tests en Node24/Linux PASS, sin red/secretos ni volumen activo.
+Guardar/publicar/versionado/roles/JSON-SQLite y recuperación probados con fixtures.
+Revisión de imagen confirma ausencia de prototipos y archivos .env.
+
+Servicio detenido de forma controlada; snapshot pre-f4386fb tomado antes de
+activar, quick_check ok y ningún processing.2 empresas,3 usuarios,0 assets,
+10 operaciones. Comparación antes/después conserva companies/users/assets/
+idempotency; backup descargado y restaurado con SqliteLabStore en copia privada,
+conservando además operations completas. Backup remoto:
+/opt/sportex-bocetos/data/backups/pre-f4386fb39ee07b239b22e0ce61f64b07c989ef40.sqlite.
+
+Observación23:21:21 UTC: réplica exacta1/1 healthy y ambos /ready identifican
+f4386fb. Diez assets/HTML publicados coinciden byte a byte con el bundle. Rutas
+de catálogo/editor protegidas y prototipo404. Login admin privado solo para
+lectura del catálogo y editor: PASS; su sesión temporal fue cerrada. Sin crear,
+publicar o alterar configuraciones/cuentas reales durante QA, ni llamadas IA.
+Base inicial conserva vivos apagados, nombre/número centrados y frontal apagado.
+CRM d9c4f44 observado sin cambios. Rollback a95850f disponible en mismo volumen.
+
+El control del navegador interno permanece deshabilitado: evidencia HTTP/Core
+y assets reales, no QA visual nueva de página. Fito ya dio GO de producción.
+Cuellos quedan como referencia local en pausa y no se integran a este release.
+Checkpoint posterior: SPORTEX_CLOSE=PASS, perfil pilot-release; validación
+documental,31 workflow,59 Core,SQL/RLS y build PASS. Log privado deployed-close.log.
+Tarea cerrada,ACTIVE_TASK=none; runtime permanece exactamente f4386fb.

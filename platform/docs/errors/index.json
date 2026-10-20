@@ -103,6 +103,18 @@
       "title": "Copia de referencia rechaza Logo2",
       "path": "docs/errors/entries/SPX-ERR-20261020-004-copia-de-referencia-rechaza-logo2.md",
       "searchText": "# spx-err-20261020-004 - copia de referencia rechaza logo2\n\n- fecha: 2026-10-20.\n- sintoma: boton y ajuste automatico devuelven elementos o texturas invalidos.\n- causa raiz: el constructor ui envia brand2 visible, pero el validador del servidor no lo incluia entre los ids conocidos.\n- solucion: aceptar brand2 conservando la validacion estricta de elementos y texturas.\n- prevencion/guardia: reference-context.test ejecuta el constructor real y http autenticado, verifica referencia como primera imagen y rechaza ids desconocidos sin llamar al proveedor.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-005",
+      "title": "Sustitucion SSH se evaluaba en PowerShell local",
+      "path": "docs/errors/entries/SPX-ERR-20261020-005-sustitucion-ssh-se-evaluaba-en-powershell-local.md",
+      "searchText": "# spx-err-20261020-005 - sustitucion ssh se evaluaba en powershell local\n\n- fecha: 2026-10-20.\n- sintoma: la preparacion intentaba ejecutar sha256sum en windows; no se activo ninguna imagen.\n- causa raiz: comando ssh compuesto dentro de cadena con expansion de powershell y escape incorrecto.\n- solucion: escribir helper posix utf8 con lf en archivo privado, subir por scp y ejecutar con argumento fijo.\n- prevencion/guardia: no interpolar sustituciones shell en cadenas powershell; usar archivo lf y validar hash antes de build.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-006",
+      "title": "Host de bocetos no disponia de unzip",
+      "path": "docs/errors/entries/SPX-ERR-20261020-006-host-de-bocetos-no-disponia-de-unzip.md",
+      "searchText": "# spx-err-20261020-006 - host de bocetos no disponia de unzip\n\n- fecha: 2026-10-20.\n- sintoma: el bundle valido no se extraia porque unzip no existe en el vps.\n- causa raiz: se asumio una herramienta remota no inventariada.\n- solucion: confirmar python3 instalado y extraer con python3 -m zipfile; normalizar copia del helper sh a lf.\n- prevencion/guardia: preflight command -v python3 y capacidad zip; ejecutar helper lf antes de activar, sin instalar paquetes en el host.\r\n"
     }
   ]
 }

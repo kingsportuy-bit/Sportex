@@ -11,20 +11,20 @@ Actualizado: 2026-10-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20261020-006`.
+- Tarea: no cargada para esta consulta.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `codex/desplegar-bocetos-20261020`.
-- Presupuesto potencial: 54511/90000 caracteres.
-- Tokens estimados: 13628 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 21.
+- Presupuesto potencial: 52700/90000 caracteres.
+- Tokens estimados: 13175 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
+- Objetivo: Configurador de mockups publicado; cuellos en pausa.
 - Permitido: Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f.
 - Prohibido: Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Certificar bundle, respaldar y publicar configurador; cuellos en pausa.
+- Proxima accion: Fito: configurar mockups en el panel; cuellos en pausa.
 
 ## Regla de uso
 
@@ -53,4 +53,3 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
-- `docs/TASKS/active/TASK-20261020-006-panel-mockups.md` — owner `active-task`, autoridad 100.

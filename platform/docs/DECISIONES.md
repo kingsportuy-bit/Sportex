@@ -304,3 +304,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - Fito pausa cuellos y da GO para desplegar el configurador del panel en el
   servicio de bocetos. Codigo de33a54; release solo suma documentos. Snapshot
   SQLite y rollback a95850f; conservar empresas/bocetos. Sin prototipos en paquete.
+- f4386fb publicado23:19:57 UTC: configurador healthy1/1,27 pruebas en imagen,
+  catálogo/editor admin y HTTPS exactos PASS.2 empresas y backup preservados.
+  Cuellos excluidos; no hubo IA paga ni escrituras de negocio de QA.

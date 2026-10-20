@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.",
+  "objective": "Configurador de mockups publicado; cuellos en pausa.",
   "scope": {
     "allowed": [
       "Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f."
@@ -23,18 +23,7 @@
       "Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-006",
-    "title": "Administrar configuracion de mockups",
-    "path": "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
-    "status": "in_progress",
-    "lifecycle": "active",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "contextFocus": "infrastructure",
-    "developmentGuideImpact": "none",
-    "nextAction": "Certificar bundle, respaldar y publicar configurador; cuellos en pausa."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -95,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "bf9fb13bf78e3c7340d5d1074d33d618cc13d587",
-    "workingTreeState": "MOCKUP_CATALOG_LOCAL_PENDING_VISUAL_QA",
+    "headAtLastEvidence": "f4386fb39ee07b239b22e0ce61f64b07c989ef40",
+    "workingTreeState": "CONFIGURADOR_F4386FB_PUBLISHED",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -126,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "note": "224 bocetos,6 checks cuellos;workflow,Core,SQL/RLS/build y CLOSE local PASS. QA navegador pendiente."
+    "note": "224 bocetos y27 tests en imagen PASS;HTTP admin,backup/restore y CLOSE pilot-release PASS."
   },
   "deployments": {
-    "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
+    "status": "CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY",
     "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -167,29 +156,30 @@
       "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
       "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
       "a65249d00e1513591ec1b908a888414587bc394b",
-      "a95850ff3b0d3cd9d66232650251331a39b4ee59"
+      "a95850ff3b0d3cd9d66232650251331a39b4ee59",
+      "f4386fb39ee07b239b22e0ce61f64b07c989ef40"
     ],
-    "note": "a95850f publicado: copia de referencia con Logo2,2 empresas preservadas y respaldo restaurado. CRM sin cambios.",
+    "note": "f4386fb publicado: configurador,2 empresas preservadas,backup restaurado;cuellos excluidos.",
     "bocetos": {
-      "release": "a95850ff3b0d3cd9d66232650251331a39b4ee59",
+      "release": "f4386fb39ee07b239b22e0ce61f64b07c989ef40",
       "service": "sportex_bocetos_app",
-      "imageDigest": "sha256:7a4ded3d8d6a99577db4784a9e71b4d22bc71cc5efaf437690eb72b59b57c586",
+      "imageDigest": "sha256:67b961197d1f41e14bb10c59e3762927a827c9160f95efe0e655d1bf5a3e54eb",
       "urls": [
         "https://sportex-bocetos.kodebix.com",
         "https://panel-sportex-bocetos.kodebix.com"
       ],
       "replicas": "1/1",
       "backupRestored": true,
-      "rollbackRelease": "a65249d00e1513591ec1b908a888414587bc394b"
+      "rollbackRelease": "a95850ff3b0d3cd9d66232650251331a39b4ee59"
     }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "BOCETOS_A95850F_PUBLISHED",
+      "status": "BOCETOS_F4386FB_PUBLISHED",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Release remotoa95850f con codigo aprobadoa2e2deb y documentacion."
+      "note": "Release remoto f4386fb,configurador aprobado de33a54;sin prototipos."
     },
     {
       "name": "Supabase",
@@ -207,10 +197,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
+      "status": "CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "a95850f publicado: copia de referencia con Logo2,2 empresas preservadas y respaldo restaurado. CRM sin cambios."
+      "note": "f4386fb publicado: configurador,2 empresas preservadas,backup restaurado;cuellos excluidos."
     }
   ],
   "sensitiveData": {
@@ -221,7 +211,7 @@
     "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.",
+    "summary": "f4386fb publicado healthy1/1;27 tests en imagen,HTTP admin y backup PASS. Cuellos excluidos.",
     "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -229,9 +219,9 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
-      "summary": "GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.",
+      "summary": "f4386fb publicado healthy1/1;27 tests en imagen,HTTP admin y backup PASS. Cuellos excluidos.",
       "documents": [
-        "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
+        "docs/TASKS/closed/2026/TASK-20261020-006-panel-mockups.md",
         "core/bocetos/mockups.mjs",
         "bocetos/public/mockup-editor.js",
         "bocetos/public/mockup-panel.js",
@@ -322,7 +312,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Certificar bundle, respaldar y publicar configurador; cuellos en pausa."
+    "Fito: configurar mockups en el panel; cuellos en pausa."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

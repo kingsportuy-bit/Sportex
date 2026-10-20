@@ -23,11 +23,11 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-006`: `in_progress` (docs/TASKS/active/TASK-20261020-006-panel-mockups.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
+Configurador de mockups publicado; cuellos en pausa.
 
 ## Alcance actual
 
@@ -53,8 +53,8 @@ Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_A95850F_HEALTHY`; registros 36.
-- Integraciones: GitHub=`BOCETOS_A95850F_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_A95850F_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY`; registros 37.
+- Integraciones: GitHub=`BOCETOS_F4386FB_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- GO de Fito para publicar configurador; cuellos en pausa y fuera de paquete. Preflight a95850f healthy.
+- f4386fb publicado healthy1/1;27 tests en imagen,HTTP admin y backup PASS. Cuellos excluidos.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Publicar configurador del panel de bocetos con GO de Fito; cuellos en pausa.
 
 ## Siguientes acciones
 
-- Certificar bundle, respaldar y publicar configurador; cuellos en pausa.
+- Fito: configurar mockups en el panel; cuellos en pausa.

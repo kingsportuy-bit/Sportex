@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- `TASK-20261020-006` | `in_progress` | Administrar configuracion de mockups | docs/TASKS/active/TASK-20261020-006-panel-mockups.md
+- Ninguna.
 
 ## Cola
 
@@ -48,3 +48,4 @@ Actualizado: 2026-10-20.
 - `TASK-20261020-003` | `done` | Eliminar empresa del laboratorio | docs/TASKS/closed/2026/TASK-20261020-003-eliminar-empresa-bocetos.md
 - `TASK-20261020-004` | `done` | Corregir base inicial de bocetos | docs/TASKS/closed/2026/TASK-20261020-004-corregir-base-bocetos.md
 - `TASK-20261020-005` | `done` | Corregir copia de referencia con Logo2 | docs/TASKS/closed/2026/TASK-20261020-005-copiar-referencia.md
+- `TASK-20261020-006` | `done` | Administrar configuracion de mockups | docs/TASKS/closed/2026/TASK-20261020-006-panel-mockups.md

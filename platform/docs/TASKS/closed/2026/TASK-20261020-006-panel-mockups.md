@@ -3,8 +3,8 @@
 id: TASK-20261020-006
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -47,7 +47,7 @@ Volver a imagen a95850f en el mismo volumen; conservar backup y catalogo aditivo
 
 ## deuda_restante
 
-Publicacion pendiente; cuellos en pausa, excluidos del paquete y de la imagen.
+Cuellos en pausa y excluidos. Fito usa Mockups en el panel; QA visual final manual.
 
 ## registro_de_avances
 
@@ -55,6 +55,8 @@ Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
 224 tests;6 checks de montaje PASS. QA navegador pendiente.
 JSON frontal de Fito aplicado como defaults; espalda original fija.
 Material V/polo local en pausa. GO de Fito para publicar solo configurador.
+f4386fb publicado healthy1/1;27 pruebas en imagen y HTTP admin PASS.
+2 empresas preservadas, backup restaurado. Sin IA paga ni escrituras de negocio.
 
 ## decisiones
 
