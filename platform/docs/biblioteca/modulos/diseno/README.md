@@ -66,4 +66,8 @@ Persistencia JSON local e identidad ficticia; no habilita uso comercial ni CRM.
 
 ## Cierre documental
 
+TASK-20261020-005 valida localmente copia desde la referencia con Logo2, paquete
+UI real y HTTP autenticado, sin IA paga. Contrato BOCETOS_LOCAL_CONTRACT.md y
+evidencia TASK-20261020-005_COPIAR_REFERENCIA.md. No acredita release nuevo.
+
 Requiere responsabilidades, ficha, estados y prueba con pedido Delta.

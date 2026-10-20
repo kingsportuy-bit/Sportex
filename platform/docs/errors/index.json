@@ -97,6 +97,12 @@
       "title": "Base inicial con vivos y nombre duplicado",
       "path": "docs/errors/entries/SPX-ERR-20261020-003-base-inicial-vivos-y-nombre-duplicado.md",
       "searchText": "# spx-err-20261020-003 - base inicial con vivos y nombre duplicado\n\n- fecha: 2026-10-20.\n- sintoma: nuevas empresas/bocetos mostraban vivos activos y dos nombres.\n- causa raiz: el preset exportado incluia cuatro activaciones y un texto adicional; restoreworkspace preferia su copia cacheada a la base corregida.\n- solucion: cinco vivos apagados, nombre normal arriba y sin duplicado. revision focal del preset defectuoso cacheado, conservando archivos y documentos.\n- prevencion/guardia: company-defaults y sketch-base prueban alta, base anterior en cache, nuevos bocetos y conservacion del documento editado.\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-004",
+      "title": "Copia de referencia rechaza Logo2",
+      "path": "docs/errors/entries/SPX-ERR-20261020-004-copia-de-referencia-rechaza-logo2.md",
+      "searchText": "# spx-err-20261020-004 - copia de referencia rechaza logo2\n\n- fecha: 2026-10-20.\n- sintoma: boton y ajuste automatico devuelven elementos o texturas invalidos.\n- causa raiz: el constructor ui envia brand2 visible, pero el validador del servidor no lo incluia entre los ids conocidos.\n- solucion: aceptar brand2 conservando la validacion estricta de elementos y texturas.\n- prevencion/guardia: reference-context.test ejecuta el constructor real y http autenticado, verifica referencia como primera imagen y rechaza ids desconocidos sin llamar al proveedor.\r\n"
     }
   ]
 }

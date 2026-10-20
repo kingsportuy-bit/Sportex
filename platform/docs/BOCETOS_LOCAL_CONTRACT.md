@@ -15,13 +15,19 @@ La persistencia actual es IndexedDB/localStorage por origen y perfil, sin
 promesa de backup remoto. Mantener 127.0.0.1:4318 y nombres de stores anteriores.
 Los PNG de molde son assets fijos, no una importacion de PSD por cliente.
 
-POST `/api/reference-colors` recibe exclusivamente un data URL PNG/JPEG/WebP
+POST `/api/reference-colors` recibe la referencia como data URL PNG/JPEG/WebP
 validado en longitud y sintaxis. Usa Responses con esquema estricto de diez
 colores HEX o null: cuello, punos, numeros frente/espalda/short, nombre, marca
 camiseta/short, short y medias. Null conserva valor actual. No genera imagen.
 La UI valida nuevamente antes de aplicar; cambio manual concurrente prevalece,
 y una referencia/boceto diferente no recibe el resultado. Historial reversible.
 Cache RAM acotada por hash de referencia/modelo; sin persistencia de respuesta.
+El contexto extendido opcional agrega elementos (incluido brand2/Logo2), vista
+actual y texturas existentes para contornos/registro. La primera imagen enviada
+es siempre la referencia cargada, autoridad del color deseado; la vista actual
+se etiqueta como estado presente, no como diseno deseado. IDs ajenos al editor
+se rechazan antes del proveedor. TASK-20261020-005 cubre paquete real de UI,
+HTTP autenticado, analisis simulado y consumo por empresa; sin llamadas pagas.
 
 ## Permisos y efectos
 

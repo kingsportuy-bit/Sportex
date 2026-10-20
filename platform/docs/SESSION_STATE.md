@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DESARROLLO_LOCAL`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `fix`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-005`: `in_progress` (docs/TASKS/active/TASK-20261020-005-copiar-referencia.md).
 
 ## Objetivo actual
 
-Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado arriba.
+Corregir copia de referencia: aceptar Logo2 y verificar la imagen origen.
 
 ## Alcance actual
 
-- Permitido: Uso y observacion del laboratorio publicado por Fito.
-- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA de QA.
+- Permitido: Correccion local del contexto de analisis y pruebas sin API real.
+- Prohibido: Sin deploy, IA de pago, datos reales, CRM, legado ni generacion.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado 
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-004`.
+- Tarea: `TASK-20261020-005`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md`.
-- a65249d publicado healthy1/1: base alineada y limpia, archivos exactos y backup restaurado PASS. Sin IA.
+- Fuente: `docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md`.
+- Logo2 aceptado en copia desde referencia;199 bocetos y validacion general PASS. Pendiente GO de publicacion.
 
 ## Riesgos
 
@@ -78,5 +78,4 @@ Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado 
 
 ## Siguientes acciones
 
-- Fito recarga el laboratorio y abre Nuevo boceto para usar la base alineada.
-- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.
+- Fito revisa correccion y autoriza publicacion de la version local; runtime sigue a65249d.

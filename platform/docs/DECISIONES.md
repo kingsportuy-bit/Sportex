@@ -276,3 +276,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   conservacion de cuentas/documentos; sin IA ni borrados de QA.
 - a65249d publicado: codigo9a21e31 exacto, base alineada/vivos off, respaldo
   restaurado y runtime healthy. No habia empresas al corte; no se crean para QA.
+- TASK-20261020-005: corregir rechazo de Logo2 en contexto de copia de referencia.
+  referenceData sigue siendo imagen origen; mock solo contexto. Prueba HTTP con
+  paquete UI real y proveedor simulado; sin API paga ni publicacion automatica.

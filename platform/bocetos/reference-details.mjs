@@ -18,7 +18,7 @@ export function validateDetailContext(value, isImage) {
   if (!value || value.extended !== true || typeof value.outlines !== 'boolean' || typeof value.alignment !== 'boolean'
     || !Array.isArray(value.elements) || value.elements.length > 28 || !Array.isArray(value.targets) || value.targets.length > 10
     || !Array.isArray(value.sources) || value.sources.length > 6 || (value.mock !== undefined && !isImage(value.mock))) throw new Error('invalid_context');
-  const allowed = ['brand', 'crest', 'front-number', 'short-brand', 'short-crest', 'short-number', 'back-number', 'back-name'];
+  const allowed = ['brand', 'brand2', 'crest', 'front-number', 'short-brand', 'short-crest', 'short-number', 'back-number', 'back-name'];
   const elements = value.elements.map(element => {
     if (!element || !(allowed.includes(element.id) || /^sponsor-[a-zA-Z0-9.-]{1,80}$/.test(element.id))
       || !['front','back'].includes(element.side) || !['front','back','right','left','short'].includes(element.piece)

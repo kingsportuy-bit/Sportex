@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-005` | `in_progress` | Corregir copia de referencia con Logo2 | docs/TASKS/active/TASK-20261020-005-copiar-referencia.md
 
 ## Cola
 
