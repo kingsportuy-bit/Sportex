@@ -5,9 +5,9 @@ owner: Codex
 requester: Fito
 estado: in_progress
 lifecycle: active
-work_type: fix
+work_type: operacion
 campaign: CAMP-20260803-001
-context_focus: frontend
+context_focus: infrastructure
 development_guide_impact: none
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 updated_at: 2026-10-20
@@ -18,16 +18,16 @@ Base con vivos apagados, nombre/numero centrados y numero frontal apagado.
 
 ## alcance_permitido
 
-Parametros iniciales y cache de base, pruebas y candidato local.
-Conservar bocetos existentes y archivos del usuario.
+Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA.
+Cambios de release solo documentales. Conservar cuentas y bocetos.
 
 ## alcance_prohibido
 
-Sin deploy, datos remotos, borrados reales, CRM, legado ni IA.
+Sin borrar cuentas/bocetos, CRM, legado, DNS ni IA.
 
 ## entradas
 
-Fito pide nombre un poco mas arriba y ambos centrados; numero frontal apagado.
+Fito responde «go» para publicar la base alineada9a21e31.
 
 ## salidas
 
@@ -43,11 +43,11 @@ docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md
 
 ## rollback
 
-Revertir candidato local; sin cambios remotos ni documentos guardados.
+Volver a imagen14de41c, mismo volumen. Conservar respaldo previo.
 
 ## deuda_restante
 
-Publicacion requiere GO operativo especifico.
+Completar publicacion autorizada y observacion.
 
 ## registro_de_avances
 

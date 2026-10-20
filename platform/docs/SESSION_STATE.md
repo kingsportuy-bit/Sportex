@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `fix`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.
+Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documentos.
 
 ## Alcance actual
 
-- Permitido: Parametros iniciales, cache de base y pruebas locales de bocetos.
-- Prohibido: Sin despliegues, datos remotos, CRM, legado ni IA. Conservar bocetos.
+- Permitido: Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA sin IA.
+- Prohibido: Sin CRM, legado, DNS ni borrados de cuentas/bocetos.
 
 ## Decisiones vigentes
 
@@ -62,7 +62,7 @@ Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.
 - Tarea: `TASK-20261020-004`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md`.
-- Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.
+- Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.
 
 ## Siguientes acciones
 
-- GO de Fito para publicar la base alineada; documentos existentes conservados.
+- Publicar candidato desde Git con backup y comprobar version/base/cuentas.

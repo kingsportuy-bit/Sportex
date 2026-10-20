@@ -55,5 +55,5 @@ Validacion general y workflow:close del ajuste: SPORTEX_CLOSE=PASS, perfil local
 ## Limites
 
 Sin cambios remotos, IA, limpieza de bocetos ni nuevas dependencias.
-Publicacion requiere GO exacto. Rollback: release14de41c actual; cache y
+Fito autoriza con «go» publicar9a21e31. Rollback: release14de41c; cache y
 documentos existentes quedan conservados.

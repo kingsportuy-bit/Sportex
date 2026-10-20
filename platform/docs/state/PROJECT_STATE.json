@@ -3,7 +3,7 @@
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
   "updatedBy": "TASK-20261020-004",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,14 +13,14 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "fix",
-  "objective": "Base con nombre/numero centrados, nombre mas arriba y numero frontal apagado.",
+  "mode": "operation",
+  "objective": "Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documentos.",
   "scope": {
     "allowed": [
-      "Parametros iniciales, cache de base y pruebas locales de bocetos."
+      "Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA sin IA."
     ],
     "prohibited": [
-      "Sin despliegues, datos remotos, CRM, legado ni IA. Conservar bocetos."
+      "Sin CRM, legado, DNS ni borrados de cuentas/bocetos."
     ]
   },
   "currentTask": {
@@ -29,11 +29,11 @@
     "path": "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
     "status": "in_progress",
     "lifecycle": "active",
-    "workType": "fix",
+    "workType": "operacion",
     "campaign": "CAMP-20260803-001",
-    "contextFocus": "frontend",
+    "contextFocus": "infrastructure",
     "developmentGuideImpact": "none",
-    "nextAction": "GO de Fito para publicar la base alineada; documentos existentes conservados."
+    "nextAction": "Publicar candidato desde Git con backup y comprobar version/base/cuentas."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -96,7 +96,7 @@
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
-    "workingTreeState": "BOCETOS_INITIAL_BASE_FIX_LOCAL",
+    "workingTreeState": "BOCETOS_BASE_GO_GRANTED",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -219,7 +219,7 @@
     "taskId": "TASK-20261020-004",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
-    "summary": "Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.",
+    "summary": "Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -227,7 +227,7 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-004",
-      "summary": "Base local: vivos apagados, nombre/numero centrados, nombre18px mas arriba y numero frontal apagado;198 bocetos PASS.",
+      "summary": "Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
         "bocetos/public/initial-parameters.json",
@@ -319,7 +319,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "GO de Fito para publicar la base alineada; documentos existentes conservados."
+    "Publicar candidato desde Git con backup y comprobar version/base/cuentas."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

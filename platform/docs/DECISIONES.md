@@ -272,3 +272,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   en la base inicial. Quitar el texto adicional; conservar bocetos existentes.
 - Fito ajusta nombre un poco mas arriba, ambos centrados en camiseta y numero
   frontal desactivado. Eje de mascara797, nombre18px arriba; tamanos conservados.
+- Fito responde «go» para publicar9a21e31 con respaldo, rollback14de41c y
+  conservacion de cuentas/documentos; sin IA ni borrados de QA.
