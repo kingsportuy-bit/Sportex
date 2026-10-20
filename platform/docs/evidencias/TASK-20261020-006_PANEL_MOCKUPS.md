@@ -152,3 +152,23 @@ Se pidió exportar y adjuntar el JSON. Solo entonces se fijarán sus valores com
 defaults; todavía se usan los valores de referencia al abrir sin caché.
 Checkpoint de esta corrección: SPORTEX_CLOSE=PASS, perfil local. Log privado
 sportex-fixed-back-collar-close.log; sin deploy ni cambios de caché de Fito.
+
+## JSON aprobado recibido y aplicado
+
+Fito adjunta sportex-anclajes-camiseta.json. Validación de modelo/revisión y
+seis registros PASS antes de aplicar. Archivo archivado como approved-anchors.json
+con SHA256 4fed900f232c478ccfb9b7fa793ab65d76f44b402dd054bfaa5c83337b5c205f.
+basic-front-defaults.js conserva exactamente sus tres registros frontales, sin
+redondear. El renderer los usa al abrir sin caché y al restablecer cada cuello.
+El perfil local posterior mantiene prioridad y la identidad de caché no cambia.
+La geometría trasera entregada no se aplica: se conserva el cuello original fijo.
+
+verify-basic:6 checks PASS, incluida comparación independiente contra el archivo
+aprobado y hash de origen; cuerpo y espalda siguen constantes. Cinco pruebas
+focales de material/controlador PASS. HTTP del nuevo módulo PASS tras reiniciar4321.
+Sin nuevas generaciones, despliegue ni cambios de datos reales.
+La captura adicional muestra otro mock con polo/banda V bicolor; solo referencia.
+No se infieren capas editables ni se agrega una variante sin el archivo original.
+Checkpoint: SPORTEX_CLOSE=PASS, perfil local. Log privado
+sportex-approved-collar-defaults-close.log. Sigue pendiente integración al kit
+del laboratorio; no se publica automáticamente esta geometría.

@@ -15,6 +15,8 @@ node bocetos/prototypes/football-own-v1/server.mjs
 Abrir `http://127.0.0.1:4321/`. Solo escucha en la computadora local.
 El visor no usa claves, API ni datos de empresas. Guarda solo los anclajes
 en localStorage, por modelo y versión del cuerpo.
+Los valores iniciales de frente son los del JSON aprobado por Fito, archivado
+en `approved-anchors.json`. La configuración local posterior tiene prioridad.
 
 ## Qué se puede comprobar
 

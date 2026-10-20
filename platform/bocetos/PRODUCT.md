@@ -38,4 +38,5 @@ Fito cambia la prioridad: conservar Futbol basico y preparar solo sus cuellos.
 El visor local ahora monta redondo/V/polo en ese kit, con anclajes editables y
 JSON por modelo; los mockups de clientes se prepararan sobre sus propias bases.
 Fito confirma los tres ajustes frontales y mantiene el cuello original fijo en
-espalda. Falta recibir su JSON para convertir esos valores en defaults del kit.
+espalda. Su JSON ya define los defaults frontales del visor local; los cambios
+posteriores guardados en cada navegador siguen teniendo prioridad.

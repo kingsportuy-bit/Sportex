@@ -296,3 +296,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   propio queda exploratorio; sin integracion ni deploy automaticos.
 - Fito da por ajustados los tres cuellos frontales y deja el cuello original
   fijo en espalda. No capturados aun sus valores locales: falta exportar JSON.
+- Fito entrega el JSON: sus tres frentes pasan a ser defaults del visor local.
+  Geometria trasera ignorada; mantiene cuello original. Nueva captura de polo
+  bicolor es solo referencia; no se ha pedido preparar otra variante.

@@ -5,18 +5,18 @@
     "bodyRevision": "original-psd-collars-v1"
   },
   "checks": [
-    "front: cuello redondo registrado en la máscara original",
+    "front: los tres defaults coinciden exactamente con el JSON entregado por Fito",
     "front: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
     "front: mover el anclaje conserva la otra vista y el resto de la prenda",
     "back: cuello redondo registrado en la máscara original",
     "back: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
     "back: cuello original idéntico entre variantes e inmune a anclajes guardados"
   ],
-  "prepareMs": 1287,
+  "prepareMs": 1191,
   "pairRenderMs": [
     183,
-    30,
-    20
+    31,
+    21
   ],
   "browserVisualQA": "PENDIENTE",
   "paidCalls": 0

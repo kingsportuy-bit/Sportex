@@ -1,9 +1,11 @@
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
-import {writeFile} from 'node:fs/promises';
+import {writeFile,readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {createBasicCollarRenderer,basicAnchorSchema,basicLayerNames,basicIdentity} from './basic-renderer.js';
 import {defaults} from './renderer.js';
+import {approvedAnchorSourceSha256} from './basic-front-defaults.js';
 const require=createRequire(import.meta.url),canvasModule=process.argv[2];
 if(!canvasModule)throw Error('Indicá la ruta de @napi-rs/canvas para ejecutar la verificación local.');
 const {createCanvas,loadImage}=require(canvasModule),root=new URL('./',import.meta.url),images={};
@@ -13,15 +15,22 @@ const renderer=createBasicCollarRenderer(createCanvas),start=performance.now();r
 const profile=basicAnchorSchema.defaultAnchorProfile(renderer.materials);basicAnchorSchema.validateAnchorProfile(JSON.parse(JSON.stringify(profile)));
 const proof=createCanvas(1800,720),ctx=proof.getContext('2d');ctx.fillStyle='#e6ebe6';ctx.fillRect(0,0,1800,720);ctx.fillStyle='#19261e';ctx.font='bold 28px Arial';ctx.fillText('SPORTEX · Fútbol básico / prueba de cuellos',30,42);
 let column=0;const checks=[],timings=[];
+const approvedSource=await readFile(new URL('approved-anchors.json',root));
+assert.equal(createHash('sha256').update(approvedSource).digest('hex'),approvedAnchorSourceSha256);
+const approved=basicAnchorSchema.validateAnchorProfile(JSON.parse(approvedSource));
+for(const type of ['round','v','polo'])assert.deepEqual(profile.anchors[type].front,approved.anchors[type].front);
+checks.push('front: los tres defaults coinciden exactamente con el JSON entregado por Fito');
 for(const type of ['round','v','polo']){
   const pair=createCanvas(600,570),start=performance.now();renderer.drawPair(pair,{...defaults,anchors:profile,collar:type});timings.push(Math.round(performance.now()-start));ctx.drawImage(pair,column*600,60);ctx.fillStyle='#19261e';ctx.font='25px Arial';ctx.fillText({round:'Redondo original',v:'En V',polo:'Polo'}[type],column*600+200,680);column++;
   const neck=createCanvas(1000,650);renderer.drawPair(neck,{...defaults,pattern:'solid',anchors:profile,collar:type},'front');await writeFile(new URL(`basic-${type}-neck.png`,root),neck.toBuffer('image/png'));
 }
 for(const side of ['front','back']){
   const body=renderer.materials.body[side],round=renderer.placement('round',side,profile),source=renderer.materials.round[side].sourceBounds;
-  assert.equal(round.width,source.width);assert.equal(round.height,source.height);
-  assert.ok(Math.abs(round.x+body.sourceBounds.x-source.x)<1e-8);assert.equal(round.y+body.sourceBounds.y,source.y);
-  checks.push(`${side}: cuello redondo registrado en la máscara original`);
+  if(side==='back'){
+    assert.equal(round.width,source.width);assert.equal(round.height,source.height);
+    assert.ok(Math.abs(round.x+body.sourceBounds.x-source.x)<1e-8);assert.equal(round.y+body.sourceBounds.y,source.y);
+    checks.push('back: cuello redondo registrado en la máscara original');
+  }
   const views=['round','v','polo'].map(type=>renderer.renderView(type,side,{...defaults,anchors:profile}));
   const arrays=views.map(v=>v.getContext('2d').getImageData(0,0,v.width,v.height).data),cutoff=Math.ceil(body.height*.34)+64;
   for(let p=cutoff*views[0].width*4;p<arrays[0].length;p++)assert.equal(arrays[1][p],arrays[0][p]);

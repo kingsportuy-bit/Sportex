@@ -49,13 +49,13 @@ Catalogo es aditivo; conservar datos publicados al volver a version anterior.
 ## deuda_restante
 
 QA visual final pendiente por control de navegador deshabilitado. Sin deploy.
-Cuellos: recibir JSON frontal de Fito antes de fijar defaults del kit.
+Cuellos: defaults locales aprobados; falta integracion al kit del laboratorio.
 
 ## registro_de_avances
 
 Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
 221 tests;6 checks de montaje PASS. QA navegador pendiente.
-Fito confirma tres frentes; espalda original fija. Export JSON pendiente.
+JSON frontal de Fito aplicado como defaults; espalda original fija.
 
 ## decisiones
 

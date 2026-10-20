@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- Frentes ajustados por Fito; espalda fija,6 checks y12 focales PASS. Falta JSON frontal y QA panel.
+- JSON frontal aprobado como defaults locales; espalda fija,6 checks PASS. Falta integracion y QA panel.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Recibir JSON frontal; espalda fija; completar QA visual.
+- Integrar cuellos aprobados al kit local; completar QA visual.

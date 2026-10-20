@@ -1,6 +1,7 @@
 import {createPrototypeRenderer} from './renderer.js';
 import {largestComponent,parseColor} from './material.js';
 import {createAnchorSchema} from './anchors.js';
+import {approvedFrontAnchors} from './basic-front-defaults.js';
 
 export const basicIdentity={model:'football-basic-v1',bodyRevision:'original-psd-collars-v1'};
 export const basicAnchorSchema=createAnchorSchema(basicIdentity);
@@ -75,6 +76,7 @@ export function createBasicCollarRenderer(makeCanvas){
       const body=renderer.materials.body[side],round=body.neckAnchors.round;
       for(const type of ['v','polo']){const neck=renderer.materials[type][side],width=round.width*(type==='polo'?1.16:1);body.neckAnchors[type]={centerX:round.centerX,top:round.top,width,height:width*body.width*neck.height/neck.width/body.height};}
     }
+    for(const type of ['round','v','polo'])renderer.materials.body.front.neckAnchors[type]={...approvedFrontAnchors[type]};
   }
   return {...renderer,load};
 }
