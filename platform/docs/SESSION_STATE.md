@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `fix`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Corregir copia de referencia: aceptar Logo2 y verificar la imagen origen.
+Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.
 
 ## Alcance actual
 
-- Permitido: Correccion local del contexto de analisis y pruebas sin API real.
-- Prohibido: Sin deploy, IA de pago, datos reales, CRM, legado ni generacion.
+- Permitido: Publicar codigoa2e2deb con backup, rollback y QA sin IA.
+- Prohibido: Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas.
 
 ## Decisiones vigentes
 
@@ -62,7 +62,7 @@ Corregir copia de referencia: aceptar Logo2 y verificar la imagen origen.
 - Tarea: `TASK-20261020-005`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md`.
-- Logo2 aceptado en copia desde referencia;199 bocetos y validacion general PASS. Pendiente GO de publicacion.
+- GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Corregir copia de referencia: aceptar Logo2 y verificar la imagen origen.
 
 ## Siguientes acciones
 
-- Fito revisa correccion y autoriza publicacion de la version local; runtime sigue a65249d.
+- Preflight y release inmutable con respaldo; verificar copia de referencia sin API real.

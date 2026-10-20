@@ -279,3 +279,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - TASK-20261020-005: corregir rechazo de Logo2 en contexto de copia de referencia.
   referenceData sigue siendo imagen origen; mock solo contexto. Prueba HTTP con
   paquete UI real y proveedor simulado; sin API paga ni publicacion automatica.
+- Fito confirma «Go» luego de verificar sponsors/textos para publicara2e2deb,
+  con backup y rollback a65249d; sin llamadas IA ni mutaciones de cuentas de QA.

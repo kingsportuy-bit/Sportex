@@ -40,3 +40,14 @@ No se usa ninguna API real, cuenta real ni servidor remoto. La prueba confirma
 el contrato y el flujo; la calidad visual de cada deteccion depende de la IA.
 Runtime publicado a65249d permanece igual hasta GO especifico. Revertir commit
 de esta task revierte el cambio. Publicacion posterior requiere backup y rollback.
+
+## GO y preflight de publicacion
+
+Fito confirma Go tras verificar sponsors/textos. Codigo aprobadoa2e2deb; el
+release agrega solo documentos operativos. Rollback a65249d, mismo volumen.
+14:10 UTC: imagen anterior healthy1/1,38GB libres y6.9GB RAM disponibles;
+ambos /ready200 con a65249d. CRMd9c4f44. La DB activa tiene lock exclusivo:
+lectura externa denegada, sin eludirlo. Snapshot consistente anterior valido;
+el gate verifica operaciones en curso sobre backup definitivo con servicio
+detenido antes de activar candidato. Sin cuentas de QA ni API paga.
+SPORTEX_CLOSE=PASS pilot-release previo al bundle.

@@ -3,7 +3,7 @@
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
   "updatedBy": "TASK-20261020-005",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,14 +13,14 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "fix",
-  "objective": "Corregir copia de referencia: aceptar Logo2 y verificar la imagen origen.",
+  "mode": "operation",
+  "objective": "Publicar correccion de copia de referenciaa2e2deb aprobada por Fito.",
   "scope": {
     "allowed": [
-      "Correccion local del contexto de analisis y pruebas sin API real."
+      "Publicar codigoa2e2deb con backup, rollback y QA sin IA."
     ],
     "prohibited": [
-      "Sin deploy, IA de pago, datos reales, CRM, legado ni generacion."
+      "Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas."
     ]
   },
   "currentTask": {
@@ -29,11 +29,11 @@
     "path": "docs/TASKS/active/TASK-20261020-005-copiar-referencia.md",
     "status": "in_progress",
     "lifecycle": "active",
-    "workType": "fix",
+    "workType": "operacion",
     "campaign": "CAMP-20260803-001",
-    "contextFocus": "runtime",
+    "contextFocus": "infrastructure",
     "developmentGuideImpact": "none",
-    "nextAction": "Fito revisa correccion y autoriza publicacion de la version local; runtime sigue a65249d."
+    "nextAction": "Preflight y release inmutable con respaldo; verificar copia de referencia sin API real."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -221,7 +221,7 @@
     "taskId": "TASK-20261020-005",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md",
-    "summary": "Logo2 aceptado en copia desde referencia;199 bocetos y validacion general PASS. Pendiente GO de publicacion.",
+    "summary": "GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -229,7 +229,7 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-005",
-      "summary": "Logo2 aceptado en copia desde referencia;199 bocetos y validacion general PASS. Pendiente GO de publicacion.",
+      "summary": "GO confirmado para publicara2e2deb;199 bocetos PASS. Pendiente runtime.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-005-copiar-referencia.md",
         "bocetos/reference-details.mjs",
@@ -320,7 +320,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito revisa correccion y autoriza publicacion de la version local; runtime sigue a65249d."
+    "Preflight y release inmutable con respaldo; verificar copia de referencia sin API real."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
