@@ -3,8 +3,8 @@
 id: TASK-20261020-004
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -47,12 +47,13 @@ Volver a imagen14de41c, mismo volumen. Conservar respaldo previo.
 
 ## deuda_restante
 
-Completar publicacion autorizada y observacion.
+Sin pendientes; las bases nuevas se aplican al abrir Nuevo boceto.
 
 ## registro_de_avances
 
 Base publicada incluye cuatro vivos activos y texto NOMBRE adicional.
 Corregido:197 bocetos, validacion general y QA navegador PASS; sin IA.
+198 bocetos PASS; a65249d publicado13:26 UTC, base/assets/backup PASS,18Linux.
 
 ## decisiones
 

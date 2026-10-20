@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- `TASK-20261020-004` | `in_progress` | Corregir base inicial de bocetos | docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md
+- Ninguna.
 
 ## Cola
 
@@ -46,3 +46,4 @@ Actualizado: 2026-10-20.
 - `TASK-20261020-001` | `done` | Desplegar laboratorio y panel de bocetos | docs/TASKS/closed/2026/TASK-20261020-001-desplegar-laboratorio-bocetos.md
 - `TASK-20261020-002` | `done` | Base inicial de empresas del laboratorio | docs/TASKS/closed/2026/TASK-20261020-002-base-inicial-empresas-bocetos.md
 - `TASK-20261020-003` | `done` | Eliminar empresa del laboratorio | docs/TASKS/closed/2026/TASK-20261020-003-eliminar-empresa-bocetos.md
+- `TASK-20261020-004` | `done` | Corregir base inicial de bocetos | docs/TASKS/closed/2026/TASK-20261020-004-corregir-base-bocetos.md

@@ -11,20 +11,20 @@ Actualizado: 2026-10-20.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Objetivo operativo: `PILOTO_DELTA`.
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
-- Tarea: `TASK-20261020-004`.
+- Tarea: no cargada para esta consulta.
 - Worktree: `C:/Users/Fito/Documents/CODEX/SPORTEX`.
 - Rama: `codex/desplegar-bocetos-20261020`.
-- Presupuesto potencial: 54113/90000 caracteres.
-- Tokens estimados: 13529 (aproximacion de 4 caracteres por token).
-- Documentos unicos: 21.
+- Presupuesto potencial: 52790/90000 caracteres.
+- Tokens estimados: 13198 (aproximacion de 4 caracteres por token).
+- Documentos unicos: 20.
 
 ## Objetivo, alcance y riesgo
 
-- Objetivo: Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documentos.
-- Permitido: Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA sin IA.
-- Prohibido: Sin CRM, legado, DNS ni borrados de cuentas/bocetos.
+- Objetivo: Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado arriba.
+- Permitido: Uso y observacion del laboratorio publicado por Fito.
+- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA de QA.
 - Riesgos: El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada. | Las transiciones comerciales y de pedido requieren validación punta a punta antes de presentarse como operativas. | 4 vulnerabilidades altas siguen en TASK-20260801-002. | El primer envio manual desde SPORTEX todavia no fue realizado; no se contacto a un destinatario real durante el corte. | Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error.
-- Proxima accion: Publicar candidato desde Git con backup y comprobar version/base/cuentas.
+- Proxima accion: Fito recarga el laboratorio y abre Nuevo boceto para usar la base alineada.
 
 ## Regla de uso
 
@@ -53,4 +53,3 @@ consulta read-only: no crea tarea ni modifica el estado.
 - `docs/CONNECTIONS.md` — owner `infrastructure`, autoridad 80.
 - `docs/CURRENT_RUNTIME_BASELINE.md` — owner `runtime-observation`, autoridad 60.
 - `docs/evidencias/README.md` — owner `quality`, autoridad 60.
-- `docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md` — owner `active-task`, autoridad 100.

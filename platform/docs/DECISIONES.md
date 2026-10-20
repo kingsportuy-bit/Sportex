@@ -274,3 +274,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   frontal desactivado. Eje de mascara797, nombre18px arriba; tamanos conservados.
 - Fito responde «go» para publicar9a21e31 con respaldo, rollback14de41c y
   conservacion de cuentas/documentos; sin IA ni borrados de QA.
+- a65249d publicado: codigo9a21e31 exacto, base alineada/vivos off, respaldo
+  restaurado y runtime healthy. No habia empresas al corte; no se crean para QA.

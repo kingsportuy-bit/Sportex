@@ -14,27 +14,16 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documentos.",
+  "objective": "Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado arriba.",
   "scope": {
     "allowed": [
-      "Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA sin IA."
+      "Uso y observacion del laboratorio publicado por Fito."
     ],
     "prohibited": [
-      "Sin CRM, legado, DNS ni borrados de cuentas/bocetos."
+      "Sin CRM, legado, DNS, borrados reales ni IA de QA."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-004",
-    "title": "Corregir base inicial de bocetos",
-    "path": "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
-    "status": "in_progress",
-    "lifecycle": "active",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "contextFocus": "infrastructure",
-    "developmentGuideImpact": "none",
-    "nextAction": "Publicar candidato desde Git con backup y comprobar version/base/cuentas."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -95,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
-    "workingTreeState": "BOCETOS_BASE_GO_GRANTED",
+    "headAtLastEvidence": "a65249d00e1513591ec1b908a888414587bc394b",
+    "workingTreeState": "BOCETOS_A65249D_DEPLOYED_POST_RELEASE_EVIDENCE",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -126,10 +115,10 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
-    "note": "198 bocetos PASS;11 focales rojo/verde, eje real de mascara797 y QA local. Sin cambios remotos ni IA."
+    "note": "198 bocetos,31 workflow y59 Core PASS;18 Node24/Linux, HTTPS/base/assets y backup restaurado. Sin IA ni cuentas QA."
   },
   "deployments": {
-    "status": "CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY",
+    "status": "CRM_D9C4F44_BOCETOS_A65249D_HEALTHY",
     "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -165,29 +154,30 @@
       "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
       "b8e1fc827c0a6e668b79ee27d90af5ad91ae636d",
       "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
-      "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e"
+      "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
+      "a65249d00e1513591ec1b908a888414587bc394b"
     ],
-    "note": "14de41c publicado: purga tenant protegida, backup restaurado y cuenta Delta conservada. CRM sin cambios.",
+    "note": "a65249d publicado: base alineada, vivos/numero frontal apagados; snapshot/restauracion PASS. CRM preservado.",
     "bocetos": {
-      "release": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
+      "release": "a65249d00e1513591ec1b908a888414587bc394b",
       "service": "sportex_bocetos_app",
-      "imageDigest": "sha256:634f41f9819ba621d7b6e984e37a21433036a0f84b47d4cfdfd3eac739ba8b18",
+      "imageDigest": "sha256:13fcbd6a687395d77284ab447812392958460b5659026ee19587ada9a8d548df",
       "urls": [
         "https://sportex-bocetos.kodebix.com",
         "https://panel-sportex-bocetos.kodebix.com"
       ],
       "replicas": "1/1",
       "backupRestored": true,
-      "rollbackRelease": "69739bbf8f4cd2b044b2ff90edaff28378c74b23"
+      "rollbackRelease": "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e"
     }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "BOCETOS_14DE41C_PUBLISHED",
+      "status": "BOCETOS_A65249D_PUBLISHED",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Release remoto14de41c, codigo aprobado01e6797 mas documentacion operativa."
+      "note": "Release remotoa65249d: codigo aprobado9a21e31 mas documentacion."
     },
     {
       "name": "Supabase",
@@ -205,10 +195,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY",
+      "status": "CRM_D9C4F44_BOCETOS_A65249D_HEALTHY",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "14de41c publicado: purga tenant protegida, backup restaurado y cuenta Delta conservada. CRM sin cambios."
+      "note": "a65249d publicado: base alineada, vivos/numero frontal apagados; snapshot/restauracion PASS. CRM preservado."
     }
   ],
   "sensitiveData": {
@@ -219,17 +209,17 @@
     "taskId": "TASK-20261020-004",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md",
-    "summary": "Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.",
-    "environment": "DESARROLLO_LOCAL",
+    "summary": "a65249d publicado healthy1/1: base alineada y limpia, archivos exactos y backup restaurado PASS. Sin IA.",
+    "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-004",
-      "summary": "Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.",
+      "summary": "a65249d publicado healthy1/1: base alineada y limpia, archivos exactos y backup restaurado PASS. Sin IA.",
       "documents": [
-        "docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md",
+        "docs/TASKS/closed/2026/TASK-20261020-004-corregir-base-bocetos.md",
         "bocetos/public/initial-parameters.json",
         "bocetos/public/element-layout.js"
       ],
@@ -319,7 +309,8 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Publicar candidato desde Git con backup y comprobar version/base/cuentas."
+    "Fito recarga el laboratorio y abre Nuevo boceto para usar la base alineada.",
+    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

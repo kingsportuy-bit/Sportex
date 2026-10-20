@@ -54,6 +54,32 @@ Validacion general y workflow:close del ajuste: SPORTEX_CLOSE=PASS, perfil local
 
 ## Limites
 
-Sin cambios remotos, IA, limpieza de bocetos ni nuevas dependencias.
+La etapa local no incluyo cambios remotos, IA, limpieza de bocetos ni nuevas dependencias.
 Fito autoriza con «go» publicar9a21e31. Rollback: release14de41c; cache y
 documentos existentes quedan conservados.
+
+## Publicacion20/10
+
+13:24 UTC:14de41c healthy;38GB disco libres y6.5GB RAM disponibles. CRMd9c4f44.
+GO operativo de Fito publica codigo9a21e31. Releasea65249d00e1513591ec1b908a888414587bc394b
+agrega solo documentacion. Git archive remoto, SHA256:
+88128c8e80e71af7010e39e8797e37ef069766103c1f1c1854eaacf1992310b3.
+Imagen sportex-bocetos:a65249d00e1513591ec1b908a888414587bc394b:
+sha256:13fcbd6a687395d77284ab447812392958460b5659026ee19587ada9a8d548df.
+18 pruebas focales en Node24/Linux PASS dentro de la imagen, sin red/secretos.
+Snapshot consistente previo con servicio detenido; copia privada descargada y
+restaurada: quick_check ok,0empresas/1admin/0assets/0operaciones. Metadatos de
+companies/users/assets/idempotency identicos despues del reemplazo.
+13:26:58 UTC:publicacion PASS al primer intento; campo UpdateStatus ausente
+manejado con index/with, imagen exacta healthy1/1 y ambos /ready200 del commit.
+13:27:35 UTC:misma imagen sana; CRMd9c4f44 conservado.
+HTTPS/public smoke PASS; app.js,element-layout.js,initial-parameters.json y panel
+bytes exactos del bundle. Cinco vivos off, un nombre, x797 en nombre/numero,
+nombre y377.1402248768759 y numero frontal off verificados en base publicada.
+Rutas privadas anonimas401 y admin en dominio lab404. Sin llamadas IA ni
+eliminaciones. No se crea empresa real para QA; no habia empresas al corte.
+El recorrido visual local anterior corresponde al mismo codigo publicado.
+Backup remoto /opt/sportex-bocetos/data/backups/pre-a65249d00e1513591ec1b908a888414587bc394b.sqlite.
+Rollback a14de41c en mismo volumen; documentos locales no se reescriben.
+Validacion posterior: SPORTEX_CLOSE=PASS, perfil pilot-release, tarea cerrada,
+ACTIVE_TASK=none;31 workflow,59 Core, SQL/RLS y build PASS.

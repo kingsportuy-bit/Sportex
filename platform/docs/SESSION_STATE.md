@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-004`: `in_progress` (docs/TASKS/active/TASK-20261020-004-corregir-base-bocetos.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documentos.
+Base alineada publicada: vivos y numero frontal apagados; nombre unico centrado arriba.
 
 ## Alcance actual
 
-- Permitido: Publicar codigo9a21e31 en sportex_bocetos_app; backup, rollback y QA sin IA.
-- Prohibido: Sin CRM, legado, DNS ni borrados de cuentas/bocetos.
+- Permitido: Uso y observacion del laboratorio publicado por Fito.
+- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA de QA.
 
 ## Decisiones vigentes
 
@@ -53,8 +53,8 @@ Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documento
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY`; registros 34.
-- Integraciones: GitHub=`BOCETOS_14DE41C_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_14DE41C_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_A65249D_HEALTHY`; registros 35.
+- Integraciones: GitHub=`BOCETOS_A65249D_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_A65249D_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documento
 - Tarea: `TASK-20261020-004`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-004_BASE_BOCETOS.md`.
-- Fito autoriza publicar9a21e31;198 bocetos PASS, pendiente verificar runtime.
+- a65249d publicado healthy1/1: base alineada y limpia, archivos exactos y backup restaurado PASS. Sin IA.
 
 ## Riesgos
 
@@ -78,4 +78,5 @@ Publicar base alineada9a21e31 aprobada por Fito, conservando cuentas y documento
 
 ## Siguientes acciones
 
-- Publicar candidato desde Git con backup y comprobar version/base/cuentas.
+- Fito recarga el laboratorio y abre Nuevo boceto para usar la base alineada.
+- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.
