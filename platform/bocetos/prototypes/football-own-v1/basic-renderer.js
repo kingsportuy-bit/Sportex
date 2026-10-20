@@ -29,7 +29,7 @@ function topology(alpha,width,height){
 }
 
 export function createBasicCollarRenderer(makeCanvas){
-  const renderer=createPrototypeRenderer(makeCanvas);
+  const renderer=createPrototypeRenderer(makeCanvas,{fixedBack:true});
   function read(image){const c=makeCanvas(image.width,image.height),ctx=c.getContext('2d');ctx.drawImage(image,0,0);return ctx.getImageData(0,0,c.width,c.height).data;}
   function load(images){
     const prepared={body:{},round:{}};
@@ -48,7 +48,7 @@ export function createBasicCollarRenderer(makeCanvas){
           const p=y*region.width+x,j=((y+region.y)*w+x+region.x)*4;alpha[p]=mask[j/4];
           // Only the removable original band/interior need replacement fabric.
           // The rest uses the original PSD lighting and masks without resampling.
-          const replace=kind==='body'&&(layers.photoCollar[j+3]>0||layers.photoBackNeck[j+3]>0);
+          const replace=kind==='body'&&side==='front'&&(layers.photoCollar[j+3]>0||layers.photoBackNeck[j+3]>0);
           const lightIndex=replace?(Math.min(h-1,neck.y+neck.height+8)*w+x+region.x)*4:j;
           burn.set(layers.photoBurnShirt.subarray(lightIndex,lightIndex+4),p*4);screen.set(layers.photoScreenShirt.subarray(lightIndex,lightIndex+4),p*4);
           gray[p]=psdLight([180,180,180],burn.subarray(p*4,p*4+4),screen.subarray(p*4,p*4+4))[0];

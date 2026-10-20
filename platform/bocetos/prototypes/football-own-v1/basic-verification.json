@@ -10,13 +10,13 @@
     "front: mover el anclaje conserva la otra vista y el resto de la prenda",
     "back: cuello redondo registrado en la máscara original",
     "back: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
-    "back: mover el anclaje conserva la otra vista y el resto de la prenda"
+    "back: cuello original idéntico entre variantes e inmune a anclajes guardados"
   ],
-  "prepareMs": 1284,
+  "prepareMs": 1287,
   "pairRenderMs": [
-    172,
-    35,
-    25
+    183,
+    30,
+    20
   ],
   "browserVisualQA": "PENDIENTE",
   "paidCalls": 0

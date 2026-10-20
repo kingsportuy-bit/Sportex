@@ -4,7 +4,7 @@ import {installAnchorEditor} from './anchor-editor.js';
 const $=id=>document.getElementById(id),canvas=$('preview');
 const makeCanvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
 const renderer=createBasicCollarRenderer(makeCanvas),comparisons=[];
-const editor=installAnchorEditor({canvas,renderer,onChange:schedule,schema:basicAnchorSchema});
+const editor=installAnchorEditor({canvas,renderer,onChange:schedule,schema:basicAnchorSchema,editableSides:['front']});
 function read(){const value={...defaults,anchors:editor.profile,collar:document.querySelector('[name=collar]:checked').value,showPieces:$('showPieces').checked};for(const id of ['color','second','sleeve','neckColor','pattern'])value[id]=$(id).value;return value;}
 let frame=0,ready=false;
 function paint(){frame=0;if(!ready)return;const s=read();editor.draw(renderer.drawPair(canvas,s,editor.focus));$('variant').textContent=`Cuello ${collarLabels[s.collar].toLocaleLowerCase('es')}`;$('view-label').textContent=editor.focus?(editor.focus==='front'?'Frente · detalle del cuello':'Espalda · detalle del cuello'):'Frente y espalda';if(document.querySelector('details').open)for(const [key,c]of comparisons)renderer.drawPair(c,{...s,collar:key});}

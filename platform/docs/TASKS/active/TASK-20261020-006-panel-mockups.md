@@ -26,9 +26,7 @@ Sin deploy, datos reales, API paga, CRM, legado ni importador PSD arbitrario.
 
 ## entradas
 
-Fito aprueba comenzar con el mockup actual y configurar su base.
-Aprueba prueba propia de frente/espalda y tres cuellos con imagegen integrado.
-Prioriza luego solo cuellos sobre Futbol basico, con anclajes editables.
+Fito aprueba panel y prueba propia; luego prioriza cuellos sobre Futbol basico.
 
 ## salidas
 
@@ -51,12 +49,13 @@ Catalogo es aditivo; conservar datos publicados al volver a version anterior.
 ## deuda_restante
 
 QA visual final pendiente por control de navegador deshabilitado. Sin deploy.
-Prototipo propio: aprobar encaje/costuras antes de integrarlo.
+Cuellos: recibir JSON frontal de Fito antes de fijar defaults del kit.
 
 ## registro_de_avances
 
 Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
 221 tests;6 checks de montaje PASS. QA navegador pendiente.
+Fito confirma tres frentes; espalda original fija. Export JSON pendiente.
 
 ## decisiones
 

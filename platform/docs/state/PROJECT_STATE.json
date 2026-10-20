@@ -33,7 +33,7 @@
     "campaign": "CAMP-20260803-001",
     "contextFocus": "runtime",
     "developmentGuideImpact": "none",
-    "nextAction": "Ajustar cuellos sobre Futbol basico; completar QA visual."
+    "nextAction": "Recibir JSON frontal; espalda fija; completar QA visual."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -221,7 +221,7 @@
     "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.",
+    "summary": "Frentes ajustados por Fito; espalda fija,6 checks y12 focales PASS. Falta JSON frontal y QA panel.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -229,7 +229,7 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
-      "summary": "Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.",
+      "summary": "Frentes ajustados por Fito; espalda fija,6 checks y12 focales PASS. Falta JSON frontal y QA panel.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
         "core/bocetos/mockups.mjs",
@@ -322,7 +322,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Ajustar cuellos sobre Futbol basico; completar QA visual."
+    "Recibir JSON frontal; espalda fija; completar QA visual."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

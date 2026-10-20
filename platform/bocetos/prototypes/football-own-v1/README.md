@@ -18,7 +18,8 @@ en localStorage, por modelo y versión del cuerpo.
 
 ## Qué se puede comprobar
 
-- Cambiar de cuello sobre el mismo cuerpo, frente y espalda.
+- Cambiar de cuello de frente sobre el mismo cuerpo; la espalda conserva
+  siempre su cuello redondo original, sin aplicar anclajes traseros guardados.
 - Colores independientes para camiseta, franjas, mangas y cuello.
 - Pruebas de blanco, negro, rojo y franjas.
 - Ver la separación inicial de cuerpo y mangas.
@@ -26,11 +27,12 @@ en localStorage, por modelo y versión del cuerpo.
 - Comparar los tres cuellos sin cambiar el estampado.
 - Mover el cuello y redimensionarlo con ocho tiradores o campos de posición,
   ancho y alto. Bloqueo de proporción, deshacer y restablecer por anclaje.
-- Ajustar los seis anclajes por separado: tres cuellos por frente/espalda.
+- Ajustar los tres anclajes de frente por separado. La espalda no se edita.
 - Acercar al cuello. Flechas desplazan 1 px y Shift + flechas, 10 px.
   Escape o cancelar el puntero revierte un arrastre.
 - Exportar/importar JSON. El archivo valida modelo, versión, seis anclajes y
   rangos antes de reemplazar los valores; los perfiles ajenos se rechazan.
+  Los registros traseros se conservan por compatibilidad, pero no alteran el render.
 
 ## Recursos y técnica
 

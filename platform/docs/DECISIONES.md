@@ -294,3 +294,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - Fito prioriza solo cuellos sobre Futbol basico; los mocks de clientes se
   prepararan sobre sus bases. Anclajes locales por tipo/vista con JSON. El cuerpo
   propio queda exploratorio; sin integracion ni deploy automaticos.
+- Fito da por ajustados los tres cuellos frontales y deja el cuello original
+  fijo en espalda. No capturados aun sus valores locales: falta exportar JSON.

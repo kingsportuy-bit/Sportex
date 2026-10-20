@@ -19,7 +19,7 @@
       <h2 id="anchor-title">Anclaje del cuello</h2>
       <fieldset><legend>Vista que vas a ajustar</legend><div class="neck-options">
         <label><input type="radio" name="side" value="front" checked>Frente</label>
-        <label><input type="radio" name="side" value="back">Espalda</label>
+        <label><input type="radio" name="side" value="back" disabled>Espalda · cuello original fijo</label>
       </div></fieldset>
       <label class="check"><input id="editAnchors" type="checkbox" checked>Editar anclaje en el lienzo</label>
       <label class="check"><input id="focusNeck" type="checkbox">Acercar al cuello</label>
@@ -49,7 +49,7 @@
   <section class="workspace" aria-label="Frente y espalda de la camiseta">
     <div class="view-head"><h2 id="variant">Cuello redondo</h2><span id="view-label">Frente y espalda</span></div>
     <div class="stage"><canvas id="preview" width="1600" height="1000" tabindex="0" aria-describedby="canvas-help" aria-label="Editor del anclaje de cuello con frente y espalda"></canvas></div>
-    <p id="canvas-help" class="caption">Arrastrá el centro para mover y los tiradores para cambiar el tamaño. Flechas: 1 px; Shift + flechas: 10 px. Escape cancela un arrastre. Los ajustes de cada cuello y vista se guardan por separado.</p>
+    <p id="canvas-help" class="caption">Arrastrá el centro para mover y los tiradores para cambiar el tamaño. Flechas: 1 px; Shift + flechas: 10 px. Escape cancela un arrastre. Se guarda cada cuello de frente por separado. La espalda conserva el cuello original.</p>
     <details><summary>Comparar los tres cuellos</summary><div id="comparison" class="comparison"></div></details>
   </section>
 </main>

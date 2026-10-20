@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.
+- Frentes ajustados por Fito; espalda fija,6 checks y12 focales PASS. Falta JSON frontal y QA panel.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Ajustar cuellos sobre Futbol basico; completar QA visual.
+- Recibir JSON frontal; espalda fija; completar QA visual.

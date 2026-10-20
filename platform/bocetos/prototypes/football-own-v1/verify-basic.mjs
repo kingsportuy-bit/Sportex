@@ -30,9 +30,16 @@ for(const side of ['front','back']){
   const changed=basicAnchorSchema.withAnchor(profile,'v',side,{...profile.anchors.v[side],centerX:profile.anchors.v[side].centerX+.01});
   assert.deepEqual(changed.anchors.v[side==='front'?'back':'front'],profile.anchors.v[side==='front'?'back':'front']);
   const moved=renderer.renderView('v',side,{...defaults,anchors:changed}),movedData=moved.getContext('2d').getImageData(0,0,moved.width,moved.height).data;
-  assert.ok(movedData.some((value,p)=>value!==arrays[1][p]));
+  if(side==='front')assert.ok(movedData.some((value,p)=>value!==arrays[1][p]));
+  else{
+    assert.deepEqual(arrays[1],arrays[0]);assert.deepEqual(arrays[2],arrays[0]);
+    const roundChanged=basicAnchorSchema.withAnchor(changed,'round','back',{...changed.anchors.round.back,top:.1,width:.6,height:.1});
+    const unchanged=renderer.renderView('polo','back',{...defaults,anchors:roundChanged});
+    assert.deepEqual(unchanged.getContext('2d').getImageData(0,0,unchanged.width,unchanged.height).data,arrays[0]);
+    assert.deepEqual(movedData,arrays[0]);
+  }
   for(let p=cutoff*views[0].width*4;p<arrays[0].length;p++)assert.equal(movedData[p],arrays[1][p]);
-  checks.push(`${side}: mover el anclaje conserva la otra vista y el resto de la prenda`);
+  checks.push(side==='front'?'front: mover el anclaje conserva la otra vista y el resto de la prenda':'back: cuello original idéntico entre variantes e inmune a anclajes guardados');
 }
 await writeFile(new URL('basic-comparison.jpg',root),proof.toBuffer('image/jpeg'));
 await writeFile(new URL('basic-anchors.json',root),JSON.stringify(profile,null,2)+'\n');

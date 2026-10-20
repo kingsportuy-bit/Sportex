@@ -134,3 +134,21 @@ Checkpoint de este ajuste: `workflow:close -- TASK-20261020-006 --profile=auto`
 devuelve SPORTEX_CLOSE=PASS, perfil local; validación documental, Core, SQL/RLS
 y build PASS. Log privado sportex-collar-anchors-close.log. Tarea permanece activa
 para afinar encaje y QA de navegador; no es una publicación ni cierre de producto.
+
+## Espalda original fija
+
+Fito informa que terminó los tres ajustes de frente y que no necesita cambiar
+el cuello trasero. El visor usa el round original de espalda en las tres opciones
+y omite cualquier geometría trasera del perfil, incluidos valores antiguos.
+Conserva el color editable del cuello. También conserva la iluminación PSD de
+esa zona, sin reemplazar tejido trasero. No dibuja guías ni permite seleccionar
+el anclaje de espalda; la clave local del perfil se mantiene para preservar frentes.
+
+12 pruebas focales de controlador/geometría/material PASS. Native Canvas:6 checks
+PASS, incluyendo igualdad completa por píxel de espalda entre variantes y tras
+cambiar anclajes V/round traseros. No se afirma haber capturado los ajustes de Fito:
+el control interno sigue deshabilitado, y no hay JSON exportado en Downloads.
+Se pidió exportar y adjuntar el JSON. Solo entonces se fijarán sus valores como
+defaults; todavía se usan los valores de referencia al abrir sin caché.
+Checkpoint de esta corrección: SPORTEX_CLOSE=PASS, perfil local. Log privado
+sportex-fixed-back-collar-close.log; sin deploy ni cambios de caché de Fito.

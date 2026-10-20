@@ -1,13 +1,13 @@
 import * as defaultSchema from './anchors.js';
 import {changeAnchorField,dragAnchor,anchorHandles,hitAnchor,canvasPoint,anchorScreenRect} from './anchors.js';
 
-export function installAnchorEditor({canvas,renderer,onChange,schema=defaultSchema}){
+export function installAnchorEditor({canvas,renderer,onChange,schema=defaultSchema,editableSides=['front','back']}){
   const {anchorStorageKey,defaultAnchorProfile,validateAnchorProfile,withAnchor}=schema;
   const $=id=>document.getElementById(id),clone=v=>JSON.parse(JSON.stringify(v));
   let profile=null,initial=null,layouts=[],gesture=null,fieldBefore=null;
   const history=[];
   const type=()=>document.querySelector('[name=collar]:checked').value;
-  const side=()=>document.querySelector('[name=side]:checked').value;
+  const side=()=>{const selected=document.querySelector('[name=side]:checked').value;return editableSides.includes(selected)?selected:editableSides[0];};
   const status=text=>$('anchor-status').textContent=text;
   const active=()=>profile.anchors[type()][side()];
   function syncFields(){
@@ -76,6 +76,7 @@ export function installAnchorEditor({canvas,renderer,onChange,schema=defaultSche
   function find(point){
     if(!profile||!$('editAnchors').checked)return null;
     for(const layout of layouts.slice().sort((a,b)=>(b.side===side())-(a.side===side()))){
+      if(!editableSides.includes(layout.side))continue;
       const rect=anchorScreenRect(layout,renderer.placement(type(),layout.side,profile));
       const handle=hitAnchor(point,rect,9/point.scale);if(handle)return {layout,handle};
     }
@@ -112,6 +113,7 @@ export function installAnchorEditor({canvas,renderer,onChange,schema=defaultSche
     const ctx=canvas.getContext('2d'),box=canvas.getBoundingClientRect(),unit=1/Math.min(box.width/canvas.width,box.height/canvas.height);
     ctx.save();
     for(const layout of layouts){
+      if(!editableSides.includes(layout.side))continue;
       const rect=anchorScreenRect(layout,renderer.placement(type(),layout.side,profile)),selected=layout.side===side();
       ctx.strokeStyle=selected?'#1a6947':'#63776b';ctx.lineWidth=(selected?1.7:1)*unit;ctx.setLineDash([5*unit,4*unit]);ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);ctx.setLineDash([]);
       if(!selected)continue;

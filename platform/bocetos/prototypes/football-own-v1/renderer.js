@@ -5,7 +5,7 @@ export const collarTypes=['round','v','polo'];
 export const collarLabels={round:'Redondo',v:'En V',polo:'Polo'};
 export const defaults={collar:'round',color:'#e6e8e7',second:'#202923',sleeve:'#e6e8e7',neckColor:'#1f2d25',pattern:'stripes',showPieces:false};
 
-export function createPrototypeRenderer(makeCanvas) {
+export function createPrototypeRenderer(makeCanvas,{fixedBack=false}={}) {
   const materials={body:{},round:{},v:{},polo:{}};
   const paintCache=new WeakMap();
   const viewCache=new Map(),holeCache=new WeakMap();
@@ -27,13 +27,15 @@ export function createPrototypeRenderer(makeCanvas) {
     if(cache.size>=2)cache.delete(cache.keys().next().value);cache.set(key,c);return c;
   }
   function placement(type,side,profile){
+    if(fixedBack&&side==='back'){type='round';profile=null;}
     const body=materials.body[side],neck=materials[type][side];
     return anchorPlacement(profile?.anchors[type][side]||defaultAnchor(body,neck,type),body);
   }
   function renderView(type,side,settings={}){
+    if(fixedBack&&side==='back')type='round';
     const s={...defaults,...settings,collar:type},body=materials.body[side],neck=materials[type][side];
     if(!body||!neck)throw new Error('El mockup todavía está cargando.');
-    const viewKey=JSON.stringify([type,side,s.color,s.second,s.sleeve,s.neckColor,s.pattern,s.showPieces,s.anchors?.anchors[type][side]]);
+    const viewKey=JSON.stringify([type,side,s.color,s.second,s.sleeve,s.neckColor,s.pattern,s.showPieces,fixedBack&&side==='back'?null:s.anchors?.anchors[type][side]]);
     if(viewCache.has(viewKey))return viewCache.get(viewKey);
     const pad=64,c=surface(body.width+pad*2,body.height+pad*2),ctx=c.getContext('2d');
     const p=placement(type,side,s.anchors),band=painted(neck,{color:s.neckColor});
