@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "model": {
+    "model": "football-basic-v1",
+    "bodyRevision": "original-psd-collars-v1"
+  },
+  "checks": [
+    "front: cuello redondo registrado en la máscara original",
+    "front: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
+    "front: mover el anclaje conserva la otra vista y el resto de la prenda",
+    "back: cuello redondo registrado en la máscara original",
+    "back: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
+    "back: mover el anclaje conserva la otra vista y el resto de la prenda"
+  ],
+  "prepareMs": 1284,
+  "pairRenderMs": [
+    172,
+    35,
+    25
+  ],
+  "browserVisualQA": "PENDIENTE",
+  "paidCalls": 0
+}

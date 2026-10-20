@@ -291,3 +291,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   2D con frente/espalda y tres cuellos, mediante imagegen integrado. Base comun
   continua, cuello/abertura/luces independientes; colores y franjas locales.
   Se valida por separado antes de integrarla; no sustituye el modelo publicado.
+- Fito prioriza solo cuellos sobre Futbol basico; los mocks de clientes se
+  prepararan sobre sus bases. Anclajes locales por tipo/vista con JSON. El cuerpo
+  propio queda exploratorio; sin integracion ni deploy automaticos.

@@ -28,6 +28,7 @@ Sin deploy, datos reales, API paga, CRM, legado ni importador PSD arbitrario.
 
 Fito aprueba comenzar con el mockup actual y configurar su base.
 Aprueba prueba propia de frente/espalda y tres cuellos con imagegen integrado.
+Prioriza luego solo cuellos sobre Futbol basico, con anclajes editables.
 
 ## salidas
 
@@ -54,8 +55,8 @@ Prototipo propio: aprobar encaje/costuras antes de integrarlo.
 
 ## registro_de_avances
 
-Panel/setup y guardar/recargar PASS.209 tests; QA visual final pendiente.
-Prototipo aislado:3 cuellos,2 vistas, mapas y8 checks render PASS.
+Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
+221 tests;6 checks de montaje PASS. QA navegador pendiente.
 
 ## decisiones
 

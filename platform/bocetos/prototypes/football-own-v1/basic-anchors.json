@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "model": "football-basic-v1",
+  "bodyRevision": "original-psd-collars-v1",
+  "anchors": {
+    "round": {
+      "front": {
+        "centerX": 0.5055066079295154,
+        "top": 0,
+        "width": 0.30176211453744495,
+        "height": 0.10299625468164794,
+        "keepRatio": true
+      },
+      "back": {
+        "centerX": 0.49572649572649574,
+        "top": 0,
+        "width": 0.3162393162393162,
+        "height": 0.04553734061930783,
+        "keepRatio": true
+      }
+    },
+    "v": {
+      "front": {
+        "centerX": 0.5055066079295154,
+        "top": 0,
+        "width": 0.30176211453744495,
+        "height": 0.16644902683905655,
+        "keepRatio": true
+      },
+      "back": {
+        "centerX": 0.49572649572649574,
+        "top": 0,
+        "width": 0.3162393162393162,
+        "height": 0.06992892066231152,
+        "keepRatio": true
+      }
+    },
+    "polo": {
+      "front": {
+        "centerX": 0.5055066079295154,
+        "top": 0,
+        "width": 0.3500440528634361,
+        "height": 0.17655629019682076,
+        "keepRatio": true
+      },
+      "back": {
+        "centerX": 0.49572649572649574,
+        "top": 0,
+        "width": 0.3668376068376068,
+        "height": 0.07741454702954141,
+        "keepRatio": true
+      }
+    }
+  }
+}

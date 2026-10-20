@@ -34,3 +34,6 @@ Fito autoriza una prueba local 2D de camiseta propia con frente, espalda y
 tres cuellos intercambiables. Vive en `prototypes/football-own-v1/`, fuera del
 catalogo. Usa una base continua, mascaras y luces derivadas; no reemplaza el kit
 actual. El encaje y las costuras requieren aprobacion antes de integrarla.
+Fito cambia la prioridad: conservar Futbol basico y preparar solo sus cuellos.
+El visor local ahora monta redondo/V/polo en ese kit, con anclajes editables y
+JSON por modelo; los mockups de clientes se prepararan sobre sus propias bases.

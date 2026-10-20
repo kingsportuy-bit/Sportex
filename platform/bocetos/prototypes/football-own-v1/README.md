@@ -1,7 +1,8 @@
-# Prueba de camiseta propia
+# Prueba de cuellos sobre Fútbol básico
 
-Prototipo local de una camiseta con frente y espalda y tres cuellos:
-redondo, V y polo. No reemplaza Fútbol básico ni está publicado en el catálogo.
+Fito priorizó conservar el mockup actual y preparar solo los cuellos.
+La vista activa monta redondo, V y polo sobre las máscaras y luces de Fútbol
+básico, con frente y espalda. Todavía no está integrada al catálogo publicado.
 
 ## Abrir
 
@@ -12,7 +13,8 @@ node bocetos/prototypes/football-own-v1/server.mjs
 ```
 
 Abrir `http://127.0.0.1:4321/`. Solo escucha en la computadora local.
-El visor no usa claves, API, persistencia ni datos de empresas.
+El visor no usa claves, API ni datos de empresas. Guarda solo los anclajes
+en localStorage, por modelo y versión del cuerpo.
 
 ## Qué se puede comprobar
 
@@ -22,17 +24,36 @@ El visor no usa claves, API, persistencia ni datos de empresas.
 - Ver la separación inicial de cuerpo y mangas.
 - Descargar la vista compuesta en PNG transparente.
 - Comparar los tres cuellos sin cambiar el estampado.
+- Mover el cuello y redimensionarlo con ocho tiradores o campos de posición,
+  ancho y alto. Bloqueo de proporción, deshacer y restablecer por anclaje.
+- Ajustar los seis anclajes por separado: tres cuellos por frente/espalda.
+- Acercar al cuello. Flechas desplazan 1 px y Shift + flechas, 10 px.
+  Escape o cancelar el puntero revierte un arrastre.
+- Exportar/importar JSON. El archivo valida modelo, versión, seis anclajes y
+  rangos antes de reemplazar los valores; los perfiles ajenos se rechazan.
 
 ## Recursos y técnica
 
-`assets/` contiene los cuatro recursos generados con imagegen integrado:
-un cuerpo neutro continuo y un par frente/espalda por cada tipo de cuello.
+La vista actual lee el kit PSD existente en `../../public/assets/psd-kit/`.
+El redondo se registra con su máscara original. El V y el polo usan materiales
+neutros separados. Las máscaras de mangas y luces siguen siendo las del kit.
+Solo la banda/interior del cuello anterior reciben tejido de reemplazo,
+muestreado en la fila de tejido inmediatamente inferior. Hay que revisar ese
+encaje antes de integrar al laboratorio. No se afirma reconstrucción perfecta
+de tela ni encaje automático en cualquier mockup.
+
+`basic-renderer.js` implementa este montaje. `basic-anchors.json` conserva los
+anclajes iniciales; `basic-verification.json` registra seis checks de render.
+`basic-comparison.jpg` y `basic-*-neck.png` son renders reales del módulo activo.
+El PNG descargado siempre contiene frente/espalda, sin guías ni zoom.
+
+Como antecedente se conservan los cinco recursos de imagegen integrado:
+dos cuerpos exploratorios y un par frente/espalda por cada tipo de cuello.
 `prompts.json` documenta las instrucciones y referencias utilizadas.
 
-La máscara se deriva del alfa real y de su componente principal; se descartan
-residuos blancos de generación. El cuerpo y las mangas usan el mismo tejido.
-Las divisiones de manga se trazaron como una primera aproximación sobre las
-costuras visibles; necesitan revisión antes de usarlas en producción.
+En los recursos generados, la máscara se deriva del alfa real y de su componente
+principal; se descartan residuos blancos. El cuerpo exploratorio tenía divisiones
+de manga aproximadas; la vista activa usa las máscaras originales de Fútbol básico.
 
 El gris neutro permite derivar mapas de sombreado y brillo para recolorear.
 Son una aproximación de iluminación a partir de la imagen, no pases físicos
@@ -41,20 +62,22 @@ superior se adapta al cuello seleccionado y conserva el cuerpo bajo ella.
 La sombra de contacto se calcula al superponer la banda. No hay sombreado
 del cuello redondo incorporado a la base común.
 
-La colocación aplica escala uniforme a cada cuello. El cuerpo y el muestreo
+La colocación conserva proporción por defecto; desbloquear permite ancho y
+alto independientes. El cuerpo y el muestreo
 de las franjas comparten coordenadas en las tres variantes. El visor guarda
-como máximo dos pinturas por material, agrupa los cambios por cuadro y solo
+como máximo dos pinturas por material y cuatro vistas, agrupa los cambios por cuadro y solo
 compone la comparación triple cuando está abierta.
 
-`layers/` incluye máscaras, sombras y brillos exportados en coordenadas locales
+El experimento de cuerpo propio queda como referencia, sin más desarrollo.
+Sus `layers/` incluyen máscaras, sombras y brillos exportados en coordenadas locales
 por vista; `manifest.json` describe sus dimensiones, origen y colocación.
 `comparison.jpg` y `proof-*.png` son renders reales del módulo del visor.
 
 ## Estado y siguientes ajustes
 
 Esta prueba verifica el montaje 2D y la independencia de los cuellos. Antes de
-registrarla como kit del laboratorio hay que aprobar la silueta, afinar las
-costuras de mangas y el encaje de cuellos, definir el mapeo del estampado y
+registrarla como kit del laboratorio hay que aprobar el encaje de cuellos,
+preparar las capas finales en alta resolución y
 revisar la interfaz en el navegador. El control del navegador interno estaba
 deshabilitado durante esta sesión: no se afirma QA visual de la página.
 

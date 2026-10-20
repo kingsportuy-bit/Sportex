@@ -33,7 +33,7 @@
     "campaign": "CAMP-20260803-001",
     "contextFocus": "runtime",
     "developmentGuideImpact": "none",
-    "nextAction": "Revisar encaje del prototipo propio; completar QA visual del panel."
+    "nextAction": "Ajustar cuellos sobre Futbol basico; completar QA visual."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -126,7 +126,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "note": "209 bocetos,8 checks render;31 workflow,59 Core,SQL/RLS/build PASS local. QA navegador pendiente."
+    "note": "221 bocetos,6 checks cuellos;workflow,Core,SQL/RLS/build y CLOSE local PASS. QA navegador pendiente."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
@@ -221,7 +221,7 @@
     "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.",
+    "summary": "Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -229,7 +229,7 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
-      "summary": "Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.",
+      "summary": "Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
         "core/bocetos/mockups.mjs",
@@ -322,7 +322,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Revisar encaje del prototipo propio; completar QA visual del panel."
+    "Ajustar cuellos sobre Futbol basico; completar QA visual."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

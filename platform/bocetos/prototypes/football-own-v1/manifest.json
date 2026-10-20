@@ -1,17 +1,73 @@
 {
   "schemaVersion": 1,
   "id": "football-own-v1",
+  "bodyRevision": "football-match-v2",
   "status": "PROTOTIPO_LOCAL_NO_INTEGRADO",
   "createdAt": "2026-10-20",
+  "defaultAnchors": {
+    "schemaVersion": 1,
+    "model": "football-own-v1",
+    "bodyRevision": "football-match-v2",
+    "anchors": {
+      "round": {
+        "front": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.3,
+          "height": 0.1382083807190972,
+          "keepRatio": true
+        },
+        "back": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.3,
+          "height": 0.07363380868116998,
+          "keepRatio": true
+        }
+      },
+      "v": {
+        "front": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.3,
+          "height": 0.19004212179624475,
+          "keepRatio": true
+        },
+        "back": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.3,
+          "height": 0.0758885426966921,
+          "keepRatio": true
+        }
+      },
+      "polo": {
+        "front": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.36,
+          "height": 0.20853313003116802,
+          "keepRatio": true
+        },
+        "back": {
+          "centerX": 0.5,
+          "top": -0.006,
+          "width": 0.36,
+          "height": 0.08690909384825535,
+          "keepRatio": true
+        }
+      }
+    }
+  },
   "views": {
     "front": {
-      "width": 769,
-      "height": 789,
+      "width": 786,
+      "height": 805,
       "sourceBounds": {
-        "x": 94,
-        "y": 53,
-        "width": 769,
-        "height": 789
+        "x": 92,
+        "y": 43,
+        "width": 786,
+        "height": 805
       },
       "body": {
         "body-mask": "layers/front-body-mask.png",
@@ -32,10 +88,10 @@
           "width": 710,
           "height": 335,
           "placement": {
-            "x": 269.15,
-            "y": -4.734,
-            "width": 230.7,
-            "height": 108.85140845070423
+            "x": 275.09999999999997,
+            "y": -4.83,
+            "width": 235.79999999999998,
+            "height": 111.25774647887324
           },
           "mask": "layers/front-round-mask.png",
           "shadow": "layers/front-round-shadow.png",
@@ -51,10 +107,10 @@
           "width": 783,
           "height": 508,
           "placement": {
-            "x": 269.15,
-            "y": -4.734,
-            "width": 230.7,
-            "height": 149.6750957854406
+            "x": 275.09999999999997,
+            "y": -4.83,
+            "width": 235.79999999999998,
+            "height": 152.98390804597702
           },
           "mask": "layers/front-v-mask.png",
           "shadow": "layers/front-v-shadow.png",
@@ -70,10 +126,10 @@
           "width": 831,
           "height": 493,
           "placement": {
-            "x": 246.08,
-            "y": -4.734,
-            "width": 276.84,
-            "height": 164.23841155234658
+            "x": 251.52,
+            "y": -4.83,
+            "width": 282.96,
+            "height": 167.86916967509026
           },
           "mask": "layers/front-polo-mask.png",
           "shadow": "layers/front-polo-shadow.png",
@@ -82,13 +138,13 @@
       }
     },
     "back": {
-      "width": 764,
-      "height": 798,
+      "width": 786,
+      "height": 806,
       "sourceBounds": {
-        "x": 32,
-        "y": 46,
-        "width": 764,
-        "height": 798
+        "x": 11,
+        "y": 42,
+        "width": 786,
+        "height": 806
       },
       "body": {
         "body-mask": "layers/back-body-mask.png",
@@ -109,10 +165,10 @@
           "width": 739,
           "height": 186,
           "placement": {
-            "x": 267.4,
-            "y": -4.788,
-            "width": 229.2,
-            "height": 57.68768606224627
+            "x": 275.09999999999997,
+            "y": -4.836,
+            "width": 235.79999999999998,
+            "height": 59.348849797023
           },
           "mask": "layers/back-round-mask.png",
           "shadow": "layers/back-round-shadow.png",
@@ -128,10 +184,10 @@
           "width": 798,
           "height": 207,
           "placement": {
-            "x": 267.4,
-            "y": -4.788,
-            "width": 229.2,
-            "height": 59.45413533834586
+            "x": 275.09999999999997,
+            "y": -4.836,
+            "width": 235.79999999999998,
+            "height": 61.16616541353383
           },
           "mask": "layers/back-v-mask.png",
           "shadow": "layers/back-v-shadow.png",
@@ -147,10 +203,10 @@
           "width": 921,
           "height": 228,
           "placement": {
-            "x": 244.48000000000002,
-            "y": -4.788,
-            "width": 275.03999999999996,
-            "height": 68.08807817589576
+            "x": 251.52,
+            "y": -4.836,
+            "width": 282.96,
+            "height": 70.04872964169381
           },
           "mask": "layers/back-polo-mask.png",
           "shadow": "layers/back-polo-shadow.png",
@@ -161,7 +217,7 @@
   },
   "generation": {
     "tool": "imagegen integrado",
-    "calls": 4,
+    "calls": 5,
     "prompts": "prompts.json",
     "usesExternalApiKey": false
   },
@@ -172,9 +228,9 @@
   ],
   "assets": [
     {
-      "file": "assets/body-neutral.png",
-      "bytes": 1794924,
-      "sha256": "4978372e051b20b664fd1e9b4bbaaca544ee0c8c501a41f47255638d47be4ef5"
+      "file": "assets/body-football.png",
+      "bytes": 2079469,
+      "sha256": "870dbb0b428fca775d41f1eb7f1e156d0a1d5aca0ec761e801742239ee53cfaf"
     },
     {
       "file": "assets/collar-round.png",

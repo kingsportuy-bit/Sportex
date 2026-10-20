@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.
+- Cuellos en Futbol basico y anclajes locales;221 tests,6 checks PASS. QA navegador pendiente.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Revisar encaje del prototipo propio; completar QA visual del panel.
+- Ajustar cuellos sobre Futbol basico; completar QA visual.

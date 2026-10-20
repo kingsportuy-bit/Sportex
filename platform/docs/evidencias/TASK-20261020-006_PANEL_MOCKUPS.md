@@ -92,3 +92,45 @@ sin revisor independiente. Sistema visual heredado conservado.
 Estado: PROTOTIPO_LOCAL_NO_INTEGRADO. Costuras de mangas y encaje de cuellos
 necesitan aprobacion; luz derivada no equivale a pases fisicos3D. Retirar la
 carpeta y detener su servidor revierte esta prueba. Fútbol basico se conserva.
+
+## Cambio de prioridad: cuellos sobre el mockup actual
+
+Fito pidió anclajes editables y corte de fútbol. Se creó un cuerpo exploratorio
+adicional con imagegen integrado (quinta llamada, prompt y PNG documentados).
+Luego priorizó conservar Fútbol básico y preparar solo cuellos; el visor4321
+ahora muestra ese kit. No se avanza el cuerpo propio ni se integra al catálogo.
+
+`basic-renderer.js` lee las máscaras y luces originales del PSD: cuerpo,
+mangas, puños, collar e interior. Redondo usa el collar original en sus mismas
+coordenadas; V y polo son materiales separados. Solo la banda/interior originales
+se completan con tejido muestreado debajo del cuello, antes del montaje de la
+nueva banda. Encaje provisional y preview a resolución del kit del editor;
+falta aprobación y preparación final en alta resolución.
+
+Panel de anclajes: seis registros independientes, centro X/Y y ancho/alto,
+tiradores, proporción, zoom, teclado, deshacer y restablecer. localStorage
+versionado por modelo; JSON se valida antes de aplicar. Cancelar puntero o
+Escape revierte. PNG de salida no lleva tiradores ni acercamiento del editor.
+Los anclajes de cuerpo propio no se aceptan para Fútbol básico.
+
+Suite completa:221 tests PASS. Diez tests de geometría/controlador verifican
+proporción incluso en límites, guardado/recarga, undo y cancelación sin persistir.
+Dos tests focales verifican identidad del kit y blending. Log privado:
+C:/Users/Fito/.codex/artifacts/sportex-collar-anchors-tests.log.
+`verify-basic.mjs`:6 checks de render PASS; round registrado en máscara original,
+cuerpo inferior idéntico por píxel entre cuellos y cambio de anclaje aislado por
+vista. Preparación1284ms; primeros pares172/35/25ms en Canvas nativo, no benchmark
+de navegador. Resultado en basic-verification.json, renders basic-*.png/jpg.
+El render anterior propio conserva10 checks PASS como antecedente.
+
+HTTP loopback4321 PASS para HTML, módulos y capas requeridas; archivos ajenos y
+traversal404, CSP sin conexiones. Inspección de renders reales muestra V/polo
+sobre la base actual. El control del navegador interno continúa deshabilitado;
+QA de interacción/responsive sigue pendiente. Sin deploy ni llamadas API pagas.
+Para cada cliente se preparará su propio kit y anclajes; todavía no es un
+importador automático. Detener el visor/revertir este checkpoint es el rollback.
+
+Checkpoint de este ajuste: `workflow:close -- TASK-20261020-006 --profile=auto`
+devuelve SPORTEX_CLOSE=PASS, perfil local; validación documental, Core, SQL/RLS
+y build PASS. Log privado sportex-collar-anchors-close.log. Tarea permanece activa
+para afinar encaje y QA de navegador; no es una publicación ni cierre de producto.

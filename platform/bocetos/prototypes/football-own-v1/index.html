@@ -2,19 +2,38 @@
 <html lang="es">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SPORTEX · Prueba de camiseta propia</title>
+<title>SPORTEX · Cuellos de Fútbol básico</title>
 <link rel="stylesheet" href="style.css">
 <body>
-<header><strong>SPORTEX</strong><span>Prueba de camiseta propia</span><a href="README.md">Notas de la prueba</a></header>
+<header><strong>SPORTEX</strong><span>Cuellos de Fútbol básico</span><a href="README.md">Notas de la prueba</a></header>
 <main>
   <aside aria-label="Opciones de la prueba">
-    <h1>Una camiseta.<br>Tres cuellos.</h1>
-    <p class="intro">Compará las variantes sobre el mismo cuerpo y estampado.</p>
+    <h1>El mismo mockup.<br>Tres cuellos.</h1>
+    <p class="intro">Ajustá los cuellos sobre Fútbol básico y exportá sus anclajes. El cuerpo usa las máscaras y luces actuales.</p>
     <fieldset><legend>Cuello</legend><div class="neck-options">
       <label><input type="radio" name="collar" value="round" checked>Redondo</label>
       <label><input type="radio" name="collar" value="v">En V</label>
       <label><input type="radio" name="collar" value="polo">Polo</label>
     </div></fieldset>
+    <section class="anchor-panel" aria-labelledby="anchor-title">
+      <h2 id="anchor-title">Anclaje del cuello</h2>
+      <fieldset><legend>Vista que vas a ajustar</legend><div class="neck-options">
+        <label><input type="radio" name="side" value="front" checked>Frente</label>
+        <label><input type="radio" name="side" value="back">Espalda</label>
+      </div></fieldset>
+      <label class="check"><input id="editAnchors" type="checkbox" checked>Editar anclaje en el lienzo</label>
+      <label class="check"><input id="focusNeck" type="checkbox">Acercar al cuello</label>
+      <div class="anchor-fields">
+        <label class="field">Centro X (%)<input id="anchor-centerX" type="number" min="5" max="95" step="0.1" value="50"></label>
+        <label class="field">Posición Y (%)<input id="anchor-top" type="number" min="-5" max="40" step="0.1" value="-0.6"></label>
+        <label class="field">Ancho (%)<input id="anchor-width" type="number" min="8" max="70" step="0.1" value="30"></label>
+        <label class="field">Alto (%)<input id="anchor-height" type="number" min="1.5" max="50" step="0.1" value="12"></label>
+      </div>
+      <label class="check"><input id="keepRatio" type="checkbox" checked>Conservar proporción del cuello</label>
+      <div class="anchor-actions"><button id="undo-anchor" type="button" disabled>Deshacer</button><button id="reset-anchor" type="button" disabled>Restablecer este anclaje</button></div>
+      <div class="anchor-actions"><button id="export-anchors" type="button" disabled>Exportar JSON</button><button id="import-anchors" type="button" disabled>Importar JSON</button><input id="anchor-file" type="file" accept="application/json,.json" hidden></div>
+      <p id="anchor-status" class="help" role="status">Preparando anclajes…</p>
+    </section>
     <label class="field">Estampado<select id="pattern"><option value="stripes">Franjas verticales</option><option value="solid">Liso</option></select></label>
     <div class="colors">
       <label class="field">Camiseta<input id="color" type="color" value="#e6e8e7"></label>
@@ -28,9 +47,9 @@
     <p id="status" role="status">Preparando las piezas…</p>
   </aside>
   <section class="workspace" aria-label="Frente y espalda de la camiseta">
-    <div class="view-head"><h2 id="variant">Cuello redondo</h2><span>Frente y espalda</span></div>
-    <div class="stage"><canvas id="preview" width="1600" height="1000" aria-label="Vista de frente y espalda con el cuello y los colores elegidos"></canvas></div>
-    <p class="caption">Prototipo para revisar encaje, bordes y recoloración. La base y las franjas conservan su posición al cambiar de cuello.</p>
+    <div class="view-head"><h2 id="variant">Cuello redondo</h2><span id="view-label">Frente y espalda</span></div>
+    <div class="stage"><canvas id="preview" width="1600" height="1000" tabindex="0" aria-describedby="canvas-help" aria-label="Editor del anclaje de cuello con frente y espalda"></canvas></div>
+    <p id="canvas-help" class="caption">Arrastrá el centro para mover y los tiradores para cambiar el tamaño. Flechas: 1 px; Shift + flechas: 10 px. Escape cancela un arrastre. Los ajustes de cada cuello y vista se guardan por separado.</p>
     <details><summary>Comparar los tres cuellos</summary><div id="comparison" class="comparison"></div></details>
   </section>
 </main>
