@@ -41,8 +41,11 @@ SPORTEX_CLOSE=PASS, perfil local. La tarea sigue activa esperando GO operativo.
 
 Sin IA, mutaciones remotas ni borrados de Delta Sport. Respaldos anteriores y
 bocetos locales se conservan. Borrado activo, sin promesa de borrado forense.
-No publicado; necesita GO concreto segun AGENTS.md. Rollback de codigo al release
+GO de Fito: «go», publica el codigo01e6797 sin cambios funcionales. Rollback al release
 69739bb; restaurar datos borrados requiere respaldo, no rollback de la imagen.
 Al autorizar: publicar solo sportex_bocetos_app, tomar snapshot consistente,
 comprobar readiness del commit y ambos dominios; rollback a 69739bb. Conservar
 cuentas actuales y no ejecutar eliminaciones reales como parte del despliegue.
+
+03:46 UTC: preflight remoto read-only, 69739bb healthy1/1, update completed.
+Disco38GB libres, memoria7GB disponibles; CRMd9c4f44 conservado.

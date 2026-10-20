@@ -263,3 +263,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   admin con usuario escrito y version; operaciones en curso bloquean la purga.
   SQLite confirma datos y archivos juntos. Sesiones revocadas; otras empresas,
   cargos globales y bocetos locales se conservan. Sin borrados reales de QA.
+- Fito responde «go» para publicar el codigo01e6797 con backup y rollback a
+  69739bb. El release puede sumar solo documentacion operativa; no incluye
+  eliminaciones reales ni pruebas IA.

@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `feature`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Eliminar empresas y sus datos activos desde el panel de bocetos.
+Publicar eliminacion de empresas aprobada por Fito, conservando cuentas actuales.
 
 ## Alcance actual
 
-- Permitido: Core, persistencia, HTTP y panel de bocetos; pruebas con empresas ficticias.
-- Prohibido: Sin borrados reales, despliegue, CRM, legado ni llamadas IA. Respaldos conservados.
+- Permitido: Publicar codigo01e6797 en sportex_bocetos_app; backup, rollback y QA sin borrados reales.
+- Prohibido: Sin CRM, legado, DNS, borrados reales ni IA. Respaldos conservados.
 
 ## Decisiones vigentes
 
@@ -62,7 +62,7 @@ Eliminar empresas y sus datos activos desde el panel de bocetos.
 - Tarea: `TASK-20261020-003`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md`.
-- Eliminar empresa local PASS: purga tenant, sesiones y archivos; respaldo conservado. No publicado.
+- Fito autoriza publicar01e6797 con backup/rollback; codigo local validado, runtime pendiente.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Eliminar empresas y sus datos activos desde el panel de bocetos.
 
 ## Siguientes acciones
 
-- GO de Fito para publicar eliminacion de empresas; ninguna empresa real se borra en QA.
+- Publicar candidato aprobado con backup consistente y comprobar HTTPS/assets/cuentas.

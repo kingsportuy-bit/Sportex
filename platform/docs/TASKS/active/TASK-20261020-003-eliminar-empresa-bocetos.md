@@ -5,9 +5,9 @@ owner: Codex
 requester: Fito
 estado: in_progress
 lifecycle: active
-work_type: feature
+work_type: operacion
 campaign: CAMP-20260803-001
-context_focus: frontend
+context_focus: infrastructure
 development_guide_impact: none
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 updated_at: 2026-10-20
@@ -18,17 +18,16 @@ Eliminar empresas desde el panel con confirmacion propia y purga de datos activo
 
 ## alcance_permitido
 
-Core, persistencia, HTTP, panel, candidato Git y pruebas locales ficticias.
-Borrar cuenta, sesiones, archivos, configuracion y consumo asociados.
-Conservar respaldos anteriores por decision explicita de Fito.
+Publicar 01e6797 en sportex_bocetos_app; backup, rollback y QA sin borrados.
+Cambios de release solo documentales; codigo aprobado intacto.
 
 ## alcance_prohibido
 
-Sin borrar empresas reales, desplegar, modificar CRM/legado ni consumir IA.
+Sin borrar empresas reales, modificar CRM/legado ni consumir IA.
 
 ## entradas
 
-Pedido directo de Fito y respuesta: borrar datos activos, conservar respaldos.
+Fito: «go» para publicar 01e6797 con backup y rollback.
 
 ## salidas
 
@@ -45,12 +44,11 @@ docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md
 
 ## rollback
 
-Revertir codigo antes de publicar. Una eliminacion confirmada requiere restaurar
-un respaldo; no es reversible desde el panel.
+Volver a imagen 69739bb, mismo volumen. Borrados confirmados requieren respaldo.
 
 ## deuda_restante
 
-Publicacion requiere GO especifico; sin eliminaciones reales de QA.
+Completar despliegue y observacion; sin eliminaciones reales de QA.
 
 ## registro_de_avances
 
