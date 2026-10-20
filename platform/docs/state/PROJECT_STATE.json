@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
-  "updatedBy": "TASK-20261020-002",
-  "environment": "PILOTO_DELTA",
+  "updatedBy": "TASK-20261020-003",
+  "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,17 +13,28 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "operation",
-  "objective": "Laboratorio actualizado; Fito valida uso con Delta Sport.",
+  "mode": "feature",
+  "objective": "Eliminar empresas y sus datos activos desde el panel de bocetos.",
   "scope": {
     "allowed": [
-      "Uso y observacion del laboratorio publicado por Fito."
+      "Core, persistencia, HTTP y panel de bocetos; pruebas con empresas ficticias."
     ],
     "prohibited": [
-      "Sin CRM, legado, DNS, Evolution ni llamadas IA de QA."
+      "Sin borrados reales, despliegue, CRM, legado ni llamadas IA. Respaldos conservados."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-003",
+    "title": "Eliminar empresa del laboratorio",
+    "path": "docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md",
+    "status": "in_progress",
+    "lifecycle": "active",
+    "workType": "feature",
+    "campaign": "CAMP-20260803-001",
+    "contextFocus": "frontend",
+    "developmentGuideImpact": "none",
+    "nextAction": "GO de Fito para publicar eliminacion de empresas; ninguna empresa real se borra en QA."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -85,7 +96,7 @@
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "69739bbf8f4cd2b044b2ff90edaff28378c74b23",
-    "workingTreeState": "BOCETOS_69739BB_DEPLOYED_POST_RELEASE_EVIDENCE",
+    "workingTreeState": "BOCETOS_COMPANY_DELETE_LOCAL",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -111,11 +122,11 @@
     "commands": [
       "npm run check:bocetos",
       "npm run validate",
-      "npm run workflow:close -- TASK-20261020-002 --profile=auto",
+      "npm run workflow:close -- TASK-20261020-003 --profile=auto",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md",
-    "note": "187 bocetos,31 workflow y59 Core PASS;7 pruebas Linux, HTTPS/assets y cuenta Delta; backup real restaurado. Sin IA."
+    "evidence": "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md",
+    "note": "195 bocetos,31 workflow y59 Core PASS; purga SQLite atomica, respaldo conservado y QA responsive. Sin IA ni borrados reales."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_69739BB_HEALTHY",
@@ -204,14 +215,31 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20261020-002",
+    "taskId": "TASK-20261020-003",
     "date": "2026-10-20",
-    "path": "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md",
-    "summary": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.",
-    "environment": "PILOTO_DELTA",
+    "path": "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md",
+    "summary": "Eliminar empresa local PASS: purga tenant, sesiones y archivos; respaldo conservado. No publicado.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-003",
+      "summary": "Eliminar empresa local PASS: purga tenant, sesiones y archivos; respaldo conservado. No publicado.",
+      "documents": [
+        "docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md",
+        "core/bocetos/service.mjs",
+        "bocetos/public/panel.js",
+        "docs/BOCETOS_LOCAL_CONTRACT.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md"
+      ],
+      "decisions": [
+        "Fito confirma conservar respaldos y eliminar datos activos."
+      ]
+    },
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-002",
@@ -280,22 +308,6 @@
       "decisions": [
         "Referencia exacta 8823a773, sin redisenar y sin revertir funciones nuevas."
       ]
-    },
-    {
-      "date": "2026-09-03",
-      "taskId": "TASK-20260902-002",
-      "summary": "51c2dfe desplegado y verificado en PILOTO_DELTA con migracion 011, 25 tablas RLS, una membresia Delta autorizada, QA autenticada y outbound sin cambios.",
-      "documents": [
-        "docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md",
-        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
-      ],
-      "decisions": [
-        "La migracion 011 precedio a la imagen; el rollback vuelve primero a 8823a773 y conserva las tablas aditivas.",
-        "PRODUCCION_COMERCIAL, mensajes reales, pedidos y pagos permanecieron fuera de alcance."
-      ]
     }
   ],
   "blockers": [],
@@ -307,12 +319,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito prueba el laboratorio publicado con Delta Sport.",
-    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
+    "GO de Fito para publicar eliminacion de empresas; ninguna empresa real se borra en QA."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 31,
-    "throughDate": "2026-09-02"
+    "archivedChanges": 32,
+    "throughDate": "2026-09-03"
   }
 }

@@ -3,6 +3,22 @@
   "project": "SPORTEX",
   "entries": [
     {
+      "date": "2026-09-03",
+      "taskId": "TASK-20260902-002",
+      "summary": "51c2dfe desplegado y verificado en PILOTO_DELTA con migracion 011, 25 tablas RLS, una membresia Delta autorizada, QA autenticada y outbound sin cambios.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md",
+        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260902-002_PILOTO_DELTA_CRM_CONFIGURACION.md"
+      ],
+      "decisions": [
+        "La migracion 011 precedio a la imagen; el rollback vuelve primero a 8823a773 y conserva las tablas aditivas.",
+        "PRODUCCION_COMERCIAL, mensajes reales, pedidos y pagos permanecieron fuera de alcance."
+      ]
+    },
+    {
       "date": "2026-09-02",
       "taskId": "TASK-20260902-001",
       "summary": "Leads y Clientes reutilizan WhatsApp; Pedidos conserva tablero/planilla y Mi empresa agrega configuracion tenant-aware versionada con migracion local no ejecutada.",

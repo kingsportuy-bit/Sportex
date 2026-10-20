@@ -169,7 +169,7 @@ const labHandler=lab?createLabHttp({service:lab,readJson,env,fetchImpl:imageFetc
   runGeneration:async(body,apiKey,{fetchImpl})=>{
     let status,result;const response={writeHead(code){status=code;},end(value){result=JSON.parse(value);}};
     await generate(null,response,{body,apiKey,fetchImpl});return {status,body:result};
-  },runAnalysis:async(body,apiKey,{fetchImpl,tenantId})=>{
+  },onCompanyDeleted:tenantId=>{analyzers.delete(tenantId);},runAnalysis:async(body,apiKey,{fetchImpl,tenantId})=>{
     if(!isImage(body?.reference))return {status:400,body:{error:'Cargá una imagen de referencia válida.'}};
     let context=null;try{if(body.context!==undefined)context=validateDetailContext(body.context,isImage);}catch{return {status:400,body:{error:'Los elementos o las texturas no son válidos.'}};}
     let analyzer=analyzers.get(tenantId);if(!analyzer){analyzer=createColorAnalyzer({apiKey:()=>env.OPENAI_API_KEY,model:()=>env.OPENAI_COLOR_MODEL||'gpt-4.1-mini'});if(analyzers.size>=20)analyzers.delete(analyzers.keys().next().value);analyzers.set(tenantId,analyzer);}

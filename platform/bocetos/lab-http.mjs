@@ -16,7 +16,7 @@ const tokens=(req,secure)=>{const c=cookies(req),prefix=secure?'__Host-':'';retu
 function cookie(res,name,session,secure){res.setHeader('set-cookie',`${secure?'__Host-':''}${name}=${session.token||''}; Path=/; HttpOnly; SameSite=Strict${secure?'; Secure':''}${session.expiresIn!==null?`; Max-Age=${session.expiresIn??0}`:''}`);}
 const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));};
 
-export function createLabHttp({service,readJson,runGeneration,runAnalysis,env=process.env,fetchImpl=fetch}){
+export function createLabHttp({service,readJson,runGeneration,runAnalysis,onCompanyDeleted=()=>{},env=process.env,fetchImpl=fetch}){
   const web=labWebContext(env);
   const attempts=new Map();let syncing=false;
   async function syncCosts(token,system=false){
@@ -84,6 +84,12 @@ export function createLabHttp({service,readJson,runGeneration,runAnalysis,env=pr
       }
       const usage=/^\/api\/lab\/admin\/companies\/([a-f0-9-]{36})\/usage$/.exec(path);
       if(usage&&req.method==='GET'){json(res,200,await service.companyUsage(token.admin,usage[1]));return true;}
+      const deletion=/^\/api\/lab\/admin\/companies\/([a-f0-9-]{36})\/delete$/.exec(path);
+      if(deletion&&req.method==='POST'){
+        const input=await readJson(req,8192),result=await service.deleteCompany(token.admin,deletion[1],input);
+        for(const key of attempts.keys())if(key.endsWith(':'+input.confirmation))attempts.delete(key);
+        onCompanyDeleted(deletion[1]);json(res,200,result);return true;
+      }
       if(path==='/api/lab/admin/costs'&&req.method==='GET'){json(res,200,await service.costSummary(token.admin));return true;}
       const company=/^\/api\/lab\/admin\/companies\/([a-f0-9-]{36})(\/assets)?$/.exec(path);
       if(company&&req.method==='POST'){

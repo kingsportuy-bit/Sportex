@@ -145,3 +145,21 @@ usuario no root, imagen inmutable, secretos Swarm y dominios HTTPS separados.
 Cookie __Host- Secure/HttpOnly, origen exacto y bootstrap administrativo privado.
 Snapshot SQLite consistente incluye blobs; arranque/diario/cierre, restauracion
 ensayada. Sin importar fixtures o cache local. Rollback solo del servicio nuevo.
+
+## Eliminacion de empresas (TASK-20261020-003)
+
+POST `/api/lab/admin/companies/:id/delete` exige administrador, origen exacto,
+version vigente y confirmation igual al usuario. El panel pide escribirlo en
+un dialogo propio. Una operacion o llamada processing impide la eliminacion.
+El Core purga empresa, usuarios, sesiones, configuracion, assets, operaciones,
+usage, idempotencia y auditoria tenant. Conserva un evento administrativo sin
+identificador de empresa y el reporte global de cargos compartidos.
+SQLite confirma metadatos y blobs juntos; las escrituras de archivos/resultados
+son parte de la misma transaccion para evitar carreras y archivos huerfanos.
+Se limpian blobs sin referencias de versiones anteriores, conservando todos los
+referenciados por otras empresas. secure_delete no promete borrado forense.
+El adaptador JSON local confirma metadatos antes de limpiar archivos; un fallo
+se informa y el reintento idempotente repite la limpieza. No se usa en servidor.
+Fito eligio conservar respaldos anteriores; los bocetos del navegador siguen
+bajo responsabilidad del usuario. Recrear el usuario genera otro tenant ID.
+No se prueba borrando empresas reales ni se consumen llamadas IA.

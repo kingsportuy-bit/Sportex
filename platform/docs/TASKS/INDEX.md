@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-003` | `in_progress` | Eliminar empresa del laboratorio | docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md
 
 ## Cola
 

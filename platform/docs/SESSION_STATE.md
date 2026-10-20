@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DESARROLLO_LOCAL`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `feature`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-003`: `in_progress` (docs/TASKS/active/TASK-20261020-003-eliminar-empresa-bocetos.md).
 
 ## Objetivo actual
 
-Laboratorio actualizado; Fito valida uso con Delta Sport.
+Eliminar empresas y sus datos activos desde el panel de bocetos.
 
 ## Alcance actual
 
-- Permitido: Uso y observacion del laboratorio publicado por Fito.
-- Prohibido: Sin CRM, legado, DNS, Evolution ni llamadas IA de QA.
+- Permitido: Core, persistencia, HTTP y panel de bocetos; pruebas con empresas ficticias.
+- Prohibido: Sin borrados reales, despliegue, CRM, legado ni llamadas IA. Respaldos conservados.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Laboratorio actualizado; Fito valida uso con Delta Sport.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-002`.
+- Tarea: `TASK-20261020-003`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md`.
-- Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.
+- Fuente: `docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md`.
+- Eliminar empresa local PASS: purga tenant, sesiones y archivos; respaldo conservado. No publicado.
 
 ## Riesgos
 
@@ -78,5 +78,4 @@ Laboratorio actualizado; Fito valida uso con Delta Sport.
 
 ## Siguientes acciones
 
-- Fito prueba el laboratorio publicado con Delta Sport.
-- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.
+- GO de Fito para publicar eliminacion de empresas; ninguna empresa real se borra en QA.

@@ -257,3 +257,9 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - 20/10, GO de Fito: «si autorizo».69739bb publica el codigo aprobado6b6f5f2;
   diferencias solo documentales. Login/base/assets exactos, backup restaurado
   y cuenta Delta preservada; ninguna llamada IA ni cambio de CRM.
+
+- 20/10, TASK-20261020-003: Fito pide eliminar empresas y todos sus datos activos
+  desde el panel. Confirma conservar respaldos anteriores. Comando exclusivo
+  admin con usuario escrito y version; operaciones en curso bloquean la purga.
+  SQLite confirma datos y archivos juntos. Sesiones revocadas; otras empresas,
+  cargos globales y bocetos locales se conservan. Sin borrados reales de QA.

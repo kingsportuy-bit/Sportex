@@ -40,7 +40,7 @@ test('editor confirmation resolves only its own accept action and cancellation p
   const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,{addEventListener(event,handler){this[event]=handler;},focus(){this.focused=true;},querySelector(){return null;}});return nodes.get(id);};
   const dialog=$('editor-confirm-dialog');dialog.showModal=()=>{dialog.open=true;};dialog.close=value=>{dialog.open=false;dialog.returnValue=value;nodes.get('editor-confirm-dialog')['onclose']?.();};
   dialog.addEventListener=(event,handler)=>{dialog['on'+event]=handler;};
-  const sketches=new Map([[1,{title:'original'}],[2,{title:'test'}]]),c=vm.createContext({$,sketches,editHistories:new Map(),activeSketchId:1,generatingSketchId:null,nextAvailableSketchId:()=>2,tabTitle:id=>`Boceto ${id}`,notice(){},rememberPreferences(){},captureSketch:()=>sketches.get(1),renderSketchTabs(){},runPendingReferenceAdjustment(){},scheduleWorkspaceSave(){}});
+  const sketches=new Map([[1,{title:'original'}],[2,{title:'test'}]]),c=vm.createContext({$,sketches,editHistories:new Map(),activeSketchId:1,generatingSketchId:null,nextAvailableSketchId:()=>2,tabTitle:id=>`Boceto ${id}`,notice(){},rememberPreferences(){},captureSketch:()=>sketches.get(1),renderSketchTabs(){},runPendingReferenceAdjustment(){},scheduleWorkspaceSave(){},pruneHistorySources(){}});
   vm.runInContext(extract('let confirmationResolver=',"$('new-sketch').addEventListener"),c);
   const canceled=c.closeSketch(2);assert.equal(sketches.size,2);assert.equal(dialog.open,true);assert.equal($('editor-confirm-cancel').focused,true);
   $('editor-confirm-cancel').click();await canceled;assert.equal(sketches.size,2);

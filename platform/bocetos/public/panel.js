@@ -3,6 +3,7 @@ document.body.classList.toggle('lab-company-access',!adminSurface);
 if(!adminSurface)$('login-view').setAttribute('aria-labelledby','surface-label');
 let companies=[],current=null,publicConfig=null,dirty=false,loading=false,initialParameters=null,createKey=null;
 let usageCompany=null,usageSequence=0;
+let deleteTarget=null,deleting=false;
 const fonts=[['club-sc-internacional-2023','SC Internacional 2023'],['club-real-madrid-font-2024-2025','Real Madrid 2024–2025']];
 const number=new Intl.NumberFormat('es-UY'),money=new Intl.NumberFormat('es-UY',{minimumFractionDigits:4,maximumFractionDigits:6});
 const date=value=>new Intl.DateTimeFormat('es-UY',{timeZone:'America/Montevideo',dateStyle:'short'}).format(new Date(value));
@@ -39,7 +40,7 @@ async function refresh(){
 function renderCompanies(){
   const query=$('company-search').value.trim().toLocaleLowerCase('es-UY'),list=companies.filter(c=>`${c.name} ${c.username}`.toLocaleLowerCase('es-UY').includes(query));
   $('clear-search').hidden=!query;$('company-count').textContent=`${list.length} ${list.length===1?'empresa':'empresas'}`;
-  $('company-rows').innerHTML=list.map(c=>`<tr><td><strong>${escape(c.name)}</strong><small>${escape(c.username)}</small></td><td><span class="lab-badge ${c.state}">${{active:'Activa',expired:'Vencida',suspended:'Suspendida'}[c.state]}</span></td><td>${escape(c.expiresOn.split('-').reverse().join('/'))}<small>${c.daysRemaining} días restantes</small></td><td>${number.format(c.used)} usadas · ${number.format(c.remaining)} disponibles${c.reserved?`<small>${c.reserved} en proceso / por verificar</small>`:''}</td><td>${number.format(c.apiCalls)}</td><td>${c.tokens===null?'—':number.format(c.tokens)}${c.tokensPending?'<small>'+c.tokensPending+' llamadas sin consumo informado</small>':''}</td><td><div class="lab-row-actions"><button type="button" class="tool-button" data-usage="${c.id}" aria-label="Ver consumo de ${escape(c.name)}">Ver consumo</button><button type="button" class="tool-button" data-edit="${c.id}" aria-label="Configurar ${escape(c.name)}">Configurar</button><button type="button" class="tool-button" data-renew="${c.id}" aria-label="Renovar ${escape(c.name)}">Renovar</button><button type="button" class="tool-button" data-copy="${c.id}" aria-label="Copiar acceso de ${escape(c.name)}">Copiar acceso</button></div></td></tr>`).join('');
+  $('company-rows').innerHTML=list.map(c=>`<tr><td><strong>${escape(c.name)}</strong><small>${escape(c.username)}</small></td><td><span class="lab-badge ${c.state}">${{active:'Activa',expired:'Vencida',suspended:'Suspendida'}[c.state]}</span></td><td>${escape(c.expiresOn.split('-').reverse().join('/'))}<small>${c.daysRemaining} días restantes</small></td><td>${number.format(c.used)} usadas · ${number.format(c.remaining)} disponibles${c.reserved?`<small>${c.reserved} en proceso / por verificar</small>`:''}</td><td>${number.format(c.apiCalls)}</td><td>${c.tokens===null?'—':number.format(c.tokens)}${c.tokensPending?'<small>'+c.tokensPending+' llamadas sin consumo informado</small>':''}</td><td><div class="lab-row-actions"><button type="button" class="tool-button" data-usage="${c.id}" aria-label="Ver consumo de ${escape(c.name)}">Ver consumo</button><button type="button" class="tool-button" data-edit="${c.id}" aria-label="Configurar ${escape(c.name)}">Configurar</button><button type="button" class="tool-button" data-renew="${c.id}" aria-label="Renovar ${escape(c.name)}">Renovar</button><button type="button" class="tool-button" data-copy="${c.id}" aria-label="Copiar acceso de ${escape(c.name)}">Copiar acceso</button><button type="button" class="tool-button lab-danger-text" data-delete="${c.id}" aria-label="Eliminar ${escape(c.name)}">Eliminar</button></div></td></tr>`).join('');
   $('company-empty').hidden=list.length>0;$('company-empty').querySelector('h2').textContent=query?'Sin coincidencias':'Todavía no hay empresas';$('company-empty').querySelector('p').textContent=query?'Probá con otro nombre o limpiá la búsqueda.':'Creá la primera para darle acceso al laboratorio.';
 }
 async function showUsage(company,focus=true){
@@ -88,6 +89,32 @@ async function copyAccess(company){
   try{await navigator.clipboard.writeText(text);feedback(`Acceso de ${company.name} copiado.`);}
   catch{$('access-text').value=text;$('access-dialog').showModal();$('access-text').select();}
 }
+function openDeletion(company){
+  deleteTarget=structuredClone(company);$('delete-company-form').reset();$('delete-company-error').textContent='';
+  $('delete-company-name').textContent=company.name;$('delete-company-user').textContent=company.username;
+  $('delete-company-confirmation').removeAttribute('aria-invalid');$('confirm-delete-company').disabled=true;
+  $('delete-company-dialog').showModal();$('cancel-delete-company').focus();
+}
+function closeDeletion(){if(!deleting)$('delete-company-dialog').close();}
+$('delete-company-confirmation').addEventListener('input',()=>{
+  $('confirm-delete-company').disabled=deleting||$('delete-company-confirmation').value!==deleteTarget?.username;
+  $('delete-company-confirmation').removeAttribute('aria-invalid');$('delete-company-error').textContent='';
+});
+$('cancel-delete-company').addEventListener('click',closeDeletion);
+$('delete-company-dialog').addEventListener('cancel',event=>{event.preventDefault();closeDeletion();});
+$('delete-company-dialog').addEventListener('close',()=>{deleteTarget=null;});
+$('delete-company-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(deleting||!deleteTarget||$('delete-company-confirmation').value!==deleteTarget.username)return;
+  const target=deleteTarget;deleting=true;$('delete-company-error').textContent='';
+  $('confirm-delete-company').disabled=true;$('confirm-delete-company').textContent='Eliminando…';$('cancel-delete-company').disabled=true;$('delete-company-confirmation').disabled=true;
+  try{
+    await api(`/api/lab/admin/companies/${target.id}/delete`,{body:{version:target.version,confirmation:$('delete-company-confirmation').value}});
+    companies=companies.filter(c=>c.id!==target.id);if(current?.id===target.id)current=null;
+    if(usageCompany?.id===target.id){usageCompany=null;usageSequence++;$('usage-section').hidden=true;$('usage-rows').replaceChildren();$('usage-title').textContent='Consumo de la empresa';$('usage-status').textContent='';}
+    renderCompanies();$('delete-company-dialog').close();$('new-company').focus();feedback(`${target.name}: empresa y datos activos eliminados.`);
+  }catch(error){$('delete-company-error').textContent=error.code==='version_conflict'?'La empresa cambió. Cancelá, actualizá el panel y volvé a intentar.':error.message;}
+  finally{deleting=false;$('confirm-delete-company').textContent='Eliminar empresa';$('cancel-delete-company').disabled=false;$('delete-company-confirmation').disabled=false;$('confirm-delete-company').disabled=!deleteTarget||$('delete-company-confirmation').value!==deleteTarget.username;}
+});
 async function uploadFile(file,kind){
   if(file.size>(kind==='font'?10:15)*1024*1024)throw new Error(kind==='font'?'La fuente supera 10 MB.':'La imagen supera 15 MB.');
   if(kind==='font')return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('No se pudo leer la fuente.'));reader.readAsDataURL(file);});
@@ -106,7 +133,7 @@ $('login-form').addEventListener('submit',async event=>{
 $('logout').addEventListener('click',async()=>{try{await api('/api/lab/logout',{body:{audience:'admin'}});loginView();}catch(error){feedback(error.message,true);}});
 $('new-company').addEventListener('click',()=>openCompany());$('refresh-companies').addEventListener('click',refresh);
 $('company-search').addEventListener('input',renderCompanies);$('clear-search').addEventListener('click',()=>{$('company-search').value='';renderCompanies();$('company-search').focus();});
-$('company-rows').addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;const company=companies.find(c=>c.id===(button.dataset.edit||button.dataset.renew||button.dataset.copy||button.dataset.usage));if(!company)return;if(button.dataset.usage)showUsage(company);else if(button.dataset.copy)copyAccess(company);else openCompany(company,Boolean(button.dataset.renew));});
+$('company-rows').addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;const company=companies.find(c=>c.id===(button.dataset.edit||button.dataset.renew||button.dataset.copy||button.dataset.usage||button.dataset.delete));if(!company)return;if(button.dataset.delete)openDeletion(company);else if(button.dataset.usage)showUsage(company);else if(button.dataset.copy)copyAccess(company);else openCompany(company,Boolean(button.dataset.renew));});
 $('refresh-usage').addEventListener('click',()=>{if(usageCompany)showUsage(usageCompany,false);});
 $('close-usage').addEventListener('click',()=>{const id=usageCompany?.id;usageCompany=null;usageSequence++;$('usage-section').hidden=true;document.querySelector(`[data-usage="${id}"]`)?.focus();});
 $('company-form').addEventListener('input',()=>{dirty=true;});

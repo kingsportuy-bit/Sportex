@@ -121,14 +121,35 @@ export function createLabService({store,clock=Date.now}){
         c.version++;audit(db,actor.id,'company.updated',id);return project(db,c);
       });
     },
+    async deleteCompany(token,id,input){
+      return store.transaction((db,blobs)=>{
+        const {actor}=context(db,token,{admin:true}),company=db.companies.find(c=>c.id===id);
+        if(typeof input?.confirmation!=='string'||!input.confirmation||input.confirmation.length>60||!Number.isInteger(input.version))fail('confirmation_required','Escribí el usuario de la empresa para confirmar la eliminación.');
+        // Retrying a lost response also retries file cleanup in the local adapter.
+        if(!company){blobs.collectOrphanBlobs();return {ok:true};}
+        if(input.version!==company.version)fail('version_conflict','La empresa cambió. Actualizá el panel y volvé a intentar.',409);
+        if(input.confirmation!==company.username)fail('confirmation_required','El usuario escrito no coincide con la empresa.');
+        if(db.operations.some(o=>o.tenantId===id&&(o.state==='processing'||o.calls?.some(c=>c.outcome==='processing'))))fail('operation_busy','La empresa tiene una solicitud en curso. Esperá a que termine antes de eliminarla.',409);
+        const users=new Set(db.users.filter(u=>u.tenantId===id).map(u=>u.id));
+        db.companies=db.companies.filter(c=>c.id!==id);
+        db.users=db.users.filter(u=>!users.has(u.id));
+        db.sessions=db.sessions.filter(s=>!users.has(s.actorId));
+        db.assets=db.assets.filter(a=>a.tenantId!==id);
+        db.operations=db.operations.filter(o=>o.tenantId!==id);
+        db.idempotency=db.idempotency.filter(r=>r.companyId!==id&&!users.has(r.actorId));
+        db.audit=db.audit.filter(e=>e.tenantId!==id&&!users.has(e.actor));
+        db.costs=db.costs.filter(c=>c.tenantId!==id);
+        // Administrative evidence contains no deleted company identifier or content.
+        audit(db,actor.id,'company.deleted',null);blobs.collectOrphanBlobs();return {ok:true};
+      });
+    },
     async saveAsset(token,tenantId,input){
-      const db=await store.read();context(db,token,{admin:true});if(!db.companies.some(c=>c.id===tenantId))fail('not_found','La empresa no existe.',404);
-      const {bytes,mime,name}=inspectAsset(input),id=randomUUID();await store.putBlob(id,bytes);
-      return store.transaction(next=>{
-        const {actor}=context(next,token,{admin:true});const asset={id,tenantId,kind:input.kind,name,mime,size:bytes.length,checksum:hash(bytes),blobId:id};
+      return store.transaction((next,blobs)=>{
+        const {actor}=context(next,token,{admin:true});if(!next.companies.some(c=>c.id===tenantId))fail('not_found','La empresa no existe.',404);
+        const {bytes,mime,name}=inspectAsset(input),id=randomUUID();const asset={id,tenantId,kind:input.kind,name,mime,size:bytes.length,checksum:hash(bytes),blobId:id};
         if(input.kind!=='font')next.assets=next.assets.filter(a=>a.tenantId!==tenantId||a.kind!==input.kind);
         if(next.assets.filter(a=>a.tenantId===tenantId&&a.kind==='font').length>=30&&input.kind==='font')fail('asset_limit','Podés guardar hasta 30 fuentes por empresa.');
-        next.assets.push(asset);audit(next,actor.id,'asset.saved',tenantId);return {...asset,blobId:undefined};
+        blobs.putBlob(id,bytes);blobs.collectOrphanBlobs();next.assets.push(asset);audit(next,actor.id,'asset.saved',tenantId);return {...asset,blobId:undefined};
       });
     },
     async asset(token,id){const db=await store.read(),{actor}=context(db,token),asset=db.assets.find(a=>a.id===id&&(actor.admin||a.tenantId===actor.tenantId));if(!asset)fail('not_found','El archivo no existe.',404);return {...asset,bytes:await store.getBlob(asset.blobId)};},
@@ -169,8 +190,7 @@ export function createLabService({store,clock=Date.now}){
     },
     async finishOperation(id,{state,usage=null,result=null}){
       if(!['succeeded','failed','unknown'].includes(state))fail('invalid_operation','Estado de operación inválido.');
-      const resultRef=result?randomUUID():null;if(resultRef)await store.putBlob(resultRef,Buffer.from(JSON.stringify(result)));
-      return store.transaction(db=>{const op=db.operations.find(o=>o.id===id);if(!op)fail('not_found','La solicitud no existe.',404);if(!['processing','unknown'].includes(op.state))return op;op.state=state;op.usage=safeUsage(usage);op.resultRef=resultRef;op.finishedAt=clock();audit(db,op.actorId,`operation.${state}`,op.tenantId);return op;});
+      return store.transaction((db,blobs)=>{const op=db.operations.find(o=>o.id===id);if(!op)fail('not_found','La solicitud no existe.',404);if(!['processing','unknown'].includes(op.state))return op;const resultRef=result?randomUUID():null;if(resultRef)blobs.putBlob(resultRef,Buffer.from(JSON.stringify(result)));op.state=state;op.usage=safeUsage(usage);op.resultRef=resultRef;op.finishedAt=clock();audit(db,op.actorId,`operation.${state}`,op.tenantId);blobs.collectOrphanBlobs();return op;});
     },
     async operationResult(token,id){const db=await store.read(),{company}=context(db,token),op=db.operations.find(o=>o.id===id&&o.tenantId===company?.id);if(!op?.resultRef)fail('operation_pending','La solicitud está pendiente de verificar. No se volvió a enviar.',409);return JSON.parse((await store.getBlob(op.resultRef)).toString('utf8'));},
     async recordCosts(buckets,{start,end,keyIds=[]}={}){

@@ -62,5 +62,16 @@
     </form>
   </dialog>
   <dialog id="confirm-dialog" class="lab-dialog lab-confirm" aria-labelledby="confirm-title"><h2 id="confirm-title">Descartar cambios</h2><p>Los cambios sin guardar se perderán.</p><footer><button id="keep-editing" class="tool-button" type="button">Seguir editando</button><button id="discard-changes" class="primary-button" type="button">Descartar cambios</button></footer></dialog>
+  <dialog id="delete-company-dialog" class="lab-dialog lab-confirm lab-delete" aria-labelledby="delete-company-title" aria-describedby="delete-company-description">
+    <h2 id="delete-company-title">Eliminar empresa</h2>
+    <p id="delete-company-description">Se eliminarán <strong id="delete-company-name"></strong>, su acceso, configuración, archivos y consumo registrado. Sus sesiones quedarán cerradas.</p>
+    <p>Esta acción no se puede deshacer desde el panel. Los respaldos anteriores y los bocetos guardados en los equipos se conservan.</p>
+    <form id="delete-company-form" novalidate>
+      <label for="delete-company-confirmation">Para confirmar, escribí <strong id="delete-company-user"></strong></label>
+      <input id="delete-company-confirmation" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="60" aria-describedby="delete-company-error">
+      <p id="delete-company-error" class="lab-error" role="alert"></p>
+      <footer><button id="cancel-delete-company" type="button" class="tool-button" autofocus>Cancelar</button><button id="confirm-delete-company" type="submit" class="lab-danger-button" disabled>Eliminar empresa</button></footer>
+    </form>
+  </dialog>
   <dialog id="access-dialog" class="lab-dialog lab-confirm" aria-labelledby="access-title"><h2 id="access-title">Acceso al laboratorio</h2><label for="access-text">Compartí estos datos con la empresa</label><textarea id="access-text" readonly rows="4" style="resize:none"></textarea><footer><button id="close-access" class="primary-button" type="button">Listo</button></footer></dialog>
 </body></html>
