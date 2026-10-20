@@ -5,9 +5,9 @@ owner: Codex
 requester: Fito
 estado: in_progress
 lifecycle: active
-work_type: fix
+work_type: operacion
 campaign: CAMP-20260803-001
-context_focus: frontend
+context_focus: infrastructure
 development_guide_impact: none
 plan_authorization: PLAN_APPROVED_AUTHORIZED
 updated_at: 2026-10-20
@@ -19,16 +19,17 @@ Login verde sin tarjeta, logo/subtitulo y formulario minimo.
 
 ## alcance_permitido
 
-platform/bocetos, login y pruebas locales ficticias; conservar geometria, fuentes,
-opciones, recursos propios y otros bocetos.
+Publicar el candidato aprobado en sportex_bocetos_app; backup, rollback y QA.
+Conservar geometria, fuentes, opciones, cuentas y bocetos.
 
 ## alcance_prohibido
 
-Sin CRM, legado, DELTA, cuentas remotas ni IA. Deploy requiere GO de Fito.
+Sin CRM, legado, Evolution, DNS, cuentas nuevas ni llamadas IA.
 
 ## entradas
 
-Pedidos de Fito en este hilo; base del laboratorio observada en Delta Sport.
+Fito: «si autorizo», publicar 6b6f5f2. Solo documentos de operacion pueden cambiar
+el commit de release; el codigo aprobado permanece identico.
 
 ## salidas
 
@@ -44,11 +45,11 @@ docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md
 
 ## rollback
 
-Revertir codigo; sin borrar cuentas ni bocetos.
+Volver a imagen b8e1fc8, mismo volumen. Backup SQLite consistente antes del corte.
 
 ## deuda_restante
 
-Publicacion pendiente de GO.
+Publicacion autorizada, pendiente de ejecutar y verificar.
 
 ## registro_de_avances
 

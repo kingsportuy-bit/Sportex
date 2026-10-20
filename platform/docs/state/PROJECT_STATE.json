@@ -3,7 +3,7 @@
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
   "updatedBy": "TASK-20261020-002",
-  "environment": "DESARROLLO_LOCAL",
+  "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,14 +13,14 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "fix",
-  "objective": "Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.",
+  "mode": "operation",
+  "objective": "Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.",
   "scope": {
     "allowed": [
-      "Base, archivos y login de platform/bocetos; pruebas locales ficticias."
+      "Actualizar solo sportex_bocetos_app; backup y rollback del volumen propio."
     ],
     "prohibited": [
-      "Sin cambios remotos, CRM, legado, IA ni cuentas reales."
+      "Sin CRM, legado, DNS, Evolution, nuevas cuentas ni llamadas IA."
     ]
   },
   "currentTask": {
@@ -29,11 +29,11 @@
     "path": "docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md",
     "status": "in_progress",
     "lifecycle": "active",
-    "workType": "fix",
+    "workType": "operacion",
     "campaign": "CAMP-20260803-001",
-    "contextFocus": "frontend",
+    "contextFocus": "infrastructure",
     "developmentGuideImpact": "none",
-    "nextAction": "Fito revisa el candidato validado y autoriza su publicacion en el laboratorio."
+    "nextAction": "Construir release, respaldar SQLite y actualizar solo el laboratorio autorizado."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",

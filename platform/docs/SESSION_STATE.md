@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `DESARROLLO_LOCAL`.
+- Entorno actual: `PILOTO_DELTA`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `fix`.
+- Intencion actual: `operation`.
 
 ## Git
 
@@ -27,12 +27,12 @@ Actualizado: 2026-10-20.
 
 ## Objetivo actual
 
-Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.
+Publicar el candidato autorizado 6b6f5f2 y verificar cuentas, base y login.
 
 ## Alcance actual
 
-- Permitido: Base, archivos y login de platform/bocetos; pruebas locales ficticias.
-- Prohibido: Sin cambios remotos, CRM, legado, IA ni cuentas reales.
+- Permitido: Actualizar solo sportex_bocetos_app; backup y rollback del volumen propio.
+- Prohibido: Sin CRM, legado, DNS, Evolution, nuevas cuentas ni llamadas IA.
 
 ## Decisiones vigentes
 
