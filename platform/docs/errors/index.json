@@ -73,6 +73,12 @@
       "title": "Textura subida deformada para rellenar la prenda",
       "path": "docs/errors/entries/SPX-ERR-20261019-005-textura-subida-deformada-para-rellenar-la-prenda.md",
       "searchText": "# spx-err-20261019-005 - textura subida deformada para rellenar la prenda\n\n- fecha: 2026-10-19.\n- sintoma: imagenes y pdf cargados se estiraban o deformaban automaticamente al montar frente, espalda y short.\n- causa raiz: drawpowerclips y textureplacement usaban la envolvente del molde para todo clip, incluido custom; la geometria generica de mangas usaba cover y bleed.\n- solucion: uploads custom usan ajuste proporcional contain sin bleed y no pasan por drawtorsotexture. controles, render y exportacion comparten la misma base; scalex/scaley manuales se respetan.\n- prevencion/guardia: tests/custom-texture-aspect.test.mjs verifica aspecto, contain, las cinco piezas a1x/2x, edicion independiente y regresion del montaje ia. pdf horizontal con circulo confirmado en navegador.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-006",
+      "title": "Scope de release eliminaba el punto de dotfiles",
+      "path": "docs/errors/entries/SPX-ERR-20261019-006-scope-de-release-eliminaba-el-punto-de-dotfiles.md",
+      "searchText": "# spx-err-20261019-006 - scope de release eliminaba el punto de dotfiles\n\n- fecha: 2026-10-19.\n- sintoma: el bundle rechazaba platform/.dockerignore pese a estar declarado en scope.\n- causa raiz: trimstart eliminaba caracteres punto y barra en lugar del prefijo literal ./.\n- solucion: conservar dotfiles y quitar solo ./; mismo criterio en guard y bundle.\n- prevencion/guardia: test ejecuta normalizador real: dotfiles y rutas windows; rutas absolutas/traversal rechazadas.\r\n"
     }
   ]
 }

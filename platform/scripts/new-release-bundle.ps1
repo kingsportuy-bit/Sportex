@@ -24,7 +24,11 @@ $projectPrefix = $projectRootPath.Substring($repoRootPath.Length).TrimStart('\',
 if (-not $?) { throw 'Release governance guard fallo.' }
 
 $resolved = (& git -C $repoRoot rev-parse "${ReleaseCommit}^{commit}").Trim().ToLowerInvariant()
-$scope = @($ScopePaths | ForEach-Object { $_.Replace('\','/').Trim().TrimStart('./').TrimEnd('/') } | Select-Object -Unique)
+$scope = @($ScopePaths | ForEach-Object {
+  $path = $_.Replace('\','/').Trim()
+  while ($path.StartsWith('./')) { $path = $path.Substring(2) }
+  $path.TrimEnd('/')
+} | Select-Object -Unique)
 $repoScope = @($scope | ForEach-Object { if ($projectPrefix) { "$projectPrefix/$_" } else { $_ } })
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 if (Test-Path -LiteralPath $output) { throw "El bundle ya existe: $output" }

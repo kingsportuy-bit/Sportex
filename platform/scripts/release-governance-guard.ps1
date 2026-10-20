@@ -36,8 +36,10 @@ function Invoke-Git([string[]]$Arguments) {
   return $result
 }
 function Normalize-Scope([string]$Value) {
-  $normalized = $Value.Replace('\','/').Trim().TrimStart('./').TrimEnd('/')
-  if (-not $normalized -or $normalized.StartsWith('/') -or $normalized -match '(^|/)\.\.(/|$)') {
+  $normalized = $Value.Replace('\','/').Trim()
+  while ($normalized.StartsWith('./')) { $normalized = $normalized.Substring(2) }
+  $normalized = $normalized.TrimEnd('/')
+  if (-not $normalized -or $normalized.StartsWith('/') -or $normalized -match '^[A-Za-z]:' -or $normalized -match '(^|/)\.\.(/|$)') {
     throw "Scope invalido: $Value"
   }
   return $normalized
