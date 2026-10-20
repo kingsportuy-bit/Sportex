@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-03",
+  "updatedAt": "2026-10-20",
   "entries": [
     {
       "id": "SPX-ERR-20260719-001",
@@ -43,6 +43,36 @@
       "title": "Viñetas perdidas por comparar contra baseline local",
       "path": "docs/errors/entries/SPX-ERR-20260903-001-vinetas-perdidas-por-baseline-local.md",
       "searchText": "# spx-err-20260903-001 - viñetas perdidas por comparar contra baseline local\n\n- fecha: 2026-09-03.\n- sintoma: el release 51c2dfe conservó el css del checkout pero revirtió el diseño de viñetas ya activo en 8823a773.\n- causa raiz: el artefacto publicado contenía ajustes svg/css no reconciliados en la rama local. la qa de navegación no comparó la geometría con el artefacto real.\n- solucion: recuperar únicamente svgpath, drawwhatsapptabbedpanelframe y los estilos exactos del artefacto previo; mantener crm/core/mi empresa nuevos.\n- prevencion/guardia: scripts/tests/whatsapp-visual-parity.test.mjs valida una referencia congelada recuperada de 8823a773 y rechaza 51c2dfe. no actualizar esa referencia sin aprobación visual explícita. antes de promover, comparar las superficies protegidas contra el runtime saliente, no solo contra git local.\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-001",
+      "title": "Salida de imagen menor al minimo de pixeles",
+      "path": "docs/errors/entries/SPX-ERR-20261019-001-salida-de-imagen-menor-al-minimo-de-pixeles.md",
+      "searchText": "# spx-err-20261019-001 - salida de imagen menor al minimo de pixeles\n\n- fecha: 2026-10-19.\n- sintoma: openai rechaza 512x512 y 1024x512 con http 400.\n- causa raiz: la cuadricula logica de 512 por celda no alcanza el minimo de 655360 pixeles de salida.\n- solucion: aumentar solo densidad de salida a multiplos de 16; conservar coordenadas logicas y proporcion.\n- prevencion/guardia: tests/fitted-rectangles.test.mjs y comprobacion de tamano en server.mjs; no reintentar una llamada paga sin revisar uso y respuesta.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-002",
+      "title": "Mascara transformada incompleta en cache recortada",
+      "path": "docs/errors/entries/SPX-ERR-20261019-002-mascara-transformada-incompleta-en-cache-recortada.md",
+      "searchText": "# spx-err-20261019-002 - mascara transformada incompleta en cache recortada\n\n- fecha: 2026-10-19.\n- sintoma: el render nativo de prueba dejaba pixeles fuera de las mangas al usar destination-in con una mascara completa transformada.\n- causa raiz: la combinacion de lienzo pequeno, traslacion y mascara grande no limpiaba toda la cache en el motor nativo; sin evidencia de fallo equivalente en navegador.\n- solucion: restablecer transformacion y aplicar solo el recorte de mascara correspondiente a la cache, cubriendo todo el lienzo local.\n- prevencion/guardia: bocetos/private/verify-side-warp.mjs compara las funciones reales con mascaras psd: cero cambios fuera de mangas y cero cambios en pixeles de cuerpo; no inferir fidelidad visual desde pruebas sinteticas.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-003",
+      "title": "Deformacion de todo el estampado y ampliacion de baja resolucion",
+      "path": "docs/errors/entries/SPX-ERR-20261019-003-deformacion-de-todo-el-estampado-y-ampliacion-de-baja-resolucion.md",
+      "searchText": "# spx-err-20261019-003 - deformacion de todo el estampado y ampliacion de baja resolucion\n\n- fecha: 2026-10-19.\n- sintoma: franjas centrales onduladas y aspecto dentado al montar o ampliar.\n- causa raiz: u remapeaba toda la fila entre extremos enteros de mascara; hombros y bajo pinzaban el dibujo. ampliar reutilizaba el snapshot 1080x1920.\n- solucion: centro protegido, deformacion suave en cuartos exteriores y contorno subpixel filtrado. ampliar y exportar comparten render 2160x3840 con regreso al editor 1x.\n- prevencion/guardia: tests de coordenadas centrales, escalones de mascara, hombro y bajo; preview 2x, restauracion y error. captura real quality-fixed-browser.jpg; no llamadas ia.\r\n\nseguimiento: anular la deformacion en las filas extremas abria demasiado las\nfranjas (fito). se estabiliza el registro lateral de una fila vecina, con\ntransicion de pendiente continua, sin regresar a identidad. regresion sintetica\nreproduce el ensanchamiento; mascaras psd validan estabilidad en las filas finales.\n\nlogo de marca (19/10): el png original tiene 1826x1592; reducirlo a 48/96 px\ncon filtro canvas low producia bordes dentados. drawgraphicimage configura\nantialias/high y restaura el contexto. el contorno intermedio usa outputscale\npara no ampliar un borde 1x en exportacion 2x. pruebas de render y densidad,\ncomparacion real chromium de alpha (38 contra 568 pixels suavizados a 96x84)\ny vista ampliada del editor; fuente y geometria intactas, sin ia.\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-004",
+      "title": "Escape del selector cerraba el ajuste de texturas",
+      "path": "docs/errors/entries/SPX-ERR-20261019-004-escape-del-selector-cerraba-el-ajuste-de-texturas.md",
+      "searchText": "# spx-err-20261019-004 - escape del selector cerraba el ajuste de texturas\n\n- fecha: 2026-10-19.\n- sintoma: al usar el selector de pieza podia cerrarse el ajuste completo y quedar controles de pieza fuera del modo.\n- causa raiz: el handler global de escape no excluia inputs/selects; beginpieceedit no exigia el modo activo.\n- solucion: respetar escape de controles nativos y modales propios; exigir editingtexture antes de iniciar pieza.\n- prevencion/guardia: bocetos/tests/canvas-controls.test.mjs verifica escape de selector frente a escape del lienzo. qa interno confirma selector y rotacion persistidos.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261019-005",
+      "title": "Textura subida deformada para rellenar la prenda",
+      "path": "docs/errors/entries/SPX-ERR-20261019-005-textura-subida-deformada-para-rellenar-la-prenda.md",
+      "searchText": "# spx-err-20261019-005 - textura subida deformada para rellenar la prenda\n\n- fecha: 2026-10-19.\n- sintoma: imagenes y pdf cargados se estiraban o deformaban automaticamente al montar frente, espalda y short.\n- causa raiz: drawpowerclips y textureplacement usaban la envolvente del molde para todo clip, incluido custom; la geometria generica de mangas usaba cover y bleed.\n- solucion: uploads custom usan ajuste proporcional contain sin bleed y no pasan por drawtorsotexture. controles, render y exportacion comparten la misma base; scalex/scaley manuales se respetan.\n- prevencion/guardia: tests/custom-texture-aspect.test.mjs verifica aspecto, contain, las cinco piezas a1x/2x, edicion independiente y regresion del montaje ia. pdf horizontal con circulo confirmado en navegador.\r\n"
     }
   ]
 }

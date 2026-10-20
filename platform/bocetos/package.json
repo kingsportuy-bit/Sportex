@@ -1,0 +1,15 @@
+{
+  "name": "@sportex/bocetos",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env.local server.mjs",
+    "check": "node --check server.mjs && node --check extended-artwork-prompt.mjs && node --check reference-colors.mjs && node --check reference-details.mjs && node --check public/app.js && node --check public/image-preview.js && node --check public/atlas-crop.js && node --check public/marked-atlas.js && node --check public/silhouette-atlas.js && node --check public/atlas-recovery.js && node --check public/reference-compare.js && node --check public/artwork-registration.js && node --check public/two-pass-atlas.js && node --check public/pattern-geometry.js && node --check public/editor-geometry.js && node --check public/stripe-scale.js && node --check public/torso-warp.js && node --check public/atlas-layout.js && node --check public/garment-trims.js && node --check public/trim-path.js && node --check public/trim-editor.js && node --check public/trim-defaults.js && node --check public/element-layout.js && node --check public/element-selection.js && node --check public/texture-import.js && node --check lab-http.mjs && node --check public/panel.js && node --check public/lab-client.js && node --check ../core/bocetos/store.mjs && node --check ../core/bocetos/service.mjs && node --check ../core/bocetos/costs.mjs && node --check ../core/bocetos/openai.mjs && node --check ../core/bocetos/sqlite-store.mjs && node --check web-context.mjs && node --check production-start.mjs && node --check admin-bootstrap.mjs",
+    "test": "node tests/editor-tools.test.cjs && node --test tests/*.test.mjs",
+    "start:panel": "node --env-file-if-exists=.env.local panel-start.mjs"
+  },
+  "dependencies": {
+    "pdfjs-dist": "6.4.299"
+  }
+}

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "project": "SPORTEX",
-  "updatedAt": "2026-09-03",
-  "updatedBy": "TASK-20260903-001",
-  "environment": "PILOTO_DELTA",
+  "updatedAt": "2026-10-20",
+  "updatedBy": "TASK-20261020-001",
+  "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -14,18 +14,24 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Mantener el piloto con las vinetas aprobadas restauradas y el CRM/Mi empresa actuales; pendiente confirmacion visual de Fito.",
+  "objective": "Desplegar laboratorio y panel de bocetos en dominios propios.",
   "scope": {
     "allowed": [
-      "Restaurar exclusivamente SVG/CSS de vinetas desde 8823a773 preservando el CRM actual.",
-      "Versionar, probar y desplegar el fix visual autorizado con rollback 51c2dfe."
+      "Runtime bocetos y servicio aislado; DNS de los dos dominios autorizados."
     ],
     "prohibited": [
-      "No cambiar DB, Core, secretos, membresias, Evolution, Ads ni PRODUCCION_COMERCIAL.",
-      "No enviar mensajes ni crear pedidos/pagos; no modificar conversaciones reales."
+      "Sin cambios de CRM, legado, otros proyectos, WhatsApp ni DB compartida."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-001",
+    "status": "in_progress",
+    "path": "docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md",
+    "nextAction": "Preparar runtime HTTPS y persistencia; verificar candidato antes de publicar.",
+    "title": "Desplegar laboratorio y panel de bocetos",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001"
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -84,11 +90,11 @@
   "git": {
     "worktree": "C:/Users/Fito/Documents/CODEX/SPORTEX",
     "projectRoot": "platform",
-    "branch": "sportex-governance-20260801",
+    "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
     "headAtLastEvidence": "d9c4f443ad07b2e1df932d7eb4273d4b2e60307b",
-    "workingTreeState": "VISUAL_FIX_DEPLOYED_CANONICAL_POST_RELEASE_EVIDENCE",
-    "lastVerifiedAt": "2026-09-03"
+    "workingTreeState": "BOCETOS_RELEASE_PREPARATION",
+    "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
     "status": "MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS",
@@ -109,13 +115,14 @@
   },
   "tests": {
     "status": "PASS",
-    "lastRunAt": "2026-09-03",
+    "lastRunAt": "2026-10-19",
     "commands": [
       "npm run validate",
+      "npm run check:bocetos",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
-    "note": "30/30 workflow/frontend, incluyendo cuatro regresiones de paridad contra 8823a773; 59/59 Core/API, SQL 25 tablas, TS/docs/build y QA local de vinetas PASS."
+    "evidence": "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md",
+    "note": "182 bocetos PASS; SQLite/restauracion, sesiones HTTPS y dominios aislados; sin generaciones pagas."
   },
   "deployments": {
     "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
@@ -190,14 +197,49 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20260903-001",
-    "date": "2026-09-03",
-    "path": "docs/evidencias/TASK-20260903-001_RESTAURAR_VINETAS.md",
-    "summary": "d9c4f44 desplegado: vinetas originales recuperadas, cuatro regresiones de paridad, QA visual y assets exactos PASS. Sin DB ni mensajes.",
-    "environment": "PILOTO_DELTA",
-    "branch": "sportex-governance-20260801"
+    "taskId": "TASK-20261020-001",
+    "date": "2026-10-20",
+    "path": "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md",
+    "summary": "Preparacion de despliegue autorizada por Fito; inventario remoto read-only.",
+    "environment": "DESARROLLO_LOCAL",
+    "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-001",
+      "summary": "Candidato independiente con SQLite/HTTPS y dos DNS autorizados.",
+      "documents": [
+        "core/bocetos/sqlite-store.mjs",
+        "bocetos/production-start.mjs",
+        "deploy/docker-stack.bocetos.yml",
+        "docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md"
+      ],
+      "decisions": [
+        "Identidad propia Core, SQLite y servicio aislado autorizado por Fito."
+      ]
+    },
+    {
+      "date": "2026-10-19",
+      "taskId": "TASK-20261019-001",
+      "summary": "Claves OpenAI compartidas, consumo por llamada/empresa y respaldo controlado; 180 tests PASS.",
+      "documents": [
+        "core/bocetos/service.mjs",
+        "bocetos/lab-http.mjs",
+        "bocetos/public/panel.js",
+        "docs/BOCETOS_LOCAL_CONTRACT.md",
+        "docs/TASKS/closed/2026/TASK-20261019-001-panel-bocetos.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261019-001_PANEL_BOCETOS.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-022"
+      ]
+    },
     {
       "date": "2026-09-03",
       "taskId": "TASK-20260903-001",
@@ -252,59 +294,8 @@
       "decisions": [
         "SPORTEX-DEC-021"
       ]
-    },
-    {
-      "date": "2026-08-20",
-      "taskId": "TASK-20260820-001",
-      "summary": "Project OS incorpora preemption, hotfix, reconciliacion fail-closed y evolucion explicita de entornos sin inventar STAGING.",
-      "documents": [
-        "docs/INCIDENT_PREEMPTION_RECONCILIATION_CONTRACT.md",
-        "docs/ENVIRONMENTS_CONTRACT.md",
-        "docs/state/INCIDENT_RECONCILIATION_STATE.json",
-        "scripts/incident-reconciliation.mjs",
-        "scripts/worktree-close.mjs"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-019",
-        "SPORTEX-DEC-020"
-      ]
-    },
-    {
-      "date": "2026-08-20",
-      "taskId": "TASK-20260817-001",
-      "summary": "Fito aceptó d9c32b7; integración local, política de worktrees, clasificación y cierre sin acciones remotas.",
-      "documents": [
-        "frontend/app.js",
-        "frontend/styles.css",
-        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-        "docs/WORKTREE_LIFECYCLE_CONTRACT.md",
-        "docs/state/WORKTREE_CLASSIFICATIONS.json"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
-        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
-      ],
-      "decisions": [
-        "SPORTEX-DEC-018"
-      ]
     }
   ],
-  "runtimeTruth": {
-    "status": "PILOTO_DELTA_D9C4F44_VISUAL_FIX_VERIFIED",
-    "lastEvidenceDate": "2026-09-03",
-    "note": "Runtime d9c4f44 1/1, health/ready y assets exactos; outbound 18 sin variacion."
-  },
-  "productValidation": {
-    "status": "VISUAL_RESTORATION_TECHNICAL_QA_PASS_HUMAN_PENDING",
-    "lastReviewedAt": "2026-09-03",
-    "reviewedBy": "Codex: igualdad de codigo original y QA navegador; Fito pendiente",
-    "taskId": "TASK-20260903-001",
-    "note": "No se afirma aceptacion humana ni comparacion automatizada pixel a pixel. La referencia aprobada queda protegida por cuatro pruebas."
-  },
   "blockers": [],
   "risks": [
     "El release observado 8823a773 no aparece en los refs remotos actuales; su imagen ejecutada se preserva como rollback y la deuda de trazabilidad queda registrada.",
@@ -314,12 +305,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito confirma visualmente las vinetas restauradas en el piloto d9c4f44.",
-    "No cambiar la referencia visual protegida sin aprobacion explicita; pruebas comerciales reales fuera de este fix."
+    "Preparar candidato aislado y publicar los dos dominios autorizados."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 28,
+    "archivedChanges": 30,
     "throughDate": "2026-08-20"
   }
 }

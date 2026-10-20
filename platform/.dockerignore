@@ -1,12 +1,7 @@
-.git
-.npm-cache
-node_modules
-core/node_modules
+**/node_modules
+**/private
+**/.env
+**/.env.*
+**/.git
 core/dist
 core/dist-test
-docs/evidencias
-tmp-*.patch
-*.log
-.env
-.env.*
-!.env.example

@@ -21,6 +21,45 @@
       ]
     },
     {
+      "date": "2026-08-20",
+      "taskId": "TASK-20260817-001",
+      "summary": "Fito aceptó d9c32b7; integración local, política de worktrees, clasificación y cierre sin acciones remotas.",
+      "documents": [
+        "frontend/app.js",
+        "frontend/styles.css",
+        "docs/TASKS/closed/2026/TASK-20260817-001-puesto-operativo-delta.md",
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/WORKTREE_LIFECYCLE_CONTRACT.md",
+        "docs/state/WORKTREE_CLASSIFICATIONS.json"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260817-001_PUESTO_OPERATIVO_DELTA.md",
+        "docs/evidencias/TASK-20260817-001_WHATSAPP_TABS_PARITY.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-018"
+      ]
+    },
+    {
+      "date": "2026-08-20",
+      "taskId": "TASK-20260820-001",
+      "summary": "Project OS incorpora preemption, hotfix, reconciliacion fail-closed y evolucion explicita de entornos sin inventar STAGING.",
+      "documents": [
+        "docs/INCIDENT_PREEMPTION_RECONCILIATION_CONTRACT.md",
+        "docs/ENVIRONMENTS_CONTRACT.md",
+        "docs/state/INCIDENT_RECONCILIATION_STATE.json",
+        "scripts/incident-reconciliation.mjs",
+        "scripts/worktree-close.mjs"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260820-001_PREEMPTION_HOTFIX_RECONCILIATION.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-019",
+        "SPORTEX-DEC-020"
+      ]
+    },
+    {
       "date": "2026-08-19",
       "taskId": "TASK-20260817-001",
       "summary": "Leads ahora administra oportunidades desde Kanban y ficha; los últimos mensajes y la respuesta rápida no reemplazan WhatsApp, que se abre explícitamente. Candidato 3040659 publicado y healthy.",
@@ -494,5 +533,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-09-03"
+  "updatedAt": "2026-10-20"
 }

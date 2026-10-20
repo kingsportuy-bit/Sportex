@@ -28,6 +28,8 @@ debe devolver `SPORTEX_CONTEXT=PASS`; luego se leen los archivos bajo `READ:`.
 
 - `core/`: dominio, aplicacion, permisos, persistencia y API.
 - `frontend/`: superficie sin autoridad de negocio.
+- `bocetos/`: laboratorio local de diseno; `npm run dev:bocetos`, puerto 4318.
+  Ver `bocetos/README.md` y `docs/BOCETOS_LOCAL_CONTRACT.md`; sin integracion al piloto.
 - `docs/`: fuentes rectoras, tareas, Biblioteca y evidencia.
 - `scripts/`: validacion, continuidad y gobernanza de releases.
 - `deploy/`: artefactos heredados/transitorios; no prueban un deployment.

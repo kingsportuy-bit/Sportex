@@ -30,6 +30,8 @@
     "errors:preflight": "powershell -ExecutionPolicy Bypass -File scripts/codex-preflight-errors.ps1",
     "history:compact": "node scripts/documentation/compact-project-history.mjs",
     "demo:commercial": "powershell -ExecutionPolicy Bypass -File scripts/start-commercial-demo.ps1",
+    "dev:bocetos": "npm --prefix bocetos start",
+    "check:bocetos": "npm --prefix bocetos run check && npm --prefix bocetos test",
     "check": "npm --workspace @sportex/core run check",
     "test": "npm --workspace @sportex/core test",
     "build": "npm --workspace @sportex/core run build",

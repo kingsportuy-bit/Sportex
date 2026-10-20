@@ -56,6 +56,10 @@ Revocar membresía o sesión sin borrar auditoría.
 
 EN_PROGRESO.
 
+TASK-20261019-001: adaptador local del laboratorio con hash scrypt, sesiones
+revocables HttpOnly y bloqueo por vencimiento desde Core. Solo loopback y datos
+ficticios; identidad remota del laboratorio pendiente, sin cambios al CRM.
+
 ## Cierre documental
 
 Requiere modelo de datos, matriz de permisos, tests cross-tenant y evidencia de

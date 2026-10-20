@@ -1,0 +1,65 @@
+version: '3.8'
+services:
+  app:
+    image: ${SPORTEX_BOCETOS_IMAGE}
+    environment:
+      SPORTEX_LAB_URL: https://sportex-bocetos.kodebix.com
+      SPORTEX_PANEL_URL: https://panel-sportex-bocetos.kodebix.com
+      OPENAI_API_KEY_FILE: /run/secrets/openai-primary
+      OPENAI_IMAGE_MODEL: gpt-image-2.5-sunburst
+      OPENAI_COLOR_MODEL: gpt-4.1-mini
+    secrets:
+      - source: openai-primary
+        target: openai-primary
+        uid: '1000'
+        gid: '1000'
+        mode: 0400
+    volumes:
+      - type: bind
+        source: /opt/sportex-bocetos/data
+        target: /data
+    networks:
+      - codexanet
+    stop_grace_period: 210s
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == codexa
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+        reservations:
+          memory: 128M
+      update_config:
+        parallelism: 1
+        order: stop-first
+        failure_action: rollback
+        monitor: 45s
+      restart_policy:
+        condition: on-failure
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: codexanet
+        traefik.http.routers.sportex-bocetos.rule: Host(`sportex-bocetos.kodebix.com`)
+        traefik.http.routers.sportex-bocetos.entrypoints: websecure
+        traefik.http.routers.sportex-bocetos.tls.certresolver: letsencryptresolver
+        traefik.http.routers.sportex-bocetos.service: sportex-bocetos
+        traefik.http.routers.panel-sportex-bocetos.rule: Host(`panel-sportex-bocetos.kodebix.com`)
+        traefik.http.routers.panel-sportex-bocetos.entrypoints: websecure
+        traefik.http.routers.panel-sportex-bocetos.tls.certresolver: letsencryptresolver
+        traefik.http.routers.panel-sportex-bocetos.service: sportex-bocetos
+        traefik.http.services.sportex-bocetos.loadbalancer.server.port: '4319'
+networks:
+  codexanet:
+    external: true
+secrets:
+  openai-primary:
+    external: true
+    name: sportex_bocetos_openai_primary_20261020

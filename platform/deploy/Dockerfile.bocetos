@@ -1,0 +1,15 @@
+ARG NODE_IMAGE=node:24-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f
+FROM ${NODE_IMAGE}
+WORKDIR /app
+COPY bocetos/package.json bocetos/package-lock.json ./bocetos/
+RUN npm --prefix bocetos ci --omit=dev --omit=optional --ignore-scripts && npm cache clean --force
+COPY core/bocetos ./core/bocetos
+COPY bocetos/*.mjs ./bocetos/
+COPY bocetos/public ./bocetos/public
+COPY bocetos/moldes ./bocetos/moldes
+ARG SPORTEX_RELEASE
+ENV NODE_ENV=production PORT=4319 SPORTEX_DATA_DIR=/data SPORTEX_RELEASE=${SPORTEX_RELEASE}
+USER node
+EXPOSE 4319
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node -e "fetch('http://127.0.0.1:4319/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node","bocetos/production-start.mjs"]

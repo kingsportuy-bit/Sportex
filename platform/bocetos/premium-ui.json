@@ -1,0 +1,6 @@
+{
+  "sourceRoots": ["public"],
+  "ownership": {"Select/Listbox": "native"},
+  "commands": {"check": "npm run check", "test": "npm test"},
+  "requiredCommands": ["check", "test"]
+}

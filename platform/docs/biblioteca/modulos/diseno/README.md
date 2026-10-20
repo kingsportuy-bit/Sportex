@@ -56,6 +56,14 @@ Restaurar versión anterior como base de nueva revisión; no borrar historial.
 
 EN_DEFINICION.
 
+El laboratorio local importado vive en `platform/bocetos`, con contrato en
+`docs/BOCETOS_LOCAL_CONTRACT.md` (TASK-20261018-001). Esta superficie no certifica
+el modulo ni integra aprobaciones, pedidos o persistencia por tenant.
+
+TASK-20261019-001 agrega panel local gobernado por `core/bocetos/`: acceso y
+vencimiento, creditos idempotentes, recursos privados y consumo por empresa.
+Persistencia JSON local e identidad ficticia; no habilita uso comercial ni CRM.
+
 ## Cierre documental
 
 Requiere responsabilidades, ficha, estados y prueba con pedido Delta.

@@ -1,8 +1,10 @@
 # Panel y acceso por empresa del laboratorio de bocetos
 
 Fecha: 2026-10-19. Owner: Core SPORTEX, módulos identidad y diseño.
-Tarea de definición: TASK-20261018-001. Estado: PROPUESTA_PARA_REVISION.
-Este documento especifica una capacidad futura; no describe una implementación.
+Tarea de definición: TASK-20261018-001. Estado: APROBADA_POR_FITO.
+Implementación inicial local: TASK-20261019-001. Fito pide alcance reducido;
+identidad de pruebas y JSON privado sustituyen adaptadores remotos solo en local.
+Auth/DB reales y salida comercial permanecen pendientes antes de publicar.
 
 ## Objetivo y decisiones de Fito
 
@@ -112,8 +114,8 @@ Entidades nuevas, bajo puertos del Core y siempre aisladas por tenant:
 - BocetosCreditEntry: alta/ajuste/reserva/consumo/liberación con correlación.
 - BocetosGeneration: actor, idempotencia, estados, modelo, request del
   proveedor, resultado y uso registrado; sin claves ni imágenes en logs.
-- BocetosProviderBinding: IDs de proyecto/clave y referencia al almacén de
-  secretos. Conserva vigencia histórica cuando se rota una credencial.
+- BocetosProviderCall: intento ligado a operación, tenant y actor del servidor;
+  modelo, fecha, clave principal/respaldo, estado, request ID y usage numérico.
 - BocetosCostBucket: intervalo UTC, clave/proyecto, concepto, moneda, importe
   decimal reportado, momento de sincronización y versión del reporte.
 
@@ -139,15 +141,17 @@ ambiguo conserva estado «Por verificar» y evita reenviar ciegamente una llamad
 potencialmente cobrada. Si OpenAI cobró una operación fallida, su cargo permanece
 en el gasto aunque se libere el crédito comercial.
 
-Registrar tokens devueltos en cada operación, tanto generación de imagen como
-análisis de referencia. Un dato ausente es desconocido, no cero. El análisis
-no descuenta una generación de imagen; usa límites por empresa para evitar abuso.
+Registrar cada llamada antes de enviarla y guardar su usage al responder, incluso
+si el resultado no sirve. El tenant proviene de la sesión. Ausente es desconocido.
+Caché no genera llamadas; reenvío idempotente no duplica consumo. El análisis
+no descuenta generaciones y tiene límite por empresa.
 
-Una clave de generación distinta por empresa dentro de la cuenta de Fito,
-administrada en servidor. Configurar OpenAI requiere vincular una credencial
-dedicada; una clave global compartida no ofrece atribución oficial por empresa.
-La clave administrativa para consultar costos se guarda aparte del runtime de
-generación. Ninguna clave aparece en respuestas del panel, descargas o auditoría.
+Fito corrige: una OPENAI_API_KEY compartida y OPENAI_API_KEY_FALLBACK de respaldo.
+Secretos solo en servidor; ninguna configuración de clave por empresa. Un rechazo
+401/429 permite un solo intento con respaldo distinto. Cortes o 5xx ambiguos no
+se reenvían. Ambos intentos se registran bajo la misma operación y empresa; una
+generación exitosa descuenta una unidad. Reinicio conserva llamadas inciertas.
+La clave administrativa de costos permanece separada y privada.
 
 Costs API permite importes agrupados por día y por api_key_id/project_id.
 Sincronización propuesta cada hora con paginación y relectura de los últimos
@@ -155,11 +159,10 @@ siete días. Actualizar un bucket reemplaza su proyección; nunca suma otra vez 
 mismo reporte. Una consulta manual «Actualizar gasto» usa el mismo proceso y
 límites. Conservar importes decimales sin redondear a centavos al acumular.
 
-Mostrar «Gasto reportado por OpenAI (USD)», período y última actualización.
-Consumo reciente no conciliado queda «Pendiente de actualizar»; errores o falta
-de acceso al reporte se muestran explícitamente. No simular un monto oficial
-por imagen ni presentar cero cuando el reporte esté indisponible. Mantener
-cargos sin empresa identificada en una categoría administrativa por conciliar.
+El panel muestra llamadas y tokens por empresa, con detalle de las últimas 100
+llamadas. El importe oficial es global, sin atribuirlo artificialmente a tenants.
+IDs opcionales de las dos claves filtran el reporte; sin ellos se identifica
+como total de la organización. Ausencia no es cero ni una estimación monetaria.
 Períodos de costos corresponden a intervalos UTC del proveedor.
 
 Referencia oficial, verificada el 19/10/2026:

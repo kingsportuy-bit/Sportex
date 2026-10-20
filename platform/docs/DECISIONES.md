@@ -191,3 +191,55 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   y pasan a producción. Pedidos conserva tablero/planilla.
 - Mi empresa persiste perfil, productos, precios, talles, recursos y parámetros
   por tenant. Solo autoriza implementación local, sin efectos remotos.
+
+## SPORTEX-DEC-022 - Laboratorio de bocetos canonico en platform
+
+19/10: Texturas imagen/PDF proporcionales, sin rellenar, con deformacion solo manual. Sin CDR ni Corel.
+
+- 2026-10-18 · `VIGENTE`. Fito autoriza incorporar el editor DELTA a
+  `platform/bocetos`; DELTA queda como respaldo de migracion.
+- Solo laboratorio local, conservando el origen y almacenamiento del navegador.
+  No modifica CRM, piloto ni reglas del Core. Antes de exposicion remota requiere
+  autenticacion, tenant, cuotas y archivos gobernados por Core.
+- Analisis de colores separado de generacion de imagen, con esquema validado;
+  no afirmar fidelidad cromatica exacta ni probar con consumo pago automatico.
+
+- 2026-10-18: IndexedDB conserva preferencias y logos. Mangas medidas respecto
+  del puño; guia con escala fisica comun. Edicion de pieza con confirmar/cancelar.
+- Separacion tolerante y recuperacion manual local en variante nueva. Mangas
+  posteriores intercambian right/left. Formatos historicos siguen importables.
+- 19/10: tras comparar proveedores y probar dos pasos autorizados, Fito descarta
+  ese experimento. OpenAI queda como proveedor. Una imagen con rectangulos
+  completos segun medidas del patron, sin margen extra, siluetas ni segundo pase;
+  ajuste del recorte entero a cada patron. Punos generados permitidos.
+- Geometria y conservacion de pixeles no equivalen a aprobacion visual.
+- 19/10: montaje deforma solo costados de frente/espalda, conservando alturas.
+  Ranglan es una superposicion independiente; cuerpo y generacion no cambian.
+- Short usa la misma deformacion por vista, sin cerrar la entrepierna. Medias
+  fuera de generacion IA; conservan colores y bocetos anteriores.
+- Guia compacta: escala comun y calles de 16 px, sin aumentar el lienzo ni
+  llamadas. Recorte por posiciones reales; rejilla anterior sigue importable.
+- Deformacion limita cambios a cuartos exteriores, centro fijo y contorno
+  subpixel suave. Ampliacion usa render 2x, compartido con exportacion.
+- Hombro/bajo mantienen el registro lateral vecino con transicion suave; no
+  deshacer la deformacion hasta identidad, porque abre las franjas al terminar.
+- 19/10: Fito solicita panel del laboratorio: URL comun con usuario/contrasena,
+  alta y renovacion manual, bloqueo al vencer aun con sesion recordada y gasto
+  reportado por OpenAI separado por clave. Especificacion propuesta en
+  docs/superpowers/specs/2026-10-19-panel-bocetos-design.md; sin implementacion,
+  cambio de DB, aprovisionamiento real ni habilitacion comercial en este checkpoint.
+- 19/10, TASK-20261019-001: Fito aprueba proceder y pide evitar desarrollo grande.
+  Primera version local: modulo ESM Core, store JSON privado y servidor existente;
+  identidad local de pruebas, panel compacto y editor aislado por empresa.
+  Auth/DB remotos y dominios se conectan antes de publicar; no hay GO comercial.
+
+- 19/10, correccion de Fito: una clave OpenAI compartida y otra de respaldo.
+  Cada llamada registra usage ligada a empresa/actor del servidor, incluso fallos.
+  Respaldo solo ante 401/429; replay y cache no duplican consumo. Tokens por
+  empresa; cargo oficial global. Sustituye la propuesta de clave por empresa.
+
+- 20/10, TASK-20261020-001: Fito autoriza deploy de bocetos y ofrece GoDaddy para
+  DNS. Servicio nuevo aislado del CRM, dos dominios HTTPS, identidad propia del
+  Core y SQLite privado (una replica, lock exclusivo, backup restaurable).
+  Sustituye la intencion anterior de exigir proveedor Auth/DB externo para esta
+  primera publicacion. La salida comercial general del CRM sigue sin habilitar.

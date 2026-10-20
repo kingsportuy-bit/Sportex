@@ -2,11 +2,11 @@
 
 > GENERADO desde las tareas y `docs/state/PROJECT_STATE.json`. No editar.
 
-Actualizado: 2026-09-03.
+Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-001` | `in_progress` | Desplegar laboratorio y panel de bocetos | docs/TASKS/active/TASK-20261020-001-desplegar-laboratorio-bocetos.md
 
 ## Cola
 
@@ -41,3 +41,5 @@ Actualizado: 2026-09-03.
 - `TASK-20260902-001` | `done` | Reorganizar CRM y configuración de empresa | docs/TASKS/closed/2026/TASK-20260902-001-reorganizar-crm-y-configuracion-empresa.md
 - `TASK-20260902-002` | `done` | Promover CRM y configuración de empresa al piloto | docs/TASKS/closed/2026/TASK-20260902-002-promover-crm-configuracion-piloto.md
 - `TASK-20260903-001` | `done` | Restaurar viñetas aprobadas de WhatsApp | docs/TASKS/closed/2026/TASK-20260903-001-restaurar-vinetas-whatsapp.md
+- `TASK-20261018-001` | `done` | Incorporar laboratorio de bocetos y copia de colores | docs/TASKS/closed/2026/TASK-20261018-001-laboratorio-bocetos.md
+- `TASK-20261019-001` | `done` | Panel sencillo del laboratorio | docs/TASKS/closed/2026/TASK-20261019-001-panel-bocetos.md

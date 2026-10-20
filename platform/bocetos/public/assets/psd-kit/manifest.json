@@ -1,0 +1,62 @@
+{
+  "front-photoBurnSocks": {
+    "name": "Layer 3",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "front-photoScreenSocks": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  },
+  "front-photoBurnShort": {
+    "name": "Layer 3",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "front-photoScreenShort": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  },
+  "front-photoBurnShirt": {
+    "name": "Layer 3",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "front-photoScreenShirt": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  },
+  "back-photoBurnSocks": {
+    "name": "UNIFORM SHADOWS",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "back-photoScreenSocks": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  },
+  "back-photoBurnShort": {
+    "name": "UNIFORM SHADOWS",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "back-photoScreenShort": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  },
+  "back-photoBurnShirt": {
+    "name": "UNIFORM SHADOWS",
+    "opacity": 255,
+    "blend": "BlendMode.LINEAR_BURN"
+  },
+  "back-photoScreenShirt": {
+    "name": "UNIFORM HIGHLIGHTS",
+    "opacity": 255,
+    "blend": "BlendMode.SCREEN"
+  }
+}

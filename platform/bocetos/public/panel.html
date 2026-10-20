@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SPORTEX · Administración de bocetos</title>
+  <link rel="icon" href="/assets/sportex-favicon.png"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/panel.css">
+  <script type="module" src="/panel.js"></script>
+</head>
+<body class="panel-page">
+  <header class="lab-header"><a href="/admin" aria-label="SPORTEX, administración"><img src="/assets/sportex-logo.png" alt="SPORTEX"></a><span id="surface-label">LABORATORIO DE BOCETOS</span><button id="logout" type="button" class="tool-button" hidden>Cerrar sesión</button></header>
+  <main>
+    <section id="login-view" class="lab-login" hidden aria-labelledby="login-title">
+      <span class="eyebrow" id="login-eyebrow">ACCESO</span><h1 id="login-title">Entrar al laboratorio<span class="heading-dot">.</span></h1>
+      <p id="login-description">Ingresá con el usuario y la contraseña de tu empresa.</p>
+      <form id="login-form" novalidate>
+        <label for="login-user">Usuario</label><input id="login-user" autocomplete="username" required minlength="3" maxlength="60">
+        <label for="login-password">Contraseña</label><input id="login-password" type="password" autocomplete="current-password" required maxlength="200">
+        <label class="lab-check"><input id="show-password" type="checkbox">Mostrar contraseña</label>
+        <label class="lab-check" id="remember-label"><input id="remember" type="checkbox" checked>Recordarme en este equipo</label>
+        <p id="login-error" class="lab-error" role="alert"></p><button id="login-submit" class="primary-button" type="submit">Entrar</button>
+      </form>
+    </section>
+    <section id="admin-view" class="lab-admin" hidden aria-labelledby="admin-title">
+      <div class="lab-title-row"><div><span class="eyebrow">ADMINISTRACIÓN · BOCETOS</span><h1 id="admin-title">Empresas<span class="heading-dot">.</span></h1><p>Alta, vigencia y recursos del laboratorio.</p></div><button id="new-company" class="primary-button" type="button">+ Nueva empresa</button></div>
+      <div class="lab-toolbar"><div class="lab-search"><label for="company-search">Buscar empresa o usuario</label><div><input id="company-search" type="search" placeholder="Nombre o usuario"><button id="clear-search" class="tool-button" type="button" aria-label="Limpiar búsqueda" hidden>×</button></div></div><span id="company-count" role="status"></span><button id="refresh-companies" class="tool-button" type="button">Actualizar</button><button id="sync-costs" class="tool-button" type="button">Actualizar gasto OpenAI</button></div>
+      <p id="panel-status" class="lab-feedback" role="status" aria-live="polite"></p>
+      <div class="lab-table-scroll" tabindex="0" aria-label="Empresas del laboratorio"><table class="lab-table"><thead><tr><th>Empresa / usuario</th><th>Estado</th><th>Vencimiento</th><th>Generaciones</th><th>Llamadas API</th><th>Tokens</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody id="company-rows"></tbody></table><div id="company-empty" class="lab-empty" hidden><h2>Todavía no hay empresas</h2><p>Creá la primera para darle acceso al laboratorio.</p></div></div>
+      <p id="cost-summary" class="lab-footnote"></p>
+      <p class="lab-footnote">Clave principal y respaldo compartidos. Cada llamada registra el consumo de su empresa. El importe oficial de OpenAI se concilia como total y puede llegar con demora. Moldes personalizados: próximamente.</p>
+      <section id="usage-section" class="lab-usage" hidden aria-labelledby="usage-title">
+        <header><h2 id="usage-title" tabindex="-1">Consumo de la empresa</h2><div><button id="refresh-usage" class="tool-button" type="button">Actualizar consumo</button><button id="close-usage" class="tool-button" type="button">Cerrar detalle</button></div></header>
+        <p id="usage-status" class="lab-feedback" role="status" aria-live="polite"></p>
+        <div class="lab-table-scroll" tabindex="0" aria-label="Llamadas a OpenAI de la empresa"><table class="lab-table"><thead><tr><th>Fecha / operación</th><th>Modelo / clave</th><th>Resultado</th><th>Tokens</th><th>ID de OpenAI</th></tr></thead><tbody id="usage-rows"></tbody></table></div>
+      </section>
+    </section>
+  </main>
+  <dialog id="company-dialog" class="lab-dialog" aria-labelledby="company-title">
+    <header><div><span class="eyebrow">ACCESO Y CONFIGURACIÓN</span><h2 id="company-title">Nueva empresa</h2></div><button id="close-company" class="tool-button" type="button" aria-label="Cerrar configuración">×</button></header>
+    <form id="company-form" novalidate>
+      <div class="lab-form-grid">
+        <div><label for="company-name">Empresa</label><input id="company-name" required minlength="2" maxlength="120"></div>
+        <div><label for="company-user">Usuario</label><input id="company-user" required minlength="3" maxlength="60" autocomplete="off" placeholder="ej. delta.sport"></div>
+        <div><label for="company-password" id="company-password-label">Contraseña inicial</label><input id="company-password" type="password" autocomplete="new-password" minlength="10" maxlength="200"><label class="lab-check"><input id="show-company-password" type="checkbox">Mostrar contraseña</label></div>
+        <div><label for="company-expires">Vigente hasta</label><input id="company-expires" type="date" required><small>Incluye todo el día, hora de Uruguay.</small></div>
+        <div><label for="company-credits" id="company-credits-label">Generaciones iniciales</label><input id="company-credits" type="number" min="0" max="1000000" step="1" required value="100"><small id="credit-summary"></small></div>
+        <label class="lab-check"><input id="company-suspended" type="checkbox">Suspender el acceso</label>
+      </div>
+      <section id="company-resources" hidden>
+        <h3>Recursos de la empresa</h3><p class="lab-footnote">Se guardan al cargarlos y estarán disponibles al volver a entrar.</p>
+        <div class="lab-resource-grid">
+          <div><label for="upload-brand">Logo de marca</label><input id="upload-brand" data-kind="brand" type="file" accept="image/png,image/jpeg,image/webp"><div id="asset-brand" class="lab-asset"></div></div>
+          <div><label for="upload-brand2">Logo 2</label><input id="upload-brand2" data-kind="brand2" type="file" accept="image/png,image/jpeg,image/webp"><div id="asset-brand2" class="lab-asset"></div></div>
+          <div><label for="upload-background">Fondo</label><input id="upload-background" data-kind="background" type="file" accept="image/png,image/jpeg,image/webp"><div id="asset-background" class="lab-asset"></div></div>
+          <div><label for="upload-font">Agregar fuente</label><input id="upload-font" data-kind="font" type="file" accept=".ttf,.otf,font/ttf,font/otf"><div id="asset-font" class="lab-asset"></div></div>
+        </div>
+      </section>
+      <details><summary>Configuración inicial del laboratorio</summary><div class="lab-form-grid">
+        <div><label for="default-number-font">Fuente para números</label><select id="default-number-font"></select></div><div><label for="default-name-font">Fuente para nombres</label><select id="default-name-font"></select></div>
+        <div class="lab-wide"><label for="initial-parameters-file">Posiciones y opciones iniciales · JSON</label><input id="initial-parameters-file" type="file" accept=".json,application/json"><small id="initial-parameters-status">Se usa la base actual del laboratorio.</small></div>
+      </div></details>
+      <p id="company-error" class="lab-error" role="alert"></p><footer><button id="cancel-company" class="tool-button" type="button">Cancelar</button><button id="save-company" class="primary-button" type="submit">Crear empresa</button></footer>
+    </form>
+  </dialog>
+  <dialog id="confirm-dialog" class="lab-dialog lab-confirm" aria-labelledby="confirm-title"><h2 id="confirm-title">Descartar cambios</h2><p>Los cambios sin guardar se perderán.</p><footer><button id="keep-editing" class="tool-button" type="button">Seguir editando</button><button id="discard-changes" class="primary-button" type="button">Descartar cambios</button></footer></dialog>
+  <dialog id="access-dialog" class="lab-dialog lab-confirm" aria-labelledby="access-title"><h2 id="access-title">Acceso al laboratorio</h2><label for="access-text">Compartí estos datos con la empresa</label><textarea id="access-text" readonly rows="4" style="resize:none"></textarea><footer><button id="close-access" class="primary-button" type="button">Listo</button></footer></dialog>
+</body></html>
