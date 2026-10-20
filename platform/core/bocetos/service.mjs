@@ -1,5 +1,6 @@
 import {randomUUID,randomBytes,createHash,scrypt as scryptCallback,timingSafeEqual} from 'node:crypto';
 import {promisify} from 'node:util';
+import {createMockupCatalog} from './mockups.mjs';
 const scrypt=promisify(scryptCallback),day=86400000;
 const hash=value=>createHash('sha256').update(value).digest('hex');
 export class LabError extends Error{constructor(code,message,status=400){super(message);this.code=code;this.status=status;}}
@@ -43,7 +44,7 @@ function inspectAsset(input){
   return {bytes,mime,name};
 }
 
-export function createLabService({store,clock=Date.now}){
+export function createLabService({store,clock=Date.now,mockupDefaults=null}){
   const audit=(db,actor,action,tenantId)=>{db.audit.push({id:randomUUID(),at:clock(),actor,action,tenantId});if(db.audit.length>2000)db.audit.splice(0,db.audit.length-2000);};
   function context(db,token,{admin=false,allowBlocked=false}={}){
     const session=db.sessions.find(s=>s.hash===hash(String(token||''))&&s.expiresAt>clock());
@@ -207,5 +208,5 @@ export function createLabService({store,clock=Date.now}){
     },
     async costSummary(token){const db=await store.read();context(db,token,{admin:true});return {...(db.costReport||{}),reportedCost:db.costReport?decimalString(db.costs.reduce((sum,b)=>sum+decimalUnits(b.value),0n)):null,currency:'usd'};},
   };
-  return api;
+  return Object.assign(api,createMockupCatalog({store,context,audit,clock,fail,factory:mockupDefaults}));
 }

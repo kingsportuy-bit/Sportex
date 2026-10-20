@@ -159,6 +159,31 @@ Cookie __Host- Secure/HttpOnly, origen exacto y bootstrap administrativo privado
 Snapshot SQLite consistente incluye blobs; arranque/diario/cierre, restauracion
 ensayada. Sin importar fixtures o cache local. Rollback solo del servicio nuevo.
 
+## Catalogo de mockups (TASK-20261020-006, local)
+
+Core/bocetos/mockups.mjs gobierna catalogo global de plataforma; admin exclusivo
+para crear configuraciones, guardar borradores y publicar revisiones con version
+esperada. No es dato operativo de una empresa. Usa la transaccion del store:
+JSON local y SQLite conservan mockups/revisions en el mismo snapshot atomico.
+No guarda archivos de empresa: limpia selectores/logoFiles/sponsors/texturas,
+valida geometria/colores/curvas y admite fondo blanco o transparente. Nombre,
+opciones, posiciones, fuentes, escalas, textos y vivos quedan en parametros.
+
+GET/POST /api/lab/admin/mockups; GET/POST /api/lab/admin/mockups/:id;
+POST /api/lab/admin/mockups/:id/publish. GET /api/lab/mockups entrega solo
+publicaciones a empresas activas. Origen exacto y cookie admin, borradores solo
+en dominio panel. /admin/mockups/:id/editor reutiliza index/app con modo setup
+sin IA y sin leer/escribir workspace normal; preview=1 prueba sin guardar.
+
+Primer kit: football-basic-v1, assets actuales. Crear configuracion clona su
+kit; no importa PSD ni habilita otros cuellos sin preparar capas. Cada boceto
+guarda id/revision/snapshot, elementos y opciones. Publicar no migra bocetos;
+recargar laboratorio obtiene el catalogo para nuevas bases. Archivos y fuentes
+de empresa siguen aislados; las preferencias de archivos se reutilizan.
+
+El panel es preparacion local. Ningun permiso de alta de catalogo autoriza
+deploy, cambios de cuentas reales ni IA de prueba.
+
 ## Eliminacion de empresas (TASK-20261020-003)
 
 POST `/api/lab/admin/companies/:id/delete` exige administrador, origen exacto,

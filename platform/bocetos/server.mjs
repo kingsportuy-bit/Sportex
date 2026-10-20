@@ -31,7 +31,7 @@ routes.add('/element-layout.js');
 routes.add('/element-selection.js');
 routes.add('/initial-parameters.json');
 routes.add('/texture-import.js');
-for(const route of ['/panel.css','/panel.js','/lab-client.js'])routes.add(route);
+for(const route of ['/panel.css','/panel.js','/lab-client.js','/mockup-config.js','/mockup-editor.js','/mockup-panel.js'])routes.add(route);
 
 function json(res, code, value) {
   res.writeHead(code, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });

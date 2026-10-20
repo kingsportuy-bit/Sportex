@@ -20,13 +20,22 @@
         <p id="login-error" class="lab-error" role="alert"></p><button id="login-submit" class="primary-button" type="submit">Entrar</button>
       </form>
     </section>
+    <nav id="admin-nav" class="lab-admin-nav" aria-label="Administración" hidden><button id="nav-companies" class="tool-button" type="button" aria-current="page">Empresas</button><button id="nav-mockups" class="tool-button" type="button">Mockups</button></nav>
+    <section id="mockups-view" class="lab-admin" hidden aria-labelledby="mockups-title">
+      <div class="lab-title-row"><div><h1 id="mockups-title">Mockups<span class="heading-dot">.</span></h1><p>Prepará la base de cada modelo en el mismo lienzo del laboratorio.</p></div><button id="new-mockup" class="primary-button" type="button">Nueva configuración</button></div>
+      <div class="lab-toolbar"><p class="lab-footnote">Configurá el borrador, probalo y publicá sus valores iniciales.</p><button id="refresh-mockups" class="tool-button" type="button">Actualizar mockups</button></div>
+      <p id="mockups-status" class="lab-feedback" role="status" aria-live="polite"></p>
+      <div class="lab-table-scroll" tabindex="0" aria-label="Catálogo de mockups"><table class="lab-table"><thead><tr><th>Mockup / molde</th><th>Publicación</th><th>Configuración</th><th>Acciones</th></tr></thead><tbody id="mockup-rows"></tbody></table></div>
+      <p class="lab-footnote">Cada configuración conserva posiciones, tamaños, fuentes, colores, vivos y opciones disponibles. Las publicaciones se aplican a nuevos bocetos; los ya guardados conservan sus ajustes.</p>
+      <p class="lab-footnote">Primer molde preparado: Fútbol básico, cuello redondo. Nueva configuración reutiliza ese molde. Para incorporar otro PSD hay que preparar primero sus capas y máscaras.</p>
+    </section>
     <section id="admin-view" class="lab-admin" hidden aria-labelledby="admin-title">
       <div class="lab-title-row"><div><span class="eyebrow">ADMINISTRACIÓN · BOCETOS</span><h1 id="admin-title">Empresas<span class="heading-dot">.</span></h1><p>Alta, vigencia y recursos del laboratorio.</p></div><button id="new-company" class="primary-button" type="button">+ Nueva empresa</button></div>
       <div class="lab-toolbar"><div class="lab-search"><label for="company-search">Buscar empresa o usuario</label><div><input id="company-search" type="search" placeholder="Nombre o usuario"><button id="clear-search" class="tool-button" type="button" aria-label="Limpiar búsqueda" hidden>×</button></div></div><span id="company-count" role="status"></span><button id="refresh-companies" class="tool-button" type="button">Actualizar</button><button id="sync-costs" class="tool-button" type="button">Actualizar gasto OpenAI</button></div>
       <p id="panel-status" class="lab-feedback" role="status" aria-live="polite"></p>
       <div class="lab-table-scroll" tabindex="0" aria-label="Empresas del laboratorio"><table class="lab-table"><thead><tr><th>Empresa / usuario</th><th>Estado</th><th>Vencimiento</th><th>Generaciones</th><th>Llamadas API</th><th>Tokens</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody id="company-rows"></tbody></table><div id="company-empty" class="lab-empty" hidden><h2>Todavía no hay empresas</h2><p>Creá la primera para darle acceso al laboratorio.</p></div></div>
       <p id="cost-summary" class="lab-footnote"></p>
-      <p class="lab-footnote">Clave principal y respaldo compartidos. Cada llamada registra el consumo de su empresa. El importe oficial de OpenAI se concilia como total y puede llegar con demora. Moldes personalizados: próximamente.</p>
+      <p class="lab-footnote">Clave principal y respaldo compartidos. Cada llamada registra el consumo de su empresa. El importe oficial de OpenAI se concilia como total y puede llegar con demora.</p>
       <section id="usage-section" class="lab-usage" hidden aria-labelledby="usage-title">
         <header><h2 id="usage-title" tabindex="-1">Consumo de la empresa</h2><div><button id="refresh-usage" class="tool-button" type="button">Actualizar consumo</button><button id="close-usage" class="tool-button" type="button">Cerrar detalle</button></div></header>
         <p id="usage-status" class="lab-feedback" role="status" aria-live="polite"></p>
@@ -74,4 +83,6 @@
     </form>
   </dialog>
   <dialog id="access-dialog" class="lab-dialog lab-confirm" aria-labelledby="access-title"><h2 id="access-title">Acceso al laboratorio</h2><label for="access-text">Compartí estos datos con la empresa</label><textarea id="access-text" readonly rows="4" style="resize:none"></textarea><footer><button id="close-access" class="primary-button" type="button">Listo</button></footer></dialog>
+  <dialog id="new-mockup-dialog" class="lab-dialog" aria-labelledby="new-mockup-title"><h2 id="new-mockup-title">Nueva configuración</h2><p>Se crea un borrador con el molde de la configuración elegida.</p><form id="new-mockup-form"><label for="mockup-name">Nombre</label><input id="mockup-name" required maxlength="80" autocomplete="off"><label for="mockup-source">Usar configuración de</label><select id="mockup-source"></select><p id="new-mockup-error" class="lab-error" role="alert"></p><footer><button id="cancel-new-mockup" class="tool-button" type="button">Cancelar</button><button id="create-mockup" class="primary-button" type="submit">Crear borrador</button></footer></form></dialog>
+  <dialog id="publish-mockup-dialog" class="lab-dialog" aria-labelledby="publish-mockup-title"><h2 id="publish-mockup-title">Publicar configuración</h2><p><strong id="publish-mockup-name"></strong></p><p>Los nuevos bocetos usarán el borrador guardado como base. Los bocetos existentes conservarán su configuración.</p><p id="publish-mockup-error" class="lab-error" role="alert"></p><footer><button id="cancel-publish-mockup" class="tool-button" type="button">Cancelar</button><button id="confirm-publish-mockup" class="primary-button" type="button">Publicar configuración</button></footer></dialog>
 </body></html>

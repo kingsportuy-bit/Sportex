@@ -1,4 +1,5 @@
 const $=id=>document.getElementById(id),adminSurface=location.pathname==='/admin';
+import {installMockupPanel} from './mockup-panel.js';
 document.body.classList.toggle('lab-company-access',!adminSurface);
 if(!adminSurface)$('login-view').setAttribute('aria-labelledby','surface-label');
 let companies=[],current=null,publicConfig=null,dirty=false,loading=false,initialParameters=null,createKey=null;
@@ -13,6 +14,14 @@ async function api(path,{body,key}={}){
   const result=await response.json();if(!response.ok){const error=new Error(result.error||'No se pudo completar la operación.');error.status=response.status;error.code=result.code;throw error;}return result;
 }
 function feedback(message,error=false){$('panel-status').textContent=message;$('panel-status').classList.toggle('error',error);}
+const mockupPanel=installMockupPanel({api});
+function showAdminArea(mockups=false){
+  $('admin-nav').hidden=false;$('admin-view').hidden=mockups;$('mockups-view').hidden=!mockups;
+  for(const [id,active] of [['nav-companies',!mockups],['nav-mockups',mockups]]){if(active)$(id).setAttribute('aria-current','page');else $(id).removeAttribute('aria-current');}
+  if(mockups)void mockupPanel.show();
+}
+$('nav-companies').addEventListener('click',()=>{history.replaceState(null,'','#companies');showAdminArea();});
+$('nav-mockups').addEventListener('click',()=>{history.replaceState(null,'','#mockups');showAdminArea(true);});
 function formValid(form,error){
   for(const control of form.querySelectorAll('input,select')){control.removeAttribute('aria-invalid');control.removeAttribute('aria-describedby');}
   const invalid=[...form.elements].find(control=>control.willValidate&&!control.validity.valid);
@@ -21,6 +30,7 @@ function formValid(form,error){
   error.textContent=invalid.validity.valueMissing?'Completá los campos obligatorios.':invalid.type==='password'?'La contraseña debe tener al menos 10 caracteres.':'Revisá el valor del campo indicado.';invalid.focus();return false;
 }
 function loginView(setup=false,message=''){
+  $('admin-nav').hidden=true;$('mockups-view').hidden=true;
   $('login-view').hidden=false;$('admin-view').hidden=true;$('logout').hidden=true;
   $('login-title').textContent=setup?'Crear acceso de administración':adminSurface?'Entrar a administración':'Entrar al laboratorio';
   $('login-description').textContent=setup?'Elegí tu usuario y contraseña para administrar las empresas.':adminSurface?'Ingresá con tu cuenta de administración.':'Ingresá con el usuario y la contraseña de tu empresa.';
@@ -127,7 +137,7 @@ $('show-company-password').addEventListener('change',()=>{$('company-password').
 $('login-form').addEventListener('submit',async event=>{
   event.preventDefault();if(!formValid(event.currentTarget,$('login-error')))return;
   const button=$('login-submit'),setup=publicConfig.setupNeeded&&adminSurface;button.disabled=true;$('login-error').textContent='';
-  try{await api(setup?'/api/lab/setup':'/api/lab/login',{body:{username:$('login-user').value,password:$('login-password').value,remember:$('remember').checked,audience:adminSurface?'admin':'company'}});$('login-password').value='';if(adminSurface){publicConfig.setupNeeded=false;$('login-view').hidden=true;$('admin-view').hidden=false;$('logout').hidden=false;await refresh();}else location.assign('/');}
+  try{await api(setup?'/api/lab/setup':'/api/lab/login',{body:{username:$('login-user').value,password:$('login-password').value,remember:$('remember').checked,audience:adminSurface?'admin':'company'}});$('login-password').value='';if(adminSurface){publicConfig.setupNeeded=false;$('login-view').hidden=true;showAdminArea(location.hash==='#mockups');$('logout').hidden=false;await refresh();}else location.assign('/');}
   catch(error){$('login-error').textContent=error.message;}finally{button.disabled=false;}
 });
 $('logout').addEventListener('click',async()=>{try{await api('/api/lab/logout',{body:{audience:'admin'}});loginView();}catch(error){feedback(error.message,true);}});
@@ -181,7 +191,7 @@ async function init(){
     }
     $('surface-label').textContent='ADMINISTRACIÓN · BOCETOS';
     if(publicConfig.setupNeeded){loginView(true);return;}
-    try{await api('/api/lab/session?audience=admin');$('admin-view').hidden=false;$('logout').hidden=false;await refresh();}
+    try{await api('/api/lab/session?audience=admin');showAdminArea(location.hash==='#mockups');$('logout').hidden=false;await refresh();}
     catch(error){loginView(false,error.status===401?'':error.message);}
   }catch(error){loginView(false,error.message);}
 }

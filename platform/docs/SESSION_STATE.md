@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DESARROLLO_LOCAL`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `feature`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-006`: `in_progress` (docs/TASKS/active/TASK-20261020-006-panel-mockups.md).
 
 ## Objetivo actual
 
-Copia de referencia corregida y publicada con Logo2 compatible.
+Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo actual.
 
 ## Alcance actual
 
-- Permitido: Uso y observacion del laboratorio publicado por Fito.
-- Prohibido: Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas de QA.
+- Permitido: Catalogo admin, editor reutilizado y defaults por mockup; fixtures locales y Git.
+- Prohibido: Sin deploy, IA paga, datos reales, CRM, legado ni importador PSD arbitrario.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Copia de referencia corregida y publicada con Logo2 compatible.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-005`.
+- Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md`.
-- a95850f publicado healthy1/1;Logo2/sponsors aceptados,2 empresas y backup preservados. Sin IA paga.
+- Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
+- Catalogo/setup local y205 tests PASS; QA visual final pendiente.
 
 ## Riesgos
 
@@ -78,5 +78,4 @@ Copia de referencia corregida y publicada con Logo2 compatible.
 
 ## Siguientes acciones
 
-- Fito recarga el laboratorio y prueba Copiar colores de la referencia.
-- Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.
+- Completar QA visual local de probar/publicar cuando navegador permita control.

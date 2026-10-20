@@ -15,7 +15,7 @@ for(const name of ['OPENAI_API_KEY','OPENAI_API_KEY_FALLBACK','OPENAI_ADMIN_KEY'
 }
 if(!process.env.OPENAI_API_KEY)throw new Error('openai_primary_required');
 const store=new SqliteLabStore(join(directory,'lab.sqlite'));
-const lab=createLabService({store});
+const lab=createLabService({store,mockupDefaults:JSON.parse(await readFile(new URL('./public/initial-parameters.json',import.meta.url),'utf8'))});
 if(await lab.setupNeeded())throw new Error('private_admin_bootstrap_required');
 await store.snapshot(join(directory,'backups'));
 const backups=setInterval(()=>store.snapshot(join(directory,'backups')).catch(()=>console.error('lab_backup_failed')),24*3600000);backups.unref();

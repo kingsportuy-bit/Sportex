@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-006` | `in_progress` | Administrar configuracion de mockups | docs/TASKS/active/TASK-20261020-006-panel-mockups.md
 
 ## Cola
 

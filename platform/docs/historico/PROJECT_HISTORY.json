@@ -3,6 +3,23 @@
   "project": "SPORTEX",
   "entries": [
     {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-001",
+      "summary": "Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20261020-001-desplegar-laboratorio-bocetos.md",
+        "bocetos/production-start.mjs",
+        "core/bocetos/sqlite-store.mjs",
+        "deploy/docker-stack.bocetos.yml"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md"
+      ],
+      "decisions": [
+        "Identidad propia Core, SQLite y servicio aislado autorizado por Fito."
+      ]
+    },
+    {
       "date": "2026-10-19",
       "taskId": "TASK-20261019-001",
       "summary": "Claves OpenAI compartidas, consumo por llamada/empresa y respaldo controlado; 180 tests PASS.",

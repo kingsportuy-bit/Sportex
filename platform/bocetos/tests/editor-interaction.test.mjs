@@ -12,12 +12,12 @@ test('closing sketch 3 reuses 3 after reopening; holes and histories stay indepe
   assert.equal(nextAvailableSketchId(sketches.keys()),3);sketches.set(3,{});assert.equal(nextAvailableSketchId(sketches.keys()),4);
   sketches.delete(2);assert.equal(nextAvailableSketchId(sketches.keys()),2);
   const fields={},$=id=>fields[id]??={addEventListener(){}};
-  const c=vm.createContext({sketches,$,nextAvailableSketchId,preferenceSnapshot,withPreferences,initialParameterSketch,initialParameters:null,positionRevision:3,captureGeneralParameters(){},structuredClone,Map,
+  const c=vm.createContext({mockupCatalog:[],sketches,$,nextAvailableSketchId,preferenceSnapshot,withPreferences,initialParameterSketch,initialParameters:null,positionRevision:3,captureGeneralParameters(){},structuredClone,Map,
     fixedLayerKeys:[],editHistories:new Map([[2,{old:true}]]),recordHistory(){},captureSketch(){return c.current;},
     restoreSketch(s){c.current=s;},renderSketchTabs(){},notice(){},scheduleWorkspaceSave(){},runPendingReferenceAdjustment(){},window:{confirm:()=>true}});
   c.current={inputs:{...preferredFontDefaults},logos:{brand:[],crest:[]},layers:{},layerStyles:{},visibleLayers:{}};
   c.browserPreferences=preferenceSnapshot(c.current,[]);c.rememberPreferences=()=>{};c.blankSketch=c.current;c.activeSketchId=1;c.nextSketchId=90;c.generatingSketchId=null;
-  vm.runInContext(extract('function newSketch()',"$('new-sketch').addEventListener"),c);
+  vm.runInContext(extract('function newSketch(',"$('new-sketch').addEventListener"),c);
   vm.runInContext('newSketch()',c);assert.equal(c.activeSketchId,2);assert.equal(c.editHistories.has(2),false);assert.equal(c.sketches.size,3);
 });
 

@@ -44,9 +44,9 @@ export function initialParameterSketch(blank,model,assets={}){
   if(!model)return blank;
   // Cached files are reusable; the settings of the last edited sketch are not defaults.
   const logos=Object.fromEntries(['brand','brand2','crest'].map(type=>[type,[...new Map([...(blank.logos?.[type]||[]),...(assets.logos?.[type]||[])].map(logo=>[logo.id,logo])).values()]]));
-  const inputs={...blank.inputs,...model.inputs,'design-format':'3:4','cuffs-enabled':false};
+  const inputs={...blank.inputs,...model.inputs,'design-format':'3:4'};
   for(const type of ['brand','brand2','crest']){
-    const selected=logos[type].find(logo=>logo.id===model.inputs?.[`${type}-select`])||logos[type].find(logo=>logo.name===model.logoFiles?.[type]);
+    const selected=logos[type].find(logo=>logo.id===model.inputs?.[`${type}-select`])||logos[type].find(logo=>logo.name===model.logoFiles?.[type])||assets.logos?.[type]?.at(-1);
     inputs[`${type}-select`]=selected?.id||'';
     logos[type]=selected?[selected]:logos[type].slice(-1);
   }

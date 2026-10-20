@@ -1,5 +1,8 @@
 // Standalone keeps existing storage; managed sessions get a company namespace.
+import {bootstrapMockupEditor} from './mockup-editor.js';
 export async function bootstrapLab(){
+  const editor=/^\/admin\/mockups\/([a-z0-9-]{1,60})\/editor$/.exec(location.pathname);
+  if(editor)return bootstrapMockupEditor(editor[1]);
   const response=await fetch('/api/lab/public');
   if(response.status===404)return {managed:false,key:key=>key,fetch:(...args)=>fetch(...args)};
   if(!response.ok)throw new Error('No se pudo validar el acceso al laboratorio.');
@@ -7,6 +10,9 @@ export async function bootstrapLab(){
   if(!sessionResponse.ok){location.assign('/login');throw new Error('Acceso al laboratorio requerido.');}
   const session=await sessionResponse.json();
   const lab={managed:true,company:session.company,remaining:session.company.remaining,onBalance:null,key:key=>`sportex-local-${session.company.id}-${key}`};
+  const catalogResponse=await fetch('/api/lab/mockups');
+  if(!catalogResponse.ok)throw new Error('No se pudo cargar el catálogo de mockups. Volvé a cargar el laboratorio.');
+  lab.mockups=(await catalogResponse.json()).data;
   let blocked=false;
   function block(message){
     if(blocked)return;blocked=true;

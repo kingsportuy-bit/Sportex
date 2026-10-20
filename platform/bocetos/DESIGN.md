@@ -9,6 +9,23 @@ Contrato de comportamiento: `../docs/BOCETOS_LOCAL_CONTRACT.md`.
 
 ## Administración local por empresa
 
+### Mockups
+
+Modo Operate, extensión del panel actual con navegación Empresas / Mockups.
+Tabla de configuraciones: nombre/molde, versión publicada, borrador y acciones.
+Configurar y Probar abren el lienzo existente en una pestaña; Publicar usa diálogo
+propio que explica el efecto solo en bocetos nuevos. Nueva configuración clona
+el molde preparado; se declara cuál es, sin fingir importación de otro PSD.
+
+El lienzo de administración muestra barra compacta con nombre, disponibilidad
+de opciones y Guardar configuración inicial. El resto conserva controles de
+color, elementos y curvas. Opciones disponibles define qué puede activar la
+empresa; el estado inicial se decide con los controles normales del lienzo.
+Logos de muestra permiten dimensionar sin incorporar imágenes de empresas al
+catálogo. IA apagada. Probar usa el borrador guardado y no escribe preferencias.
+Estado inline de guardado/error y conflicto entre ventanas; salir por Volver
+con cambios usa el diálogo canónico. Configuraciones y documentos versionados.
+
 El acceso `/login` usa verde liso, logo SPORTEX centrado, subtitulo Laboratorio de
 bocetos y formulario sin tarjeta, titulo ni descripcion. Entrar centrado.
 Columna maxima360px, inputs/boton48px y etiquetas visibles;

@@ -1,4 +1,5 @@
 import {readFile} from 'node:fs/promises';
+import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {createLabService,LabError} from '../core/bocetos/service.mjs';
 import {LabStore} from '../core/bocetos/store.mjs';
@@ -9,7 +10,7 @@ import {labWebContext} from './web-context.mjs';
 export function localLabService(){
   if(process.env.SPORTEX_LAB_MANAGED!=='true')return null;
   if(process.env.NODE_ENV==='production')throw new Error('El adaptador local del panel no se habilita en producción.');
-  return createLabService({store:new LabStore(join(import.meta.dirname,'private','panel','state.json'))});
+  return createLabService({store:new LabStore(join(import.meta.dirname,'private','panel','state.json')),mockupDefaults:JSON.parse(readFileSync(join(import.meta.dirname,'public','initial-parameters.json'),'utf8'))});
 }
 function cookies(req){const values={};for(const item of String(req.headers.cookie||'').split(';')){const index=item.indexOf('=');if(index>0)values[item.slice(0,index).trim()]=item.slice(index+1).trim();}return values;}
 const tokens=(req,secure)=>{const c=cookies(req),prefix=secure?'__Host-':'';return {admin:c[prefix+'sportex_lab_admin'],company:c[prefix+'sportex_lab']};};
@@ -34,14 +35,15 @@ export function createLabHttp({service,readJson,runGeneration,runAnalysis,onComp
   const handler=async function handle(req,res,path){
     const own=path.startsWith('/api/lab/'),managedApi=['/api/generate','/api/reference-colors','/api/status'].includes(path);
     const protectedPage=path==='/'||path==='/index.html';
-    if(!own&&!managedApi&&!protectedPage&&path!=='/admin'&&path!=='/login')return false;
+    const mockupEditor=/^\/admin\/mockups\/([a-z0-9-]{1,60})\/editor$/.exec(path);
+    if(!own&&!managedApi&&!protectedPage&&!mockupEditor&&path!=='/admin'&&path!=='/login')return false;
     res.setHeader('cache-control','no-store');res.setHeader('x-content-type-options','nosniff');res.setHeader('referrer-policy','no-referrer');
     const token=tokens(req,Boolean(web));
     try{
       const adminHost=web&&req.headers.host===web.panelHost;
       if(web){
         if(adminHost&&(protectedPage||path==='/login')){res.writeHead(302,{location:'/admin'});res.end();return true;}
-        if(path==='/api/lab/setup'||(!adminHost&&(path==='/admin'||path.startsWith('/api/lab/admin/')))||(adminHost&&managedApi))throw new LabError('not_found','No encontrado.',404);
+        if(path==='/api/lab/setup'||(!adminHost&&(path==='/admin'||mockupEditor||path.startsWith('/api/lab/admin/')))||(adminHost&&managedApi))throw new LabError('not_found','No encontrado.',404);
       }
       if(!['GET','HEAD'].includes(req.method)){
         const origin=web?(adminHost?web.panel:web.lab):`http://${req.headers.host}`;
@@ -50,6 +52,11 @@ export function createLabHttp({service,readJson,runGeneration,runAnalysis,onComp
       if(path==='/admin'||path==='/login'){
         if(req.method!=='GET')throw new LabError('not_found','No encontrado.',404);
         res.writeHead(200,{'content-type':'text/html; charset=utf-8'});res.end(await readFile(join(import.meta.dirname,'public','panel.html')));return true;
+      }
+      if(mockupEditor){
+        if(req.method!=='GET')throw new LabError('not_found','No encontrado.',404);
+        await service.mockupDraft(token.admin,mockupEditor[1]);
+        res.writeHead(200,{'content-type':'text/html; charset=utf-8'});res.end(await readFile(join(import.meta.dirname,'public','index.html')));return true;
       }
       if(protectedPage){
         try{await service.session(token.company);}catch{
@@ -75,6 +82,18 @@ export function createLabHttp({service,readJson,runGeneration,runAnalysis,onComp
       if(path==='/api/lab/session'&&req.method==='GET'){
         const admin=new URL(req.url,'http://local').searchParams.get('audience')==='admin';
         json(res,200,await service.session(admin?token.admin:token.company,admin?{admin:true}:{}));return true;
+      }
+      if(path==='/api/lab/mockups'&&req.method==='GET'){json(res,200,{data:await service.mockups(token.company)});return true;}
+      if(path==='/api/lab/admin/mockups'){
+        if(req.method==='GET')json(res,200,{data:await service.mockups(token.admin,{admin:true})});
+        else if(req.method==='POST')json(res,201,{data:await service.createMockup(token.admin,await readJson(req,4096))});
+        else throw new LabError('not_found','No encontrado.',404);return true;
+      }
+      const mockup=/^\/api\/lab\/admin\/mockups\/([a-z0-9-]{1,60})(\/publish)?$/.exec(path);
+      if(mockup){
+        if(req.method==='GET'&&!mockup[2])json(res,200,{data:await service.mockupDraft(token.admin,mockup[1])});
+        else if(req.method==='POST')json(res,200,{data:await service[mockup[2]?'publishMockup':'saveMockup'](token.admin,mockup[1],await readJson(req,250000))});
+        else throw new LabError('not_found','No encontrado.',404);return true;
       }
       if(path==='/api/lab/admin/companies'){
         if(req.method==='GET')json(res,200,{data:await service.companies(token.admin)});

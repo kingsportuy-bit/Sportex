@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
-  "updatedBy": "TASK-20261020-005",
-  "environment": "PILOTO_DELTA",
+  "updatedBy": "TASK-20261020-006",
+  "environment": "DESARROLLO_LOCAL",
   "allowedEnvironments": [
     "DOCUMENTACION",
     "DESARROLLO_LOCAL",
@@ -13,17 +13,28 @@
     "PRODUCCION_COMERCIAL"
   ],
   "operatingTarget": "PILOTO_DELTA",
-  "mode": "operation",
-  "objective": "Copia de referencia corregida y publicada con Logo2 compatible.",
+  "mode": "feature",
+  "objective": "Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo actual.",
   "scope": {
     "allowed": [
-      "Uso y observacion del laboratorio publicado por Fito."
+      "Catalogo admin, editor reutilizado y defaults por mockup; fixtures locales y Git."
     ],
     "prohibited": [
-      "Sin CRM, legado, DNS, cambios de cuentas ni llamadas pagas de QA."
+      "Sin deploy, IA paga, datos reales, CRM, legado ni importador PSD arbitrario."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-006",
+    "title": "Administrar configuracion de mockups",
+    "path": "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
+    "status": "in_progress",
+    "lifecycle": "active",
+    "workType": "feature",
+    "campaign": "CAMP-20260803-001",
+    "contextFocus": "runtime",
+    "developmentGuideImpact": "none",
+    "nextAction": "Completar QA visual local de probar/publicar cuando navegador permita control."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -84,8 +95,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "a95850ff3b0d3cd9d66232650251331a39b4ee59",
-    "workingTreeState": "BOCETOS_A95850F_DEPLOYED_POST_RELEASE_EVIDENCE",
+    "headAtLastEvidence": "bf9fb13bf78e3c7340d5d1074d33d618cc13d587",
+    "workingTreeState": "MOCKUP_CATALOG_LOCAL_PENDING_VISUAL_QA",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -109,14 +120,13 @@
     "status": "PASS",
     "lastRunAt": "2026-10-20",
     "commands": [
-      "node --test bocetos/tests/reference-context.test.mjs bocetos/tests/reference-details.test.mjs bocetos/tests/reference-colors.test.mjs bocetos/tests/color-application.test.mjs bocetos/tests/lab-generation.test.mjs",
       "npm run check:bocetos",
-      "npm run workflow:close -- TASK-20261020-005 --profile=auto",
-      "git diff --check",
-      "npm run validate"
+      "npm run validate",
+      "npm run workflow:close -- TASK-20261020-006 --profile=auto",
+      "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md",
-    "note": "199 bocetos,31 workflow,59 Core, SQL/RLS y build PASS;16 Node24/Linux, contexto real, HTTPS y backup restaurado. Sin IA paga."
+    "evidence": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
+    "note": "205 bocetos,31 workflow,59 Core,SQL/RLS/build PASS; SPORTEX_CLOSE=PASS local. QA visual final pendiente."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
@@ -208,14 +218,32 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20261020-005",
+    "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
-    "path": "docs/evidencias/TASK-20261020-005_COPIAR_REFERENCIA.md",
-    "summary": "a95850f publicado healthy1/1;Logo2/sponsors aceptados,2 empresas y backup preservados. Sin IA paga.",
-    "environment": "PILOTO_DELTA",
+    "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
+    "summary": "Catalogo/setup local y205 tests PASS; QA visual final pendiente.",
+    "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-006",
+      "summary": "Catalogo/setup local y205 tests PASS; QA visual final pendiente.",
+      "documents": [
+        "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
+        "core/bocetos/mockups.mjs",
+        "bocetos/public/mockup-editor.js",
+        "bocetos/public/mockup-panel.js",
+        "docs/BOCETOS_LOCAL_CONTRACT.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md"
+      ],
+      "decisions": [
+        "Configurar modelo actual; nuevos bocetos versionados, empresas sin acceso a borradores."
+      ]
+    },
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-005",
@@ -282,23 +310,6 @@
       "decisions": [
         "Base generica sin identidad; reemplazos por espacio y acceso minimalista solicitados por Fito."
       ]
-    },
-    {
-      "date": "2026-10-20",
-      "taskId": "TASK-20261020-001",
-      "summary": "Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.",
-      "documents": [
-        "docs/TASKS/closed/2026/TASK-20261020-001-desplegar-laboratorio-bocetos.md",
-        "bocetos/production-start.mjs",
-        "core/bocetos/sqlite-store.mjs",
-        "deploy/docker-stack.bocetos.yml"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md"
-      ],
-      "decisions": [
-        "Identidad propia Core, SQLite y servicio aislado autorizado por Fito."
-      ]
     }
   ],
   "blockers": [],
@@ -310,12 +321,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito recarga el laboratorio y prueba Copiar colores de la referencia.",
-    "Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales."
+    "Completar QA visual local de probar/publicar cuando navegador permita control."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 34,
-    "throughDate": "2026-10-19"
+    "archivedChanges": 35,
+    "throughDate": "2026-10-20"
   }
 }

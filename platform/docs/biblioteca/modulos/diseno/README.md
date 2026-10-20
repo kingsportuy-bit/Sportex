@@ -66,6 +66,11 @@ Persistencia JSON local e identidad ficticia; no habilita uso comercial ni CRM.
 
 ## Cierre documental
 
+TASK-20261020-006: catalogo de configuraciones de mockup en Core/bocetos,
+admin exclusivo y lectura de publicaciones por empresas. Reutiliza lienzo;
+primer kit actual, defaults versionados y snapshot por boceto. Contrato
+BOCETOS_LOCAL_CONTRACT.md; evidencia TASK-20261020-006_PANEL_MOCKUPS.md.
+
 TASK-20261020-005 valida localmente copia desde la referencia con Logo2, paquete
 UI real y HTTP autenticado, sin IA paga. Contrato BOCETOS_LOCAL_CONTRACT.md y
 evidencia TASK-20261020-005_COPIAR_REFERENCIA.md. No acredita release nuevo.

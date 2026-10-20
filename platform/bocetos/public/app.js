@@ -16,7 +16,10 @@ import {fitTextInk,proportionalResize,makeElementModel,replacementImageSize,trac
 import {toggleElement,marqueeElements,alignElements,colorableElements} from './element-selection.js';
 import {installTextureImport} from './texture-import.js';
 import {bootstrapLab} from './lab-client.js';
+import {mockupParameters,mockupSnapshot,mockupOptionInputs,companyMockupParameters} from './mockup-config.js';
 const lab=await bootstrapLab();
+let factoryParameters=null;
+const mockupCatalog=lab.mockups||[];
 import {twoPassVersion,guideVisibleRows,visibleOnlyGuide,registerVisibleAtlas,continuationInput,composeContinuation} from './two-pass-atlas.js';
 
 import {stripePeriod,sharedStripeScale} from './stripe-scale.js';
@@ -2011,6 +2014,7 @@ async function readWorkspace() {
   }); } finally { db.close(); }
 }
 async function persistWorkspace() {
+  if(lab.mockupEditor)return;
   if (!persistenceReady || !blankSketch) return;
   try {
     const entries = [];
@@ -2030,10 +2034,11 @@ function scheduleWorkspaceSave() {
   clearTimeout(persistTimer); persistTimer = setTimeout(persistWorkspace, 450);
 }
 async function restoreWorkspace() {
+  if(lab.mockupEditor)return false;
   try {
     const saved = await readWorkspace();
     if (!saved?.sketches?.length) return false;
-    initialParameters=restoreInitialParameters(initialParameters,saved.initialParameters||saved.preferences?.elementModel);
+    if(!mockupCatalog.length)initialParameters=restoreInitialParameters(initialParameters,saved.initialParameters||saved.preferences?.elementModel);
     if(saved.cuffOverlayVersion!==1)for(const [,sketch] of saved.sketches)sketch.inputs['cuffs-enabled']=false;
     const restored = await Promise.all(saved.sketches.map(async ([id, sketch]) => [id, withApprovedTrimModel(await hydrateSketch(sketch))]));
     // An old document may still use this background; new companies never load it.
@@ -2060,6 +2065,7 @@ async function restoreWorkspace() {
 function captureSketch() {
   const inputs = Object.fromEntries(sketchInputIds.map(id => [id, $(id).type === 'checkbox' ? $(id).checked : $(id).value]));
   return {
+    mockup:structuredClone(state.mockup||null),
     mockRevision: 2, positionRevision,elementModel:structuredClone(state.elementModel),trimEdits:structuredClone(state.trimEdits||{}),trimModelRevision:state.trimModelRevision,
     inputs, customTextures:structuredClone(state.customTextures),textureModes:{...state.textureModes},referenceData: state.referenceData, referenceRegions: structuredClone(state.referenceRegions), referenceTitle: $('reference-title').textContent,
     referencePreview: $('reference-preview')?.src || null,pendingPrintGeneration:state.pendingPrintGeneration||null,
@@ -2073,6 +2079,16 @@ function captureSketch() {
 }
 function restoreSketch(sketch,{preserveViewport=false}={}) {
   sketch=withApprovedTrimModel(sketch);state.trimModelRevision=sketch.trimModelRevision;
+  state.mockup=structuredClone(sketch.mockup||null);
+  if(state.mockup){
+    if(!$('mold-select').querySelector(`option[value="${state.mockup.id}"]`))$('mold-select').add(new Option(state.mockup.name+' · guardado',state.mockup.id));
+    $('mold-select').value=state.mockup.id;
+    const published=mockupCatalog.find(m=>m.id===state.mockup.id);
+    initialParameters=companyMockupParameters(published||state.mockup,factoryParameters,lab.company?.settings,lab.company?.assets);
+  }else if(mockupCatalog.length){
+    $('mold-select').value='football-basic';
+    initialParameters=companyMockupParameters(mockupCatalog.find(m=>m.id==='football-basic'),factoryParameters,lab.company?.settings,lab.company?.assets);
+  }
   const viewport=$('canvas-viewport'),savedViewport=preserveViewport?{zoom:editorZoom,left:viewport.scrollLeft,top:viewport.scrollTop}:null;
   inlineEdit=null;$('inline-text-editor').hidden=true;
   if ($('raw-ai-dialog').open) $('raw-ai-dialog').close();
@@ -2081,7 +2097,7 @@ function restoreSketch(sketch,{preserveViewport=false}={}) {
   state.texts=structuredClone(sketch.texts||[]);state.trimEdits=structuredClone(sketch.trimEdits||{});
   state.referenceData = sketch.referenceData; state.referenceRegions = structuredClone(sketch.referenceRegions || {}); updateReferenceRegions(); state.backgroundMode = sketch.backgroundMode;
   state.customBackground = sketch.customBackground;
-  state.logos = { brand: [...sketch.logos.brand],brand2:[...(sketch.logos.brand2||[])], crest: [...sketch.logos.crest] };state.elementModel=structuredClone(initialParameters||sketch.elementModel||null);
+  state.logos = { brand: [...sketch.logos.brand],brand2:[...(sketch.logos.brand2||[])], crest: [...sketch.logos.crest] };state.elementModel=structuredClone(sketch.elementModel||initialParameters||null);
   state.sponsors = sketch.sponsors.map(s => ({ ...s })); state.generatedParts = { ...sketch.generatedParts };
   state.designVariants = sketch.designVariants.map(variant => ({ ...variant, clips: structuredClone(variant.clips || {}), parts: { ...variant.parts } })); state.activeVariant = sketch.activeVariant;
   state.view = sketch.view; state.layers = { ...structuredClone(frontPositions), ...structuredClone(sketch.layers) };
@@ -2119,6 +2135,7 @@ function restoreSketch(sketch,{preserveViewport=false}={}) {
   for (const layer of ['highlights', 'shadows']) $(`${layer}-opacity-value`).textContent = `${$(`${layer}-opacity`).value}%`;
   $('cuff-color').disabled=!$('cuffs-enabled').checked;
   updateTrimControls();
+  applyMockupAvailability(state.mockup);
   updateFrame(!preserveViewport); updateSelectedControls(); updateSponsorList(); updateViewButtons(); updateGenerate();
   notice(state.view==='design'&&state.designVariants[state.activeVariant]?.cropError||registrationReviewMessage(state.designVariants[state.activeVariant])||sketch.notice,Boolean(state.view==='design'&&state.designVariants[state.activeVariant]?.cropError));
   if(savedViewport){const restoreView=()=>{editorZoom=savedViewport.zoom;viewport.scrollLeft=savedViewport.left;viewport.scrollTop=savedViewport.top;positionCanvasActions();positionSelectedTextColor();};restoreView();requestAnimationFrame(restoreView);}
@@ -2143,11 +2160,15 @@ function switchSketch(id) {
   rememberPreferences();sketches.set(activeSketchId, captureSketch()); activeSketchId = id;
   restoreSketch(sketches.get(id)); $('generation-overlay').hidden = id !== generatingSketchId; renderSketchTabs();runPendingReferenceAdjustment();
 }
-function newSketch() {
+function newSketch({mockupId=$('mold-select').value}={}) {
   if (!blankSketch) return;
   recordHistory();
   const current=captureSketch();sketches.set(activeSketchId,current);rememberPreferences();
+  const selected=mockupCatalog.find(m=>m.id===mockupId);
+  if(selected)initialParameters=companyMockupParameters(selected,factoryParameters,lab.company?.settings,lab.company?.assets);
+  if(selected&&browserPreferences?.backgroundMode==='custom'&&browserPreferences.customBackground)initialParameters={...initialParameters,backgroundMode:'custom',inputs:{...initialParameters.inputs,'background-select':'custom'}};
   const id=nextAvailableSketchId(sketches.keys()),fresh=initialParameterSketch({...blankSketch,mockRevision:2,positionRevision},initialParameters,{logos:browserPreferences?.logos,sponsors:browserPreferences?.sponsors,customBackground:browserPreferences?.customBackground});editHistories.delete(id);
+  if(selected)fresh.mockup=mockupSnapshot(selected,factoryParameters);
   sketches.set(id, fresh); activeSketchId = id; restoreSketch(fresh);nextSketchId=nextAvailableSketchId(sketches.keys()); $('generation-overlay').hidden = true; renderSketchTabs();
   scheduleWorkspaceSave();notice('Nuevo boceto creado con la configuración base guardada.');
 }
@@ -2171,6 +2192,20 @@ async function closeSketch(id) {
   $('sketch-tab-list').querySelector('[aria-selected="true"] .sketch-tab-title')?.focus();
 }
 $('new-sketch').addEventListener('click', newSketch);
+$('mold-select').addEventListener('change',()=>newSketch({mockupId:$('mold-select').value}));
+function applyMockupAvailability(mockup){
+  if(lab.mockupEditor&&!lab.preview)return;
+  for(const [key,ids] of Object.entries(mockupOptionInputs))for(const id of ids){
+    const input=$(id);if(!input)continue;
+    const unavailable=mockup?.options?.[key]===false;
+    if(unavailable)input.checked=false;
+    input.disabled=unavailable;
+    const control=input.closest('label')||input.parentElement;
+    control.toggleAttribute('data-mockup-unavailable',unavailable);
+  }
+  for(const piece of ['short','socks'])document.querySelector(`[data-texture-piece="${piece}"]`)?.toggleAttribute('data-mockup-unavailable',mockup?.options?.[piece==='short'?'shorts':'socks']===false);
+  for(const [key,group] of Object.entries({sleeveTrim:'sleeve',shoulderTrim:'shoulder',shirtTrim:'shirt-side',shortTrim:'short-side',shortHem:'short-hem'}))$(`trim-${group}-group`).toggleAttribute('data-mockup-unavailable',mockup?.options?.[key]===false);
+}
 $('raglan-enabled').addEventListener('change', ()=>{updateTrimControls();invalidateGarment();});
 let trimRenderTimer;
 for(const id of trimInputIds){
@@ -2291,10 +2326,26 @@ async function init() {
     state.assets=Object.fromEntries(names.map((name,i)=>[name,loaded[i]]));
     updateSelectedControls();
     state.assetsReady = true; invalidateGarment(); updateGenerate();
-    initialParameters=await fetch('/initial-parameters.json').then(response=>{if(!response.ok)throw new Error('No se pudo cargar la configuración inicial.');return response.json();});
+    factoryParameters=await fetch('/initial-parameters.json').then(response=>{if(!response.ok)throw new Error('No se pudo cargar la configuración inicial.');return response.json();});
+    initialParameters=structuredClone(factoryParameters);
+    if(mockupCatalog.length){
+      $('mold-select').replaceChildren(...mockupCatalog.map(m=>new Option(m.name,m.id)));
+      initialParameters=companyMockupParameters(mockupCatalog[0],factoryParameters,lab.company?.settings,lab.company?.assets);
+      state.mockup=mockupSnapshot(mockupCatalog[0],factoryParameters);
+    }
+    if(lab.mockupEditor){
+      const record=lab.record;initialParameters=mockupParameters(record.draft,factoryParameters);
+      state.mockup={id:record.id,name:record.draft.name,kitId:record.kitId,revision:record.version,parameters:structuredClone(initialParameters),options:structuredClone(record.draft.options)};
+      $('mold-select').replaceChildren(new Option(record.draft.name,record.id));
+      // Local placeholders make placement editable without storing brand files.
+      for(const [type,label] of [['brand','MARCA'],['brand2','LOGO 2'],['crest','ESCUDO']]){
+        const node=document.createElement('canvas');node.width=180;node.height=100;const c=node.getContext('2d');c.fillStyle='#ffffff';c.fillRect(2,2,176,96);c.fillStyle='#171d19';c.font='bold 30px Arial';c.textAlign='center';c.fillText(label,90,62);
+        const image=await loadImage(node.toDataURL('image/png'));state.logos[type]=[{id:'mockup-sample-'+type,name:label+' · muestra',image}];initialParameters.logoFiles[type]=label+' · muestra';
+      }
+    }
     if(lab.managed){
       const settings=lab.company.settings||{};
-      if(settings.initialParameters?.kind==='sportex-initial-parameters')initialParameters=structuredClone(settings.initialParameters);
+      if(settings.initialParameters?.kind==='sportex-initial-parameters'&&(!state.mockup||state.mockup.id==='football-basic'&&state.mockup.revision===1))initialParameters=structuredClone(settings.initialParameters);
       initialParameters.inputs={...initialParameters.inputs,...(settings.numberFont?{'number-font':settings.numberFont}:{}),...(settings.nameFont?{'name-font':settings.nameFont}:{})};
       for(const asset of lab.company.assets){
         if(['brand','brand2'].includes(asset.kind)){
@@ -2306,9 +2357,11 @@ async function init() {
     }
     blankSketch = initialParameterSketch(withApprovedTrimModel(captureSketch()),initialParameters);restoreSketch(blankSketch);sketches.set(activeSketchId, blankSketch);
     if (!await restoreWorkspace()) renderSketchTabs();
+    if(lab.mockupEditor)lab.installEditor({read:()=>makeElementModel(captureSketch(),[...fixedLayerKeys,...state.texts.map(t=>t.id)]),confirm:confirmEditorAction,reset:()=>{restoreSketch(blankSketch);recordHistory();}});
     persistenceReady = true;scheduleWorkspaceSave();
     notice(state.view==='design'&&(state.designVariants[state.activeVariant]?.cropError||registrationReviewMessage(state.designVariants[state.activeVariant]))||'',Boolean(state.view==='design'&&state.designVariants[state.activeVariant]?.cropError));recordHistory();
   } catch (error) { console.error('Error al iniciar el editor:',error); notice('No se pudieron cargar los moldes del editor.', true); }
+  if(lab.mockupEditor){state.apiReady=false;updateGenerate();return;}
   try { const response = await fetch('/api/status'), data = await response.json(); state.apiReady = Boolean(data.ready); if (!state.apiReady) notice(lab.managed?'La conexión compartida de OpenAI está pendiente de configurar.':'El editor está listo. Configurá OPENAI_API_KEY en el servidor para generar con IA.'); updateGenerate();runPendingReferenceAdjustment(); }
   catch { notice('No se pudo consultar el estado de la IA.', true); }
 }

@@ -283,3 +283,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   con backup y rollback a65249d; sin llamadas IA ni mutaciones de cuentas de QA.
 - a95850f publicado healthy1/1: Logo2/sponsors aceptados en contenedor real,
  2 empresas preservadas, backup restaurado y HTTPS PASS; sin llamadas IA.
+- TASK-20261020-006: Fito aprueba comenzar panel Mockups con modelo actual.
+  Catalogo de plataforma exclusivo admin; borrador, prueba y revision publicada.
+  Lienzo compartido sin IA, archivos privados fuera del template y snapshot en
+  bocetos. Otros PSD requieren preparar kits; no hay deploy autorizado.

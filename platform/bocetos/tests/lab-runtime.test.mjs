@@ -50,6 +50,10 @@ test('runtime HTTPS separa dominios y cookies, cierra setup y rechaza origen aje
     const cookie=login.headers.get('set-cookie');assert.match(cookie,/__Host-sportex_lab_admin=/);assert.match(cookie,/Secure/);assert.match(cookie,/HttpOnly/);assert.doesNotMatch(cookie,/Domain=/);
     assert.equal((await request('/api/lab/admin/companies',{cookie:cookie.split(';')[0]})).status,200);
     assert.equal((await request('/api/lab/admin/companies',{host:'lab.example.test',cookie:cookie.split(';')[0]})).status,404);
+    assert.equal((await request('/admin/mockups/football-basic/editor',{host:'lab.example.test',cookie:cookie.split(';')[0]})).status,404);
+    assert.equal((await request('/admin/mockups/football-basic/editor',{cookie:cookie.split(';')[0]})).status,200);
+    assert.equal((await request('/api/lab/admin/mockups',{host:'lab.example.test',cookie:cookie.split(';')[0]})).status,404);
+    assert.equal((await request('/api/lab/admin/mockups',{cookie:cookie.split(';')[0]})).status,200);
     assert.equal((await request('/ready',{host:'127.0.0.1'})).status,200);
   }finally{await new Promise(resolve=>server.close(resolve));await store.close();await rm(dir,{recursive:true,force:true});}
 });

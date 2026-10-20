@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {initialParameterSketch} from '../public/element-layout.js';
 import * as elementLayout from '../public/element-layout.js';
+import {mockupParameters,mockupSnapshot,companyMockupParameters} from '../public/mockup-config.js';
 import {nextAvailableSketchId,preferenceSnapshot,preferredFontDefaults} from '../public/editor-geometry.js';
 
 const app=readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
@@ -11,9 +12,9 @@ const source=(start,end)=>app.slice(app.indexOf(start),app.indexOf(end));
 const empty=()=>({mockRevision:2,positionRevision:1,inputs:{'player-name':'NOMBRE','player-number':'10'},logos:{brand:[],brand2:[],crest:[]},layers:{brand2:{x:100,y:100,size:10}},texts:[],sponsors:[],visibleLayers:{},layerStyles:{},trimEdits:{},trimModelRevision:'approved',referenceData:null,generatedParts:{},designVariants:[],view:'base'});
 const base=()=>({inputs:{'name-font':'base-font','include-shorts':false,'shirt-color':'#123456','show-brand2':true,'brand2-select':'saved-logo'},logoFiles:{brand2:'base.png'},layers:{brand2:{x:797,y:315,size:48,scaleX:1.9,scaleY:1.9}},visibleLayers:{brand2:true},texts:[],sponsors:[],trimEdits:{curve:{nodes:[1,2]}},layerStyles:{brand2:{enabled:true,color:'#ffffff',width:2}}});
 function context(current,model,blank=empty()){
-  const fields={},c=vm.createContext({$:id=>fields[id]??={addEventListener(){}},structuredClone,initialParameterSketch,nextAvailableSketchId,preferenceSnapshot,preferredFontDefaults,positionRevision:3,initialParameters:model,blankSketch:blank,browserPreferences:current,sketches:new Map([[1,current]]),editHistories:new Map(),activeSketchId:1,nextSketchId:2,fixedLayerKeys:['brand2'],current,
+  const fields={},c=vm.createContext({lab:{},mockupCatalog:[],mockupParameters,mockupSnapshot,companyMockupParameters,factoryParameters:model,$:id=>fields[id]??={addEventListener(){}},structuredClone,initialParameterSketch,nextAvailableSketchId,preferenceSnapshot,preferredFontDefaults,positionRevision:3,initialParameters:model,blankSketch:blank,browserPreferences:current,sketches:new Map([[1,current]]),editHistories:new Map(),activeSketchId:1,nextSketchId:2,fixedLayerKeys:['brand2'],current,
     restoreInitialParameters:elementLayout.restoreInitialParameters,captureGeneralParameters(){},recordHistory(){},captureSketch:()=>c.current,rememberPreferences(){},restoreSketch:sketch=>{c.current=sketch;},renderSketchTabs(){},notice(){},scheduleWorkspaceSave(){c.saved=true;}});
-  vm.runInContext(source('function newSketch()', 'let confirmationResolver='),c);return c;
+  vm.runInContext(source('function newSketch(', 'let confirmationResolver='),c);return c;
 }
 
 test('Nuevo boceto uses the saved base while preserving the previous document and cached Logo2',()=>{
@@ -23,6 +24,19 @@ test('Nuevo boceto uses the saved base while preserving the previous document an
   assert.deepEqual(fresh.trimEdits,model.trimEdits);assert.deepEqual(fresh.layerStyles,model.layerStyles);assert.deepEqual(fresh.texts,[]);assert.equal(fresh.inputs['brand2-select'],'cached-id');assert.equal(fresh.logos.brand2[0].image,current.logos.brand2[0].image);
   assert.equal(fresh.referenceData,null);assert.equal(fresh.designVariants.length,0);assert.equal(c.activeSketchId,2);assert.equal(c.saved,true);assert.deepEqual(c.sketches.get(1),before);
   fresh.layers.brand2.x=3;fresh.trimEdits.curve.nodes.push(5);assert.equal(model.layers.brand2.x,797);assert.deepEqual(model.trimEdits.curve.nodes,[1,2]);
+});
+
+test('published mockup creates a versioned new sketch and reuses files without altering the open sketch',()=>{
+  const model=base(),logo={id:'latest-logo',name:'own.png',image:{src:'private-image'}};
+  const current={...empty(),backgroundMode:'custom',customBackground:{src:'own-background'},layers:{brand2:{x:120,y:450,size:90}},logos:{brand:[],brand2:[logo],crest:[]}};
+  const c=context(current,model),parameters=structuredClone(model);parameters.layers.brand2.y=333;
+  c.mockupCatalog=[{id:'mock-v2',name:'Modelo nuevo',kitId:'football-basic-v1',revision:2,options:{},parameters}];
+  c.newSketch({mockupId:'mock-v2'});
+  assert.equal(c.current.layers.brand2.y,333);assert.equal(c.current.mockup.revision,2);
+  assert.equal(c.current.inputs['brand2-select'],'latest-logo');assert.equal(c.current.logos.brand2[0].image.src,'private-image');
+  assert.equal(c.current.backgroundMode,'custom');assert.equal(c.current.customBackground.src,'own-background');
+  assert.equal(c.sketches.get(1).layers.brand2.y,450);
+  c.current.layers.brand2.y=400;assert.equal(parameters.layers.brand2.y,333);
 });
 
 test('base assets and text definitions survive unrelated latest selections or deleted elements',()=>{
