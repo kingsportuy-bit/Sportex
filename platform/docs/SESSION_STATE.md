@@ -31,8 +31,8 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Alcance actual
 
-- Permitido: Catalogo admin, editor reutilizado y defaults por mockup; fixtures locales y Git.
-- Prohibido: Sin deploy, IA paga, datos reales, CRM, legado ni importador PSD arbitrario.
+- Permitido: Catalogo admin, editor y defaults; prototipo 2D propio local; fixtures y Git.
+- Prohibido: Sin deploy, API paga, datos reales, CRM, legado ni importador PSD arbitrario.
 
 ## Decisiones vigentes
 
@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- Catalogo/setup local y205 tests PASS; QA visual final pendiente.
+- Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Completar QA visual local de probar/publicar cuando navegador permita control.
+- Revisar encaje del prototipo propio; completar QA visual del panel.

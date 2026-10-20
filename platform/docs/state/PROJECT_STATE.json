@@ -17,10 +17,10 @@
   "objective": "Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo actual.",
   "scope": {
     "allowed": [
-      "Catalogo admin, editor reutilizado y defaults por mockup; fixtures locales y Git."
+      "Catalogo admin, editor y defaults; prototipo 2D propio local; fixtures y Git."
     ],
     "prohibited": [
-      "Sin deploy, IA paga, datos reales, CRM, legado ni importador PSD arbitrario."
+      "Sin deploy, API paga, datos reales, CRM, legado ni importador PSD arbitrario."
     ]
   },
   "currentTask": {
@@ -33,7 +33,7 @@
     "campaign": "CAMP-20260803-001",
     "contextFocus": "runtime",
     "developmentGuideImpact": "none",
-    "nextAction": "Completar QA visual local de probar/publicar cuando navegador permita control."
+    "nextAction": "Revisar encaje del prototipo propio; completar QA visual del panel."
   },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
@@ -126,7 +126,7 @@
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "note": "205 bocetos,31 workflow,59 Core,SQL/RLS/build PASS; SPORTEX_CLOSE=PASS local. QA visual final pendiente."
+    "note": "209 bocetos,8 checks render;31 workflow,59 Core,SQL/RLS/build PASS local. QA navegador pendiente."
   },
   "deployments": {
     "status": "CRM_D9C4F44_BOCETOS_A95850F_HEALTHY",
@@ -221,7 +221,7 @@
     "taskId": "TASK-20261020-006",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "Catalogo/setup local y205 tests PASS; QA visual final pendiente.",
+    "summary": "Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.",
     "environment": "DESARROLLO_LOCAL",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -229,13 +229,14 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
-      "summary": "Catalogo/setup local y205 tests PASS; QA visual final pendiente.",
+      "summary": "Panel y prototipo propio locales;209 tests y8 checks render PASS. QA navegador pendiente.",
       "documents": [
         "docs/TASKS/active/TASK-20261020-006-panel-mockups.md",
         "core/bocetos/mockups.mjs",
         "bocetos/public/mockup-editor.js",
         "bocetos/public/mockup-panel.js",
-        "docs/BOCETOS_LOCAL_CONTRACT.md"
+        "docs/BOCETOS_LOCAL_CONTRACT.md",
+        "bocetos/prototypes/football-own-v1/README.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md"
@@ -321,7 +322,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Completar QA visual local de probar/publicar cuando navegador permita control."
+    "Revisar encaje del prototipo propio; completar QA visual del panel."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",

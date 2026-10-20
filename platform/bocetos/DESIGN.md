@@ -7,6 +7,13 @@ lienzo al centro y composición a la derecha; controles apilados en móvil.
 La implementación existente es la fuente visual, sin cambio de marca.
 Contrato de comportamiento: `../docs/BOCETOS_LOCAL_CONTRACT.md`.
 
+### Visor de prueba de camiseta propia
+
+`prototypes/football-own-v1/`: modo Operate, controles a la izquierda y dos
+vistas en un lienzo claro. Reutiliza paleta SPORTEX y controles nativos;
+en movil se apilan controles y lienzo. Cuello/color/franjas y comparacion
+son locales y reversibles. Es un prototipo, no una pantalla del laboratorio.
+
 ## Administración local por empresa
 
 ### Mockups

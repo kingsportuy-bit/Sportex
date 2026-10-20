@@ -61,3 +61,34 @@ No usa el volumen remoto ni la caché de empresas. Puerto4320 es solo loopback.
 Sin deploy, IA paga ni datos reales. Runtime remoto sigue a95850f. Revertir
 commits revierte la feature; catalogo aditivo queda guardado para recuperacion.
 No se declara importacion de PSD arbitrarios ni otro cuello listo.
+
+## Extension autorizada: prototipo propio de camiseta
+
+Fito confirma que FUTBOL MAIN corresponde a Futbol basico y aprueba preparar
+una prueba propia de camiseta, frente/espalda y tres cuellos. Sin deploy ni
+uso de la API del editor. Cuatro generaciones con imagegen integrado: cuerpo
+continuo neutro, redondo, V y polo. Prompts exactos y referencias documentados
+en `bocetos/prototypes/football-own-v1/prompts.json`, tambien embebidos en PNG.
+
+Visor independiente en loopback4321: color de cuerpo, mangas, franjas y cuello,
+presets, diagnostico de piezas, comparacion y descarga. El renderer comparte
+cuerpo/coordenadas entre variantes. Mascara desde alfa real, reparto inicial
+de mangas por costura, iluminacion derivada de gris, interior y abertura propios.
+Mapas y geometria exportados en layers/ y manifest.json del prototipo.
+
+`verify.mjs` con Canvas nativo:8 comprobaciones PASS. Frente y espalda mantienen
+cuerpo y franjas identicos por pixel fuera del cuello; escala de collar uniforme,
+aberturas separadas y blanco/negro conservan luces. Preparacion461ms, pares17-49ms
+en esta computadora; no es un benchmark de navegador. `verification.json` conserva
+resultados y hashes de fuentes. Cuatro tests nuevos de material pasan; suite del
+laboratorio completa:209 tests PASS,0 fallos (sportex-own-prototype-tests.log).
+
+Se inspeccionaron renders reales del modulo del visor en blanco y franjas;
+se corrigieron restos de alfa blanco y el recorte superior continuo. El navegador
+interno sigue deshabilitado. No se controla mediante otra automatizacion ni se
+afirma QA responsive/de interaccion. La revision visual de esta prueba fue local
+sin revisor independiente. Sistema visual heredado conservado.
+
+Estado: PROTOTIPO_LOCAL_NO_INTEGRADO. Costuras de mangas y encaje de cuellos
+necesitan aprobacion; luz derivada no equivale a pases fisicos3D. Retirar la
+carpeta y detener su servidor revierte esta prueba. Fútbol basico se conserva.

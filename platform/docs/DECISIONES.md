@@ -287,3 +287,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   Catalogo de plataforma exclusivo admin; borrador, prueba y revision publicada.
   Lienzo compartido sin IA, archivos privados fuera del template y snapshot en
   bocetos. Otros PSD requieren preparar kits; no hay deploy autorizado.
+- Fito confirma que FUTBOL MAIN es Futbol basico y autoriza una prueba propia
+  2D con frente/espalda y tres cuellos, mediante imagegen integrado. Base comun
+  continua, cuello/abertura/luces independientes; colores y franjas locales.
+  Se valida por separado antes de integrarla; no sustituye el modelo publicado.

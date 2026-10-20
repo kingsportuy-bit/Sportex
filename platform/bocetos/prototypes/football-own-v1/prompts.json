@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-20",
+  "tool": "image_gen.imagegen (integrado)",
+  "calls": 4,
+  "externalApiKeyUsed": false,
+  "entries": [
+    {
+      "file": "assets/body-neutral.png",
+      "mode": "built-in imagegen",
+      "prompt": "Use case: product-mockup. Create an ORIGINAL reusable photorealistic blank football jersey asset for a garment configurator, not a finished design. One wide image containing exactly TWO isolated short sleeve jerseys: FRONT on the left, BACK on the right. Genuine transparent background. Both views aligned at the shoulder and hem, identical garment size, natural athletic regular fit, straight upright ghost-mannequin pose, straight-on camera without perspective tilt. Entire shirts visible, generous clear gap between them, no shorts, body, hanger or props. Matte neutral LIGHT GRAY fine polyester knit with subtle realistic folds and stitching, softly lit from upper front with restrained shadows; colorless neutral lighting. Set-in sleeves. Keep the sleeves short and gently down-angled, hem almost horizontal, no elastic hem band. CRITICAL MODULAR NECK DESIGN: the body must be a continuous smooth fabric surface across the entire upper center chest up to the shoulder/neck base, with NO visible collar, NO collar ribbing, NO neck hole, NO scoop seam, NO V seam and NO collar shadow. Imagine a blank continuous cloth panel across the small neck region; three separate detachable collar overlays will later create the opening. It should have natural shoulder contours and a shallow high central top edge sufficient to support round, V and polo collars without changing the torso. Front and back must use exactly the same neutral fabric material and scale. Preserve photographic cloth detail for later extracting monochrome lighting maps. No logos, letters, numbers, stripes, branding, watermarks, decorative seams, skin or labels. Deliver a clean high resolution two-view production asset with antialiased transparent silhouette.",
+      "references": []
+    },
+    {
+      "file": "assets/collar-round.png",
+      "mode": "built-in imagegen",
+      "references": [
+        "assets/body-neutral.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset: isolated detachable round collar overlays for a modular jersey configurator. FIRST IMAGE IS ONLY THE TARGET BODY STYLE, LIGHT DIRECTION AND FRONT/BACK CAMERA REFERENCE. Create a NEW transparent asset sheet of exactly TWO isolated collar pieces: LEFT=front view and RIGHT=back view of a simple ROUND crew-neck ribbed collar, an elliptical opening in the front surrounded by an even rib-knit band; back is a shallower gently curved rib-knit band. No V or pointed flap. Both correspond to the same garment, viewed straight-on from the same slightly elevated camera used in the body reference. Photorealistic fabric with restrained stitches and knit detail, neutral LIGHT GRAY midtone fabric; clear soft shadow folds and restrained highlights, all neutral grayscale so it can be recolored. The band fabric should not be black. Match the upper-front soft lighting of the jersey. No body fabric, chest, shoulders, shirt, mannequin, skin, white inner panel, background, title, letters, logos or props. Show only the collar band/lapels, including their inside back band if visible. The hole inside each collar must be genuinely transparent, as must all exterior space. Front and back isolated shapes occupy the left and right halves with a wide transparent gap and ample padding, neither touches the canvas edge. Whole collars visible, both approximately the same exterior width. Use detailed clean antialiased transparent edges without white fringe, black fringe or floating pixel debris. These pieces will be registered over the reference jersey by code; do not reproduce the reference bodies. Do not add extra views or decorative elements."
+    },
+    {
+      "file": "assets/collar-v.png",
+      "mode": "built-in imagegen",
+      "references": [
+        "assets/body-neutral.png",
+        "user:b5685419-86cd-4cd7-93e3-d76b55b7e461.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset: isolated detachable v collar overlays for a modular jersey configurator. FIRST IMAGE IS ONLY THE TARGET BODY STYLE, LIGHT DIRECTION AND FRONT/BACK CAMERA REFERENCE. Create a NEW transparent asset sheet of exactly TWO isolated collar pieces: LEFT=front view and RIGHT=back view of a classic V-NECK ribbed football jersey collar, two broad gently curved bands meeting in a sharp centered V with an overlapping small center seam. Use the second image only as a collar shape and knit detail reference; recolor it neutral light gray. Back is a shallow curved rib-knit band, not V. Both correspond to the same garment, viewed straight-on from the same slightly elevated camera used in the body reference. Photorealistic fabric with restrained stitches and knit detail, neutral LIGHT GRAY midtone fabric; clear soft shadow folds and restrained highlights, all neutral grayscale so it can be recolored. The band fabric should not be black. Match the upper-front soft lighting of the jersey. No body fabric, chest, shoulders, shirt, mannequin, skin, white inner panel, background, title, letters, logos or props. Show only the collar band/lapels, including their inside back band if visible. The hole inside each collar must be genuinely transparent, as must all exterior space. Front and back isolated shapes occupy the left and right halves with a wide transparent gap and ample padding, neither touches the canvas edge. Whole collars visible, both approximately the same exterior width. Use detailed clean antialiased transparent edges without white fringe, black fringe or floating pixel debris. These pieces will be registered over the reference jersey by code; do not reproduce the reference bodies. Do not add extra views or decorative elements."
+    },
+    {
+      "file": "assets/collar-polo.png",
+      "mode": "built-in imagegen",
+      "references": [
+        "assets/body-neutral.png",
+        "user:e78cd21e-9100-4689-977c-5d0cf1d73a5c.png"
+      ],
+      "prompt": "Use case: product-mockup. Asset: isolated detachable polo collar overlays for a modular jersey configurator. FIRST IMAGE IS ONLY THE TARGET BODY STYLE, LIGHT DIRECTION AND FRONT/BACK CAMERA REFERENCE. Create a NEW transparent asset sheet of exactly TWO isolated collar pieces: LEFT=front view and RIGHT=back view of a POLO collar with two downward folded pointed lapels and a clean short V-neck ribbed lower band, no buttons or placket. Use the second image only as a collar shape and fabric detail reference; recolor it neutral light gray. Back shows the fold-over collar from behind as a slightly raised wide horizontal curved band. Both correspond to the same garment, viewed straight-on from the same slightly elevated camera used in the body reference. Photorealistic fabric with restrained stitches and knit detail, neutral LIGHT GRAY midtone fabric; clear soft shadow folds and restrained highlights, all neutral grayscale so it can be recolored. The band fabric should not be black. Match the upper-front soft lighting of the jersey. No body fabric, chest, shoulders, shirt, mannequin, skin, white inner panel, background, title, letters, logos or props. Show only the collar band/lapels, including their inside back band if visible. The hole inside each collar must be genuinely transparent, as must all exterior space. Front and back isolated shapes occupy the left and right halves with a wide transparent gap and ample padding, neither touches the canvas edge. Whole collars visible, both approximately the same exterior width. Use detailed clean antialiased transparent edges without white fringe, black fringe or floating pixel debris. These pieces will be registered over the reference jersey by code; do not reproduce the reference bodies. Do not add extra views or decorative elements."
+    }
+  ]
+}

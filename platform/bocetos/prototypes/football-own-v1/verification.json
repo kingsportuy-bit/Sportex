@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "checks": [
+    "front: máscara continua de prenda y reparto de piezas válido",
+    "front: cuerpo y franjas idénticos por píxel fuera de la zona del cuello",
+    "front: blanco y negro conservan contraste de iluminación",
+    "front: escala uniforme y abertura independientes para los tres cuellos",
+    "back: máscara continua de prenda y reparto de piezas válido",
+    "back: cuerpo y franjas idénticos por píxel fuera de la zona del cuello",
+    "back: blanco y negro conservan contraste de iluminación",
+    "back: escala uniforme y abertura independientes para los tres cuellos"
+  ],
+  "prepareMs": 461,
+  "pairRenderMs": [
+    49,
+    36,
+    45,
+    47,
+    17,
+    18
+  ],
+  "browserVisualQA": "PENDIENTE",
+  "nativeCanvas": true
+}

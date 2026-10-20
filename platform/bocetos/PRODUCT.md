@@ -27,3 +27,10 @@ El despliegue y las pruebas pagas requieren autorizacion operativa separada.
 
 Conservar SPORTEX, idioma espanol, sistema visual del panel y lienzo existentes.
 Interfaz sencilla para operar. Dialogos propios, fuentes y assets existentes.
+
+## Prueba de mockup propio
+
+Fito autoriza una prueba local 2D de camiseta propia con frente, espalda y
+tres cuellos intercambiables. Vive en `prototypes/football-own-v1/`, fuera del
+catalogo. Usa una base continua, mascaras y luces derivadas; no reemplaza el kit
+actual. El encaje y las costuras requieren aprobacion antes de integrarla.

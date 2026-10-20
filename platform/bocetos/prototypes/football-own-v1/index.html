@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPORTEX · Prueba de camiseta propia</title>
+<link rel="stylesheet" href="style.css">
+<body>
+<header><strong>SPORTEX</strong><span>Prueba de camiseta propia</span><a href="README.md">Notas de la prueba</a></header>
+<main>
+  <aside aria-label="Opciones de la prueba">
+    <h1>Una camiseta.<br>Tres cuellos.</h1>
+    <p class="intro">Compará las variantes sobre el mismo cuerpo y estampado.</p>
+    <fieldset><legend>Cuello</legend><div class="neck-options">
+      <label><input type="radio" name="collar" value="round" checked>Redondo</label>
+      <label><input type="radio" name="collar" value="v">En V</label>
+      <label><input type="radio" name="collar" value="polo">Polo</label>
+    </div></fieldset>
+    <label class="field">Estampado<select id="pattern"><option value="stripes">Franjas verticales</option><option value="solid">Liso</option></select></label>
+    <div class="colors">
+      <label class="field">Camiseta<input id="color" type="color" value="#e6e8e7"></label>
+      <label class="field">Segunda franja<input id="second" type="color" value="#202923"></label>
+      <label class="field">Mangas<input id="sleeve" type="color" value="#e6e8e7"></label>
+      <label class="field">Cuello<input id="neckColor" type="color" value="#1f2d25"></label>
+    </div>
+    <fieldset><legend>Pruebas de color</legend><div class="presets"><button type="button" data-preset="white">Blanco</button><button type="button" data-preset="black">Negro</button><button type="button" data-preset="red">Rojo</button><button type="button" data-preset="stripes">Franjas</button></div></fieldset>
+    <label class="check"><input id="showPieces" type="checkbox">Ver separación de piezas</label>
+    <button id="download" class="primary" type="button" disabled>Descargar vista</button>
+    <p id="status" role="status">Preparando las piezas…</p>
+  </aside>
+  <section class="workspace" aria-label="Frente y espalda de la camiseta">
+    <div class="view-head"><h2 id="variant">Cuello redondo</h2><span>Frente y espalda</span></div>
+    <div class="stage"><canvas id="preview" width="1600" height="1000" aria-label="Vista de frente y espalda con el cuello y los colores elegidos"></canvas></div>
+    <p class="caption">Prototipo para revisar encaje, bordes y recoloración. La base y las franjas conservan su posición al cambiar de cuello.</p>
+    <details><summary>Comparar los tres cuellos</summary><div id="comparison" class="comparison"></div></details>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

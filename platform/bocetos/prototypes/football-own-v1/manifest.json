@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "id": "football-own-v1",
+  "status": "PROTOTIPO_LOCAL_NO_INTEGRADO",
+  "createdAt": "2026-10-20",
+  "views": {
+    "front": {
+      "width": 769,
+      "height": 789,
+      "sourceBounds": {
+        "x": 94,
+        "y": 53,
+        "width": 769,
+        "height": 789
+      },
+      "body": {
+        "body-mask": "layers/front-body-mask.png",
+        "sleeve-left-mask": "layers/front-sleeve-left-mask.png",
+        "sleeve-right-mask": "layers/front-sleeve-right-mask.png",
+        "coverage": "layers/front-coverage.png",
+        "shadow": "layers/front-shadow.png",
+        "highlight": "layers/front-highlight.png"
+      },
+      "collars": {
+        "round": {
+          "sourceBounds": {
+            "x": 116,
+            "y": 292,
+            "width": 710,
+            "height": 335
+          },
+          "width": 710,
+          "height": 335,
+          "placement": {
+            "x": 269.15,
+            "y": -4.734,
+            "width": 230.7,
+            "height": 108.85140845070423
+          },
+          "mask": "layers/front-round-mask.png",
+          "shadow": "layers/front-round-shadow.png",
+          "highlight": "layers/front-round-highlight.png"
+        },
+        "v": {
+          "sourceBounds": {
+            "x": 70,
+            "y": 221,
+            "width": 783,
+            "height": 508
+          },
+          "width": 783,
+          "height": 508,
+          "placement": {
+            "x": 269.15,
+            "y": -4.734,
+            "width": 230.7,
+            "height": 149.6750957854406
+          },
+          "mask": "layers/front-v-mask.png",
+          "shadow": "layers/front-v-shadow.png",
+          "highlight": "layers/front-v-highlight.png"
+        },
+        "polo": {
+          "sourceBounds": {
+            "x": 133,
+            "y": 130,
+            "width": 831,
+            "height": 493
+          },
+          "width": 831,
+          "height": 493,
+          "placement": {
+            "x": 246.08,
+            "y": -4.734,
+            "width": 276.84,
+            "height": 164.23841155234658
+          },
+          "mask": "layers/front-polo-mask.png",
+          "shadow": "layers/front-polo-shadow.png",
+          "highlight": "layers/front-polo-highlight.png"
+        }
+      }
+    },
+    "back": {
+      "width": 764,
+      "height": 798,
+      "sourceBounds": {
+        "x": 32,
+        "y": 46,
+        "width": 764,
+        "height": 798
+      },
+      "body": {
+        "body-mask": "layers/back-body-mask.png",
+        "sleeve-left-mask": "layers/back-sleeve-left-mask.png",
+        "sleeve-right-mask": "layers/back-sleeve-right-mask.png",
+        "coverage": "layers/back-coverage.png",
+        "shadow": "layers/back-shadow.png",
+        "highlight": "layers/back-highlight.png"
+      },
+      "collars": {
+        "round": {
+          "sourceBounds": {
+            "x": 76,
+            "y": 350,
+            "width": 739,
+            "height": 186
+          },
+          "width": 739,
+          "height": 186,
+          "placement": {
+            "x": 267.4,
+            "y": -4.788,
+            "width": 229.2,
+            "height": 57.68768606224627
+          },
+          "mask": "layers/back-round-mask.png",
+          "shadow": "layers/back-round-shadow.png",
+          "highlight": "layers/back-round-highlight.png"
+        },
+        "v": {
+          "sourceBounds": {
+            "x": 44,
+            "y": 293,
+            "width": 798,
+            "height": 207
+          },
+          "width": 798,
+          "height": 207,
+          "placement": {
+            "x": 267.4,
+            "y": -4.788,
+            "width": 229.2,
+            "height": 59.45413533834586
+          },
+          "mask": "layers/back-v-mask.png",
+          "shadow": "layers/back-v-shadow.png",
+          "highlight": "layers/back-v-highlight.png"
+        },
+        "polo": {
+          "sourceBounds": {
+            "x": 85,
+            "y": 183,
+            "width": 921,
+            "height": 228
+          },
+          "width": 921,
+          "height": 228,
+          "placement": {
+            "x": 244.48000000000002,
+            "y": -4.788,
+            "width": 275.03999999999996,
+            "height": 68.08807817589576
+          },
+          "mask": "layers/back-polo-mask.png",
+          "shadow": "layers/back-polo-shadow.png",
+          "highlight": "layers/back-polo-highlight.png"
+        }
+      }
+    }
+  },
+  "generation": {
+    "tool": "imagegen integrado",
+    "calls": 4,
+    "prompts": "prompts.json",
+    "usesExternalApiKey": false
+  },
+  "limits": [
+    "Costuras de mangas aproximadas; necesitan aprobación.",
+    "Iluminación reconstruida a partir de gris; no pases físicos 3D.",
+    "QA visual de la página pendiente por navegador deshabilitado."
+  ],
+  "assets": [
+    {
+      "file": "assets/body-neutral.png",
+      "bytes": 1794924,
+      "sha256": "4978372e051b20b664fd1e9b4bbaaca544ee0c8c501a41f47255638d47be4ef5"
+    },
+    {
+      "file": "assets/collar-round.png",
+      "bytes": 678461,
+      "sha256": "5f056a84cd526b540dc874da08d0bbd4780930e0c8ef22f159830f73f267e3d7"
+    },
+    {
+      "file": "assets/collar-v.png",
+      "bytes": 1042370,
+      "sha256": "e87f767e7182bd6745085bb6149478563b6f86dc1e4c342443cf927fc3174ba7"
+    },
+    {
+      "file": "assets/collar-polo.png",
+      "bytes": 1244768,
+      "sha256": "69754fcc4e5db03c887f937453e5892f48564d71b480e02e76f7f2f42795758b"
+    }
+  ]
+}
