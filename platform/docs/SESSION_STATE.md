@@ -62,7 +62,7 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 - Tarea: `TASK-20261020-006`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- JSON frontal aprobado como defaults locales; espalda fija,6 checks PASS. Falta integracion y QA panel.
+- Material V/polo adaptado al PSD; anclajes aprobados y espalda conservados. Falta integracion y QA visual.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Panel Mockups con borrador, prueba y configuracion inicial versionada del modelo
 
 ## Siguientes acciones
 
-- Integrar cuellos aprobados al kit local; completar QA visual.
+- Revisar material de cuellos e integrar al kit; QA visual.

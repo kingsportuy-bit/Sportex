@@ -248,6 +248,8 @@ solo geometría en el navegador; exportar no incluye guías. Hereda la identidad
 SPORTEX y todavía requiere QA de interacción visual en navegador.
 En Fútbol básico solo se edita el frente. La espalda muestra el cuello original
 sin tiradores ni cambios de forma al alternar variantes o importar anclajes.
+V/polo toman material de la cara exterior del cuello PSD. La trama generada
+se filtra; quedan pliegues suaves, sin modificar geometría aprobada ni espalda.
 
 Los gráficos importados se reducen con antialias y filtro alto, conservando
 fuente, forma y transparencia. Los contornos rasterizan a la densidad de salida

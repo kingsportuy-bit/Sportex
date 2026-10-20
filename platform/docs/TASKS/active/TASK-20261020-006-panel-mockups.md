@@ -54,8 +54,9 @@ Cuellos: defaults locales aprobados; falta integracion al kit del laboratorio.
 ## registro_de_avances
 
 Panel/setup PASS. Cuellos locales sobre kit actual; anclajes editables y JSON.
-221 tests;6 checks de montaje PASS. QA navegador pendiente.
+224 tests;6 checks de montaje PASS. QA navegador pendiente.
 JSON frontal de Fito aplicado como defaults; espalda original fija.
+Material V/polo adaptado al cuello PSD; geometria aprobada conservada.
 
 ## decisiones
 

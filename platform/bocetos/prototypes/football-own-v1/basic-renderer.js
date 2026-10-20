@@ -2,6 +2,7 @@ import {createPrototypeRenderer} from './renderer.js';
 import {largestComponent,parseColor} from './material.js';
 import {createAnchorSchema} from './anchors.js';
 import {approvedFrontAnchors} from './basic-front-defaults.js';
+import {matchCollarMaterial} from './collar-material.js';
 
 export const basicIdentity={model:'football-basic-v1',bodyRevision:'original-psd-collars-v1'};
 export const basicAnchorSchema=createAnchorSchema(basicIdentity);
@@ -65,7 +66,7 @@ export function createBasicCollarRenderer(makeCanvas){
           }
           return {width:region.width,height:region.height,data};
         };
-        result.repairedNeck=repair;return result;
+        result.repairedNeck=repair;result.psdLights={burn,screen};return result;
       }
       prepared.body[side]=material(area,coverage,'body');prepared.round[side]=material(neck,collarAlpha,'collar');
       const body=prepared.body[side],centerX=(neck.x+neck.width/2-area.x)/area.width,top=(neck.y-area.y)/area.height;
@@ -77,6 +78,8 @@ export function createBasicCollarRenderer(makeCanvas){
       for(const type of ['v','polo']){const neck=renderer.materials[type][side],width=round.width*(type==='polo'?1.16:1);body.neckAnchors[type]={centerX:round.centerX,top:round.top,width,height:width*body.width*neck.height/neck.width/body.height};}
     }
     for(const type of ['round','v','polo'])renderer.materials.body.front.neckAnchors[type]={...approvedFrontAnchors[type]};
+    const original=renderer.materials.round.front;
+    for(const type of ['v','polo'])matchCollarMaterial(renderer.materials[type].front,original,psdLight);
   }
   return {...renderer,load};
 }

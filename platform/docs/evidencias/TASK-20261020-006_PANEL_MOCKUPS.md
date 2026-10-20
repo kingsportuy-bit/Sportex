@@ -172,3 +172,31 @@ No se infieren capas editables ni se agrega una variante sin el archivo original
 Checkpoint: SPORTEX_CLOSE=PASS, perfil local. Log privado
 sportex-approved-collar-defaults-close.log. Sigue pendiente integración al kit
 del laboratorio; no se publica automáticamente esta geometría.
+
+## Luces y textura de V/polo
+
+Fito aclara que el problema visual no es la unión: son luces y tejido.
+Causa confirmada en renderer: round.paint aplica Linear Burn/Screen del PSD;
+V/polo usaban materialPixel del gris generado, con brillo añadido y otra trama.
+
+collar-material.js toma Burn/Screen de la cara exterior del cuello original y
+los aplica a las formas V/polo, saltando las aberturas de la banda. La trama
+generada se separa con filtrado normalizado por alfa; se conserva solo un
+relieve suave acotado de pliegues. No cambia alfa, tamaño, posición, interior,
+round original ni espalda. Es transferencia 2D de apariencia, no render físico.
+Los originales PNG tampoco se editan. La paleta de iluminación se calcula por
+píxel del material original y se reutiliza para evitar trabajo en cada píxel
+generado; los cachés existentes siguen acotados.
+
+Tres tests focales PASS: trama de alta frecuencia no introduce brillo artificial,
+alfa/bordes suaves/aberturas se conservan y trabajo de luz acotado a la fuente.
+verify-basic conserva6 checks PASS, incluyendo JSON aprobado exacto y espalda
+inmutable. Preparación1264ms; pares183/29/19ms con Canvas nativo en este equipo.
+Inspección de renders reales: primera transferencia mezclaba banda interior y
+exterior; se corrigió el muestreo a la cara exterior. Sin revisión visual del
+navegador ni nuevas generaciones. Pendiente revisión de apariencia por Fito.
+Suite completa224 tests PASS,0 fallos, log privado sportex-collar-material-tests.log.
+HTTP del módulo de material PASS en4321. Sin cambios de perfiles del navegador.
+Checkpoint SPORTEX_CLOSE=PASS, perfil local. Log privado
+sportex-collar-material-close.log. Revertir este checkpoint restaura la apariencia
+anterior sin modificar el JSON de anclajes. Sin deploy.

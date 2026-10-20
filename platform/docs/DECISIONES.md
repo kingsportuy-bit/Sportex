@@ -299,3 +299,5 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - Fito entrega el JSON: sus tres frentes pasan a ser defaults del visor local.
   Geometria trasera ignorada; mantiene cuello original. Nueva captura de polo
   bicolor es solo referencia; no se ha pedido preparar otra variante.
+- Fito aclara que el desajuste es de luces/tejido. Mantener anclajes aprobados;
+  V/polo toman apariencia de la banda original del PSD, con pliegues suavizados.

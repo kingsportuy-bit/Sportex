@@ -12,11 +12,11 @@
     "back: el cuerpo inferior conserva píxeles exactos entre los tres cuellos",
     "back: cuello original idéntico entre variantes e inmune a anclajes guardados"
   ],
-  "prepareMs": 1191,
+  "prepareMs": 1264,
   "pairRenderMs": [
     183,
-    31,
-    21
+    29,
+    19
   ],
   "browserVisualQA": "PENDIENTE",
   "paidCalls": 0

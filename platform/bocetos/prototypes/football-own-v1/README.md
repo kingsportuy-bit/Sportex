@@ -40,7 +40,11 @@ en `approved-anchors.json`. La configuración local posterior tiene prioridad.
 
 La vista actual lee el kit PSD existente en `../../public/assets/psd-kit/`.
 El redondo se registra con su máscara original. El V y el polo usan materiales
-neutros separados. Las máscaras de mangas y luces siguen siendo las del kit.
+con la forma separada y la apariencia del cuello original del PSD. Se sustituye
+la trama generada por la luz y el tejido de la cara exterior de esa banda;
+solo se conserva el relieve suave de los pliegues. Los anclajes y el alfa no
+cambian. Es una transferencia 2D aproximada, no un nuevo render físico.
+Las máscaras de mangas y luces siguen siendo las del kit.
 Solo la banda/interior del cuello anterior reciben tejido de reemplazo,
 muestreado en la fila de tejido inmediatamente inferior. Hay que revisar ese
 encaje antes de integrar al laboratorio. No se afirma reconstrucción perfecta
