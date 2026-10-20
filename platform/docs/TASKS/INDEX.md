@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-002` | `in_progress` | Base inicial de empresas del laboratorio | docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md
 
 ## Cola
 

@@ -9,6 +9,11 @@ Contrato de comportamiento: `../docs/BOCETOS_LOCAL_CONTRACT.md`.
 
 ## Administración local por empresa
 
+El acceso `/login` usa verde liso, logo SPORTEX centrado, subtitulo Laboratorio de
+bocetos y formulario sin tarjeta, titulo ni descripcion. Entrar centrado.
+Columna maxima360px, inputs/boton48px y etiquetas visibles;
+en movil conserva margenes24px. `/admin` mantiene su cabecera y contenedor.
+
 `panel.html/js/css` reutiliza los tokens de `style.css`: tabla operativa,
 acciones verdes y formularios compactos en dialogos propios. No hay nuevas
 dependencias UI. El panel se abre en `/admin`, el acceso de empresa en `/login`.

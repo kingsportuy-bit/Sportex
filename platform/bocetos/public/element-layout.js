@@ -45,7 +45,11 @@ export function initialParameterSketch(blank,model,assets={}){
   // Cached files are reusable; the settings of the last edited sketch are not defaults.
   const logos=Object.fromEntries(['brand','brand2','crest'].map(type=>[type,[...new Map([...(blank.logos?.[type]||[]),...(assets.logos?.[type]||[])].map(logo=>[logo.id,logo])).values()]]));
   const inputs={...blank.inputs,...model.inputs,'design-format':'3:4','cuffs-enabled':false};
-  for(const type of ['brand','brand2','crest'])inputs[`${type}-select`]=(logos[type].find(logo=>logo.id===model.inputs?.[`${type}-select`])||logos[type].find(logo=>logo.name===model.logoFiles?.[type]))?.id||'';
+  for(const type of ['brand','brand2','crest']){
+    const selected=logos[type].find(logo=>logo.id===model.inputs?.[`${type}-select`])||logos[type].find(logo=>logo.name===model.logoFiles?.[type]);
+    inputs[`${type}-select`]=selected?.id||'';
+    logos[type]=selected?[selected]:logos[type].slice(-1);
+  }
   const sponsorFiles=[...(blank.sponsors||[]),...(assets.sponsors||[])];
   const sponsors=(model.sponsors||[]).flatMap(sponsor=>{const file=sponsorFiles.find(file=>file.id===sponsor.id)||sponsorFiles.find(file=>file.name===sponsor.name);return file?[{...file,...sponsor}]:[];});
   const layers=Object.fromEntries(Object.entries(blank.layers||{}).filter(([key])=>!key.startsWith('text-')&&!key.startsWith('sponsor-')));

@@ -3,6 +3,28 @@
   "project": "SPORTEX",
   "entries": [
     {
+      "date": "2026-09-02",
+      "taskId": "TASK-20260902-001",
+      "summary": "Leads y Clientes reutilizan WhatsApp; Pedidos conserva tablero/planilla y Mi empresa agrega configuracion tenant-aware versionada con migracion local no ejecutada.",
+      "documents": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css",
+        "core/src/domain/company-configuration.ts",
+        "core/src/application/core-service.ts",
+        "core/src/adapters/persistence/postgres-core-store.ts",
+        "core/db/migrations/staging/20260902_011_company_configuration.up.sql",
+        "core/db/migrations/staging/20260902_011_company_configuration.down.sql",
+        "docs/TASKS/closed/2026/TASK-20260902-001-reorganizar-crm-y-configuracion-empresa.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20260902-001_REORGANIZAR_CRM_CONFIGURACION_EMPRESA.md"
+      ],
+      "decisions": [
+        "SPORTEX-DEC-021"
+      ]
+    },
+    {
       "date": "2026-08-20",
       "taskId": "TASK-20260817-001",
       "summary": "4898d55 desplegado: activa, cabecera y panel fusionados; health, ready y recursos públicos PASS.",

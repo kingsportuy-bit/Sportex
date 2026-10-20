@@ -247,3 +247,9 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - 20/10: bocetos b8e1fc8 publicado en dos dominios Kodebix, stack propio. HTTPS,
   admin, persistencia tras reemplazo y restauracion de backup real PASS. CRM
   d9c4f44 conservado. Respaldo API/admin key pendientes; primera alta manual.
+
+- 20/10, TASK-20261020-002: base actual de Delta Sport para nuevas empresas,
+  conservando geometria/opciones/fuentes sin logos, escudo ni fondo Delta.
+  Cada espacio de imagen reemplaza su archivo, sin acumular biblioteca ni
+  alterar otros bocetos. Acceso minimalista sin tarjeta, logo/subtitulo centrados.
+  Preparacion local; publicacion requiere GO operativo.

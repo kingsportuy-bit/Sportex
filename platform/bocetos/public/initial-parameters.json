@@ -134,9 +134,9 @@
     "highlights-opacity": "100",
     "shadows-blend": "linear-burn",
     "shadows-opacity": "67",
-    "brand-select": "brand-1792393136636-0.7494718074990345",
-    "brand2-select": "brand2-1792439074859-0.6758190572970154",
-    "crest-select": "crest-1792393163926-0.6486439250354514",
+    "brand-select": "",
+    "brand2-select": "",
+    "crest-select": "",
     "number-font": "club-sc-internacional-2023",
     "name-font": "club-real-madrid-font-2024-2025",
     "ink-color": "#ffffff",
@@ -2356,9 +2356,9 @@
   ],
   "texturePlacements": {},
   "logoFiles": {
-    "brand": "LOGO_DELTA_INDUMENTARIA_sin_fondo_blanco_isotipo.png",
-    "brand2": "LOGO_DELTA_INDUMENTARIA_sin_fondo_blanco_letras.png",
-    "crest": "Escudo_oficial_de_Danubio_FC.png"
+    "brand": null,
+    "brand2": null,
+    "crest": null
   },
   "visibleLayers": {
     "crest": true,

@@ -6,11 +6,11 @@ Actualizado: 2026-10-20.
 
 ## Entorno de trabajo
 
-- Entorno actual: `PILOTO_DELTA`.
+- Entorno actual: `DESARROLLO_LOCAL`.
 - Entornos permitidos: `DOCUMENTACION, DESARROLLO_LOCAL, PILOTO_DELTA`.
 - Entornos prohibidos: `PRODUCCION_COMERCIAL`.
 - Objetivo operativo futuro: `PILOTO_DELTA`.
-- Intencion actual: `operation`.
+- Intencion actual: `fix`.
 
 ## Git
 
@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-002`: `in_progress` (docs/TASKS/active/TASK-20261020-002-base-inicial-empresas-bocetos.md).
 
 ## Objetivo actual
 
-Laboratorio y panel publicados; primera alta manual de Fito.
+Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.
 
 ## Alcance actual
 
-- Permitido: Runtime bocetos y servicio aislado; DNS de los dos dominios autorizados.
-- Prohibido: Sin cambios de CRM, legado, otros proyectos, WhatsApp ni DB compartida.
+- Permitido: Base, archivos y login de platform/bocetos; pruebas locales ficticias.
+- Prohibido: Sin cambios remotos, CRM, legado, IA ni cuentas reales.
 
 ## Decisiones vigentes
 
@@ -52,17 +52,17 @@ Laboratorio y panel publicados; primera alta manual de Fito.
 ## Estado operativo registrado
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
-- Pruebas: `PASS`; ultima ejecucion `2026-10-19`.
+- Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
 - Despliegues: `CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`; registros 32.
 - Integraciones: GitHub=`BOCETOS_B8E1FC8_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_B8E1FC8_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-001`.
+- Tarea: `TASK-20261020-002`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-001_DEPLOY_BOCETOS.md`.
-- Bocetos b8e1fc8 publicado: HTTPS, admin, reinicio y restauracion PASS; CRM preservado.
+- Fuente: `docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md`.
+- Base generica sin archivos Delta, reemplazos sin acumulacion y login minimalista validados localmente.
 
 ## Riesgos
 
@@ -78,5 +78,5 @@ Laboratorio y panel publicados; primera alta manual de Fito.
 
 ## Siguientes acciones
 
-- Fito entra al panel y crea la primera empresa.
+- Fito revisa candidato local y autoriza publicacion del laboratorio.
 - Proporcionar clave OpenAI de respaldo y administrativa para cargos oficiales.

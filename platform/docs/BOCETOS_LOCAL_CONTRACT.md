@@ -83,6 +83,13 @@ Texturas: imagenes y PDF (max50MB), pagina a elegir y raster max2048px en cache.
 PDF en navegador, sin IA ni programas nativos en servidor. CDR no admitido.
 Subidas conservan aspecto (contain), sin deformar/rellenar; ancho/alto manuales.
 initial-parameters.json fija la base inicial; una base general guardada prevalece.
+Altas nuevas usan esa geometria, colores y opciones sin archivos ni referencias
+de marca/escudo. Fondo Delta no se ofrece ni se carga en altas nuevas; un boceto
+antiguo que ya lo usa puede recuperarlo. Cada logo, Logo2, escudo o fondo cargado
+reemplaza el anterior del mismo espacio, manteniendo otros bocetos. Nuevos bocetos
+reutilizan el ultimo archivo; el historial libera fuentes que ya no necesita.
+Login de laboratorio sin tarjeta ni textos introductorios: logo centrado,
+Laboratorio de bocetos y formulario. Panel administrativo conserva su presentacion.
 
 Preferencias locales: IndexedDB conserva archivos de logo y elecciones de
 fuente, dimensiones, posiciones y estilos por boceto; Nuevo boceto aplica la

@@ -1735,9 +1735,26 @@ async function loadReferenceFile(file) {
   catch (error) { notice(error.message, true); }
   finally { $('reference-file').value = ''; }
 }
+const assetUploadVersions={brand:0,brand2:0,crest:0,background:0};
+function useLogoAsset(type,logo){
+  state.logos[type]=[logo];
+  const select=$(type+'-select');select.replaceChildren(new Option(type==='crest'?'Sin escudo':'Sin logo',''),new Option(logo.name,logo.id));select.value=logo.id;
+  if(initialParameters)initialParameters={...initialParameters,inputs:{...initialParameters.inputs,[type+'-select']:logo.id},logoFiles:{...initialParameters.logoFiles,[type]:logo.name}};
+  if(blankSketch)blankSketch={...blankSketch,logos:{...blankSketch.logos,[type]:[logo]}};
+}
 async function loadLogoFile(type, file) {
   if (!file) return; if (file.size > 8_000_000) return notice('El logo supera 8 MB.', true);
-  try { const image = await loadImage(await fileData(file)), id = `${type}-${Date.now()}-${Math.random()}`; state.logos[type].push({ id, name: file.name, image }); $(type + '-select').add(new Option(file.name, id)); $(type + '-select').value = id; state.visibleLayers[type] = true; $(`show-${type}`).checked = true; selectLayer(type); preferencesDirty=true;rememberPreferences();notice(`${file.name} cargado como capa editable.`); }
+  const sketchId=activeSketchId,layers=state.layers,version=++assetUploadVersions[type];
+  try {
+    const image=await loadImage(await fileData(file));
+    if(activeSketchId!==sketchId||state.layers!==layers||assetUploadVersions[type]!==version)return;
+    const previous=state.logos[type].find(logo=>logo.id===$(type+'-select').value),id=previous?.id||`${type}-${Date.now()}-${Math.random()}`;
+    recordHistory();
+    const keys=type==='brand'?['brand','short-brand']:type==='crest'?['crest','short-crest']:['brand2'];
+    if(previous)for(const key of keys)if(state.layers[key])state.layers[key].size=replacementImageSize(state.layers[key].size,previous.image,image);
+    useLogoAsset(type,{id,name:file.name,image});state.visibleLayers[type]=true;$(`show-${type}`).checked=true;
+    selectLayer(type);preferencesDirty=true;rememberPreferences();recordHistory();scheduleWorkspaceSave();notice(`${file.name} cargado. Reemplaza el archivo anterior.`);
+  }
   catch (error) { notice(error.message, true); }
   finally { $(type + '-file').value = ''; }
 }
@@ -1762,8 +1779,7 @@ async function replaceGraphic(file,target){
     const keys=target.type==='crest'?['crest','short-crest']:[target.key];
     for(const key of keys)if(state.layers[key])state.layers[key].size=replacementImageSize(state.layers[key].size,current.image,image);
     if(target.type==='crest'){
-      state.logos.crest=state.logos.crest.map(item=>item.id===target.assetId?{...item,name:file.name,image}:item);
-      const option=[...$('crest-select').options].find(item=>item.value===target.assetId);if(option)option.textContent=file.name;
+      useLogoAsset('crest',{id:target.assetId,name:file.name,image});
     }else state.sponsors=state.sponsors.map(item=>item.id===target.assetId?{...item,name:file.name,image}:item);
     preferencesDirty=true;selectLayer(target.key);recordHistory();scheduleWorkspaceSave();
     notice(target.type==='crest'?'Escudo reemplazado en camiseta y short.':'Sponsor reemplazado. Conserva el alto, la posición y la rotación.');
@@ -1800,7 +1816,14 @@ async function addSponsor(file) {
 }
 async function loadBackground(file) {
   if (!file) return; if (file.size > 15_000_000) return notice('El fondo supera 15 MB.', true);
-  try { state.customBackground = await loadImage(await fileData(file)); $('background-select').querySelector('[value="custom"]').disabled = false; $('background-select').value = 'custom'; state.backgroundMode = 'custom'; render(); notice('Fondo cargado.'); }
+  const sketchId=activeSketchId,layers=state.layers,version=++assetUploadVersions.background;
+  try {
+    const image=await loadImage(await fileData(file));if(activeSketchId!==sketchId||state.layers!==layers||assetUploadVersions.background!==version)return;
+    recordHistory();state.customBackground=image;$('background-select').querySelector('[value="custom"]').disabled=false;$('background-select').value='custom';state.backgroundMode='custom';
+    if(initialParameters)initialParameters={...initialParameters,backgroundMode:'custom',inputs:{...initialParameters.inputs,'background-select':'custom'}};
+    if(blankSketch)blankSketch={...blankSketch,customBackground:image,backgroundMode:'custom'};
+    preferencesDirty=true;rememberPreferences();render();recordHistory();scheduleWorkspaceSave();notice('Fondo reemplazado.');
+  }
   catch (error) { notice(error.message, true); }
   finally { $('background-file').value = ''; }
 }
@@ -1828,6 +1851,18 @@ for(const type of ['input','change'])document.addEventListener(type,event=>{
 const editHistories=new Map();let historyTimer=null,historyRestoring=false;
 const historySourceIds=new Map();let nextHistorySource=1;
 function historySourceId(source){if(!source)return null;if(!historySourceIds.has(source))historySourceIds.set(source,nextHistorySource++);return historySourceIds.get(source);}
+function pruneHistorySources(){
+  const used=new Set(),add=value=>{if(value)used.add(value);};
+  for(const history of editHistories.values())for(const {snapshot:s} of history.entries){
+    [s.referenceData,s.referencePreview,s.customBackground].forEach(add);
+    for(const logos of Object.values(s.logos||{}))for(const logo of logos)add(logo.image);
+    for(const sponsor of s.sponsors||[])add(sponsor.image);
+    Object.values(s.generatedParts||{}).forEach(add);
+    for(const item of Object.values(s.customTextures||{}))add(item.clip?.src);
+    for(const variant of s.designVariants||[]){add(variant.rawImage);Object.values(variant.parts||{}).forEach(add);for(const clip of Object.values(variant.clips||{}))add(clip.src);}
+  }
+  for(const source of historySourceIds.keys())if(!used.has(source))historySourceIds.delete(source);
+}
 function historyKey(snapshot){
   return JSON.stringify({...snapshot,elementModel:undefined,layers:Object.fromEntries(Object.entries(snapshot.layers).map(([key,{originalTransform,...transform}])=>[key,transform])),notice:undefined,customTextures:Object.fromEntries(Object.entries(snapshot.customTextures||{}).map(([key,item])=>[key,{...item,clip:{...item.clip,src:historySourceId(item.clip.src)}}])),referenceData:historySourceId(snapshot.referenceData),referencePreview:historySourceId(snapshot.referencePreview),customBackground:historySourceId(snapshot.customBackground),logos:Object.fromEntries(Object.entries(snapshot.logos).map(([type,logos])=>[type,logos.map(l=>[l.id,historySourceId(l.image)])])),sponsors:snapshot.sponsors.map(s=>({...s,image:historySourceId(s.image)})),generatedParts:Object.fromEntries(Object.entries(snapshot.generatedParts).map(([key,image])=>[key,historySourceId(image)])),designVariants:snapshot.designVariants.map(v=>({...v,rawImage:historySourceId(v.rawImage),parts:Object.fromEntries(Object.entries(v.parts).map(([key,image])=>[key,historySourceId(image)])),clips:Object.fromEntries(Object.entries(v.clips||{}).map(([key,clip])=>[key,{...clip,src:historySourceId(clip.src)}]))}))});
 }
@@ -1836,7 +1871,7 @@ function recordHistory(){
   const snapshot=captureSketch(),signature=historyKey(snapshot);let history=editHistories.get(activeSketchId);
   if(!history){history={entries:[],index:-1};editHistories.set(activeSketchId,history);}
   if(history.entries[history.index]?.signature===signature){updateCanvasActions();return;}
-  history.entries.splice(history.index+1);history.entries.push({snapshot,signature});if(history.entries.length>35)history.entries.shift();history.index=history.entries.length-1;updateCanvasActions();
+  history.entries.splice(history.index+1);history.entries.push({snapshot,signature});if(history.entries.length>35)history.entries.shift();history.index=history.entries.length-1;pruneHistorySources();updateCanvasActions();
 }
 function scheduleHistoryRecord(){if(!persistenceReady||historyRestoring||trimEditor?.active)return;clearTimeout(historyTimer);historyTimer=setTimeout(recordHistory,320);}
 function stepHistory(direction){
@@ -2001,6 +2036,11 @@ async function restoreWorkspace() {
     initialParameters=structuredClone(saved.initialParameters||saved.preferences?.elementModel||initialParameters);
     if(saved.cuffOverlayVersion!==1)for(const [,sketch] of saved.sketches)sketch.inputs['cuffs-enabled']=false;
     const restored = await Promise.all(saved.sketches.map(async ([id, sketch]) => [id, withApprovedTrimModel(await hydrateSketch(sketch))]));
+    // An old document may still use this background; new companies never load it.
+    if([saved.blankSketch,...restored.map(([,sketch])=>sketch)].some(sketch=>sketch?.backgroundMode==='delta')){
+      state.assets.background=await loadImage('/assets/fondo-delta.png');
+      if(!$('background-select').querySelector('[value="delta"]'))$('background-select').add(new Option('Fondo guardado','delta'));
+    }
     if (saved.version !== workspaceSchemaVersion) {
       for (const [, sketch] of restored) for (const key of ['brand', 'crest']) sketch.layers[key].size = frontPositions[key].size;
     }
@@ -2107,7 +2147,7 @@ function newSketch() {
   if (!blankSketch) return;
   recordHistory();
   const current=captureSketch();sketches.set(activeSketchId,current);rememberPreferences();
-  const id=nextAvailableSketchId(sketches.keys()),fresh=initialParameterSketch({...blankSketch,mockRevision:2,positionRevision},initialParameters,{logos:browserPreferences?.logos,sponsors:browserPreferences?.sponsors});editHistories.delete(id);
+  const id=nextAvailableSketchId(sketches.keys()),fresh=initialParameterSketch({...blankSketch,mockRevision:2,positionRevision},initialParameters,{logos:browserPreferences?.logos,sponsors:browserPreferences?.sponsors,customBackground:browserPreferences?.customBackground});editHistories.delete(id);
   sketches.set(id, fresh); activeSketchId = id; restoreSketch(fresh);nextSketchId=nextAvailableSketchId(sketches.keys()); $('generation-overlay').hidden = true; renderSketchTabs();
   scheduleWorkspaceSave();notice('Nuevo boceto creado con la configuración base guardada.');
 }
@@ -2127,7 +2167,7 @@ async function closeSketch(id) {
   if(!sketches.has(id)||sketches.size<2||id===generatingSketchId)return;
   rememberPreferences();sketches.set(activeSketchId,captureSketch());
   if (id === activeSketchId) { const next = [...sketches.keys()].find(key => key !== id); activeSketchId = next; restoreSketch(sketches.get(next)); $('generation-overlay').hidden = next !== generatingSketchId; }
-  sketches.delete(id);editHistories.delete(id);nextSketchId=nextAvailableSketchId(sketches.keys());renderSketchTabs();runPendingReferenceAdjustment();scheduleWorkspaceSave();
+  sketches.delete(id);editHistories.delete(id);pruneHistorySources();nextSketchId=nextAvailableSketchId(sketches.keys());renderSketchTabs();runPendingReferenceAdjustment();scheduleWorkspaceSave();
   $('sketch-tab-list').querySelector('[aria-selected="true"] .sketch-tab-title')?.focus();
 }
 $('new-sketch').addEventListener('click', newSketch);
@@ -2247,8 +2287,8 @@ async function init() {
 
     const names = ['photoBody','photoBodyRaglan','photoSleeveLeft','photoSleeveRight','photoSleeveLeftRaglan','photoSleeveRightRaglan','photoCollar','photoCuffs','photoBackNeck','photoShort','photoSocks','photoShoes','photoBurnShirt','photoScreenShirt','photoBurnShirtRaglan','photoScreenShirtRaglan','photoBurnShort','photoScreenShort','photoBurnSocks','photoScreenSocks','photoDesignShirt','photoDesignShirtBody','photoDesignShirtSleeves','photoDesignShirtBodyRaglan','photoDesignShirtSleevesRaglan'];
     for (const side of ['front', 'back']) for (const key of ['photoDesignShirt','photoDesignShirtBody','photoDesignShirtBodyRaglan','photoDesignShirtSleeves','photoDesignShirtSleevesRaglan','photoShort','photoSocks']) names.push(`${side}-${key}`);
-    const [background, ...loaded] = await Promise.all([loadImage('/assets/fondo-delta.png'), ...names.map(name => loadImage(`/assets/psd-kit/${name}.png?v=raglan-lights-5`))]);
-    state.assets = { background, ...Object.fromEntries(names.map((name, i) => [name, loaded[i]])) };
+    const loaded=await Promise.all(names.map(name=>loadImage(`/assets/psd-kit/${name}.png?v=raglan-lights-5`)));
+    state.assets=Object.fromEntries(names.map((name,i)=>[name,loaded[i]]));
     updateSelectedControls();
     state.assetsReady = true; invalidateGarment(); updateGenerate();
     initialParameters=await fetch('/initial-parameters.json').then(response=>{if(!response.ok)throw new Error('No se pudo cargar la configuración inicial.');return response.json();});
@@ -2260,7 +2300,7 @@ async function init() {
         if(['brand','brand2'].includes(asset.kind)){
           const image=await loadImage(`/api/lab/assets/${asset.id}`);state.logos[asset.kind].push({id:asset.id,name:asset.name,image});
           initialParameters.logoFiles={...initialParameters.logoFiles,[asset.kind]:asset.name};
-        }else if(asset.kind==='background'){state.customBackground=await loadImage(`/api/lab/assets/${asset.id}`);state.backgroundMode='custom';initialParameters.backgroundMode='custom';}
+        }else if(asset.kind==='background'){state.customBackground=await loadImage(`/api/lab/assets/${asset.id}`);state.backgroundMode='custom';initialParameters.backgroundMode='custom';initialParameters.inputs['background-select']='custom';}
       }
       lab.install();
     }

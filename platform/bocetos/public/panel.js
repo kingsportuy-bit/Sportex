@@ -1,4 +1,6 @@
 const $=id=>document.getElementById(id),adminSurface=location.pathname==='/admin';
+document.body.classList.toggle('lab-company-access',!adminSurface);
+if(!adminSurface)$('login-view').setAttribute('aria-labelledby','surface-label');
 let companies=[],current=null,publicConfig=null,dirty=false,loading=false,initialParameters=null,createKey=null;
 let usageCompany=null,usageSequence=0;
 const fonts=[['club-sc-internacional-2023','SC Internacional 2023'],['club-real-madrid-font-2024-2025','Real Madrid 2024–2025']];
@@ -145,7 +147,7 @@ async function init(){
   try{
     publicConfig=await api('/api/lab/public');
     if(!adminSurface){
-      document.title='SPORTEX · Acceso al laboratorio';document.querySelector('.lab-header a').href='/';
+      document.title='SPORTEX · Acceso al laboratorio';const home=document.querySelector('.lab-header a');home.href='/';home.setAttribute('aria-label','SPORTEX, laboratorio de bocetos');
       try{await api('/api/lab/session');location.replace('/');}
       catch(error){loginView(false,error.status===401?'':error.message);}
       return;
