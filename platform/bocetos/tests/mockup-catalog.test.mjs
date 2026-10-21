@@ -45,7 +45,7 @@ test('new configurations remain drafts and survive restarting the JSON store',as
     const options={...created.draft.options,shorts:false,socks:false};
     const saved=await service.saveMockup(admin,created.id,{version:created.version,...created.draft,options});
     await service.publishMockup(admin,created.id,{version:saved.version});
-    const restarted=createLabService({store:new LabStore(file),mockupDefaults:factory});
+    const restarted=createLabService({store:new LabStore(file),clock:()=>Date.parse('2026-10-20T12:00:00Z'),mockupDefaults:factory});
     const list=await restarted.mockups(company),model=list.find(m=>m.id===created.id);
     assert.equal(list.length,2);assert.equal(model.name,'Solo camiseta');
     const parameters=mockupParameters(model,factory);assert.equal(parameters.inputs['include-shorts'],false);assert.equal(parameters.inputs['include-socks'],false);
@@ -55,7 +55,7 @@ test('new configurations remain drafts and survive restarting the JSON store',as
 });
 test('invalid geometry, embedded files and unsupported fonts cannot become global defaults',async()=>{
   const {service,admin}=await fixture(),draft=await service.mockupDraft(admin,'football-basic');
-  for(const patch of [p=>p.layers.brand.size=-1,p=>p.layers.brand.scaleX=0,p=>p.inputs['number-font']='custom-private-font',p=>p.inputs['api-token']='secret',p=>p.logoFiles.brand='data:image/png;base64,abcd']){
+  for(const patch of [p=>p.layers.brand.size=-1,p=>p.layers.brand.scaleX=0,p=>p.layers.brand.imageAspect=0,p=>p.layers.brand.imageAspect=Infinity,p=>p.inputs['number-font']='custom-private-font',p=>p.inputs['api-token']='secret',p=>p.logoFiles.brand='data:image/png;base64,abcd']){
     const parameters=structuredClone(factory);patch(parameters);
     await assert.rejects(service.saveMockup(admin,draft.id,{version:draft.version,...draft.draft,parameters}),e=>['invalid_mockup','invalid_mockup_font'].includes(e.code));
   }
@@ -92,7 +92,7 @@ test('SQLite backup retains catalog revisions and company configuration stays se
     const record=await restarted.mockupDraft(admin,draft.id);assert.equal(record.published.revision,2);assert.equal(record.published.parameters.layers.brand.x,202);assert.equal(record.revisions[0].revision,1);
     const settings={numberFont:'club-fixture-font',initialParameters:{...factory,layers:{...factory.layers,brand:{x:999,y:333,size:30}}}};
     const company=companyMockupParameters(record.published,factory,settings,[{kind:'brand',name:'Empresa.png'}]);
-    assert.equal(company.layers.brand.x,202);assert.equal(company.inputs['number-font'],'club-fixture-font');assert.equal(company.logoFiles.brand,'Empresa.png');
+    assert.equal(company.layers.brand.x,202);assert.equal(company.inputs['number-font'],record.published.parameters.inputs['number-font']);assert.equal(company.logoFiles.brand,'Empresa.png');
     assert.equal(record.published.parameters.logoFiles.brand,null);
   }finally{await store?.close();await restored?.close();await rm(dir,{recursive:true,force:true});}
 });

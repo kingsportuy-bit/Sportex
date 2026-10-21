@@ -10,8 +10,9 @@ export function mockupSnapshot(mockup,fallback){
 }
 export function companyMockupParameters(mockup,fallback,settings={},assets=[]){
   let model=mockupParameters(mockup,fallback);
-  if(settings.initialParameters?.kind==='sportex-initial-parameters'&&(!mockup||mockup.id==='football-basic'&&mockup.revision===1))model=structuredClone(settings.initialParameters);
-  Object.assign(model.inputs,...[settings.numberFont?{'number-font':settings.numberFont}:{},settings.nameFont?{'name-font':settings.nameFont}:{}]);
+  const inheritsCompanyDefaults=!mockup||mockup.id==='football-basic'&&mockup.revision===1;
+  if(settings.initialParameters?.kind==='sportex-initial-parameters'&&inheritsCompanyDefaults)model=structuredClone(settings.initialParameters);
+  if(inheritsCompanyDefaults)Object.assign(model.inputs,...[settings.numberFont?{'number-font':settings.numberFont}:{},settings.nameFont?{'name-font':settings.nameFont}:{}]);
   for(const asset of assets){
     if(['brand','brand2'].includes(asset.kind))model.logoFiles={...model.logoFiles,[asset.kind]:asset.name};
     if(asset.kind==='background'){model.backgroundMode='custom';model.inputs['background-select']='custom';}

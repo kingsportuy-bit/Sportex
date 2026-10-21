@@ -20,6 +20,23 @@
       ]
     },
     {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-002",
+      "summary": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20261020-002-base-inicial-empresas-bocetos.md",
+        "bocetos/public/initial-parameters.json",
+        "bocetos/public/app.js",
+        "bocetos/public/panel.css"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md"
+      ],
+      "decisions": [
+        "Base generica sin identidad; reemplazos por espacio y acceso minimalista solicitados por Fito."
+      ]
+    },
+    {
       "date": "2026-10-19",
       "taskId": "TASK-20261019-001",
       "summary": "Claves OpenAI compartidas, consumo por llamada/empresa y respaldo controlado; 180 tests PASS.",

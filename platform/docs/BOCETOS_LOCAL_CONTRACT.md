@@ -181,8 +181,24 @@ guarda id/revision/snapshot, elementos y opciones. Publicar no migra bocetos;
 recargar laboratorio obtiene el catalogo para nuevas bases. Archivos y fuentes
 de empresa siguen aislados; las preferencias de archivos se reutilizan.
 
-El panel es preparacion local. Ningun permiso de alta de catalogo autoriza
-deploy, cambios de cuentas reales ni IA de prueba.
+El configurador fue desplegado por autorizacion explicita de Fito en
+TASK-20261020-006. Ningun permiso de alta de catalogo autoriza otros despliegues,
+cambios de cuentas reales ni IA de prueba.
+
+### Medidas exactas sin imagenes (TASK-20261020-007)
+
+Cada capa grafica conserva imageAspect, ademas de size, scaleX/scaleY,
+posicion, rotacion y anclaje. El editor usa ese aspecto para sus muestras al
+reabrir; el archivo original no se guarda. Al reutilizar un logo de otra
+proporcion se conserva la altura configurada y la proporcion natural del nuevo
+archivo, con las escalas manuales de ambos ejes. Los modelos anteriores sin
+imageAspect siguen siendo compatibles; guardar de nuevo captura ese metadato.
+
+Las fuentes de una revision publicada explicitamente prevalecen sobre las
+preferencias generales de fuentes de la empresa. La base heredada revision1
+mantiene su compatibilidad con los defaults de empresa. Los bocetos existentes
+conservan sus propios parametros. Guardar actualiza el borrador; publicar
+actualiza la base para nuevos bocetos. No se publica automaticamente.
 
 ## Eliminacion de empresas (TASK-20261020-003)
 

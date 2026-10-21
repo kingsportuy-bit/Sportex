@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {replacementImageSize} from '../public/element-layout.js';
+import {replacementImageSize,graphicAspect} from '../public/element-layout.js';
 
 const source=readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
 function harness(){
@@ -10,7 +10,7 @@ function harness(){
   const nodes=new Map([['crest-select',{value:'crest-one',options:[{value:'crest-one',textContent:'old.png'}],replaceChildren(...options){this.options=options;}}]]);
   const state={logos:{crest:[Object.freeze({id:'crest-one',name:'old.png',image:oldImage})]},sponsors:[Object.freeze({id:'sponsor-one',name:'old.png',visible:true,image:oldImage}),{id:'sponsor-copy',image:oldImage}],
     layers:{crest:{x:348,y:387,size:100,scaleX:1.1,scaleY:.9,rotation:22,attachment:{piece:'shirt',side:'front'}},'short-crest':{x:122,y:985,size:60},'sponsor-one':{x:40,y:480,size:120,rotation:-36,scaleX:1.3,scaleY:.8,attachment:{piece:'right',side:'back'}},'sponsor-copy':{x:500,y:500,size:80}},layerStyles:{crest:{enabled:true,width:2,color:'#ffffff'}}};
-  const context=vm.createContext({state,initialParameters:null,blankSketch:null,Option:function(textContent,value){this.textContent=textContent;this.value=value;},activeSketchId:1,selection:['crest'],preferencesDirty:false,replacementImageSize,$:id=>nodes.get(id),selectedLayerKeys:()=>context.selection,
+  const context=vm.createContext({state,initialParameters:null,blankSketch:null,Option:function(textContent,value){this.textContent=textContent;this.value=value;},activeSketchId:1,selection:['crest'],preferencesDirty:false,replacementImageSize,graphicAspect,$:id=>nodes.get(id),selectedLayerKeys:()=>context.selection,
     fileData:async()=> 'encoded',loadImage:async()=>nextImage,recordHistory:()=>events.push({kind:'history',crest:state.logos.crest[0],sponsor:state.sponsors[0]}),
     selectLayer:key=>events.push({kind:'select',key}),scheduleWorkspaceSave:()=>events.push({kind:'save'}),notice:(message,error)=>messages.push({message,error})});
   vm.runInContext(source.slice(source.indexOf('function useLogoAsset('),source.indexOf('async function loadLogoFile(')),context);
@@ -38,7 +38,7 @@ test('crest replacement updates both shared copies while preserving their height
   await h.context.replaceGraphic(h.file,h.target('crest'));
   assert.equal(h.state.logos.crest[0].image,h.nextImage);assert.equal(h.state.logos.crest[0].name,'new.png');assert.equal(oldEntry.image,h.oldImage);assert.equal(oldEntry.name,'old.png');
   assert.equal(h.state.layers.crest.size,50);assert.equal(h.state.layers['short-crest'].size,30);
-  assert.deepEqual(h.state.layers.crest,{...oldLayers.crest,size:50});assert.deepEqual(h.state.layers['short-crest'],{...oldLayers['short-crest'],size:30});
+  assert.deepEqual(h.state.layers.crest,{...oldLayers.crest,size:50,imageAspect:.5});assert.deepEqual(h.state.layers['short-crest'],{...oldLayers['short-crest'],size:30,imageAspect:.5});
   assert.deepEqual(h.state.layerStyles,oldStyles);assert.equal(h.nodes.get('crest-select').options.find(option=>option.value==='crest-one').textContent,'new.png');assert.equal(h.context.preferencesDirty,true);
   assert.equal(h.events[0].crest,oldEntry);assert.equal(h.events[2].crest.image,h.nextImage);assert.deepEqual(h.events.map(e=>e.kind),['history','select','history','save']);
 });
@@ -47,7 +47,7 @@ test('sponsor replacement keeps its identity, attachment and opposite-angle slee
   const h=harness(),original=h.state.sponsors[0],other=h.state.sponsors[1],layer=structuredClone(h.state.layers['sponsor-one']);
   await h.context.replaceGraphic({...h.file,type:'image/jpeg'},h.target('sponsor-one'));
   assert.equal(h.state.sponsors[0].id,original.id);assert.equal(h.state.sponsors[0].image,h.nextImage);assert.equal(original.image,h.oldImage);assert.equal(h.state.sponsors[1],other);assert.equal(other.image,h.oldImage);
-  assert.deepEqual(h.state.layers['sponsor-one'],{...layer,size:60});assert.equal(h.state.logos.crest[0].image,h.oldImage);
+  assert.deepEqual(h.state.layers['sponsor-one'],{...layer,size:60,imageAspect:.5});assert.equal(h.state.logos.crest[0].image,h.oldImage);
 });
 
 test('cancelled, oversized, unsupported and unreadable uploads leave the original untouched',async()=>{

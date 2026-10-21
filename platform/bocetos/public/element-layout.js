@@ -54,7 +54,16 @@ export function initialParameterSketch(blank,model,assets={}){
   const sponsors=(model.sponsors||[]).flatMap(sponsor=>{const file=sponsorFiles.find(file=>file.id===sponsor.id)||sponsorFiles.find(file=>file.name===sponsor.name);return file?[{...file,...sponsor}]:[];});
   const layers=Object.fromEntries(Object.entries(blank.layers||{}).filter(([key])=>!key.startsWith('text-')&&!key.startsWith('sponsor-')));
   const visibleLayers=Object.fromEntries(Object.entries(blank.visibleLayers||{}).filter(([key])=>!key.startsWith('text-')&&!key.startsWith('sponsor-')));
-  return {...blank,inputs,logos,sponsors,elementModel:structuredClone(model),layers:{...layers,...structuredClone(model.layers)},texts:structuredClone(model.texts||[]),visibleLayers:{...visibleLayers,...model.visibleLayers},layerStyles:structuredClone(model.layerStyles||{}),trimEdits:structuredClone(model.trimEdits||{}),backgroundMode:model.backgroundMode||blank.backgroundMode,customBackground:model.backgroundMode==='custom'?(assets.customBackground??blank.customBackground):null,documentPalette:[...(model.documentPalette||[])]};
+  Object.assign(layers,structuredClone(model.layers));
+  // Reusing a different image must preserve the configured visible height.
+  for(const [key,layer] of Object.entries(layers)){
+    const type=graphicType(key),image=type&&logos[type]?.find(logo=>logo.id===inputs[`${type}-select`])?.image;
+    if(image&&Number.isFinite(layer.imageAspect)){
+      layer.size=replacementImageSize(layer.size,{width:layer.imageAspect,height:1},image);
+      layer.imageAspect=graphicAspect(image);
+    }
+  }
+  return {...blank,inputs,logos,sponsors,elementModel:structuredClone(model),layers,texts:structuredClone(model.texts||[]),visibleLayers:{...visibleLayers,...model.visibleLayers},layerStyles:structuredClone(model.layerStyles||{}),trimEdits:structuredClone(model.trimEdits||{}),backgroundMode:model.backgroundMode||blank.backgroundMode,customBackground:model.backgroundMode==='custom'?(assets.customBackground??blank.customBackground):null,documentPalette:[...(model.documentPalette||[])]};
 }
 
 export function restoreInitialParameters(current,cached){
@@ -78,13 +87,19 @@ export function parameterInputs(inputs){
   return Object.fromEntries(Object.entries(inputs).filter(([id,value])=>!content.has(id)&&['string','boolean','number'].includes(typeof value)));
 }
 
+export function graphicAspect(image){return image.mockupAspect??image.width/image.height;}
+function graphicType(key){return ['brand','short-brand'].includes(key)?'brand':['crest','short-crest'].includes(key)?'crest':key==='brand2'?'brand2':null;}
 export function replacementImageSize(size,previous,next){
-  return size*Math.max(1,next.width/next.height)/Math.max(1,previous.width/previous.height);
+  return size*Math.max(1,graphicAspect(next))/Math.max(1,graphicAspect(previous));
 }
 
 export function makeElementModel(sketch,keys){
   const layers=Object.fromEntries(keys.filter(key=>sketch.layers[key]).map(key=>[key,
-    {...Object.fromEntries(['x','y','size','scaleX','scaleY','rotation','letterSpacing'].filter(field=>Number.isFinite(sketch.layers[key][field])).map(field=>[field,sketch.layers[key][field]])),...(sketch.layers[key].attachment?{attachment:structuredClone(sketch.layers[key].attachment)}:{})}]));
+    {...Object.fromEntries(['x','y','size','scaleX','scaleY','rotation','letterSpacing','imageAspect'].filter(field=>Number.isFinite(sketch.layers[key][field])).map(field=>[field,sketch.layers[key][field]])),...(sketch.layers[key].attachment?{attachment:structuredClone(sketch.layers[key].attachment)}:{})}]));
+  for(const [key,layer] of Object.entries(layers)){
+    const type=graphicType(key),image=type&&sketch.logos?.[type]?.find(logo=>logo.id===sketch.inputs[`${type}-select`])?.image;
+    if(image)layer.imageAspect=graphicAspect(image);
+  }
   return {schemaVersion:1,kind:'sportex-initial-parameters',textSizing:'visible-height',layers,
     inputs:parameterInputs(sketch.inputs),
     backgroundMode:sketch.backgroundMode||sketch.inputs['background-select'],documentPalette:[...(sketch.documentPalette||[])],

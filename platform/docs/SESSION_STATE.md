@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-007`: `in_progress` (docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md).
 
 ## Objetivo actual
 
-Configurador de mockups publicado; cuellos en pausa.
+Corregir guardado exacto del configurador desplegado, sin imagenes privadas.
 
 ## Alcance actual
 
-- Permitido: Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f.
-- Prohibido: Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS.
+- Permitido: Corregir y desplegar configurador desde f4386fb; candidato remoto, backup y rollback.
+- Prohibido: Sin cuellos, IA paga, cuentas QA, CRM, legado ni DNS.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Configurador de mockups publicado; cuellos en pausa.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-006`.
+- Tarea: `TASK-20261020-007`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md`.
-- f4386fb publicado healthy1/1;27 tests en imagen,HTTP admin y backup PASS. Cuellos excluidos.
+- Fuente: `docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md`.
+- f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Configurador de mockups publicado; cuellos en pausa.
 
 ## Siguientes acciones
 
-- Fito: configurar mockups en el panel; cuellos en pausa.
+- Corregir proporciones de referencia; validar y publicar en el desplegado.

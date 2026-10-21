@@ -12,7 +12,7 @@ import {compactAtlas} from './atlas-layout.js';
 import {trimGroups,trimInputIds,readTrimSettings,trimSettingsForMold,buildTrimBatches,paintTrimBatches,migrateTrimEdits} from './garment-trims.js';
 import {installTrimEditor} from './trim-editor.js';
 import {withApprovedTrimModel} from './trim-defaults.js';
-import {fitTextInk,proportionalResize,makeElementModel,replacementImageSize,trackedGlyphLayout,compositionTransform,initialParameterSketch,restoreInitialParameters,resolveTextureClips} from './element-layout.js';
+import {fitTextInk,proportionalResize,makeElementModel,replacementImageSize,graphicAspect,trackedGlyphLayout,compositionTransform,initialParameterSketch,restoreInitialParameters,resolveTextureClips} from './element-layout.js';
 import {toggleElement,marqueeElements,alignElements,colorableElements} from './element-selection.js';
 import {installTextureImport} from './texture-import.js';
 import {bootstrapLab} from './lab-client.js';
@@ -692,7 +692,7 @@ function layerBounds(key) {
   const layer = state.layers[key]; if (!layer) return null;
   const image = imageForLayer(key),scaleX=layer.scaleX??1,scaleY=layer.scaleY??1;
   if (image) {
-    const aspect = image.width / image.height, width = aspect >= 1 ? layer.size : layer.size * aspect, height = aspect >= 1 ? layer.size / aspect : layer.size;
+    const aspect = graphicAspect(image), width = aspect >= 1 ? layer.size : layer.size * aspect, height = aspect >= 1 ? layer.size / aspect : layer.size;
     return { x: layer.x, y: layer.y, width:width*scaleX, height:height*scaleY, image };
   }
   if (key === 'brand' || key==='brand2' || key === 'crest' || key === 'short-brand' || key === 'short-crest' || key.startsWith('sponsor-')) return null;
@@ -1754,7 +1754,12 @@ async function loadLogoFile(type, file) {
     const previous=state.logos[type].find(logo=>logo.id===$(type+'-select').value),id=previous?.id||`${type}-${Date.now()}-${Math.random()}`;
     recordHistory();
     const keys=type==='brand'?['brand','short-brand']:type==='crest'?['crest','short-crest']:['brand2'];
-    if(previous)for(const key of keys)if(state.layers[key])state.layers[key].size=replacementImageSize(state.layers[key].size,previous.image,image);
+    for(const key of keys){
+      const layer=state.layers[key];if(!layer)continue;
+      const reference=previous?.image||(Number.isFinite(layer.imageAspect)?{width:layer.imageAspect,height:1}:null);
+      if(reference)layer.size=replacementImageSize(layer.size,reference,image);
+      layer.imageAspect=graphicAspect(image);
+    }
     useLogoAsset(type,{id,name:file.name,image});state.visibleLayers[type]=true;$(`show-${type}`).checked=true;
     selectLayer(type);preferencesDirty=true;rememberPreferences();recordHistory();scheduleWorkspaceSave();notice(`${file.name} cargado. Reemplaza el archivo anterior.`);
   }
@@ -1780,7 +1785,7 @@ async function replaceGraphic(file,target){
     if(activeSketchId!==target.sketchId||!current||current.assetId!==target.assetId||current.image!==target.image)return notice('El boceto o la imagen cambió. Seleccionala y volvé a reemplazarla.',true);
     recordHistory();
     const keys=target.type==='crest'?['crest','short-crest']:[target.key];
-    for(const key of keys)if(state.layers[key])state.layers[key].size=replacementImageSize(state.layers[key].size,current.image,image);
+    for(const key of keys)if(state.layers[key]){state.layers[key].size=replacementImageSize(state.layers[key].size,current.image,image);state.layers[key].imageAspect=graphicAspect(image);}
     if(target.type==='crest'){
       useLogoAsset('crest',{id:target.assetId,name:file.name,image});
     }else state.sponsors=state.sponsors.map(item=>item.id===target.assetId?{...item,name:file.name,image}:item);
@@ -2340,13 +2345,13 @@ async function init() {
       // Local placeholders make placement editable without storing brand files.
       for(const [type,label] of [['brand','MARCA'],['brand2','LOGO 2'],['crest','ESCUDO']]){
         const node=document.createElement('canvas');node.width=180;node.height=100;const c=node.getContext('2d');c.fillStyle='#ffffff';c.fillRect(2,2,176,96);c.fillStyle='#171d19';c.font='bold 30px Arial';c.textAlign='center';c.fillText(label,90,62);
-        const image=await loadImage(node.toDataURL('image/png'));state.logos[type]=[{id:'mockup-sample-'+type,name:label+' · muestra',image}];initialParameters.logoFiles[type]=label+' · muestra';
+        const image=await loadImage(node.toDataURL('image/png'));image.mockupAspect=initialParameters.layers[type]?.imageAspect??image.width/image.height;
+        state.logos[type]=[{id:'mockup-sample-'+type,name:label+' · muestra',image}];initialParameters.logoFiles[type]=label+' · muestra';
       }
     }
     if(lab.managed){
       const settings=lab.company.settings||{};
-      if(settings.initialParameters?.kind==='sportex-initial-parameters'&&(!state.mockup||state.mockup.id==='football-basic'&&state.mockup.revision===1))initialParameters=structuredClone(settings.initialParameters);
-      initialParameters.inputs={...initialParameters.inputs,...(settings.numberFont?{'number-font':settings.numberFont}:{}),...(settings.nameFont?{'name-font':settings.nameFont}:{})};
+      if(!mockupCatalog.length)initialParameters=companyMockupParameters(null,factoryParameters,settings,lab.company.assets);
       for(const asset of lab.company.assets){
         if(['brand','brand2'].includes(asset.kind)){
           const image=await loadImage(`/api/lab/assets/${asset.id}`);state.logos[asset.kind].push({id:asset.id,name:asset.name,image});

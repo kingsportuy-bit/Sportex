@@ -307,3 +307,8 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - f4386fb publicado23:19:57 UTC: configurador healthy1/1,27 pruebas en imagen,
   catálogo/editor admin y HTTPS exactos PASS.2 empresas y backup preservados.
   Cuellos excluidos; no hubo IA paga ni escrituras de negocio de QA.
+- TASK-20261020-007: Fito autoriza corregir/publicar el guardado del configurador
+  desplegado, sin interfaz local. Guardar aspecto grafico numerico para conservar
+  medidas con muestras, sin bytes privados; fuentes de revisiones explicitas
+  prevalecen sobre defaults de empresa. Compatibilidad con bases anteriores y
+  documentos existentes; respaldo y rollback f4386fb antes de activar.

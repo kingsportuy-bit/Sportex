@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
-  "updatedBy": "TASK-20261020-006",
+  "updatedBy": "TASK-20261020-007",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -14,16 +14,27 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Configurador de mockups publicado; cuellos en pausa.",
+  "objective": "Corregir guardado exacto del configurador desplegado, sin imagenes privadas.",
   "scope": {
     "allowed": [
-      "Desplegar configurador de33a54 en sportex_bocetos_app; backup y rollback a95850f."
+      "Corregir y desplegar configurador desde f4386fb; candidato remoto, backup y rollback."
     ],
     "prohibited": [
-      "Sin prototipos de cuellos, IA paga, mutaciones de cuentas, CRM, legado ni DNS."
+      "Sin cuellos, IA paga, cuentas QA, CRM, legado ni DNS."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-007",
+    "title": "Conservar configuracion exacta de mockups",
+    "path": "docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md",
+    "status": "in_progress",
+    "lifecycle": "active",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001",
+    "contextFocus": "infrastructure",
+    "developmentGuideImpact": "none",
+    "nextAction": "Corregir proporciones de referencia; validar y publicar en el desplegado."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -114,7 +125,7 @@
       "npm run workflow:close -- TASK-20261020-006 --profile=auto",
       "git diff --check"
     ],
-    "evidence": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
+    "evidence": "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md",
     "note": "224 bocetos y27 tests en imagen PASS;HTTP admin,backup/restore y CLOSE pilot-release PASS."
   },
   "deployments": {
@@ -208,14 +219,30 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20261020-006",
+    "taskId": "TASK-20261020-007",
     "date": "2026-10-20",
-    "path": "docs/evidencias/TASK-20261020-006_PANEL_MOCKUPS.md",
-    "summary": "f4386fb publicado healthy1/1;27 tests en imagen,HTTP admin y backup PASS. Cuellos excluidos.",
+    "path": "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md",
+    "summary": "f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.",
     "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-007",
+      "summary": "f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.",
+      "documents": [
+        "docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md",
+        "bocetos/public/element-layout.js",
+        "bocetos/public/mockup-editor.js"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md"
+      ],
+      "decisions": [
+        "Guardar geometria y fuentes sin bytes de logos ni escudos."
+      ]
+    },
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-006",
@@ -284,23 +311,6 @@
       "decisions": [
         "Fito confirma conservar respaldos y eliminar datos activos."
       ]
-    },
-    {
-      "date": "2026-10-20",
-      "taskId": "TASK-20261020-002",
-      "summary": "Laboratorio69739bb publicado: base sin identidad Delta, reemplazos y login minimo; cuenta/backup PASS.",
-      "documents": [
-        "docs/TASKS/closed/2026/TASK-20261020-002-base-inicial-empresas-bocetos.md",
-        "bocetos/public/initial-parameters.json",
-        "bocetos/public/app.js",
-        "bocetos/public/panel.css"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20261020-002_BASE_EMPRESAS_BOCETOS.md"
-      ],
-      "decisions": [
-        "Base generica sin identidad; reemplazos por espacio y acceso minimalista solicitados por Fito."
-      ]
     }
   ],
   "blockers": [],
@@ -312,11 +322,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito: configurar mockups en el panel; cuellos en pausa."
+    "Corregir proporciones de referencia; validar y publicar en el desplegado."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 35,
+    "archivedChanges": 36,
     "throughDate": "2026-10-20"
   }
 }

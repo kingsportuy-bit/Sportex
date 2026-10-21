@@ -24,6 +24,7 @@ export function validateMockupParameters(value,fail){
     if(!fixed.includes(key)&&!/^text-[a-zA-Z0-9.-]{1,80}$/.test(key))invalid();
     if(!plain(layer)||![layer.x,layer.y,layer.size].every(Number.isFinite)||layer.size<=0||layer.size>2000)invalid();
     for(const field of ['scaleX','scaleY'])if(layer[field]!==undefined&&(!Number.isFinite(layer[field])||layer[field]<=0||layer[field]>100))invalid();
+    if(layer.imageAspect!==undefined&&(!Number.isFinite(layer.imageAspect)||layer.imageAspect<.001||layer.imageAspect>1000))invalid();
     if(layer.attachment&&(!['front','back','shirt','short','left','right','socks'].includes(layer.attachment.piece)||!['front','back'].includes(layer.attachment.side)))invalid();
   }
   for(const [id,item] of Object.entries(value.inputs)){

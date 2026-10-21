@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {initialParameterSketch,replacementImageSize,restoreInitialParameters} from '../public/element-layout.js';
+import {initialParameterSketch,replacementImageSize,restoreInitialParameters,graphicAspect} from '../public/element-layout.js';
 
 const base=JSON.parse(readFileSync(new URL('../public/initial-parameters.json',import.meta.url),'utf8'));
 const app=readFileSync(new URL('../public/app.js',import.meta.url),'utf8');
@@ -47,7 +47,7 @@ function uploads(){
   const state={logos:{brand:[oldLogo,{id:'obsolete',name:'unused.png',image:old}],brand2:[],crest:[]},layers:{brand:{x:187,y:384,size:100},'short-brand':{x:397,y:921,size:60}},visibleLayers:{brand:true},customBackground:old,backgroundMode:'custom'};
   node('brand-select').value='selected';
   const oldBlank={logos:{brand:[oldLogo],brand2:[],crest:[]},customBackground:old},other={logos:{brand:[oldLogo]},customBackground:old};
-  const c=vm.createContext({state,activeSketchId:1,initialParameters:structuredClone(base),blankSketch:oldBlank,preferencesDirty:false,replacementImageSize,
+  const c=vm.createContext({state,activeSketchId:1,initialParameters:structuredClone(base),blankSketch:oldBlank,preferencesDirty:false,replacementImageSize,graphicAspect,
     Option:function(textContent,value){this.textContent=textContent;this.value=value;},$:node,loadImage:async()=>image,fileData:async()=>'',recordHistory(){},selectLayer(){},rememberPreferences(){},render(){},scheduleWorkspaceSave(){},notice(){}});
   vm.runInContext(app.slice(app.indexOf('const assetUploadVersions='),app.indexOf('function graphicReplacementTarget(')),c);
   vm.runInContext(app.slice(app.indexOf('async function loadBackground('),app.indexOf('const sketchInputIds =')),c);

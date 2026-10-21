@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-007` | `in_progress` | Conservar configuracion exacta de mockups | docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md
 
 ## Cola
 
