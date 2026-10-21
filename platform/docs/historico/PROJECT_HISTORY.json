@@ -37,6 +37,23 @@
       ]
     },
     {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-003",
+      "summary": "14de41c publicado healthy1/1: eliminacion protegida, cuenta Delta y backup conservados; sin borrados reales.",
+      "documents": [
+        "docs/TASKS/closed/2026/TASK-20261020-003-eliminar-empresa-bocetos.md",
+        "core/bocetos/service.mjs",
+        "bocetos/public/panel.js",
+        "docs/BOCETOS_LOCAL_CONTRACT.md"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md"
+      ],
+      "decisions": [
+        "Fito confirma conservar respaldos y eliminar datos activos."
+      ]
+    },
+    {
       "date": "2026-10-19",
       "taskId": "TASK-20261019-001",
       "summary": "Claves OpenAI compartidas, consumo por llamada/empresa y respaldo controlado; 180 tests PASS.",

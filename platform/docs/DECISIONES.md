@@ -315,3 +315,7 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
 - deee450 publicado healthy1/1;51 pruebas remotas y HTTPS exactos PASS. Backup
   restaurado,2 empresas y borrador version4/revision1 preservados; no se publica
   una base real de QA. Guardar nuevamente captura aspecto ausente en modelos viejos.
+- TASK-20261020-008: Fito confirma guardado/publicacion y reporta arranque incompleto
+  hasta interactuar. Corregir tres grupos HTML de vivos ausentes y diferir primer
+  render hasta aplicar parametros. Sin borrar cache ni modificar bases guardadas.
+  Mantiene instruccion de trabajar sobre desplegado; rollback deee450.

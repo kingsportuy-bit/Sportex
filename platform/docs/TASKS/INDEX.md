@@ -6,7 +6,7 @@ Actualizado: 2026-10-20.
 
 ## Activa
 
-- Ninguna.
+- `TASK-20261020-008` | `in_progress` | Corregir arranque del lienzo desplegado | docs/TASKS/active/TASK-20261020-008-arranque-lienzo.md
 
 ## Cola
 

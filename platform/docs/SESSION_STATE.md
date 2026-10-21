@@ -23,16 +23,16 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: ninguna tarea activa.
+- Tarea tecnica: `TASK-20261020-008`: `in_progress` (docs/TASKS/active/TASK-20261020-008-arranque-lienzo.md).
 
 ## Objetivo actual
 
-Configurador desplegado conserva medidas y fuentes sin imagenes privadas.
+Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.
 
 ## Alcance actual
 
-- Permitido: Corregir y desplegar configurador desde f4386fb; candidato remoto, backup y rollback.
-- Prohibido: Sin cuellos, IA paga, cuentas QA, CRM, legado ni DNS.
+- Permitido: Corregir y desplegar arranque desde deee450; candidato remoto, respaldo y rollback.
+- Prohibido: Sin cambios a configuraciones/bocetos, IA paga, cuellos, cuentas QA, CRM, legado ni DNS.
 
 ## Decisiones vigentes
 
@@ -59,10 +59,10 @@ Configurador desplegado conserva medidas y fuentes sin imagenes privadas.
 
 ## Ultima evidencia verificable
 
-- Tarea: `TASK-20261020-007`.
+- Tarea: `TASK-20261020-008`.
 - Fecha: `2026-10-20`.
-- Fuente: `docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md`.
-- deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y backup/restore PASS. Borrador y2 empresas preservados.
+- Fuente: `docs/evidencias/TASK-20261020-008_ARRANQUE_LIENZO.md`.
+- Fito confirma guardado/publicacion; excepcion al iniciar por tres grupos de vivos sin id.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Configurador desplegado conserva medidas y fuentes sin imagenes privadas.
 
 ## Siguientes acciones
 
-- Fito recarga configurador y guarda para capturar aspecto; publicar desde Mockups cuando termine de ajustar.
+- Reproducir excepcion y corregir primer render; probar y publicar con backup.

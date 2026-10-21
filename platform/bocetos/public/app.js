@@ -2329,8 +2329,8 @@ async function init() {
     for (const side of ['front', 'back']) for (const key of ['photoDesignShirt','photoDesignShirtBody','photoDesignShirtBodyRaglan','photoDesignShirtSleeves','photoDesignShirtSleevesRaglan','photoShort','photoSocks']) names.push(`${side}-${key}`);
     const loaded=await Promise.all(names.map(name=>loadImage(`/assets/psd-kit/${name}.png?v=raglan-lights-5`)));
     state.assets=Object.fromEntries(names.map((name,i)=>[name,loaded[i]]));
-    updateSelectedControls();
-    state.assetsReady = true; invalidateGarment(); updateGenerate();
+    // The first garment render belongs to the restored configuration, not the
+    // HTML defaults. restoreSketch updates controls and renders synchronously.
     factoryParameters=await fetch('/initial-parameters.json').then(response=>{if(!response.ok)throw new Error('No se pudo cargar la configuración inicial.');return response.json();});
     initialParameters=structuredClone(factoryParameters);
     if(mockupCatalog.length){
@@ -2360,6 +2360,7 @@ async function init() {
       }
       lab.install();
     }
+    state.assetsReady = true;
     blankSketch = initialParameterSketch(withApprovedTrimModel(captureSketch()),initialParameters);restoreSketch(blankSketch);sketches.set(activeSketchId, blankSketch);
     if (!await restoreWorkspace()) renderSketchTabs();
     if(lab.mockupEditor)lab.installEditor({read:()=>makeElementModel(captureSketch(),[...fixedLayerKeys,...state.texts.map(t=>t.id)]),confirm:confirmEditorAction,reset:()=>{restoreSketch(blankSketch);recordHistory();}});

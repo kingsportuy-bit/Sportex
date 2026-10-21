@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": "SPORTEX",
   "updatedAt": "2026-10-20",
-  "updatedBy": "TASK-20261020-007",
+  "updatedBy": "TASK-20261020-008",
   "environment": "PILOTO_DELTA",
   "allowedEnvironments": [
     "DOCUMENTACION",
@@ -14,16 +14,27 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Configurador desplegado conserva medidas y fuentes sin imagenes privadas.",
+  "objective": "Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.",
   "scope": {
     "allowed": [
-      "Corregir y desplegar configurador desde f4386fb; candidato remoto, backup y rollback."
+      "Corregir y desplegar arranque desde deee450; candidato remoto, respaldo y rollback."
     ],
     "prohibited": [
-      "Sin cuellos, IA paga, cuentas QA, CRM, legado ni DNS."
+      "Sin cambios a configuraciones/bocetos, IA paga, cuellos, cuentas QA, CRM, legado ni DNS."
     ]
   },
-  "currentTask": null,
+  "currentTask": {
+    "id": "TASK-20261020-008",
+    "title": "Corregir arranque del lienzo desplegado",
+    "path": "docs/TASKS/active/TASK-20261020-008-arranque-lienzo.md",
+    "status": "in_progress",
+    "lifecycle": "active",
+    "workType": "operacion",
+    "campaign": "CAMP-20260803-001",
+    "contextFocus": "infrastructure",
+    "developmentGuideImpact": "none",
+    "nextAction": "Reproducir excepcion y corregir primer render; probar y publicar con backup."
+  },
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -210,14 +221,30 @@
     "policy": "Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git."
   },
   "latestEvidence": {
-    "taskId": "TASK-20261020-007",
+    "taskId": "TASK-20261020-008",
     "date": "2026-10-20",
-    "path": "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md",
-    "summary": "deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y backup/restore PASS. Borrador y2 empresas preservados.",
+    "path": "docs/evidencias/TASK-20261020-008_ARRANQUE_LIENZO.md",
+    "summary": "Fito confirma guardado/publicacion; excepcion al iniciar por tres grupos de vivos sin id.",
     "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
   "recentChanges": [
+    {
+      "date": "2026-10-20",
+      "taskId": "TASK-20261020-008",
+      "summary": "Fito confirma guardado/publicacion; excepcion al iniciar por tres grupos de vivos sin id.",
+      "documents": [
+        "docs/TASKS/active/TASK-20261020-008-arranque-lienzo.md",
+        "bocetos/public/app.js",
+        "bocetos/public/index.html"
+      ],
+      "evidence": [
+        "docs/evidencias/TASK-20261020-008_ARRANQUE_LIENZO.md"
+      ],
+      "decisions": [
+        "Arranque completo sin interaccion; no borrar cache ni modificar parametros guardados."
+      ]
+    },
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-007",
@@ -288,23 +315,6 @@
       "decisions": [
         "Nombre normal arriba, cinco vivos apagados; conservar documentos."
       ]
-    },
-    {
-      "date": "2026-10-20",
-      "taskId": "TASK-20261020-003",
-      "summary": "14de41c publicado healthy1/1: eliminacion protegida, cuenta Delta y backup conservados; sin borrados reales.",
-      "documents": [
-        "docs/TASKS/closed/2026/TASK-20261020-003-eliminar-empresa-bocetos.md",
-        "core/bocetos/service.mjs",
-        "bocetos/public/panel.js",
-        "docs/BOCETOS_LOCAL_CONTRACT.md"
-      ],
-      "evidence": [
-        "docs/evidencias/TASK-20261020-003_ELIMINAR_EMPRESA.md"
-      ],
-      "decisions": [
-        "Fito confirma conservar respaldos y eliminar datos activos."
-      ]
     }
   ],
   "blockers": [],
@@ -316,11 +326,11 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Fito recarga configurador y guarda para capturar aspecto; publicar desde Mockups cuando termine de ajustar."
+    "Reproducir excepcion y corregir primer render; probar y publicar con backup."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
-    "archivedChanges": 36,
+    "archivedChanges": 37,
     "throughDate": "2026-10-20"
   }
 }

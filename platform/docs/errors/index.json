@@ -115,6 +115,12 @@
       "title": "Host de bocetos no disponia de unzip",
       "path": "docs/errors/entries/SPX-ERR-20261020-006-host-de-bocetos-no-disponia-de-unzip.md",
       "searchText": "# spx-err-20261020-006 - host de bocetos no disponia de unzip\n\n- fecha: 2026-10-20.\n- sintoma: el bundle valido no se extraia porque unzip no existe en el vps.\n- causa raiz: se asumio una herramienta remota no inventariada.\n- solucion: confirmar python3 instalado y extraer con python3 -m zipfile; normalizar copia del helper sh a lf.\n- prevencion/guardia: preflight command -v python3 y capacidad zip; ejecutar helper lf antes de activar, sin instalar paquetes en el host.\r\n"
+    },
+    {
+      "id": "SPX-ERR-20261020-007",
+      "title": "Arranque interrumpido por grupos de vivos sin id",
+      "path": "docs/errors/entries/SPX-ERR-20261020-007-arranque-interrumpido-por-grupos-vivos-sin-id.md",
+      "searchText": "# spx-err-20261020-007 - arranque interrumpido por grupos de vivos sin id\n\n- fecha: 2026-10-20.\n- sintoma: al iniciar se ven parametros html y error de moldes; al interactuar aparece la configuracion aplicada.\n- causa raiz: applymockupavailability busca tres grupos de vivos sin id en html; null.toggleattribute interrumpe restoresketch antes de actualizar el lienzo. init ya habia dibujado defaults.\n- solucion: completar ids de los cinco grupos y activar assetsready tras cargar parametros, dejando primer render a restoresketch.\n- prevencion/guardia: editor-startup ejecuta init/restore y disponibilidad reales contra ids del html; primer frame configurado, preview, cache preservada y errores reales de imagen. red/green remoto, sin navegador simulado como qa visual.\n"
     }
   ]
 }

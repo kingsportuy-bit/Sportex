@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "project": "SPORTEX",
   "targetRef": "sportex-governance-20260801",
-  "updatedAt": "2026-08-20",
+  "updatedAt": "2026-10-20",
   "worktrees": [
     {
       "path": "C:/Users/Fito/Documents/CODEX/SPORTEX",
@@ -40,6 +40,11 @@
       "path": "C:/Users/Fito/AppData/Local/Temp/sportex-release-wt-f6a9277",
       "classification": "INTEGRADO",
       "reason": "Metadato prunable sin directorio físico; commit preservado por Git y releases."
+    },
+    {
+      "path": "C:/Users/Fito/Documents/CODEX/SPORTEX-WORKTREES/brand-outreach-panel-20261020",
+      "classification": "PRESERVAR",
+      "reason": "Worktree ajeno observado por task:doctor; conservar checkout y rama sin cambios."
     }
   ]
 }

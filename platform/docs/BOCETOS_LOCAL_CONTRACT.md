@@ -200,6 +200,15 @@ mantiene su compatibilidad con los defaults de empresa. Los bocetos existentes
 conservan sus propios parametros. Guardar actualiza el borrador; publicar
 actualiza la base para nuevos bocetos. No se publica automaticamente.
 
+### Arranque del lienzo (TASK-20261020-008)
+
+Los cinco grupos de vivos tienen identificadores trim-<grupo>-group coherentes
+con applyMockupAvailability. El flag assetsReady se activa tras cargar parametros
+y archivos iniciales, justo antes de restoreSketch. El primer render de prendas
+sale de restoreSketch con sus controles aplicados, sin dibujar antes defaults de
+HTML. Restaurar cache mantiene el documento; fallos reales de imagen siguen
+avisando y no habilitan persistencia como si el arranque hubiera finalizado.
+
 ## Eliminacion de empresas (TASK-20261020-003)
 
 POST `/api/lab/admin/companies/:id/delete` exige administrador, origen exacto,
