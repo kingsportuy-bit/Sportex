@@ -3,8 +3,8 @@
 id: TASK-20261020-007
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -46,12 +46,15 @@ Volver a imagen f4386fb en mismo volumen; snapshot consistente previo y restore 
 
 ## deuda_restante
 
-Falta publicar candidato y verificar HTTPS. Navegador interno deshabilitado; sin QA visual inventada.
+QA visual manual de Fito; navegador interno deshabilitado. Registros antiguos sin
+aspecto requieren guardar de nuevo. No se migra ni publica el borrador real.
 
 ## registro_de_avances
 
 Runtime f4386fb healthy. Borrador conserva escalas/fuentes; muestras usan proporcion fija.
 RED en imagen actual y GREEN remoto con correccion: conservar aspecto y fuentes explicitas.
+deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y assets exactos PASS.
+Backup/restore PASS,2 empresas y borrador version4 preservados. Sin IA paga.
 
 ## decisiones
 

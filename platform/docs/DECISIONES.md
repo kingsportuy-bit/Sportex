@@ -312,3 +312,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   medidas con muestras, sin bytes privados; fuentes de revisiones explicitas
   prevalecen sobre defaults de empresa. Compatibilidad con bases anteriores y
   documentos existentes; respaldo y rollback f4386fb antes de activar.
+- deee450 publicado healthy1/1;51 pruebas remotas y HTTPS exactos PASS. Backup
+  restaurado,2 empresas y borrador version4/revision1 preservados; no se publica
+  una base real de QA. Guardar nuevamente captura aspecto ausente en modelos viejos.

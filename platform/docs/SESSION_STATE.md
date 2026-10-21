@@ -23,11 +23,11 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-007`: `in_progress` (docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Corregir guardado exacto del configurador desplegado, sin imagenes privadas.
+Configurador desplegado conserva medidas y fuentes sin imagenes privadas.
 
 ## Alcance actual
 
@@ -53,8 +53,8 @@ Corregir guardado exacto del configurador desplegado, sin imagenes privadas.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY`; registros 37.
-- Integraciones: GitHub=`BOCETOS_F4386FB_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY`; registros 38.
+- Integraciones: GitHub=`BOCETOS_DEEE450_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Corregir guardado exacto del configurador desplegado, sin imagenes privadas.
 - Tarea: `TASK-20261020-007`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md`.
-- f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.
+- deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y backup/restore PASS. Borrador y2 empresas preservados.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Corregir guardado exacto del configurador desplegado, sin imagenes privadas.
 
 ## Siguientes acciones
 
-- Corregir proporciones de referencia; validar y publicar en el desplegado.
+- Fito recarga configurador y guarda para capturar aspecto; publicar desde Mockups cuando termine de ajustar.

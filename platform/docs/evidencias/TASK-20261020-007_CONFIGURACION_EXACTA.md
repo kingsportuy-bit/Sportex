@@ -36,4 +36,38 @@ fijada a las12UTC; vencio durante esta prueba. No cambia la autenticacion real.
 La comprobacion de medidas ejecuta layerBounds del lienzo, no una copia del calculo.
 La primera carga en una base sin archivos tambien conserva la altura de referencia.
 
-Pendiente: candidato inmutable, pruebas finales, backup/restore y activacion.
+## Release observado
+
+Fuente Git remota deee4501a6635f3937bdb0c5a75e920f34600e30. Bundle git archive
+40cc7f03838d7e4904d780cf6c13faa8cb4f8093794d62ca988ebd5b37aa1bda, sin prototipos.
+Imagen sportex-bocetos:deee4501a6635f3937bdb0c5a75e920f34600e30,
+digest sha256:1812e587b59606b534abca3701c3ab192114de58a72cfed913ea78877acac047.
+51 pruebas del candidato remoto PASS, sin red ni volumen de negocio; sintaxis
+app/element-layout/mockup-config/Core y ausencia de env/prototipos PASS.
+
+Activacion2026-10-21T00:15:26Z (20/10 America/Montevideo), servicio healthy1/1.
+Backup consistente pre-deee4501a6635f3937bdb0c5a75e920f34600e30.sqlite.
+Comparacion de snapshots conserva companies/users/assets/idempotency/mockups.
+Restauracion privada con SqliteLabStore y quick_check PASS:2 empresas,3 usuarios,
+0 assets,10 operaciones,1 mockup; borrador version4 y publicacion revision1.
+No se escribio ni publico una configuracion real para hacer QA.
+
+Ambos dominios /ready identifican release exacto. Diez assets por SHA256 PASS;
+catalogo/editor autenticados PASS y rutas anonimas/host ajeno protegidas PASS.
+Sesión administrativa temporal cerrada. Sin IA paga ni cuentas de QA.
+CRM sportex-staging:d9c4f443ad07b2e1 intacto. Rollback f4386fb disponible.
+
+## Limite y uso
+
+Navegador interno deshabilitado: no se declara QA visual. Tras recargar el
+configurador, volver a guardar captura imageAspect; los registros anteriores no
+incluyen el aspecto de las imagenes privadas que ya fueron descartadas. Las
+medidas numericas y fuentes del borrador existente no se migraron ni reemplazaron.
+Guardar conserva borrador; publicar desde Mockups aplica a nuevos bocetos.
+
+Logs privados: .codex/artifacts/sportex-bocetos-20261020-007/ bajo el perfil de
+Fito (red-deployed,green-fixtures,candidate-tests,activate,public-smoke,restore).
+Datos SQLite y acceso administrativo quedan fuera de Git.
+
+Cierre final SPORTEX_CLOSE=PASS con perfil pilot-release: validacion general,
+contratos, tests Core, SQL y build PASS. Tarea cerrada, sin tarea activa siguiente.

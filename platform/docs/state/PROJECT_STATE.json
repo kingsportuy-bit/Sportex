@@ -14,7 +14,7 @@
   ],
   "operatingTarget": "PILOTO_DELTA",
   "mode": "operation",
-  "objective": "Corregir guardado exacto del configurador desplegado, sin imagenes privadas.",
+  "objective": "Configurador desplegado conserva medidas y fuentes sin imagenes privadas.",
   "scope": {
     "allowed": [
       "Corregir y desplegar configurador desde f4386fb; candidato remoto, backup y rollback."
@@ -23,18 +23,7 @@
       "Sin cuellos, IA paga, cuentas QA, CRM, legado ni DNS."
     ]
   },
-  "currentTask": {
-    "id": "TASK-20261020-007",
-    "title": "Conservar configuracion exacta de mockups",
-    "path": "docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md",
-    "status": "in_progress",
-    "lifecycle": "active",
-    "workType": "operacion",
-    "campaign": "CAMP-20260803-001",
-    "contextFocus": "infrastructure",
-    "developmentGuideImpact": "none",
-    "nextAction": "Corregir proporciones de referencia; validar y publicar en el desplegado."
-  },
+  "currentTask": null,
   "activeCampaign": {
     "id": "CAMP-20260803-001",
     "title": "SPORTEX — Sistema Comercial Asistido de Delta",
@@ -95,8 +84,8 @@
     "projectRoot": "platform",
     "branch": "codex/desplegar-bocetos-20261020",
     "remote": "https://github.com/kingsportuy-bit/Sportex.git",
-    "headAtLastEvidence": "f4386fb39ee07b239b22e0ce61f64b07c989ef40",
-    "workingTreeState": "CONFIGURADOR_F4386FB_PUBLISHED",
+    "headAtLastEvidence": "deee4501a6635f3937bdb0c5a75e920f34600e30",
+    "workingTreeState": "CONFIGURACION_EXACTA_DEEE450_PUBLISHED",
     "lastVerifiedAt": "2026-10-20"
   },
   "migrations": {
@@ -120,16 +109,17 @@
     "status": "PASS",
     "lastRunAt": "2026-10-20",
     "commands": [
-      "npm run check:bocetos",
       "npm run validate",
-      "npm run workflow:close -- TASK-20261020-006 --profile=auto",
+      "npm run workflow:close -- TASK-20261020-007 --profile=auto",
+      "Candidato remoto:51 pruebas en contenedor sin red ni volumen real",
+      "HTTPS admin/assets por SHA256 y restore SQLite privado",
       "git diff --check"
     ],
     "evidence": "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md",
-    "note": "224 bocetos y27 tests en imagen PASS;HTTP admin,backup/restore y CLOSE pilot-release PASS."
+    "note": "51 pruebas en imagen PASS;RED/GREEN,guardar/reabrir/publicar,HTTPS,backup/restore y CLOSE pilot-release PASS."
   },
   "deployments": {
-    "status": "CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY",
+    "status": "CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY",
     "lastVerifiedAt": "2026-10-20",
     "records": [
       "34c9664607e9e0483f5a1dfb6164c7b572b676cb",
@@ -168,29 +158,30 @@
       "14de41c2f3fcdc7b523354b4b2d7d01eec7f9d3e",
       "a65249d00e1513591ec1b908a888414587bc394b",
       "a95850ff3b0d3cd9d66232650251331a39b4ee59",
-      "f4386fb39ee07b239b22e0ce61f64b07c989ef40"
+      "f4386fb39ee07b239b22e0ce61f64b07c989ef40",
+      "deee4501a6635f3937bdb0c5a75e920f34600e30"
     ],
-    "note": "f4386fb publicado: configurador,2 empresas preservadas,backup restaurado;cuellos excluidos.",
+    "note": "deee450 publicado;2 empresas y borrador version4 conservados,backup restaurado;sin IA paga ni prototipos.",
     "bocetos": {
-      "release": "f4386fb39ee07b239b22e0ce61f64b07c989ef40",
+      "release": "deee4501a6635f3937bdb0c5a75e920f34600e30",
       "service": "sportex_bocetos_app",
-      "imageDigest": "sha256:67b961197d1f41e14bb10c59e3762927a827c9160f95efe0e655d1bf5a3e54eb",
+      "imageDigest": "sha256:1812e587b59606b534abca3701c3ab192114de58a72cfed913ea78877acac047",
       "urls": [
         "https://sportex-bocetos.kodebix.com",
         "https://panel-sportex-bocetos.kodebix.com"
       ],
       "replicas": "1/1",
       "backupRestored": true,
-      "rollbackRelease": "a95850ff3b0d3cd9d66232650251331a39b4ee59"
+      "rollbackRelease": "f4386fb39ee07b239b22e0ce61f64b07c989ef40"
     }
   },
   "externalIntegrations": [
     {
       "name": "GitHub",
-      "status": "BOCETOS_F4386FB_PUBLISHED",
+      "status": "BOCETOS_DEEE450_PUBLISHED",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "Release remoto f4386fb,configurador aprobado de33a54;sin prototipos."
+      "note": "Release deee450 remoto;configuracion exacta sin archivos privados."
     },
     {
       "name": "Supabase",
@@ -208,10 +199,10 @@
     },
     {
       "name": "VPS / runtime",
-      "status": "CRM_D9C4F44_BOCETOS_F4386FB_HEALTHY",
+      "status": "CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY",
       "lastVerifiedAt": "2026-10-20",
       "writeAuthorized": true,
-      "note": "f4386fb publicado: configurador,2 empresas preservadas,backup restaurado;cuellos excluidos."
+      "note": "deee450 publicado;2 empresas y borrador version4 conservados,backup restaurado;sin IA paga ni prototipos."
     }
   ],
   "sensitiveData": {
@@ -222,7 +213,7 @@
     "taskId": "TASK-20261020-007",
     "date": "2026-10-20",
     "path": "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md",
-    "summary": "f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.",
+    "summary": "deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y backup/restore PASS. Borrador y2 empresas preservados.",
     "environment": "PILOTO_DELTA",
     "branch": "codex/desplegar-bocetos-20261020"
   },
@@ -230,11 +221,14 @@
     {
       "date": "2026-10-20",
       "taskId": "TASK-20261020-007",
-      "summary": "f4386fb observado; escalas/fuentes guardadas, muestras con aspecto fijo. Correccion autorizada.",
+      "summary": "deee450 publicado healthy1/1;51 pruebas remotas,HTTPS y backup/restore PASS. Borrador y2 empresas preservados.",
       "documents": [
-        "docs/TASKS/active/TASK-20261020-007-guardar-configuracion-exacta.md",
+        "docs/TASKS/closed/2026/TASK-20261020-007-guardar-configuracion-exacta.md",
         "bocetos/public/element-layout.js",
-        "bocetos/public/mockup-editor.js"
+        "bocetos/public/app.js",
+        "bocetos/public/mockup-config.js",
+        "core/bocetos/mockups.mjs",
+        "docs/BOCETOS_LOCAL_CONTRACT.md"
       ],
       "evidence": [
         "docs/evidencias/TASK-20261020-007_CONFIGURACION_EXACTA.md"
@@ -322,7 +316,7 @@
     "Los contactos ambiguos se rechazan correctamente, pero el logger aun los presenta con severidad de error."
   ],
   "nextActions": [
-    "Corregir proporciones de referencia; validar y publicar en el desplegado."
+    "Fito recarga configurador y guarda para capturar aspecto; publicar desde Mockups cuando termine de ajustar."
   ],
   "history": {
     "path": "docs/historico/PROJECT_HISTORY.json",
