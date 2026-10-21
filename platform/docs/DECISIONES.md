@@ -319,3 +319,6 @@ Registro durable; las decisiones reemplazadas se marcan y el negocio queda en DE
   hasta interactuar. Corregir tres grupos HTML de vivos ausentes y diferir primer
   render hasta aplicar parametros. Sin borrar cache ni modificar bases guardadas.
   Mantiene instruccion de trabajar sobre desplegado; rollback deee450.
+- 0fc5169 publicado healthy1/1:56 pruebas en candidato y HTTPS/HTML exactos PASS.
+  Primer render configurado, cache preservada, backup restaurado; borrador6 y
+  publicacion2 conservados. No requiere borrar cache ni volver a configurar.

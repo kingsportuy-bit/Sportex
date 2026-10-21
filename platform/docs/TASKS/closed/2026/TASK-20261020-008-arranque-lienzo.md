@@ -3,8 +3,8 @@
 id: TASK-20261020-008
 owner: Codex
 requester: Fito
-estado: in_progress
-lifecycle: active
+estado: done
+lifecycle: closed
 work_type: operacion
 campaign: CAMP-20260803-001
 context_focus: infrastructure
@@ -50,12 +50,16 @@ Volver a imagen deee450 en mismo volumen, snapshot consistente previo.
 
 ## deuda_restante
 
-Navegador interno deshabilitado: no declarar QA visual. Reproduccion en curso.
+QA visual manual de Fito; navegador interno deshabilitado. Recargar pestaña para
+obtener release; cache y parametros conservados, sin migracion de datos.
 
 ## registro_de_avances
 
 Contexto operation PASS, sin tarea activa previa. Faltan tres ids de grupos de
 vivos usados por applyMockupAvailability; interrumpe restore antes de updateFrame.
+RED en imagen desplegada y GREEN: empresa/preview/configurador/cache/imagen ausente.
+0fc5169 publicado healthy1/1;56 tests,HTTPS/assets/HTML y backup/restore PASS.
+Borrador version6/publicacion revision2 y2 empresas preservadas; sin IA paga.
 
 ## decisiones
 

@@ -23,11 +23,11 @@ Actualizado: 2026-10-20.
 
 - Campaña activa: `CAMP-20260803-001` - SPORTEX — Sistema Comercial Asistido de Delta.
 - Proxima campaña: ninguna definida.
-- Tarea tecnica: `TASK-20261020-008`: `in_progress` (docs/TASKS/active/TASK-20261020-008-arranque-lienzo.md).
+- Tarea tecnica: ninguna tarea activa.
 
 ## Objetivo actual
 
-Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.
+Arranque desplegado aplica y dibuja configuracion sin interaccion, con cache preservada.
 
 ## Alcance actual
 
@@ -53,8 +53,8 @@ Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.
 
 - Migraciones: `MIGRACIONES_002_003_004_005_006_008_009_010_011_APLICADAS_PILOTO_DELTA_PASS_25_RLS`; ejecutadas 9; pendientes 0.
 - Pruebas: `PASS`; ultima ejecucion `2026-10-20`.
-- Despliegues: `CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY`; registros 38.
-- Integraciones: GitHub=`BOCETOS_DEEE450_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_DEEE450_HEALTHY`
+- Despliegues: `CRM_D9C4F44_BOCETOS_0FC5169_HEALTHY`; registros 39.
+- Integraciones: GitHub=`BOCETOS_0FC5169_PUBLISHED` | Supabase=`PILOTO_DELTA_25_TABLAS_RLS_FORZADO_CONFIGURACION_011` | Evolution API=`DELTA_OPEN_UPSERT_UPDATE_BASE64_ACTIVE_MANUAL_OUTBOUND_ON` | VPS / runtime=`CRM_D9C4F44_BOCETOS_0FC5169_HEALTHY`
 - Datos sensibles: `METADATA_REMOTA_MINIMIZADA_SIN_CONTENIDO`. Consulta remota sanitizada; sin valores de secretos, telefonos, conversaciones ni datos reales en Git.
 
 ## Ultima evidencia verificable
@@ -62,7 +62,7 @@ Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.
 - Tarea: `TASK-20261020-008`.
 - Fecha: `2026-10-20`.
 - Fuente: `docs/evidencias/TASK-20261020-008_ARRANQUE_LIENZO.md`.
-- Fito confirma guardado/publicacion; excepcion al iniciar por tres grupos de vivos sin id.
+- 0fc5169 publicado healthy1/1;56 pruebas remotas,primer render configurado,HTTPS y backup/restore PASS. Cache/bases preservadas.
 
 ## Riesgos
 
@@ -78,4 +78,4 @@ Corregir carga inicial del lienzo desplegado sin alterar configuracion ni cache.
 
 ## Siguientes acciones
 
-- Reproducir excepcion y corregir primer render; probar y publicar con backup.
+- Fito recarga laboratorio: configuracion aplicada al iniciar, sin borrar cache ni volver a configurar.
